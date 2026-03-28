@@ -1,0 +1,198 @@
+<div class="page-header-row">
+  <div class="page-title-block">
+    <h2>Data Management</h2>
+    <p>CRUD operations and data administration</p>
+  </div>
+  <button class="btn btn-primary" (click)="showAddModal.set(true)">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="white" stroke-width="2"/><line x1="5" y1="12" x2="19" y2="12" stroke="white" stroke-width="2"/></svg>
+    Add Record
+  </button>
+</div>
+
+<!-- SECTION TABS -->
+<div class="data-sections">
+  <button class="data-section-btn" [class.active]="activeSection()==='records'" (click)="activeSection.set('records')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+    Records
+  </button>
+  <button class="data-section-btn" [class.active]="activeSection()==='import'" (click)="activeSection.set('import')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/><polyline points="17 8 12 3 7 8" stroke="currentColor" stroke-width="2"/><line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2"/></svg>
+    Import
+  </button>
+  <button class="data-section-btn" [class.active]="activeSection()==='export'" (click)="activeSection.set('export')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/></svg>
+    Export
+  </button>
+  <button class="data-section-btn" [class.active]="activeSection()==='backup'" (click)="activeSection.set('backup')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><polyline points="1 4 1 10 7 10" stroke="currentColor" stroke-width="2"/><path d="M3.51 15a9 9 0 1 0 .49-4.84" stroke="currentColor" stroke-width="2"/></svg>
+    Backup
+  </button>
+</div>
+
+<!-- RECORDS SECTION -->
+@if (activeSection() === 'records') {
+  <div class="filter-bar">
+    <div class="filter-search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="#7A8BB0" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="#7A8BB0" stroke-width="2" stroke-linecap="round"/></svg>
+      <input placeholder="Search records…" [value]="searchQuery()" (input)="searchQuery.set($any($event.target).value)"/>
+    </div>
+  </div>
+  <div class="registry-card">
+    <div class="registry-table-wrap">
+      <table class="registry-table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Name</th><th>Type</th><th>Created</th><th>Last Updated</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of filteredRecords; track r.id) {
+            <tr>
+              <td style="font-family:monospace;font-size:12px;color:var(--muted);">{{ r.id }}</td>
+              <td style="font-weight:600;color:var(--navy);">{{ r.name }}</td>
+              <td><span class="badge" [ngClass]="getTypeClass(r.type)">{{ r.type }}</span></td>
+              <td style="font-size:12.5px;color:var(--muted);">{{ r.created }}</td>
+              <td style="font-size:12.5px;color:var(--muted);">{{ r.updated }}</td>
+              <td><span class="badge" [ngClass]="getStatusClass(r.status)">{{ r.status }}</span></td>
+              <td>
+                <button class="action-btn" title="Edit">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="var(--muted)" stroke-width="2"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="var(--muted)" stroke-width="2"/></svg>
+                </button>
+                <button class="action-btn" title="Delete" (click)="openDelete(r)">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="var(--rose)" stroke-width="2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="var(--rose)" stroke-width="2"/></svg>
+                </button>
+              </td>
+            </tr>
+          }
+          @empty {
+            <tr><td colspan="7"><div class="empty-state"><h3>No records found</h3></div></td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer">
+      <span class="table-footer-info">{{ filteredRecords.length }} records</span>
+    </div>
+  </div>
+}
+
+<!-- IMPORT SECTION -->
+@if (activeSection() === 'import') {
+  <div class="action-card">
+    <div class="action-card-ico" style="background:#EEF2FF;">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="#2251CC" stroke-width="2"/><polyline points="17 8 12 3 7 8" stroke="#2251CC" stroke-width="2"/><line x1="12" y1="3" x2="12" y2="15" stroke="#2251CC" stroke-width="2"/></svg>
+    </div>
+    <h3>Import Data</h3>
+    <p>Upload CSV, Excel, or JSON files to bulk-import records into the platform.</p>
+    <div class="upload-drop">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="var(--muted)" stroke-width="1.5"/><polyline points="17 8 12 3 7 8" stroke="var(--muted)" stroke-width="1.5"/><line x1="12" y1="3" x2="12" y2="15" stroke="var(--muted)" stroke-width="1.5"/></svg>
+      <span>Drag & drop file here or <strong style="color:var(--blue);cursor:pointer;">browse</strong></span>
+      <span class="upload-sub">CSV, XLSX, JSON — Max 50MB</span>
+    </div>
+    <button class="btn btn-primary" style="margin-top:20px;" (click)="onImport()">Start Import</button>
+  </div>
+}
+
+<!-- EXPORT SECTION -->
+@if (activeSection() === 'export') {
+  <div class="action-card">
+    <div class="action-card-ico" style="background:rgba(14,165,160,0.08);">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="var(--teal)" stroke-width="2"/><polyline points="7 10 12 15 17 10" stroke="var(--teal)" stroke-width="2"/><line x1="12" y1="15" x2="12" y2="3" stroke="var(--teal)" stroke-width="2"/></svg>
+    </div>
+    <h3>Export Data</h3>
+    <p>Download platform data in your preferred format.</p>
+    <div class="export-options">
+      @for (fmt of ['CSV', 'Excel (XLSX)', 'JSON', 'PDF Report']; track fmt) {
+        <label class="export-option">
+          <input type="radio" name="fmt" [value]="fmt"/> {{ fmt }}
+        </label>
+      }
+    </div>
+    <button class="btn btn-primary" style="margin-top:20px;" (click)="onExport()">Export Now</button>
+  </div>
+}
+
+<!-- BACKUP SECTION -->
+@if (activeSection() === 'backup') {
+  <div class="action-card">
+    <div class="action-card-ico" style="background:rgba(91,79,207,0.08);">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><polyline points="1 4 1 10 7 10" stroke="var(--indigo)" stroke-width="2"/><path d="M3.51 15a9 9 0 1 0 .49-4.84" stroke="var(--indigo)" stroke-width="2"/></svg>
+    </div>
+    <h3>Backup &amp; Restore</h3>
+    <p>Create a full backup of all platform data or restore from a previous snapshot.</p>
+    <div style="display:flex;gap:12px;margin-top:20px;">
+      <button class="btn btn-primary" (click)="onBackup()">Create Backup Now</button>
+      <button class="btn btn-ghost">Restore from Backup</button>
+    </div>
+    <div style="margin-top:24px;padding:16px;background:var(--bg);border-radius:10px;border:1px solid var(--border);">
+      <div style="font-size:12px;font-weight:600;color:var(--label);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;">Last Backups</div>
+      @for (b of ['Mar 27, 2026 – 11:00 PM', 'Mar 26, 2026 – 11:00 PM', 'Mar 25, 2026 – 11:00 PM']; track b) {
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);">
+          <span>{{ b }}</span>
+          <span class="badge badge-green">Complete</span>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+<!-- ADD RECORD MODAL -->
+@if (showAddModal()) {
+  <div class="modal-overlay open" (click)="showAddModal.set(false)">
+    <div class="modal modal-sm" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div><div class="modal-title">Add Record</div></div>
+        <button class="modal-close" (click)="showAddModal.set(false)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Name *</label>
+          <input class="form-input" placeholder="Record name" [(ngModel)]="newRecord.name"/>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <select class="form-input" [(ngModel)]="newRecord.type">
+              <option>Doctor</option><option>Patient</option><option>Case</option><option>Report</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select class="form-input" [(ngModel)]="newRecord.status">
+              <option>Active</option><option>Pending</option><option>Archived</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" (click)="showAddModal.set(false)">Cancel</button>
+        <button class="btn btn-primary" (click)="addRecord()">Save Record</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- DELETE CONFIRM MODAL -->
+@if (showDeleteModal() && selectedRecord()) {
+  <div class="modal-overlay open" (click)="showDeleteModal.set(false)">
+    <div class="modal modal-sm" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">Delete Record</div>
+        <button class="modal-close" (click)="showDeleteModal.set(false)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align:center;padding:28px;">
+        <div class="confirm-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#E8344A" stroke-width="2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="#E8344A" stroke-width="2"/></svg></div>
+        <div class="confirm-title">Delete this record?</div>
+        <div class="confirm-text">Record <strong>{{ selectedRecord()!.id }}</strong> – {{ selectedRecord()!.name }} will be permanently deleted.</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" (click)="showDeleteModal.set(false)">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+}

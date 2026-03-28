@@ -1,0 +1,247 @@
+<!-- PAGE HEADER -->
+<div class="page-header-row">
+  <div class="page-title-block">
+    <h2>Doctor Registry</h2>
+    <p>{{ filteredDoctors.length }} physicians registered on the platform</p>
+  </div>
+  <button class="btn btn-primary" (click)="showAddModal.set(true)">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+    Add New Doctor
+  </button>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-search">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="#7A8BB0" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="#7A8BB0" stroke-width="2" stroke-linecap="round"/></svg>
+    <input placeholder="Search doctors…" [value]="searchQuery()" (input)="searchQuery.set($any($event.target).value)"/>
+  </div>
+  <div class="dropdown-wrap">
+    <button class="dropdown-btn">
+      Specialization
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2"/></svg>
+    </button>
+  </div>
+  <div class="dropdown-wrap">
+    <button class="dropdown-btn">
+      Status
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- REGISTRY TABLE -->
+<div class="registry-card">
+  <div class="registry-table-wrap">
+    <table class="registry-table">
+      <thead>
+        <tr>
+          <th>Doctor</th>
+          <th>Specialization</th>
+          <th>Hospital(s)</th>
+          <th>Cases</th>
+          <th>Rating</th>
+          <th>Status</th>
+          <th>Joined</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (doc of filteredDoctors; track doc.id) {
+          <tr>
+            <td>
+              <div class="doc-cell">
+                <div class="doc-av" [style.background]="doc.avatarColor">{{ doc.avatarInitials }}</div>
+                <div>
+                  <span class="doc-nm">{{ doc.name }}</span>
+                  <span class="doc-em">{{ doc.email }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              @for (spec of doc.specializations; track spec) {
+                <span class="spec-tag">{{ spec }}</span>
+              }
+            </td>
+            <td style="font-size:12.5px;color:var(--muted);">{{ doc.hospitals.join(', ') }}</td>
+            <td style="font-weight:700;color:var(--navy);">{{ doc.cases }}</td>
+            <td>
+              <span style="display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                {{ doc.rating }}
+              </span>
+            </td>
+            <td><span class="badge" [ngClass]="getStatusClass(doc.status)">{{ doc.status }}</span></td>
+            <td style="font-size:12.5px;color:var(--muted);">{{ doc.joined }}</td>
+            <td>
+              <button class="action-btn" (click)="openView(doc)" title="View">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="var(--muted)" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="var(--muted)" stroke-width="2"/></svg>
+              </button>
+              <button class="action-btn" (click)="openDelete(doc)" title="Remove">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="var(--rose)" stroke-width="2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="var(--rose)" stroke-width="2"/></svg>
+              </button>
+            </td>
+          </tr>
+        }
+        @empty {
+          <tr><td colspan="8"><div class="empty-state"><h3>No doctors found</h3><p>Try adjusting your search.</p></div></td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="table-footer">
+    <span class="table-footer-info">Showing {{ filteredDoctors.length }} of {{ doctors.length }} doctors</span>
+    <div class="pagination">
+      <button class="page-btn">&#8249;</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">&#8250;</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADD DOCTOR MODAL ═══ -->
+@if (showAddModal()) {
+  <div class="modal-overlay open" (click)="showAddModal.set(false)">
+    <div class="modal modal-lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Register New Doctor</div>
+          <div class="modal-sub">Fill in the physician's details below</div>
+        </div>
+        <button class="modal-close" (click)="showAddModal.set(false)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="avatar-upload-wrap">
+          <div class="avatar-upload">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#7A8BB0" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="#7A8BB0" stroke-width="2"/></svg>
+            <input type="file" accept="image/*"/>
+          </div>
+          <div class="avatar-meta">
+            <strong>Upload Profile Photo</strong>
+            JPG, PNG or WEBP. Max 2MB.
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input class="form-input" placeholder="Dr. Full Name" [(ngModel)]="newDoctor.name"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address *</label>
+            <input class="form-input" type="email" placeholder="doctor@example.com" [(ngModel)]="newDoctor.email"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input class="form-input" placeholder="+92-300-0000000" [(ngModel)]="newDoctor.phone"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">PMDC Registration No.</label>
+            <input class="form-input" placeholder="PMDC-XXXXX" [(ngModel)]="newDoctor.pmdc"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Specializations (press Enter to add)</label>
+          <div class="tag-wrap">
+            @for (tag of newDoctor.specializations; track tag) {
+              <span class="tag">{{ tag }} <button type="button" (click)="removeTag(tag)">×</button></span>
+            }
+            <input class="tag-input-field" placeholder="e.g. Cardiology" [(ngModel)]="tagInput" (keydown)="addTag($event)"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Affiliated Hospitals</label>
+          <div class="hospital-list-modal">
+            @for (h of newDoctor.hospitals; track $index; let i = $index) {
+              <div class="hospital-row">
+                <div><label class="form-label">Hospital name</label><input class="form-input" placeholder="e.g. Aga Khan" [(ngModel)]="h.name"/></div>
+                <div><label class="form-label">City</label><input class="form-input" placeholder="e.g. Lahore" [(ngModel)]="h.city"/></div>
+                <button type="button" class="btn-remove-row" (click)="removeHospitalRow(i)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+            }
+          </div>
+          <button type="button" class="btn-add-row" (click)="addHospitalRow()">+ Add another hospital</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" (click)="showAddModal.set(false)">Cancel</button>
+        <button class="btn btn-primary" (click)="submitAddDoctor()">Register Doctor</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ═══ VIEW DOCTOR MODAL ═══ -->
+@if (showViewModal() && selectedDoctor()) {
+  <div class="modal-overlay open" (click)="showViewModal.set(false)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div class="doc-av-lg" [style.background]="selectedDoctor()!.avatarColor">{{ selectedDoctor()!.avatarInitials }}</div>
+          <div>
+            <div class="modal-title">{{ selectedDoctor()!.name }}</div>
+            <div class="modal-sub">{{ selectedDoctor()!.email }}</div>
+          </div>
+        </div>
+        <button class="modal-close" (click)="showViewModal.set(false)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="view-grid">
+          <div class="view-field"><span class="view-label">PMDC No.</span><span class="view-val">{{ selectedDoctor()!.pmdc }}</span></div>
+          <div class="view-field"><span class="view-label">Phone</span><span class="view-val">{{ selectedDoctor()!.phone }}</span></div>
+          <div class="view-field"><span class="view-label">Cases</span><span class="view-val" style="font-weight:700;">{{ selectedDoctor()!.cases }}</span></div>
+          <div class="view-field"><span class="view-label">Rating</span><span class="view-val" style="font-weight:700;">⭐ {{ selectedDoctor()!.rating }}</span></div>
+          <div class="view-field"><span class="view-label">Status</span><span class="badge" [ngClass]="getStatusClass(selectedDoctor()!.status)">{{ selectedDoctor()!.status }}</span></div>
+          <div class="view-field"><span class="view-label">Joined</span><span class="view-val">{{ selectedDoctor()!.joined }}</span></div>
+        </div>
+        <div style="margin-top:16px;">
+          <span class="view-label">Specializations</span>
+          <div style="margin-top:8px;">
+            @for (s of selectedDoctor()!.specializations; track s) {
+              <span class="spec-tag">{{ s }}</span>
+            }
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <span class="view-label">Affiliated Hospitals</span>
+          <div style="margin-top:8px;font-size:13px;color:var(--text);">{{ selectedDoctor()!.hospitals.join(' · ') }}</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" (click)="showViewModal.set(false)">Close</button>
+        <button class="btn btn-primary">Edit Profile</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ═══ DELETE CONFIRM MODAL ═══ -->
+@if (showDeleteModal() && selectedDoctor()) {
+  <div class="modal-overlay open" (click)="showDeleteModal.set(false)">
+    <div class="modal modal-sm" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div><div class="modal-title">Remove Doctor</div></div>
+        <button class="modal-close" (click)="showDeleteModal.set(false)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align:center;padding:28px;">
+        <div class="confirm-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#E8344A" stroke-width="2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="#E8344A" stroke-width="2"/></svg>
+        </div>
+        <div class="confirm-title">Are you sure?</div>
+        <div class="confirm-text">This will permanently remove <strong>{{ selectedDoctor()!.name }}</strong> from the platform. This action cannot be undone.</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" (click)="showDeleteModal.set(false)">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmDelete()">Yes, Remove Doctor</button>
+      </div>
+    </div>
+  </div>
+}

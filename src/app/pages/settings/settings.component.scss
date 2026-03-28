@@ -1,0 +1,59 @@
+.settings-layout { display: grid; grid-template-columns: 220px 1fr; gap: 24px; }
+
+.settings-nav { background: var(--card); border-radius: 16px; border: 1px solid var(--border); padding: 8px; height: fit-content; }
+.settings-nav-item {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 11px 14px; border-radius: 10px;
+  font-size: 13.5px; font-weight: 500; color: var(--muted);
+  background: none; border: none; cursor: pointer; text-align: left;
+  font-family: 'DM Sans'; transition: all 0.15s;
+  &.active { background: var(--navy); color: #fff; font-weight: 600; }
+  &:hover:not(.active) { background: var(--bg); color: var(--navy); }
+}
+
+.settings-content {}
+
+/* Toggle Switch */
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 0; border-bottom: 1px solid var(--border);
+  &:last-of-type { border-bottom: none; }
+}
+
+.toggle-switch {
+  position: relative; display: inline-block; width: 44px; height: 24px; cursor: pointer; flex-shrink: 0;
+  input { opacity: 0; width: 0; height: 0;
+    &:checked + .toggle-track { background: var(--blue); }
+    &:checked + .toggle-track::after { transform: translateX(20px); }
+  }
+}
+.toggle-track {
+  position: absolute; inset: 0; background: var(--border); border-radius: 24px; transition: background 0.2s;
+  &::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.15); transition: transform 0.2s; }
+}
+
+/* Permission rows */
+.permission-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 0; border-bottom: 1px solid var(--border);
+  &:last-child { border-bottom: none; }
+}
+.perm-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* Integration rows */
+.integration-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px; border-radius: 12px; border: 1px solid var(--border);
+  background: var(--bg); transition: border-color 0.15s;
+  &:hover { border-color: var(--blue); }
+}
+.integ-ico { width: 40px; height: 40px; border-radius: 10px; background: #EEF2FF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* Danger zone */
+.danger-card { border-color: rgba(232,52,74,0.25); }
+.danger-row {
+  display: flex; align-items: center; gap: 20px;
+  padding: 16px; border-radius: 12px; border: 1px solid rgba(232,52,74,0.15);
+  background: rgba(232,52,74,0.02); transition: background 0.15s;
+  &:hover { background: rgba(232,52,74,0.04); }
+}

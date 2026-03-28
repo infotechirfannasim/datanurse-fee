@@ -1,0 +1,127 @@
+<!-- HERO -->
+<div class="profile-hero">
+  <div class="profile-av-lg">SA</div>
+  <div class="profile-hero-info">
+    <span class="profile-hero-name">{{ profile.name }}</span>
+    <span class="profile-hero-role">{{ profile.role }} · {{ profile.department }}</span>
+    <span class="profile-hero-sub">Member since {{ profile.joined }}</span>
+  </div>
+  <div class="profile-hero-actions">
+    <button class="wb-btn wb-btn-primary" (click)="activeTab.set('personal')">Edit Profile</button>
+    <button class="wb-btn wb-btn-outline">Share Profile</button>
+  </div>
+</div>
+
+<!-- STATS ROW -->
+<div class="profile-stats">
+  <div class="profile-stat"><span class="ps-val">284</span><span class="ps-lbl">Doctors Managed</span></div>
+  <div class="profile-stat"><span class="ps-val">1,847</span><span class="ps-lbl">Cases Overseen</span></div>
+  <div class="profile-stat"><span class="ps-val">48</span><span class="ps-lbl">Reports Generated</span></div>
+  <div class="profile-stat"><span class="ps-val">99.8%</span><span class="ps-lbl">Uptime</span></div>
+</div>
+
+<!-- TABS -->
+<div class="tab-bar" style="margin-bottom:24px;">
+  <button class="tab-btn" [class.active]="activeTab()==='personal'"  (click)="activeTab.set('personal')">Personal Info</button>
+  <button class="tab-btn" [class.active]="activeTab()==='security'"  (click)="activeTab.set('security')">Security</button>
+  <button class="tab-btn" [class.active]="activeTab()==='activity'"  (click)="activeTab.set('activity')">Activity Log</button>
+</div>
+
+<!-- PERSONAL TAB -->
+@if (activeTab() === 'personal') {
+  <div class="profile-grid">
+    <div class="section-card">
+      <div class="section-header"><div class="section-title">Personal Information</div></div>
+      <div style="padding:24px;">
+        <div class="avatar-upload-wrap">
+          <div class="avatar-upload">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#7A8BB0" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="#7A8BB0" stroke-width="2"/></svg>
+            <input type="file" accept="image/*"/>
+          </div>
+          <div class="avatar-meta">
+            <strong>Change Profile Photo</strong>
+            JPG, PNG or WEBP. Max 2MB.
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" [(ngModel)]="profile.name"/></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" [(ngModel)]="profile.email"/></div>
+          <div class="form-group"><label class="form-label">Phone</label><input class="form-input" [(ngModel)]="profile.phone"/></div>
+          <div class="form-group"><label class="form-label">Location</label><input class="form-input" [(ngModel)]="profile.location"/></div>
+          <div class="form-group"><label class="form-label">Role</label><input class="form-input" [value]="profile.role" disabled/></div>
+          <div class="form-group"><label class="form-label">Department</label><input class="form-input" [(ngModel)]="profile.department"/></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bio</label>
+          <textarea class="form-input" rows="4" [(ngModel)]="profile.bio" style="resize:vertical;"></textarea>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px;">
+          <button class="btn btn-ghost">Discard</button>
+          <button class="btn btn-primary" (click)="saveProfile()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Info -->
+    <div class="section-card" style="height:fit-content;">
+      <div class="section-header"><div class="section-title">Account Info</div></div>
+      <div style="padding:20px 22px;display:flex;flex-direction:column;gap:14px;">
+        @for (item of [
+          {label:'User ID', val:'ADM-001'},
+          {label:'Role', val:profile.role},
+          {label:'Department', val:profile.department},
+          {label:'Member Since', val:profile.joined},
+          {label:'Last Login', val:'Today, 9:00 AM'},
+          {label:'Status', val:'Active'}
+        ]; track item.label) {
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border);">
+            <span style="font-size:12.5px;color:var(--muted);font-weight:500;">{{ item.label }}</span>
+            <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ item.val }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<!-- SECURITY TAB -->
+@if (activeTab() === 'security') {
+  <div class="section-card" style="max-width:560px;">
+    <div class="section-header"><div class="section-title">Change Password</div></div>
+    <div style="padding:24px;">
+      <div class="form-group"><label class="form-label">Current Password</label><input class="form-input" type="password" placeholder="••••••••" [(ngModel)]="password.current"/></div>
+      <div class="form-group"><label class="form-label">New Password</label><input class="form-input" type="password" placeholder="••••••••" [(ngModel)]="password.newPwd"/></div>
+      <div class="form-group"><label class="form-label">Confirm New Password</label><input class="form-input" type="password" placeholder="••••••••" [(ngModel)]="password.confirm"/></div>
+      <button class="btn btn-primary" (click)="changePassword()">Update Password</button>
+    </div>
+  </div>
+
+  <div class="section-card" style="max-width:560px;margin-top:20px;">
+    <div class="section-header"><div class="section-title">Two-Factor Authentication</div></div>
+    <div style="padding:24px;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:14px;font-weight:600;color:var(--navy);">Authenticator App</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:3px;">Use Google Authenticator or Authy</div>
+      </div>
+      <button class="btn btn-ghost btn-sm">Enable 2FA</button>
+    </div>
+  </div>
+}
+
+<!-- ACTIVITY TAB -->
+@if (activeTab() === 'activity') {
+  <div class="section-card">
+    <div class="section-header"><div class="section-title">Recent Activity</div></div>
+    <div style="padding:8px 0;">
+      @for (a of recentActivity; track a.action) {
+        <div class="activity-item">
+          <div class="activity-dot" [style.background]="getActivityColor(a.type)"></div>
+          <div style="flex:1;">
+            <div style="font-size:13.5px;color:var(--navy);font-weight:500;">{{ a.action }}</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px;">{{ a.time }}</div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

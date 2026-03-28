@@ -1,0 +1,79 @@
+<div class="page-header-row">
+  <div class="page-title-block">
+    <h2>Cases</h2>
+    <p>{{ filteredCases.length }} patient records</p>
+  </div>
+  <button class="btn btn-primary">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="white" stroke-width="2"/><line x1="5" y1="12" x2="19" y2="12" stroke="white" stroke-width="2"/></svg>
+    New Case
+  </button>
+</div>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab-btn" [class.active]="activeTab()==='all'"      (click)="activeTab.set('all')">All Cases</button>
+  <button class="tab-btn" [class.active]="activeTab()==='active'"   (click)="activeTab.set('active')">Active</button>
+  <button class="tab-btn" [class.active]="activeTab()==='pending'"  (click)="activeTab.set('pending')">Pending</button>
+  <button class="tab-btn" [class.active]="activeTab()==='critical'" (click)="activeTab.set('critical')">Critical</button>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-search">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="#7A8BB0" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="#7A8BB0" stroke-width="2" stroke-linecap="round"/></svg>
+    <input placeholder="Search cases…" [value]="searchQuery()" (input)="searchQuery.set($any($event.target).value)"/>
+  </div>
+</div>
+
+<div class="registry-card">
+  <div class="registry-table-wrap">
+    <table class="registry-table">
+      <thead>
+        <tr>
+          <th>Patient</th>
+          <th>Case ID</th>
+          <th>Doctor</th>
+          <th>Diagnosis</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of filteredCases; track c.id) {
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="p-avatar" [style.background]="c.avatarColor">{{ c.avatarInitials }}</div>
+                <span style="font-weight:600;color:var(--navy);">{{ c.patientName }}</span>
+              </div>
+            </td>
+            <td style="font-size:12px;color:var(--muted);font-family:monospace;">{{ c.patientId }}</td>
+            <td>{{ c.doctor }}</td>
+            <td>{{ c.diagnosis }}</td>
+            <td><span class="badge" [ngClass]="getPriorityClass(c.priority)">{{ c.priority }}</span></td>
+            <td><span class="badge" [ngClass]="getStatusClass(c.status)">{{ c.status }}</span></td>
+            <td style="font-size:12.5px;color:var(--muted);">{{ c.date }}</td>
+            <td>
+              <button class="action-btn" (click)="onAction('View', c)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="var(--muted)" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="var(--muted)" stroke-width="2"/></svg>
+              </button>
+            </td>
+          </tr>
+        }
+        @empty {
+          <tr><td colspan="8"><div class="empty-state"><h3>No cases found</h3><p>Try a different filter.</p></div></td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="table-footer">
+    <span class="table-footer-info">Showing {{ filteredCases.length }} of {{ cases.length }} cases</span>
+    <div class="pagination">
+      <button class="page-btn">&#8249;</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">&#8250;</button>
+    </div>
+  </div>
+</div>

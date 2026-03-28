@@ -1,0 +1,200 @@
+<div class="page-header-row">
+  <div class="page-title-block">
+    <h2>Settings</h2>
+    <p>Platform configuration and preferences</p>
+  </div>
+</div>
+
+<div class="settings-layout">
+  <!-- Sidebar Nav -->
+  <nav class="settings-nav">
+    @for (item of [
+      {key:'general',       label:'General',       icon:'⚙️'},
+      {key:'notifications', label:'Notifications',  icon:'🔔'},
+      {key:'permissions',   label:'Permissions',    icon:'🔒'},
+      {key:'integrations',  label:'Integrations',   icon:'🔗'},
+      {key:'danger',        label:'Danger Zone',    icon:'⚠️'}
+    ]; track item.key) {
+      <button class="settings-nav-item" [class.active]="activeSection()===item.key" (click)="activeSection.set($any(item.key))">
+        <span>{{ item.icon }}</span>
+        <span>{{ item.label }}</span>
+      </button>
+    }
+  </nav>
+
+  <!-- Content -->
+  <div class="settings-content">
+
+    <!-- GENERAL -->
+    @if (activeSection() === 'general') {
+      <div class="section-card">
+        <div class="section-header"><div class="section-title">General Settings</div></div>
+        <div style="padding:24px;">
+          <div class="form-grid-2">
+            <div class="form-group"><label class="form-label">Platform Name</label><input class="form-input" [(ngModel)]="general.platformName"/></div>
+            <div class="form-group"><label class="form-label">Timezone</label>
+              <select class="form-input" [(ngModel)]="general.timezone">
+                @for (tz of timezones; track tz) { <option [value]="tz">{{ tz }}</option> }
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Language</label>
+              <select class="form-input" [(ngModel)]="general.language">
+                @for (l of languages; track l) { <option [value]="l">{{ l }}</option> }
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Date Format</label>
+              <select class="form-input" [(ngModel)]="general.dateFormat">
+                @for (d of dateFormats; track d) { <option [value]="d">{{ d }}</option> }
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Currency</label><input class="form-input" [(ngModel)]="general.currency"/></div>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--navy);">Maintenance Mode</div>
+              <div style="font-size:12.5px;color:var(--muted);margin-top:2px;">Temporarily disable access for non-admins</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" [(ngModel)]="general.maintenanceMode"/>
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:24px;flex-wrap:wrap;">
+            <button class="btn btn-primary" (click)="saveGeneral()">Save Changes</button>
+            <button class="btn btn-ghost" (click)="clearCache()">Clear Cache</button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- NOTIFICATIONS -->
+    @if (activeSection() === 'notifications') {
+      <div class="section-card">
+        <div class="section-header"><div class="section-title">Notification Preferences</div></div>
+        <div style="padding:24px;">
+          <div style="font-size:12px;font-weight:600;color:var(--label);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:16px;">Email Notifications</div>
+          @for (item of [
+            {key:'emailNewDoctor', label:'New doctor registered',    sub:'Notify when a physician registers'},
+            {key:'emailNewCase',   label:'New case submitted',       sub:'Notify when a case is created'},
+            {key:'emailReports',   label:'Report generated',         sub:'Notify on report exports'},
+            {key:'emailSystem',    label:'System alerts',            sub:'Critical system notifications'}
+          ]; track item.key) {
+            <div class="toggle-row">
+              <div>
+                <div style="font-size:13.5px;font-weight:500;color:var(--navy);">{{ item.label }}</div>
+                <div style="font-size:12px;color:var(--muted);">{{ item.sub }}</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notifications[$any(item.key)]"/>
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+          }
+          <div style="font-size:12px;font-weight:600;color:var(--label);text-transform:uppercase;letter-spacing:0.08em;margin:24px 0 16px;">Push Notifications</div>
+          @for (item of [
+            {key:'pushAll',      label:'All notifications', sub:'Receive all platform notifications'},
+            {key:'pushCritical', label:'Critical only',     sub:'Only urgent alerts and critical cases'}
+          ]; track item.key) {
+            <div class="toggle-row">
+              <div>
+                <div style="font-size:13.5px;font-weight:500;color:var(--navy);">{{ item.label }}</div>
+                <div style="font-size:12px;color:var(--muted);">{{ item.sub }}</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notifications[$any(item.key)]"/>
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+          }
+          <button class="btn btn-primary" style="margin-top:20px;" (click)="saveNotifications()">Save Preferences</button>
+        </div>
+      </div>
+    }
+
+    <!-- PERMISSIONS -->
+    @if (activeSection() === 'permissions') {
+      <div class="section-card">
+        <div class="section-header"><div class="section-title">Role &amp; Permissions</div></div>
+        <div style="padding:24px;">
+          @for (role of [
+            {name:'Super Admin', desc:'Full platform access', color:'var(--navy)', users:1},
+            {name:'Admin',       desc:'Manage doctors and cases', color:'var(--blue)', users:3},
+            {name:'Doctor',      desc:'Submit and view own cases', color:'var(--teal)', users:284},
+            {name:'Viewer',      desc:'Read-only access', color:'var(--muted)', users:12}
+          ]; track role.name) {
+            <div class="permission-row">
+              <div class="perm-dot" [style.background]="role.color"></div>
+              <div style="flex:1;">
+                <div style="font-size:14px;font-weight:600;color:var(--navy);">{{ role.name }}</div>
+                <div style="font-size:12px;color:var(--muted);">{{ role.desc }}</div>
+              </div>
+              <span class="badge badge-gray">{{ role.users }} user{{ role.users !== 1 ? 's' : '' }}</span>
+              <button class="btn btn-ghost btn-sm">Edit</button>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- INTEGRATIONS -->
+    @if (activeSection() === 'integrations') {
+      <div class="section-card">
+        <div class="section-header"><div class="section-title">Integrations</div></div>
+        <div style="padding:24px;display:flex;flex-direction:column;gap:16px;">
+          @for (integ of [
+            {name:'PMDC Registry API',   desc:'Verify doctor credentials automatically', connected:true},
+            {name:'HEC Data Services',   desc:'Higher Education Commission records', connected:false},
+            {name:'SMS Gateway',         desc:'Send notifications via SMS to doctors', connected:true},
+            {name:'Email Service (SES)', desc:'Amazon SES for email delivery', connected:true},
+            {name:'Cloud Storage (S3)',  desc:'AWS S3 for file and report storage', connected:false},
+          ]; track integ.name) {
+            <div class="integration-row">
+              <div class="integ-ico">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="var(--blue)" stroke-width="2"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="var(--blue)" stroke-width="2"/></svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-size:14px;font-weight:600;color:var(--navy);">{{ integ.name }}</div>
+                <div style="font-size:12px;color:var(--muted);">{{ integ.desc }}</div>
+              </div>
+              @if (integ.connected) {
+                <span class="badge badge-green">Connected</span>
+                <button class="btn btn-ghost btn-sm">Configure</button>
+              } @else {
+                <span class="badge badge-gray">Not connected</span>
+                <button class="btn btn-primary btn-sm">Connect</button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- DANGER ZONE -->
+    @if (activeSection() === 'danger') {
+      <div class="section-card danger-card">
+        <div class="section-header" style="border-color:rgba(232,52,74,0.2);">
+          <div class="section-title" style="color:var(--rose);">⚠️ Danger Zone</div>
+        </div>
+        <div style="padding:24px;display:flex;flex-direction:column;gap:20px;">
+          @for (action of [
+            {label:'Reset All Settings',    desc:'Restore all settings to factory defaults. This cannot be undone.', btn:'Reset Settings'},
+            {label:'Purge All Cases',       desc:'Permanently delete all patient case records from the platform.', btn:'Purge Cases'},
+            {label:'Delete All Doctors',    desc:'Remove all registered doctors and their associated data.', btn:'Delete Doctors'},
+            {label:'Wipe Platform Data',    desc:'Completely erase all platform data. This is irreversible.', btn:'Wipe Data'},
+          ]; track action.label) {
+            <div class="danger-row">
+              <div style="flex:1;">
+                <div style="font-size:14px;font-weight:600;color:var(--navy);">{{ action.label }}</div>
+                <div style="font-size:12.5px;color:var(--muted);margin-top:3px;">{{ action.desc }}</div>
+              </div>
+              <button class="btn btn-danger btn-sm" (click)="dangerAction(action.label)">{{ action.btn }}</button>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+  </div>
+</div>
