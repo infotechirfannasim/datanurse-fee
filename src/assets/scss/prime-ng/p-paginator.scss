@@ -1,0 +1,46 @@
+.pagination-nav {
+
+    .p-paginator {
+        padding: 0.25rem 0.5rem;
+
+        .p-paginator-first,
+        .p-paginator-prev,
+        .p-paginator-next,
+        .p-paginator-last {
+            min-width: initial;
+            width: 2rem;
+            height: initial;
+            padding: 0.25rem;
+            border-radius: 0.5rem;
+        }
+
+        .p-paginator-pages .p-paginator-page {
+            min-width: initial;
+            width: 2rem;
+            height: initial;
+            padding: 0.25rem;
+            border-radius: 0.5rem;
+
+            &.p-highlight {
+                background-color: var(--color-primary-50);
+                color: var(--color-primary-900);
+            }
+
+        }
+
+        .p-dropdown {
+            height: initial;
+        }
+
+        .p-paginator-current {
+            height: initial;
+            border-radius: 0.5rem;
+        }
+
+        .p-icon-wrapper {
+            display: flex;
+        }
+
+    }
+
+}

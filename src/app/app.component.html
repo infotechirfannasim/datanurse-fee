@@ -1,3 +1,4 @@
+@if (isLoggedIn) {
 <app-sidebar></app-sidebar>
 <div class="main">
   <app-topbar></app-topbar>
@@ -5,4 +6,9 @@
     <router-outlet></router-outlet>
   </div>
 </div>
+} @else {
+    <div class="content-login">
+        <router-outlet></router-outlet>
+    </div>
+}
 <app-toast></app-toast>

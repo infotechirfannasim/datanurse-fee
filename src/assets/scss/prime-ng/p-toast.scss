@@ -1,0 +1,85 @@
+@import "mixins/mixin-breakpoints";
+
+.p-toast {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    @media screen and (max-width: 767px) {
+        max-width: calc(100% - 20px * 2);
+    }
+
+    .p-toast-message {
+        border-radius: 0.5rem;
+        border: 1px solid transparent;
+
+        .p-toast-message-content {
+            padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+            gap: 0;
+            align-items: center;
+
+            .p-toast-message-icon {
+            }
+
+            .p-toast-summary {
+                font-weight: 700;
+
+                @include md {
+                    font-size: 1rem;
+                }
+
+            }
+
+            .p-toast-detail {
+                font-size: 0.75rem;
+                color: var(--bg-color-black);
+
+                @include md {
+                    font-size: 0.875rem;
+                    margin: 0;
+                }
+
+            }
+
+            .p-toast-icon-close {
+                background-color: transparent;
+                border: none;
+                padding: 0;
+            }
+
+        }
+
+        &.p-toast-message-info {
+            background-color: var(--color-secondary-50);
+        }
+
+        &.p-toast-message-error {
+            border-color: var(--color-danger-100);
+            border-left-color: var(--color-danger-900);
+            border-width: 1px 1px 1px 4px;
+
+            .p-toast-summary,
+            .p-toast-detail {
+                color: var(--color-danger-900);
+            }
+
+            background-color: var(--color-danger-50);
+        }
+
+        &.p-toast-message-success {
+            border-color: var(--color-primary-100);
+            border-left-color: var(--color-primary-500);
+            border-width: 1px 1px 1px 4px;
+            background-color: var(--color-primary-50);
+        }
+
+        &.p-toast-message-warning {
+            border-color: var(--color-warning-100);
+            border-left-color: var(--color-warning-900);
+            border-width: 1px 1px 1px 4px;
+            background-color: var(--color-warning-100);
+        }
+
+    }
+
+}

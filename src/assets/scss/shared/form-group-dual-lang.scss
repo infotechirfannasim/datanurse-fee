@@ -1,0 +1,29 @@
+.form-group-dual-lang {
+
+    .form-label {
+        color: var(--color-black);
+        font-style: normal;
+        line-height: normal;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        //white-space: nowrap;
+        gap: 1rem;
+
+        .label-en {
+            font-size: 0.75rem;
+            font-style: normal;
+            line-height: normal;
+        }
+
+        .label-ur {
+            @include font-ur();
+            font-size: 0.625rem;
+            line-height: 1.5;
+            text-align: right;
+        }
+
+    }
+
+
+}

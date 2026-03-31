@@ -1,0 +1,67 @@
+@use "sass:map";
+
+@import "maps/breakpoints";
+
+@mixin sm {
+
+    @media screen and (max-width: #{map.get($breakpoints, 'sm')}px) {
+        @content
+    }
+
+}
+
+@mixin md {
+
+    @media screen and (max-width: #{map.get($breakpoints, 'md')}px) {
+        @content
+    }
+
+}
+
+@mixin lg {
+
+    @media screen and (max-width: #{map.get($breakpoints, 'lg')}px) {
+        @content
+    }
+
+}
+
+@mixin xl {
+
+    @media screen and (max-width: #{map.get($breakpoints, 'xl')}px) {
+        @content
+    }
+
+}
+
+@mixin xxl {
+
+    @media screen and (max-width: #{map.get($breakpoints, 'xxl')}px) {
+        @content
+    }
+
+}
+
+@mixin breakpoint($breakpoint: 0) {
+
+    @media screen and (max-width: #{$breakpoint}px) {
+        @content
+    }
+
+}
+
+@mixin min-max-breakpoint($min-width: 0, $max-width: 0) {
+
+    @media screen and (min-width: #{$min-width}px) and (max-width: #{$max-width}px) {
+        @content
+    }
+
+}
+
+@mixin pixel-ratio($pixel-ratio: 0) {
+
+    @media screen and (-webkit-device-pixel-ratio: $pixel-ratio) {
+        @content
+    }
+
+}

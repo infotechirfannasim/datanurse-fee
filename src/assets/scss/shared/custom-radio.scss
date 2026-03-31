@@ -1,0 +1,78 @@
+.custom-radio {
+    display: grid;
+    width: 100%;
+
+    fieldset {
+        border-color: var(--color-base-white-500) !important;
+    }
+
+    .form-group {
+
+        .form-control {
+            padding: calc(0.375rem + 1.5px / 2 + 2px) 0.5rem;
+            height: initial;
+            min-height: initial;
+            background-color: transparent;
+            box-shadow: none;
+            border: none;
+
+            p-radiobutton .p-radiobutton .p-radiobutton-box {
+                width: 1rem;
+                height: 1rem;
+            }
+
+            p-radiobutton .p-radiobutton .p-radiobutton-box:before {
+                width: 0.5rem;
+                height: 0.5rem;
+            }
+
+            label {
+                color: rgba(var(--color-black-rgb), 50%);
+            }
+
+        }
+
+        > label {
+            color: rgba(var(--color-black-rgb), 50%) !important;
+        }
+
+    }
+
+    &:has(.p-highlight) {
+
+        fieldset {
+            border-color: var(--color-primary) !important;
+        }
+
+        .form-group {
+
+            .form-control {
+
+                label {
+                    color: var(--color-primary);
+                }
+
+            }
+
+            > label {
+                color: var(--color-primary) !important;
+            }
+
+        }
+
+    }
+
+    .p-disabled {
+        opacity: 1;
+    }
+
+    fieldset:has(:disabled) {
+        border-color: var(--color-base-white-800) !important;
+
+        .form-group > label {
+            color: var(--color-base-white-800) !important;
+        }
+
+    }
+
+}

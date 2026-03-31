@@ -1,0 +1,104 @@
+.p-tieredmenu {
+    border: 1px solid rgb(227, 227, 227);
+    background-color: var(--color-base-white-50);
+    backdrop-filter: blur(15px);
+    box-shadow: 0px 51px 14px 0px rgba(0, 0, 0, 0.00), 0px 33px 13px 0px rgba(0, 0, 0, 0.02), 0px 18px 11px 0px rgba(0, 0, 0, 0.08), 0px 8px 8px 0px rgba(0, 0, 0, 0.13), 0px 2px 4px 0px rgba(0, 0, 0, 0.15);
+    padding: 0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    min-width: 12.5rem;
+
+    .p-tieredmenu-root-list {
+        margin: 0;
+        padding: 0;
+        min-width: 200px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        background-color: transparent;
+        border-radius: var(--tiered-menu-base-border-radius);
+
+        .p-menuitem {
+            padding: 0.125rem;
+            width: calc(100% - 0.125rem);
+
+            &:not(.p-highlight) {
+
+                &:not(.p-disabled) {
+
+                    &.p-focus {
+
+                        > .p-menuitem-content {
+                            background-color: transparent;
+                        }
+
+                    }
+
+                }
+
+            }
+
+            &.status {
+
+                &.active {
+
+                    .p-menuitem-icon,
+                    .p-menuitem-link {
+                        color: var(--color-base-white-100);
+                        background-color: var(--color-primary-100);
+                    }
+
+                }
+
+            }
+
+            .p-menuitem-link {
+                padding: 0 0.5rem;
+                border-radius: 0.375rem;
+                text-decoration: none;
+                display: flex;
+                justify-content: flex-start;
+                gap: 0.5rem;
+                transition: all .15s ease-in-out;
+                font-weight: 400;
+
+                .p-menuitem-icon {
+                    font-size: 1.25rem;
+                    color: var(--color-black-00);
+
+                    @include breakpoint(1440) {
+                        font-size: 1rem;
+                    }
+
+                    @include pixel-ratio(1.25) {
+                        font-size: 1rem;
+                    }
+
+                }
+
+                .p-menuitem-text {
+                    padding: 0.625rem 0;
+                    color: var(--color-black-00);
+                    white-space: nowrap;
+                }
+
+                &:hover {
+                    background-color: var(--color-primary-100);
+
+                    .p-menuitem-text {
+                        color: var(--color-black);
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+.p-tieredmenu-overlay {
+    width: initial;
+}

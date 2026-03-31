@@ -1,6 +1,4 @@
-/* ═══════════════════════════════════════════════
-   DATANURSE – GLOBAL STYLES
-   ═══════════════════════════════════════════════ */
+@import "global";
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -247,3 +245,4 @@ select.form-input { cursor: pointer; }
 }
 .filter-search input { border: none; background: none; outline: none; font-size: 13px; color: var(--text); font-family: 'DM Sans'; width: 100%; }
 .filter-search input::placeholder { color: var(--muted); }
+

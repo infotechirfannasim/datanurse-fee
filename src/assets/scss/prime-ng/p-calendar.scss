@@ -1,0 +1,403 @@
+p-calendar {
+    display: grid;
+    line-height: 1;
+
+    .p-calendar {
+        align-items: center;
+
+        timesicon {
+            position: relative;
+            right: 0.5rem;
+            font-size: 0.75rem;
+            display: flex;
+
+            svg {
+                position: relative;
+                top: 0;
+                margin-top: 0;
+                right: 0;
+                color: red;
+                width: 0.75rem;
+                height: 0.75rem;
+            }
+
+        }
+
+        .p-inputtext {
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            outline: none;
+            padding-right: 0.75rem !important;
+            background-image: none !important;
+
+            &:focus {
+                border: none;
+                box-shadow: none !important;
+            }
+
+        }
+
+        &.calendar-dual-lang {
+
+            .p-inputtext {
+                border-radius: 4px;
+                background: var(--color-base-white-50);
+                border: 1px solid var(--color-base-white-600);
+                padding: calc(0.5rem - 2px) 0.5rem;
+                color: var(--color-primary);
+
+                &::placeholder {
+                    color: var(--color-base-white-500);
+                }
+
+                &::-moz-placeholder {
+                    color: var(--color-base-white-500);
+                }
+
+                &::-webkit-input-placeholder {
+                    color: var(--color-base-white-500);
+                }
+
+            }
+
+        }
+
+        &:has(:disabled) {
+
+            .p-inputtext {
+                background-color: var(--color-base-white-300);
+                border-color: var(--color-base-white-500);
+                color: var(--color-base-white-800);
+                cursor: not-allowed;
+                opacity: 1;
+
+                &::placeholder {
+                    color: var(--color-base-white-500);
+                }
+
+                &::-moz-placeholder {
+                    color: var(--color-base-white-500);
+                }
+
+                &::-webkit-input-placeholder {
+                    color: var(--color-base-white-500);
+                }
+
+            }
+
+        }
+
+    }
+
+    &.p-inputwrapper-filled {
+
+        .p-calendar {
+
+            .p-inputtext {
+                color: var(--color-primary);
+            }
+
+            &.calendar-dual-lang {
+
+                .p-inputtext {
+                    border-color: var(--color-primary);
+                }
+
+            }
+
+            &:has(:disabled) {
+
+                .p-inputtext {
+                    background-color: var(--color-base-white-300);
+                    border-color: var(--color-base-white-500);
+                    color: var(--color-base-white-800);
+                    cursor: not-allowed;
+                    opacity: 1;
+
+                    &::placeholder {
+                        color: var(--color-base-white-500);
+                    }
+
+                    &::-moz-placeholder {
+                        color: var(--color-base-white-500);
+                    }
+
+                    &::-webkit-input-placeholder {
+                        color: var(--color-base-white-500);
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+.p-datepicker:not(.p-datepicker-inline) {
+    padding: 0.125rem 0 0 0;
+    background-color: transparent;
+    box-shadow: none;
+
+    .p-datepicker-group-container {
+        min-width: 200px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        background-color: var(--color-base-white-50);
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--color-primary-100);
+        border-bottom: 2px solid var(--color-primary);
+
+        .p-datepicker-group {
+            padding: 0;
+
+            .p-datepicker-header {
+                padding: 0.125rem 0;
+                background-color: var(--color-primary-50);
+                border-bottom: 1px solid var(--color-primary-100);
+
+                button {
+                    padding: 0.25rem 1rem;
+                    border: none;
+                    background-color: transparent;
+                    color: var(--color-primary);
+                    border-radius: 0.5rem;
+                    box-shadow: none;
+                    line-height: 1.5;
+                    width: initial;
+                    height: initial;
+                }
+
+                .p-datepicker-title {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.25rem;
+                }
+
+            }
+
+            .p-datepicker-calendar-container {
+
+                .p-datepicker-calendar {
+                    font-size: var(--base-font-size);
+
+                    thead {
+
+                        tr {
+
+                            th {
+                                text-align: center;
+                                padding: 0.25rem;
+                                vertical-align: middle;
+                                color: var(--color-primary);
+
+                                span {
+                                    display: block;
+                                    margin: 0 auto;
+                                    padding: 0;
+                                    width: initial;
+                                    height: initial;
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    tbody {
+
+                        tr {
+
+                            td {
+                                padding: 0.25rem;
+
+                                span {
+
+                                    &:focus {
+                                        box-shadow: 0 0 0 0.2rem var(--color-primary-100);
+                                    }
+
+                                    &:not(.p-highlight) {
+
+                                        &:not(.p-disabled) {
+
+                                            &:focus {
+                                                box-shadow: 0 0 0 0.2rem var(--color-primary-100);
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                                .p-element {
+                                    padding: 0;
+                                    color: var(--color-black);
+                                    text-decoration: none;
+                                    gap: 1rem;
+                                    border-radius: 0.25rem;
+                                    text-align: center;
+                                    width: initial;
+                                    height: initial;
+
+                                    &:hover {
+                                        background-color: var(--color-primary-50);
+                                        color: var(--color-black);
+                                    }
+
+                                    &.p-highlight,
+                                    &.p-focus {
+                                        background-color: var(--color-primary);
+                                        color: var(--color-base-white-50);
+                                    }
+
+                                    &.p-disabled {
+                                        color: rgba(var(--color-black), 50%);
+                                        background-color: rgba(var(--color-primary-50), 20%);
+                                        cursor: no-drop;
+                                    }
+
+                                }
+
+                                .p-hidden-accessible {
+                                    display: none;
+                                }
+
+                                &.p-datepicker-today {
+
+                                    > span {
+                                        background-color: var(--color-primary-400);
+                                        color: var(--color-base-white-50);
+                                    }
+
+                                }
+
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+
+        }
+
+    }
+
+    &:has(.p-monthpicker),
+    &:has(.p-yearpicker) {
+
+        .p-datepicker-group-container {
+            border-radius: 0.5rem 0.5rem 0 0;
+            border-bottom: none;
+            box-shadow: none;
+        }
+
+        .p-yearpicker,
+        .p-monthpicker {
+            margin: 0;
+            padding: 0.125rem;
+            border-radius: 0 0 0.5rem 0.5rem;
+            background-color: var(--color-base-white-50);
+            border: 1px solid var(--color-primary-100);
+            border-top: none;
+            border-bottom: 2px solid var(--color-primary);
+        }
+
+    }
+
+    &:not(.p-disabled) {
+
+        .p-yearpicker,
+        .p-monthpicker {
+
+            .p-yearpicker-year,
+            .p-monthpicker-month {
+
+                &:not(.p-disabled) {
+
+                    &:not(.p-highlight) {
+
+                        &:hover {
+                            background-color: var(--color-primary-50);
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+.form-calendar-dual-lang {
+
+    &.ng-invalid.ng-touched {
+
+        .calendar-dual-lang {
+
+            .p-inputtext {
+                border-color: red;
+                color: red;
+                background-color: rgba(var(--color-danger-50-rgb), 30%);
+
+                &::placeholder {
+                    color: var(--color-danger-200);
+                }
+
+                &::-moz-placeholder {
+                    color: var(--color-danger-200);
+                }
+
+                &::-webkit-input-placeholder {
+                    color: var(--color-danger-200);
+                }
+
+            }
+
+        }
+
+    }
+
+    &.ng-valid.ng-dirty {
+
+        .p-calendar {
+
+            .p-inputtext {
+                color: var(--color-primary);
+            }
+
+            &.calendar-dual-lang {
+
+                .p-inputtext {
+                    border-color: var(--color-primary);
+                }
+
+            }
+
+        }
+
+        .form-label {
+            color: var(--color-primary);
+        }
+
+    }
+
+}
+

@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 
 export interface PageMeta {
   title: string;
@@ -8,6 +8,8 @@ export interface PageMeta {
 const PAGE_META: Record<string, PageMeta> = {
   dashboard:  { title: 'Dashboard',       breadcrumb: 'Overview' },
   doctors:    { title: 'Doctor Registry', breadcrumb: 'Physicians' },
+  users: {title: 'Users', breadcrumb: 'User Management'},
+  roles: {title: 'Roles', breadcrumb: 'User Management'},
   cases:      { title: 'Cases',           breadcrumb: 'Patient Records' },
   search:     { title: 'Search',          breadcrumb: 'Find Records' },
   reports:    { title: 'Reports',         breadcrumb: 'Analytics' },

@@ -1,0 +1,11 @@
+.http-progressbar {
+    position: fixed;
+    top: 0;
+    z-index: 9999999;
+    width: 100%;
+
+    .p-progressbar-value {
+        background-color: var(--color-primary);
+    }
+
+}

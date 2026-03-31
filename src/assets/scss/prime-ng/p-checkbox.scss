@@ -1,0 +1,70 @@
+.prime-ng-checkbox, p-tableheadercheckbox {
+    height: 100%;
+    display: flex;
+
+    p-checkbox {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.5rem;
+
+        .p-checkbox {
+
+            .p-hidden-accessible {
+
+                input[type="checkbox"] {
+                    display: none;
+                }
+
+            }
+
+            .p-checkbox-box {
+                width: 1.25rem;
+                height: 1.25rem;
+                background-color: var(--color-base-white-300);
+                border: 1px solid var(--color-base-white-500);
+                transition: all 0.125s ease-in-out;
+
+                &:before {
+                    content: "\2713";
+                    visibility: hidden;
+                    opacity: 0;
+                    pointer-events: none;
+                    transition: all 0.125s ease-in-out;
+                    color: var(--color-base-white-50);
+                }
+
+                &.p-highlight {
+                    border-color: var(--color-primary);
+                    background-color: var(--color-primary);
+
+                    &:before {
+                        visibility: visible;
+                        opacity: 1;
+                        color: var(--color-base-white-50);
+                    }
+
+                }
+
+                checkicon {
+                    display: none;
+                }
+
+            }
+
+        }
+
+        label {
+            cursor: pointer;
+            margin-left: 0;
+        }
+
+    }
+
+    &:has(.p-checkbox-disabled) {
+        * {
+            cursor: not-allowed;
+        }
+    }
+
+}

@@ -1,0 +1,72 @@
+.p-tooltip {
+    position: absolute;
+}
+
+.p-tooltip {
+    padding: 0 .25rem;
+
+    .p-tooltip-text {
+        background-color: var(--color-black);
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 400;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+        max-width: 300px
+    }
+
+    .p-tooltip-arrow {
+        scale: 2;
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-color: transparent;
+        border-style: solid;
+    }
+
+    &.p-tooltip-right {
+
+        .p-tooltip-arrow {
+            border-right-color: var(--color-black);
+        }
+
+        .p-tooltip-arrow {
+            top: 50%;
+            left: 0;
+            margin-top: -0.25rem;
+            border-width: 0.25em 0.25em 0.25em 0;
+        }
+
+    }
+
+    &.p-tooltip-left {
+
+        .p-tooltip-arrow {
+            border-left-color: var(--color-black);
+        }
+
+        .p-tooltip-arrow {
+            top: 50%;
+            right: 0;
+            margin-top: -0.25rem;
+            border-width: 0.25em 0 0.25em 0.25em;
+        }
+
+    }
+
+    &.p-tooltip-top {
+
+        .p-tooltip-arrow {
+            border-bottom-color: transparent;
+        }
+
+        .p-tooltip-arrow {
+            left: 50%;
+            bottom: 0;
+            margin-top: -0.25rem;
+            border-width: 0.25em 0.25em 0.25em 0;
+        }
+
+    }
+
+}

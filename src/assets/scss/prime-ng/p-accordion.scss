@@ -1,0 +1,86 @@
+p-accordion {
+
+    .p-accordion {
+
+        p-accordiontab {
+
+            & + p-accordiontab {
+
+                .p-accordion-tab {
+                    margin-top: 1rem;
+                }
+
+            }
+
+            .p-accordion-tab {
+                background-color: var(--color-base-white-50);
+                border-radius: 0.75rem;
+                border: 1px solid rgba(var(--color-black-rgb), 10%);
+
+                &.p-accordion-tab-active {
+                    border-color: var(--color-primary-200);
+                }
+
+                .p-accordion-header {
+                    padding: 0;
+                    background: var(--color-base-white-50);
+                    border-radius: 0.75rem;
+                    transition: 250ms all ease-in-out;
+                    border: 1px solid transparent;
+
+                    &:hover,
+                    &.p-highlight {
+                        border-radius: 0.75rem 0.75rem 0 0;
+                        border-bottom-color: var(--color-primary-200);
+                        background-color: var(--color-primary-50);
+
+                        .p-accordion-header-link {
+                            color: var(--color-black);
+                        }
+
+                    }
+
+                    &:hover {
+
+                        &:not(.p-highlight) {
+                            border-radius: 0.75rem;
+                            border-color: var(--color-primary-200);
+                        }
+
+                    }
+
+                    .p-accordion-header-link {
+                        display: flex;
+                        flex-direction: row-reverse;
+                        align-items: center;
+                        justify-content: space-between;
+                        text-decoration: none;
+                        padding: 1rem;
+                        background-color: transparent;
+                        border: none;
+                        font-weight: 700;
+                        color: var(--color-black);
+
+                        .p-accordion-toggle-icon {
+                            font-size: 1rem;
+                            margin-right: 0;
+                        }
+
+                    }
+
+                }
+
+            }
+
+            .p-accordion-content {
+                padding: 1rem;
+                border-radius: 0 0 0.75rem 0.75rem;
+                border: none;
+                color: var(--color-black);
+            }
+
+        }
+
+    }
+
+}

@@ -1,0 +1,11 @@
+@mixin font-ur() {
+    font-family: "Noto Nastaliq Urdu", serif;
+    font-optical-sizing: auto;
+}
+
+@mixin transition($transition: 0.25s all ease-in-out) {
+    transition: $transition;
+    -o-transition: $transition;
+    -moz-transition: $transition;
+    -webkit-transition: $transition;
+}

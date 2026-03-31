@@ -1,0 +1,129 @@
+@mixin focus-fieldset() {
+    background-color: transparent;
+    border-color: var(--color-secondary-700);
+
+    .form-control {
+        background-color: transparent;
+    }
+
+    .input-group-text {
+        background-color: transparent;
+        color: var(--color-secondary-700);
+    }
+}
+
+@mixin has-input-group-prepend() {
+    &:has(.input-group-text:first-of-type) {
+        .form-group {
+
+            &.lg {
+
+                .form-control {
+
+                    &:focus,
+                    &:not(:placeholder-shown) {
+
+                        & ~ label {
+                            @include xxl {
+                                left: -1.3rem;
+                            }
+
+                            @include pixel-ratio(1.25) {
+                                left: -1.3rem;
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+            .form-control {
+                padding-left: 0;
+                padding-right: 0;
+
+                &:focus,
+                &:not(:placeholder-shown) {
+                    & ~ label {
+                        left: calc(-1.25rem + 2px);
+                    }
+                }
+            }
+
+            &.text-area-control-container {
+
+                &:has(textarea:focus),
+                &:has(textarea:not(:placeholder-shown)) {
+
+                    & ~ label {
+                        left: calc(-1.25rem + 2px);
+                    }
+
+                }
+
+            }
+
+            > label {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+    }
+}
+
+@mixin fieldset-style {
+    border-width: 2px;
+    border-style: groove;
+    border-color: transparent;
+    border-image: initial;
+    background-color: rgba(var(--color-primary-900-rgb), 20%);
+    border-radius: var(--form-control-base-border-radius);
+    padding: 0;
+    transition: all 0.1s ease-in-out;
+
+    legend {
+        float: initial;
+        width: initial;
+        padding: initial;
+        font-size: initial;
+        line-height: initial;
+        display: flex;
+        margin-left: 0.75rem;
+        margin-bottom: calc(-0.75rem / 1.5);
+
+        label {
+            color: transparent;
+            font-size: 0.75rem;
+            padding: 0 0.5rem;
+        }
+
+    }
+
+    .form-group {
+
+        > label {
+            color: var(--color-primary-500);
+            border: none;
+            transition: all 0.1s ease-in-out;
+            padding: 0 0.75rem;
+            line-height: initial;
+            display: flex;
+            align-items: center;
+            font-size: var(--form-control-base-font-size);
+
+            @include xxl {
+                font-size: calc(var(--form-control-base-font-size) * 0.75);
+            }
+
+            @include breakpoint(1440) {
+                font-size: calc(var(--form-control-base-font-size) * 0.75);
+            }
+
+            @include pixel-ratio(1.25) {
+                font-size: calc(var(--form-control-base-font-size) * 0.75);
+            }
+        }
+
+    }
+
+}

@@ -1,0 +1,132 @@
+.p-organizationchart .p-organizationchart-line-left {
+    border-right: 1px solid #e5e7eb !important;
+    border-color: #e5e7eb !important;
+}
+
+.p-organizationchart .p-organizationchart-line-top {
+    border-top: 1px solid #e5e7eb !important;
+    border-color: #e5e7eb !important;
+}
+
+.workflow-chart {
+
+    .p-organizationchart-line-down {
+        background: #00000050;
+    }
+
+    .p-organizationchart-line-top {
+        border-color: #00000050 !important;
+    }
+
+    .p-organizationchart-line-left {
+        border-color: #00000050 !important;
+    }
+
+    .p-organizationchart-node-content {
+        padding: 0;
+        background-color: transparent;
+        border: none;
+    }
+
+    .p-organizationchart-node-content .p-node-toggler {
+        background: var(--color-primary-100);
+        border: 1px solid #00000020;
+        width: 1rem;
+        height: 1rem;
+        color: var(--colorprimary);
+        bottom: -.5rem;
+        margin-left: -.5rem;
+
+        .p-icon-wrapper {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+
+            .p-icon {
+                top: 0;
+                width: 0.75rem;
+                height: 0.75rem;
+            }
+
+        }
+
+    }
+
+    .p-organizationchart-table > tbody > tr > td {
+
+        fieldset {
+            text-align: left;
+        }
+
+        .form-group > label {
+            width: calc(100% - 0.75rem);
+        }
+
+    }
+
+    .p-organizationchart-node-hidden {
+
+        .card {
+            display: none;
+        }
+
+        [class*="p-organizationchart-line"] {
+            display: none;
+        }
+
+    }
+
+}
+
+.workflow-diagram {
+
+}
+
+.p-dialog {
+
+    .workflow-diagram {
+        max-height: 70vh;
+        overflow: auto;
+    }
+
+    .workflow-node-card {
+        border: 1px solid #00000015;
+
+        .card-header {
+            padding: 0.5rem 0.5rem;
+            font-size: 0.75rem;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            background-color: var(--color-primary-100);
+        }
+
+        .card-body {
+            padding: 0.5rem;
+
+            label {
+                white-space: nowrap;
+
+                &.options-label {
+                    white-space: nowrap;
+                    margin-bottom: 1rem;
+
+                    span {
+
+                        &:first-child {
+                            margin-right: 0.5rem;
+                            font-weight: bold;
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}

@@ -1,6 +1,6 @@
-import { Component, signal, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ToastService } from '../../core/services/toast.service';
+import {Component, inject, signal} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {ToastService} from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-profile',
@@ -15,6 +15,8 @@ export class ProfileComponent {
   activeTab = signal<'personal' | 'security' | 'activity'>('personal');
 
   profile = {
+    firstName: 'Dr. Admin',
+    lastName: 'Shah',
     name: 'Dr. Admin Shah',
     email: 'admin.shah@datanurse.pk',
     phone: '+92-300-0000000',

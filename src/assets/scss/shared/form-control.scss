@@ -1,0 +1,12 @@
+.form-control {
+    font-size: var(--base-font-size);
+
+    @include breakpoint(1600) {
+        font-size: 0.75rem;
+    }
+
+    @include pixel-ratio(1.25) {
+        font-size: 0.75rem;
+    }
+
+}

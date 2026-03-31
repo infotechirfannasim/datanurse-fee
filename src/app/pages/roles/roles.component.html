@@ -1,0 +1,394 @@
+<!-- PAGE HEADER -->
+<div class="page-header-row">
+    <div class="page-title-block">
+        <h2>Role Management</h2>
+        <p>{{ roles.length }} roles registered on the platform</p>
+    </div>
+    <button (click)="showAddModal.set(true); resetForm()" class="btn btn-primary">
+        <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
+            <line stroke="white" stroke-linecap="round" stroke-width="2" x1="12" x2="12" y1="5" y2="19"/>
+            <line stroke="white" stroke-linecap="round" stroke-width="2" x1="5" x2="19" y1="12" y2="12"/>
+        </svg>
+        Add New Role
+    </button>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+    <div class="filter-search">
+        <svg fill="none" height="15" viewBox="0 0 24 24" width="15">
+            <circle cx="11" cy="11" r="8" stroke="#7A8BB0" stroke-width="2"/>
+            <path d="M21 21l-4.35-4.35" stroke="#7A8BB0" stroke-linecap="round" stroke-width="2"/>
+        </svg>
+        <input (input)="searchQuery.set($any($event.target).value); onSearchChange()"
+               [value]="searchQuery()"
+               placeholder="Search roles by name or label..."/>
+    </div>
+</div>
+
+<div class="registry-card">
+    @if (isLoading()) {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading roles...</p>
+        </div>
+    } @else {
+        <div class="registry-table-wrap">
+            <table class="registry-table">
+                <thead>
+                <tr>
+                    <th>Role Name</th>
+                    <th>Label</th>
+                    <th>Description</th>
+                    <th>Permissions</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                    @for (role of roles; track role._id) {
+                        <tr>
+                            <td>
+                                <div class="doc-cell">
+                                    <span class="doc-nm">{{ role.name }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="role-label">{{ role.label }}</span>
+                            </td>
+                            <td>
+                                <span class="role-desc">{{ role.description || '—' }}</span>
+                            </td>
+                            <td>
+                                <div class="permissions-badge">
+                                    <span class="badge-count">{{ role.permissions?.length || 0 }} permissions</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge"
+                                      [ngClass]="getStatusClass(role.status)">{{ role.status | titlecase }}</span>
+                            </td>
+                            <td style="font-size:12.5px;color:var(--muted);">{{ role.createdAt | date: 'MMM d, y' }}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn" (click)="openView(role)" title="View Details">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="var(--muted)"
+                                                  stroke-width="2"/>
+                                            <circle cx="12" cy="12" r="3" stroke="var(--muted)" stroke-width="2"/>
+                                        </svg>
+                                    </button>
+                                    <button class="action-btn" (click)="openDelete(role)" title="Delete Role">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                            <polyline points="3 6 5 6 21 6" stroke="#E8344A" stroke-width="2"/>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"
+                                                  stroke="#E8344A" stroke-width="2"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    } @empty {
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                                        <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                              stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    <h3>No roles found</h3>
+                                    <p>Try adjusting your search or add a new role.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="table-footer">
+            <span class="table-footer-info">
+                Showing {{ roles.length }} of {{ pagination()?.total || 0 }} roles
+            </span>
+
+            @if (pagination() && pagination().totalPages > 1) {
+                <div class="pagination">
+                    <button class="page-btn" [disabled]="!pagination().hasPrevPage" (click)="goToPage(pageQuery() - 1)">
+                        ‹
+                    </button>
+
+                    @for (page of getPages(); track page) {
+                        <button class="page-btn" [class.active]="page === pageQuery()" (click)="goToPage(page)">
+                            {{ page }}
+                        </button>
+                    }
+
+                    <button class="page-btn" [disabled]="!pagination().hasNextPage" (click)="goToPage(pageQuery() + 1)">
+                        ›
+                    </button>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<!-- ADD/EDIT MODAL -->
+@if (showAddModal()) {
+    <div class="modal-overlay open" (click)="showAddModal.set(false)">
+        <div class="modal modal-lg" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title">{{ isEditMode ? 'Edit Role' : 'Create New Role' }}</div>
+                    <div class="modal-sub">{{ isEditMode ? 'Update role information and permissions' : 'Configure role details and access permissions' }}</div>
+                </div>
+                <button class="modal-close" (click)="showAddModal.set(false)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                        <line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/>
+                        <line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form [formGroup]="form">
+                    <!-- Basic Information Section -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor"
+                                      stroke-width="2"/>
+                                <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            Basic Information
+                        </div>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label class="form-label">Role Code *</label>
+                                <input class="form-input" formControlName="name" placeholder="e.g., admin_editor">
+                                @if (form.get('name')?.invalid && form.get('name')?.touched) {
+                                    <small class="error">Role code is required (min 3 characters)</small>
+                                }
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Display Label *</label>
+                                <input class="form-input" type="text" formControlName="label"
+                                       placeholder="e.g., Admin Editor">
+                                @if (form.get('label')?.invalid && form.get('label')?.touched) {
+                                    <small class="error">Display label is required</small>
+                                }
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-input" formControlName="description" rows="3"
+                                          placeholder="Describe the purpose and responsibilities of this role..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Permissions Section -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2L15 8H22L16 12L19 18L12 14L5 18L8 12L2 8H9L12 2Z" stroke="currentColor"
+                                      stroke-width="2"/>
+                            </svg>
+                            Access Permissions
+                        </div>
+                        <div class="permissions-container">
+                            @for (module of modules; track module.moduleId) {
+                                <div class="module-card">
+                                    <div class="module-header">
+                                        <div class="module-title">
+                                            <span class="module-icon">{{ module.icon || '📁' }}</span>
+                                            <strong>{{ module.name }}</strong>
+                                        </div>
+                                        <label class="checkbox select-all">
+                                            <input type="checkbox"
+                                                   (change)="selectAllModulePermissions(module, $event.target.checked)">
+                                            <span>Select All</span>
+                                        </label>
+                                    </div>
+
+                                    @if (module.actions?.length) {
+                                        <div class="permission-grid">
+                                            @for (action of module.actions; track action.slug) {
+                                                <label class="permission-item">
+                                                    <input type="checkbox"
+                                                           [checked]="isChecked(action.slug)"
+                                                           (change)="togglePermission(action.slug, $event.target.checked)">
+                                                    <span class="permission-icon">
+                                                        @switch (action.title.toLowerCase()) {
+                                                            @case ('create') {
+                                                                ➕
+                                                            }
+                                                            @case ('read') {
+                                                                👁️
+                                                            }
+                                                            @case ('update') {
+                                                                ✏️
+                                                            }
+                                                            @case ('delete') {
+                                                                🗑️
+                                                            }
+                                                            @default {
+                                                                ✓
+                                                            }
+                                                        }
+                                                    </span>
+                                                    <span>{{ action.title }}</span>
+                                                </label>
+                                            }
+                                        </div>
+                                    }
+
+                                    @if (module.children?.length) {
+                                        <div class="child-modules">
+                                            @for (child of module.children; track child.moduleId) {
+                                                <div class="child-module">
+                                                    <div class="child-title">
+                                                        <span class="child-icon">📄</span>
+                                                        {{ child.name }}
+                                                    </div>
+                                                    <div class="permission-grid">
+                                                        @for (action of child.actions; track action.slug) {
+                                                            <label class="permission-item">
+                                                                <input type="checkbox"
+                                                                       [checked]="isChecked(action.slug)"
+                                                                       (change)="togglePermission(action.slug, $event.target.checked)">
+                                                                <span class="permission-icon">
+                                                                    @switch (action.title.toLowerCase()) {
+                                                                        @case ('create') {
+                                                                            ➕
+                                                                        }
+                                                                        @case ('read') {
+                                                                            👁️
+                                                                        }
+                                                                        @case ('update') {
+                                                                            ✏️
+                                                                        }
+                                                                        @case ('delete') {
+                                                                            🗑️
+                                                                        }
+                                                                        @default {
+                                                                            ✓
+                                                                        }
+                                                                    }
+                                                                </span>
+                                                                <span>{{ action.title }}</span>
+                                                            </label>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-ghost" (click)="showAddModal.set(false); resetForm()">Cancel</button>
+                <button class="btn btn-primary" [disabled]="form.invalid" (click)="submitRole()">
+                    {{ isEditMode ? 'Update Role' : 'Create Role' }}
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- VIEW MODAL -->
+@if (showViewModal() && selectedRole()) {
+    <div class="modal-overlay open" (click)="showViewModal.set(false)">
+        <div class="modal" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title">{{ selectedRole()!.label }}</div>
+                    <div class="modal-sub">{{ selectedRole()!.name }}</div>
+                </div>
+                <button class="modal-close" (click)="showViewModal.set(false)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                        <line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/>
+                        <line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="view-details">
+                    <div class="view-field">
+                        <span class="view-label">Role Code</span>
+                        <span class="view-val"><code>{{ selectedRole()!.name }}</code></span>
+                    </div>
+                    <div class="view-field">
+                        <span class="view-label">Description</span>
+                        <span class="view-val">{{ selectedRole()!.description || 'No description provided' }}</span>
+                    </div>
+                    <div class="view-field">
+                        <span class="view-label">Status</span>
+                        <span class="badge"
+                              [ngClass]="getStatusClass(selectedRole()!.status)">{{ selectedRole()!.status | titlecase }}</span>
+                    </div>
+                    <div class="view-field">
+                        <span class="view-label">Permissions</span>
+                        <div class="permissions-list">
+                            @if (selectedRole()!.permissions?.length) {
+                                @for (perm of selectedRole()!.permissions; track perm) {
+                                    <span class="permission-tag">{{ perm }}</span>
+                                }
+                            } @else {
+                                <span class="no-permissions">No permissions assigned</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="view-field">
+                        <span class="view-label">Created</span>
+                        <span class="view-val">{{ selectedRole()!.createdAt | date: 'MMM d, y, h:mm a' }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" (click)="showViewModal.set(false)">Close</button>
+                <button class="btn btn-primary" (click)="onEditRole()">Edit Role</button>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- DELETE CONFIRM MODAL -->
+@if (showDeleteModal() && selectedRole()) {
+    <div class="modal-overlay open" (click)="showDeleteModal.set(false)">
+        <div class="modal modal-sm" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title">Delete Role</div>
+                </div>
+                <button class="modal-close" (click)="showDeleteModal.set(false)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                        <line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/>
+                        <line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align:center;padding:28px;">
+                <div class="confirm-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#E8344A" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div class="confirm-title">Are you sure?</div>
+                <div class="confirm-text">
+                    This will permanently delete the role <strong>{{ selectedRole()!.label }}</strong>.
+                    Users with this role may lose access to certain features.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" (click)="showDeleteModal.set(false)">Cancel</button>
+                <button class="btn btn-danger" (click)="confirmDelete()">Yes, Delete Role</button>
+            </div>
+        </div>
+    </div>
+}

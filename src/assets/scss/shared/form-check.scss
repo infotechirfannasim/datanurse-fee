@@ -1,0 +1,208 @@
+.form-check-input {
+
+    &:checked {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+    }
+
+    &:focus {
+        border-color: var(--color-primary-100);
+        outline: 0;
+        box-shadow: 0 0 0 .25rem var(--color-primary-50);
+    }
+
+}
+
+.form-switch {
+    padding: 0;
+    margin: 0;
+    display: flex;
+
+    .form-check-input {
+        background: none;
+        border: none;
+        display: none;
+    }
+
+    .form-check-label {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        cursor: pointer;
+        line-height: 1.5;
+
+        .switch-box-box {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            margin-right: 0.75rem;
+
+            @include breakpoint(1600) {
+                width: 30px;
+                height: 16px;
+            }
+
+            @include breakpoint(1440) {
+                width: 30px;
+                height: 16px;
+                margin-right: 0.5rem;
+            }
+
+            @include xxl {
+                width: 30px;
+                height: 16px;
+                margin-right: 0.5rem;
+            }
+
+            @include pixel-ratio(1.25) {
+                width: 30px;
+                height: 16px;
+                margin-right: 0.5rem;
+            }
+
+            &:before,
+            &:after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                transition: all .15s ease-in-out;
+            }
+
+            &:before {
+                background-color: #E6E6E6;
+                border: 1px solid #BFBFBF;
+                width: 40px;
+                height: 100%;
+                border-radius: 10px;
+
+                @include xxl {
+                    width: 30px;
+                }
+
+                @include breakpoint(1600) {
+                    width: 30px;
+                }
+
+                @include breakpoint(1440) {
+                    width: 30px;
+                }
+
+                @include pixel-ratio(1.25) {
+                    width: 30px;
+                }
+
+            }
+
+            &:after {
+                width: 16px;
+                height: 16px;
+                top: 50%;
+                transform: translate(2px, -50%);
+                border-radius: 50%;
+                background: var(--color-base-white-100);
+                box-shadow: 1px 1px 2px -1px rgba(51, 51, 51, 0.30);
+
+                @include xxl {
+                    width: 12px;
+                    height: 12px;
+                }
+
+                @include breakpoint(1600) {
+                    width: 12px;
+                    height: 12px;
+                }
+
+                @include breakpoint(1440) {
+                    width: 12px;
+                    height: 12px;
+                }
+
+                @include pixel-ratio(1.25) {
+                    width: 12px;
+                    height: 12px;
+                }
+
+            }
+
+        }
+
+    }
+
+    &.form-switch-dark {
+
+        .form-check-label {
+
+            .switch-box-box {
+
+                &:before {
+                    background-color: var(--color-base-white-500);
+                    border: 1px solid var(--color-base-white-600);
+                }
+
+            }
+
+        }
+
+    }
+
+    &:has(.form-check-input:checked) {
+
+        .form-check-label {
+
+            .switch-box-box {
+
+                &:before {
+                    border-color: var(--color-primary);
+                    background-color: var(--color-primary);
+                }
+
+                &:after {
+                    width: 16px;
+                    height: 16px;
+                    top: 50%;
+                    left: calc(40px - 16px - 2px);
+                    transform: translate(0, -50%);
+                    border-radius: 50%;
+
+                    @include breakpoint(1600) {
+                        width: 12px;
+                        height: 12px;
+                        left: 16px;
+                    }
+
+                    @include pixel-ratio(1.25) {
+                        width: 12px;
+                        height: 12px;
+                        left: 16px;
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    &:has(.form-check-input:checked.form-check-input:disabled) {
+        * {
+            cursor: not-allowed;
+        }
+
+        .form-check-label {
+
+            .switch-box-box {
+
+                &:before {
+                    border-color: var(--color-base-white-800);
+                    background-color: var(--color-base-white-700);
+                }
+
+            }
+
+        }
+
+    }
+
+}

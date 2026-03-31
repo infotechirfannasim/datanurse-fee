@@ -1,0 +1,42 @@
+@import "listing-p-table";
+
+@import "p-menu";
+@import "p-menubar";
+@import "p-tieredmenu";
+
+@import "p-calendar";
+@import "p-select";
+@import "p-multiselect";
+@import "p-toast";
+@import "p-tooltip";
+@import "p-accordion";
+@import "p-checkbox";
+@import "p-radio";
+@import "p-radio-button-v2";
+@import "p-select-button";
+@import "p-paginator";
+@import "p-dialog";
+@import "p-confirm-dialog";
+@import "p-org-chart";
+@import "p-table";
+@import "p-tabview";
+
+.p-inputtext {
+    color: var(--color-black);
+    font-size: var(--base-font-size);
+}
+
+.p-disabled {
+    cursor: not-allowed;
+
+    > * {
+        cursor: not-allowed;
+    }
+
+}
+
+.p-component {
+    font-family: 'Open Sans', sans-serif;
+    font-size: var(--base-font-size);
+    line-height: 1.5;
+}

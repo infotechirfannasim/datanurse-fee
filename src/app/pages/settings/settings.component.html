@@ -8,14 +8,8 @@
 <div class="settings-layout">
   <!-- Sidebar Nav -->
   <nav class="settings-nav">
-    @for (item of [
-      {key:'general',       label:'General',       icon:'⚙️'},
-      {key:'notifications', label:'Notifications',  icon:'🔔'},
-      {key:'permissions',   label:'Permissions',    icon:'🔒'},
-      {key:'integrations',  label:'Integrations',   icon:'🔗'},
-      {key:'danger',        label:'Danger Zone',    icon:'⚠️'}
-    ]; track item.key) {
-      <button class="settings-nav-item" [class.active]="activeSection()===item.key" (click)="activeSection.set($any(item.key))">
+      @for (item of navItems; track item.key) {
+          <button class="settings-nav-item" [class.active]="activeSection()===item.key" (click)="onItemClick(item)">
         <span>{{ item.icon }}</span>
         <span>{{ item.label }}</span>
       </button>
@@ -87,7 +81,7 @@
                 <div style="font-size:12px;color:var(--muted);">{{ item.sub }}</div>
               </div>
               <label class="toggle-switch">
-                <input type="checkbox" [(ngModel)]="notifications[$any(item.key)]"/>
+                  <!--                <input type="checkbox" [(ngModel)]="notifications[$any(item.key)]"/>-->
                 <span class="toggle-track"></span>
               </label>
             </div>
@@ -103,7 +97,7 @@
                 <div style="font-size:12px;color:var(--muted);">{{ item.sub }}</div>
               </div>
               <label class="toggle-switch">
-                <input type="checkbox" [(ngModel)]="notifications[$any(item.key)]"/>
+                  <!--                <input type="checkbox" [(ngModel)]="notifications[$any(item.key)]"/>-->
                 <span class="toggle-track"></span>
               </label>
             </div>
