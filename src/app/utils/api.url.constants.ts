@@ -31,3 +31,5 @@ export const GET_LOV_BULK_API_URL = 'lovs/bulk';
 export const MODULES_API_URL = 'roles/modules';
 
 // Doctors
+export const DOCTORS_API_URL = 'users/doctors';
+export const TOP_DOCTORS_API_URL = 'users/top-doctors';
