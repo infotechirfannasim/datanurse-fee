@@ -459,7 +459,18 @@ body {
   background: #fff;
   box-shadow: 0 0 0 3px rgba(34, 81, 204, 0.08);
 }
-
+.text-area {
+  width: 100%;
+  padding: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  font-family: 'DM Sans';
+  font-size: 13px;
+  color: var(--text);
+  background-color: transparent;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
 .form-input::placeholder {
   color: var(--muted);
 }
@@ -843,6 +854,7 @@ select.form-input {
   display: flex;
   align-items: center;
   gap: 8px;
+  height: 43px;
   background: #fff;
   border: 1.5px solid var(--border);
   border-radius: 10px;

@@ -8,6 +8,9 @@
 .registry-table-wrap {
   overflow-x: auto;
 }
+.full-width {
+  grid-column: span 2;
+}
 
 .registry-table {
   width: 100%;
@@ -16,11 +19,11 @@
   th {
     font-size: 10.5px;
     font-weight: 600;
-    color: var(--label);
+    color: var(--card);
     text-transform: uppercase;
     letter-spacing: 0.07em;
     padding: 12px 20px;
-    background: var(--bg);
+    background: var(--navy);
     text-align: left;
     border-bottom: 1px solid var(--border);
     white-space: nowrap;

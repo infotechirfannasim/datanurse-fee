@@ -77,6 +77,11 @@
                       <circle cx="12" cy="12" r="3" stroke="var(--muted)" stroke-width="2"/>
                     </svg>
                   </button>
+                  <button class="action-btn" (click)="onEditRole()" title="Edit">
+                    <svg  width="13" height="13" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                      <path stroke="var(--blue-lt)" stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                    </svg>
+                  </button>
                   <button class="action-btn" (click)="openDelete(role)" title="Delete Role">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                       <polyline points="3 6 5 6 21 6" stroke="#E8344A" stroke-width="2"/>
@@ -131,73 +136,75 @@
 </div>
 
 <!-- ADD/EDIT MODAL -->
-  @if (showAddModal()) {
+@if (showAddModal()) {
+  <div class="new-modals">
+    
     <div class="new-modals">
-    <div class="modal-overlay open" (click)="showAddModal.set(false)">
-      <div class="modal modal-lg" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <div>
-            <div class="modal-title">{{ isEditMode ? 'Edit Role' : 'Create New Role' }}</div>
-            <div class="modal-sub">{{ isEditMode ? 'Update role information and permissions' : 'Configure role details and access permissions' }}</div>
-          </div>
-          <button class="modal-close" (click)="showAddModal.set(false)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/>
-              <line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/>
-            </svg>
-          </button>
-        </div>
-        
-        <div class="modal-body">
-          <form [formGroup]="form">
-            <div class="form-section">
-              <div class="section-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor"
-                        stroke-width="2"/>
-                  <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
-                </svg>
-                Basic Information
-              </div>
-              <div class="form-grid-2">
-                <div class="form-group">
-                  <label class="form-label">Role Code *</label>
-                  <input class="form-input" formControlName="name" placeholder="e.g., admin_editor">
-                  @if (form.get('name')?.invalid && form.get('name')?.touched) {
-                    <small class="error">Role code is required (min 3 characters)</small>
-                  }
-                </div>
-                
-                <div class="form-group">
-                  <label class="form-label">Display Label *</label>
-                  <input class="form-input" type="text" formControlName="label"
-                         placeholder="e.g., Admin Editor">
-                  @if (form.get('label')?.invalid && form.get('label')?.touched) {
-                    <small class="error">Display label is required</small>
-                  }
-                </div>
-                
-                <div class="form-group full-width">
-                  <label class="form-label">Description</label>
-                  <textarea class="form-input" formControlName="description" rows="3"
-                            placeholder="Describe the purpose and responsibilities of this role..."></textarea>
-                </div>
-              </div>
+      <div class="modal-overlay open" (click)="showAddModal.set(false)">
+        <div class="modal modal-lg" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <div>
+              <div class="modal-title">{{ isEditMode ? 'Edit Role' : 'Create New Role' }}</div>
+              <div class="modal-sub">{{ isEditMode ? 'Update role information and permissions' : 'Configure role details and access permissions' }}</div>
             </div>
-            
-            <div class="form-section">
-              <div class="section-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2L15 8H22L16 12L19 18L12 14L5 18L8 12L2 8H9L12 2Z" stroke="currentColor"
-                        stroke-width="2"/>
-                </svg>
-                Access Permissions
+            <button class="modal-close" (click)="showAddModal.set(false)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/>
+                <line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/>
+              </svg>
+            </button>
+          </div>
+          
+          <div class="modal-body">
+            <form [formGroup]="form">
+              <div class="form-section">
+                <div class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor"
+                          stroke-width="2"/>
+                    <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                  Basic Information
+                </div>
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Role Code *</label>
+                    <input class="form-input" formControlName="name" placeholder="e.g., admin_editor">
+                    @if (form.get('name')?.invalid && form.get('name')?.touched) {
+                      <small class="error">Role code is required (min 3 characters)</small>
+                    }
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Display Label *</label>
+                    <input class="form-input" type="text" formControlName="label"
+                           placeholder="e.g., Admin Editor">
+                    @if (form.get('label')?.invalid && form.get('label')?.touched) {
+                      <small class="error">Display label is required</small>
+                    }
+                  </div>
+                  
+                  <div class="form-group full-width">
+                    <label class="form-label">Description</label>
+                    <textarea class="text-area" formControlName="description" rows="5"
+                              placeholder="Describe the purpose and responsibilities of this role..."></textarea>
+                  </div>
+                </div>
               </div>
-              <div class="permissions-container">
-                @for (module of modules; track module.moduleId) {
-                  <div class="module-card">
-                    <div class="module-header">
-                      <div class="module-title">
+              
+              <div class="form-section">
+                <div class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L15 8H22L16 12L19 18L12 14L5 18L8 12L2 8H9L12 2Z" stroke="currentColor"
+                          stroke-width="2"/>
+                  </svg>
+                  Access Permissions
+                </div>
+                <div class="permissions-container">
+                  @for (module of modules; track module.moduleId) {
+                    <div class="module-card">
+                      <div class="module-header">
+                        <div class="module-title">
                                             <span class="module-icon">
                                                 @switch (module.name.toLowerCase()) {
                                                   @case ('users') {
@@ -259,23 +266,23 @@
                                                   }
                                                 }
                                             </span>
-                        <strong>{{ module.name }}</strong>
+                          <strong>{{ module.name }}</strong>
+                        </div>
+                        <label class="checkbox select-all">
+                          <input type="checkbox"
+                                 (change)="selectAllModulePermissions(module, $event.target.checked)">
+                          <span>Select All</span>
+                        </label>
                       </div>
-                      <label class="checkbox select-all">
-                        <input type="checkbox"
-                               (change)="selectAllModulePermissions(module, $event.target.checked)">
-                        <span>Select All</span>
-                      </label>
-                    </div>
-                    
-                    @if (module.actions?.length) {
-                      <div class="permission-grid">
-                        @for (action of module.actions; track action.slug) {
-                          <label class="permission-item">
-                            <input type="checkbox"
-                                   [checked]="isChecked(action.slug)"
-                                   (change)="togglePermission(action.slug, $event.target.checked)">
-                            <span class="permission-icon">
+                      
+                      @if (module.actions?.length) {
+                        <div class="permission-grid">
+                          @for (action of module.actions; track action.slug) {
+                            <label class="permission-item">
+                              <input type="checkbox"
+                                     [checked]="isChecked(action.slug)"
+                                     (change)="togglePermission(action.slug, $event.target.checked)">
+                              <span class="permission-icon">
                                                         @switch (action.title.toLowerCase()) {
                                                           @case ('create') {
                                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -353,32 +360,32 @@
                                                           }
                                                         }
                                                     </span>
-                            <span>{{ action.title }}</span>
-                          </label>
-                        }
-                      </div>
-                    }
-                    
-                    @if (module.children?.length) {
-                      <div class="child-modules">
-                        @for (child of module.children; track child.moduleId) {
-                          <div class="child-module">
-                            <div class="child-title">
+                              <span>{{ action.title }}</span>
+                            </label>
+                          }
+                        </div>
+                      }
+                      
+                      @if (module.children?.length) {
+                        <div class="child-modules">
+                          @for (child of module.children; track child.moduleId) {
+                            <div class="child-module">
+                              <div class="child-title">
                                                         <span class="child-icon">
                                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                                                                 <path d="M4 4h16v16H4z" stroke="currentColor" stroke-width="2"/>
                                                                 <path d="M8 8h8v8H8z" stroke="currentColor" stroke-width="2"/>
                                                             </svg>
                                                         </span>
-                              {{ child.name }}
-                            </div>
-                            <div class="permission-grid">
-                              @for (action of child.actions; track action.slug) {
-                                <label class="permission-item">
-                                  <input type="checkbox"
-                                         [checked]="isChecked(action.slug)"
-                                         (change)="togglePermission(action.slug, $event.target.checked)">
-                                  <span class="permission-icon">
+                                {{ child.name }}
+                              </div>
+                              <div class="permission-grid">
+                                @for (action of child.actions; track action.slug) {
+                                  <label class="permission-item">
+                                    <input type="checkbox"
+                                           [checked]="isChecked(action.slug)"
+                                           (change)="togglePermission(action.slug, $event.target.checked)">
+                                    <span class="permission-icon">
                                                                     @switch (action.title.toLowerCase()) {
                                                                       @case ('create') {
                                                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -424,85 +431,87 @@
                                                                       }
                                                                     }
                                                                 </span>
-                                  <span>{{ action.title }}</span>
-                                </label>
-                              }
+                                    <span>{{ action.title }}</span>
+                                  </label>
+                                }
+                              </div>
                             </div>
-                          </div>
-                        }
-                      </div>
-                    }
-                  </div>
-                }
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
               </div>
-            </div>
-          </form>
-        </div>
-        
-        <div class="modal-footer">
-          <button class="btn btn-ghost" (click)="showAddModal.set(false); resetForm()">Cancel</button>
-          <button class="btn btn-primary" [disabled]="form.invalid" (click)="submitRole()">
-            {{ isEditMode ? 'Update Role' : 'Create Role' }}
-          </button>
+            </form>
+          </div>
+          
+          <div class="modal-footer">
+            <button class="btn btn-ghost" (click)="showAddModal.set(false); resetForm()">Cancel</button>
+            <button class="btn btn-primary" [disabled]="form.invalid" (click)="submitRole()">
+              {{ isEditMode ? 'Update Role' : 'Create Role' }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
-    </div>
-  }
+  </div>
+}
 
 
 <!-- VIEW MODAL -->
 @if (showViewModal() && selectedRole()) {
-  <div class="modal-overlay open" (click)="showViewModal.set(false)">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <div>
-          <div class="modal-title">{{ selectedRole()!.label }}</div>
-          <div class="modal-sub">{{ selectedRole()!.name }}</div>
+  <div class="new-modals">
+    <div class="modal-overlay open" (click)="showViewModal.set(false)">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <div class="modal-title">{{ selectedRole()!.label }}</div>
+            <div class="modal-sub">{{ selectedRole()!.name }}</div>
+          </div>
+          <button class="modal-close" (click)="showViewModal.set(false)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/>
+              <line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/>
+            </svg>
+          </button>
         </div>
-        <button class="modal-close" (click)="showViewModal.set(false)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-            <line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/>
-            <line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/>
-          </svg>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="view-details">
-          <div class="view-field">
-            <span class="view-label">Role Code</span>
-            <span class="view-val"><code>{{ selectedRole()!.name }}</code></span>
-          </div>
-          <div class="view-field">
-            <span class="view-label">Description</span>
-            <span class="view-val">{{ selectedRole()!.description || 'No description provided' }}</span>
-          </div>
-          <div class="view-field">
-            <span class="view-label">Status</span>
-            <span class="badge"
-                  [ngClass]="getStatusClass(selectedRole()!.status)">{{ selectedRole()!.status | titlecase }}</span>
-          </div>
-          <div class="view-field">
-            <span class="view-label">Permissions</span>
-            <div class="permissions-list">
-              @if (selectedRole()!.permissions?.length) {
-                @for (perm of selectedRole()!.permissions; track perm) {
-                  <span class="permission-tag">{{ perm }}</span>
+        <div class="modal-body">
+          <div class="view-details">
+            <div class="view-field">
+              <span class="view-label">Role Code</span>
+              <span class="view-val"><code>{{ selectedRole()!.name }}</code></span>
+            </div>
+            <div class="view-field">
+              <span class="view-label">Description</span>
+              <span class="view-val">{{ selectedRole()!.description || 'No description provided' }}</span>
+            </div>
+            <div class="view-field">
+              <span class="view-label">Status</span>
+              <span class="badge"
+                    [ngClass]="getStatusClass(selectedRole()!.status)">{{ selectedRole()!.status | titlecase }}</span>
+            </div>
+            <div class="view-field">
+              <span class="view-label">Permissions</span>
+              <div class="permissions-list">
+                @if (selectedRole()!.permissions?.length) {
+                  @for (perm of selectedRole()!.permissions; track perm) {
+                    <span class="permission-tag">{{ perm }}</span>
+                  }
+                } @else {
+                  <span class="no-permissions">No permissions assigned</span>
                 }
-              } @else {
-                <span class="no-permissions">No permissions assigned</span>
-              }
+              </div>
+            </div>
+            <div class="view-field">
+              <span class="view-label">Created</span>
+              <span class="view-val">{{ selectedRole()!.createdAt | date: 'MMM d, y, h:mm a' }}</span>
             </div>
           </div>
-          <div class="view-field">
-            <span class="view-label">Created</span>
-            <span class="view-val">{{ selectedRole()!.createdAt | date: 'MMM d, y, h:mm a' }}</span>
-          </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" (click)="showViewModal.set(false)">Close</button>
-        <button class="btn btn-primary" (click)="onEditRole()">Edit Role</button>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" (click)="showViewModal.set(false)">Close</button>
+        </div>
       </div>
     </div>
   </div>
@@ -510,34 +519,36 @@
 
 <!-- DELETE CONFIRM MODAL -->
 @if (showDeleteModal() && selectedRole()) {
-  <div class="modal-overlay open" (click)="showDeleteModal.set(false)">
-    <div class="modal modal-sm" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <div>
-          <div class="modal-title">Delete Role</div>
+  <div class="new-modals">
+    <div class="modal-overlay open" (click)="showDeleteModal.set(false)">
+      <div class="modal modal-sm" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <div class="modal-title">Delete Role</div>
+          </div>
+          <button class="modal-close" (click)="showDeleteModal.set(false)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/>
+              <line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/>
+            </svg>
+          </button>
         </div>
-        <button class="modal-close" (click)="showDeleteModal.set(false)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-            <line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/>
-            <line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/>
-          </svg>
-        </button>
-      </div>
-      <div class="modal-body" style="text-align:center;padding:28px;">
-        <div class="confirm-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-            <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#E8344A" stroke-width="2"/>
-          </svg>
+        <div class="modal-body" style="text-align:center;padding:28px;">
+          <div class="confirm-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+              <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#E8344A" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="confirm-title">Are you sure?</div>
+          <div class="confirm-text">
+            This will permanently delete the role <strong>{{ selectedRole()!.label }}</strong>.
+            Users with this role may lose access to certain features.
+          </div>
         </div>
-        <div class="confirm-title">Are you sure?</div>
-        <div class="confirm-text">
-          This will permanently delete the role <strong>{{ selectedRole()!.label }}</strong>.
-          Users with this role may lose access to certain features.
+        <div class="modal-footer">
+          <button class="btn btn-ghost" (click)="showDeleteModal.set(false)">Cancel</button>
+          <button class="btn btn-danger" (click)="confirmDelete()">Yes, Delete Role</button>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" (click)="showDeleteModal.set(false)">Cancel</button>
-        <button class="btn btn-danger" (click)="confirmDelete()">Yes, Delete Role</button>
       </div>
     </div>
   </div>
