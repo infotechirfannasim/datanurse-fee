@@ -65,9 +65,6 @@ export class ProfileComponent implements OnInit {
       lastName: ['', Validators.required],
       email: [{value: '', disabled: true}],
       phone: [''],
-      location: [''],
-      department: [''],
-      bio: ['']
     });
 
     this.passwordForm = this.fb.group({
@@ -147,9 +144,6 @@ export class ProfileComponent implements OnInit {
     if (this.selectedFile) {
       formData.append('profileImage', this.selectedFile);
     }
-
-    // console.log('Sending profile update with fields:',
-    //     Array.from(formData.keys()));
 
     this.requestService.patchReqWithFormData(UPDATE_PROFILE_API_URL, formData).subscribe({
       next: (response: any) => {

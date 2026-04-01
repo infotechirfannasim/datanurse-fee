@@ -7,6 +7,7 @@ import {RequestService} from "../../core/services/request.service";
 import {
   ACTIVE_ROLES_API_URL,
   DELETE_USER_API_URL,
+  DOCTORS_API_URL,
   GET_LOV_BULK_API_URL,
   USERS_API_URL
 } from "../../utils/api.url.constants";
@@ -117,12 +118,10 @@ export class DoctorsComponent implements OnInit {
       page: this.pageQuery(),
       limit: 10
     };
-    this.requestService.getRequest(USERS_API_URL, filters).subscribe({
+    this.requestService.getRequest(DOCTORS_API_URL, filters).subscribe({
       next: (response: HttpResponse<any>) => {
         if (response.status == 200 && response.body.data) {
-          this.doctors = Array.isArray(response.body.data)
-              ? response.body.data.filter((dr: any) => dr.role.name == ROLES.DOCTOR)
-              : [];
+          this.doctors = response.body.data ?? [];
           this.pagination.set(response.body.meta?.pagination || null);
         } else {
           this.doctors = [];
