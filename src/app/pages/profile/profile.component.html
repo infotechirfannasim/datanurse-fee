@@ -1,32 +1,4 @@
-<!-- HERO -->
-<div class="profile-hero">
-    <div class="profile-av-lg">
-        {{ (profile()?.firstName?.[0] || '') + (profile()?.lastName?.[0] || '') }}
-    </div>
-    <div class="profile-hero-info">
-        <span class="profile-hero-name">{{ profile()?.fullName }}</span>
-        <span class="profile-hero-role">
-      {{ profile()?.role?.label || profile()?.role?.name }}
-            @if (profile()?.department) {
-                · {{ profile()?.department }}
-            }
-    </span>
-        <span class="profile-hero-sub">Member since {{ formatDate(profile()?.createdAt || '') }}</span>
-    </div>
-    <div class="profile-hero-actions">
-        <button (click)="activeTab.set('personal')" class="wb-btn wb-btn-primary">Edit Profile</button>
-        <button class="wb-btn wb-btn-outline">Share Profile</button>
-    </div>
-</div>
-
 <!-- STATS ROW -->
-<div class="profile-stats">
-    <div class="profile-stat"><span class="ps-val">284</span><span class="ps-lbl">Doctors Managed</span></div>
-    <div class="profile-stat"><span class="ps-val">1,847</span><span class="ps-lbl">Cases Overseen</span></div>
-    <div class="profile-stat"><span class="ps-val">48</span><span class="ps-lbl">Reports Generated</span></div>
-    <div class="profile-stat"><span class="ps-val">99.8%</span><span class="ps-lbl">Uptime</span></div>
-</div>
-
 <!-- TABS -->
 <!--<div class="tab-bar" style="margin-bottom:24px;">
     <button (click)="activeTab.set('personal')" [class.active]="activeTab()==='personal'" class="tab-btn">Personal
@@ -37,150 +9,150 @@
 </div>-->
 
 @if (activeTab() === 'personal') {
-    <div class="profile-grid">
-        <div class="section-card">
-            <div class="section-header">
-                <div class="section-title">Personal Information</div>
-            </div>
-            <div style="padding:24px;">
-
-                <div class="avatar-upload-wrap">
-                    <div class="avatar-upload">
-                        @if (imagePreview) {
-                            <img [src]="imagePreview" class="preview-image" alt="Preview">
-                        } @else {
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#7A8BB0" stroke-width="2"/>
-                                <circle cx="12" cy="7" r="4" stroke="#7A8BB0" stroke-width="2"/>
-                            </svg>
-                        }
-                        <input
-                                type="file"
-                                accept="image/jpeg,image/png,image/webp"
-                                (change)="onImageSelected($event)"
-                        /></div>
-                    <div class="avatar-meta">
-                        <strong>Change Profile Photo</strong><br>
-                        JPG, PNG or WEBP. Max 2MB.
-                    </div>
-                </div>
-
-                <form [formGroup]="personalForm">
-                    <div class="form-grid-2">
-                        <div class="form-group">
-                            <label class="form-label">First Name</label>
-                            <input class="form-input" formControlName="firstName">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Last Name</label>
-                            <input class="form-input" formControlName="lastName">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Email</label>
-                            <input class="form-input" type="email" formControlName="email">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Phone</label>
-                            <input class="form-input" formControlName="phone">
-                        </div>
-                    </div>
-                    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px;">
-                        <!--<button type="button" class="btn btn-ghost" (click)="personalForm.reset()">Discard</button>-->
-                        <button type="button" class="btn btn-primary" (click)="updateProfile()">Save Changes</button>
-                    </div>
-                </form>
-            </div>
+  <div class="profile-grid">
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">Personal Information</div>
+      </div>
+      <div style="padding:24px;">
+        
+        <div class="avatar-upload-wrap">
+          <div class="avatar-upload">
+            @if (imagePreview) {
+              <img [src]="imagePreview" class="preview-image" alt="Preview">
+            } @else {
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#7A8BB0" stroke-width="2"/>
+                <circle cx="12" cy="7" r="4" stroke="#7A8BB0" stroke-width="2"/>
+              </svg>
+            }
+            <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    (change)="onImageSelected($event)"
+            /></div>
+          <div class="avatar-meta">
+            <strong>Change Profile Photo</strong><br>
+            JPG, PNG. Max 1MB.
+          </div>
         </div>
-
-        <!-- Account Info -->
-        <div class="section-card" style="height:fit-content;">
-            <div class="section-header">
-                <div class="section-title">Account Information</div>
+        
+        <form [formGroup]="personalForm">
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input class="form-input" formControlName="firstName" placeholder="First Name">
             </div>
-            <!--<div style="padding:20px 22px; display:flex; flex-direction:column; gap:14px;">
-                <div class="info-row"><span class="info-label">User ID</span><span
-                        class="info-value">{{ profile()?._id }}</span></div>
-                <div class="info-row"><span class="info-label">Username</span><span
-                        class="info-value">{{ profile()?.username }}</span></div>
-                <div class="info-row"><span class="info-label">Role</span><span
-                        class="info-value">{{ profile()?.role?.label }}</span></div>
-                <div class="info-row"><span class="info-label">Status</span><span class="info-value"
-                                                                                  [style.color]="profile()?.status === 'active' ? '#22C55E' : '#E8344A'">{{ profile()?.status | titlecase }}</span>
-                </div>
-                <div class="info-row"><span class="info-label">Member Since</span><span
-                        class="info-value">{{ formatDate(profile()?.createdAt || '') }}</span></div>
-                <div class="info-row"><span class="info-label">Last Login</span><span
-                        class="info-value">{{ formatDate(profile()?.lastLoginAt || '') }}</span></div>
-            </div>-->
-            <div style="padding:20px 22px;display:flex;flex-direction:column;gap:14px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border);">
-                    <span style="font-size:12.5px;color:var(--muted);font-weight:500;">User ID</span>
-                    <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ profile()?._id }}</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border);">
-                    <span style="font-size:12.5px;color:var(--muted);font-weight:500;">Username</span>
-                    <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ profile()?.username }}</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border);">
-                    <span style="font-size:12.5px;color:var(--muted);font-weight:500;">Role</span>
-                    <span style="font-size:13px;font-weight:600;color:var(--navy);"
-                          [style.color]="profile()?.status === 'active' ? '#22C55E' : '#E8344A'">{{ profile()?.role?.label }}</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border);">
-                    <span style="font-size:12.5px;color:var(--muted);font-weight:500;">Status</span>
-                    <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ profile()?.status | titlecase }}</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border);">
-                    <span style="font-size:12.5px;color:var(--muted);font-weight:500;">Member Since</span>
-                    <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ profile()?.createdAt || '' | date: 'MMM d, y' }}</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border);">
-                    <span style="font-size:12.5px;color:var(--muted);font-weight:500;">Last Login</span>
-                    <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ profile()?.lastLoginAt || ''  | date: 'MMM d, y' }}</span>
-                </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input class="form-input" formControlName="lastName" placeholder="Last Name">
             </div>
-        </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-input" type="email" formControlName="email" placeholder="Email">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input class="form-input" formControlName="phone" placeholder="+1 (555) 123-4567">
+            </div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px;">
+            <!--<button type="button" class="btn btn-ghost" (click)="personalForm.reset()">Discard</button>-->
+            <button type="button" class="btn btn-primary" (click)="updateProfile()">Save Changes</button>
+          </div>
+        </form>
+      </div>
     </div>
+    
+    <!-- Account Info -->
+    <div class="section-card" style="height:fit-content;">
+      <div class="section-header">
+        <div class="section-title">Account Information</div>
+      </div>
+      <!--<div style="padding:20px 22px; display:flex; flex-direction:column; gap:14px;">
+          <div class="info-row"><span class="info-label">User ID</span><span
+                  class="info-value">{{ profile()?._id }}</span></div>
+          <div class="info-row"><span class="info-label">Username</span><span
+                  class="info-value">{{ profile()?.username }}</span></div>
+          <div class="info-row"><span class="info-label">Role</span><span
+                  class="info-value">{{ profile()?.role?.label }}</span></div>
+          <div class="info-row"><span class="info-label">Status</span><span class="info-value"
+                                                                            [style.color]="profile()?.status === 'active' ? '#22C55E' : '#E8344A'">{{ profile()?.status | titlecase }}</span>
+          </div>
+          <div class="info-row"><span class="info-label">Member Since</span><span
+                  class="info-value">{{ formatDate(profile()?.createdAt || '') }}</span></div>
+          <div class="info-row"><span class="info-label">Last Login</span><span
+                  class="info-value">{{ formatDate(profile()?.lastLoginAt || '') }}</span></div>
+      </div>-->
+      <div style="padding:20px 22px;display:flex;flex-direction:column;gap:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border);">
+          <span style="font-size:12.5px;color:var(--muted);font-weight:500;">User ID</span>
+          <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ profile()?._id }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border);">
+          <span style="font-size:12.5px;color:var(--muted);font-weight:500;">Username</span>
+          <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ profile()?.username }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border);">
+          <span style="font-size:12.5px;color:var(--muted);font-weight:500;">Role</span>
+          <span style="font-size:13px;font-weight:600;color:var(--navy);"
+                [style.color]="profile()?.status === 'active' ? '#22C55E' : '#E8344A'">{{ profile()?.role?.label }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border);">
+          <span style="font-size:12.5px;color:var(--muted);font-weight:500;">Status</span>
+          <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ profile()?.status | titlecase }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border);">
+          <span style="font-size:12.5px;color:var(--muted);font-weight:500;">Member Since</span>
+          <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ profile()?.createdAt || '' | date: 'MMM d, y' }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border);">
+          <span style="font-size:12.5px;color:var(--muted);font-weight:500;">Last Login</span>
+          <span style="font-size:13px;font-weight:600;color:var(--navy);">{{ profile()?.lastLoginAt || ''  | date: 'MMM d, y' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 }
 
 @if (activeTab() === 'security') {
-    <div class="section-card" style="max-width:560px;">
-        <div class="section-header">
-            <div class="section-title">Change Password</div>
-        </div>
-        <div style="padding:24px;">
-            <form [formGroup]="passwordForm">
-                <div class="form-group">
-                    <label class="form-label">Current Password</label>
-                    <input class="form-input" type="password" formControlName="currentPassword" placeholder="••••••••">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">New Password</label>
-                    <input class="form-input" type="password" formControlName="newPassword" placeholder="••••••••">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Confirm New Password</label>
-                    <input class="form-input" type="password" formControlName="confirmPassword" placeholder="••••••••">
-                </div>
-
-                <button type="button" class="btn btn-primary" (click)="changePassword()"
-                        [disabled]="passwordForm.invalid">
-                    Update Password
-                </button>
-            </form>
-        </div>
+  <div class="section-card" style="max-width:560px;">
+    <div class="section-header">
+      <div class="section-title">Change Password</div>
     </div>
-    <div class="section-card" style="max-width:560px; margin-top:20px;">
-        <div class="section-header">
-            <div class="section-title">Two-Factor Authentication</div>
+    <div style="padding:24px;">
+      <form [formGroup]="passwordForm">
+        <div class="form-group">
+          <label class="form-label">Current Password</label>
+          <input class="form-input" type="password" formControlName="currentPassword" placeholder="••••••••">
         </div>
-        <div style="padding:24px; display:flex; align-items:center; justify-content:space-between;">
-            <div>
-                <div style="font-size:14px; font-weight:600; color:var(--navy);">Authenticator App</div>
-                <div style="font-size:12.5px; color:var(--muted); margin-top:3px;">Use Google Authenticator or Authy
-                </div>
-            </div>
-            <button class="btn btn-ghost btn-sm">Enable 2FA</button>
+        <div class="form-group">
+          <label class="form-label">New Password</label>
+          <input class="form-input" type="password" formControlName="newPassword" placeholder="••••••••">
         </div>
+        <div class="form-group">
+          <label class="form-label">Confirm New Password</label>
+          <input class="form-input" type="password" formControlName="confirmPassword" placeholder="••••••••">
+        </div>
+        
+        <button type="button" class="btn btn-primary" (click)="changePassword()"
+                [disabled]="passwordForm.invalid">
+          Update Password
+        </button>
+      </form>
     </div>
+  </div>
+  <div class="section-card" style="max-width:560px; margin-top:20px;">
+    <div class="section-header">
+      <div class="section-title">Two-Factor Authentication</div>
+    </div>
+    <div style="padding:24px; display:flex; align-items:center; justify-content:space-between;">
+      <div>
+        <div style="font-size:14px; font-weight:600; color:var(--navy);">Authenticator App</div>
+        <div style="font-size:12.5px; color:var(--muted); margin-top:3px;">Use Google Authenticator or Authy
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm">Enable 2FA</button>
+    </div>
+  </div>
 }
