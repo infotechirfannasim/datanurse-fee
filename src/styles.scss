@@ -444,6 +444,8 @@ body {
   border-radius: 9px;
   font-family: 'DM Sans';
   font-size: 13px;
+  background: #FFFFFF;
+  background-color: #FFFFFF;
   color: var(--text);
   outline: none;
   transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
@@ -459,6 +461,7 @@ body {
   background: #fff;
   box-shadow: 0 0 0 3px rgba(34, 81, 204, 0.08);
 }
+
 .text-area {
   width: 100%;
   padding: 16px;
@@ -471,6 +474,7 @@ body {
   outline: none;
   transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
+
 .form-input::placeholder {
   color: var(--muted);
 }
@@ -982,7 +986,7 @@ $font: 'DM Sans', sans-serif;
     background: $white;
     border-radius: 18px;
     width: 100%;
-    overflow: hidden;
+    //overflow: hidden;
     box-shadow: 0 24px 60px rgba(11, 30, 69, 0.22);
     animation: modalIn 0.22s ease;
 
@@ -1352,111 +1356,4 @@ $font: 'DM Sans', sans-serif;
 }
 
 
-  // ── PrimeNG p-select Override ──
-  p-select.form-input {
-    // Outer wrapper match karo
-    height: 38px !important;
-    border-radius: 9px !important;
-    border: 1.5px solid $border !important;
-    padding: 0 !important;
-    background: $white !important;
-    display: flex !important;
-    align-items: center !important;
-    width: 100% !important;
-    transition: border-color 0.15s, box-shadow 0.15s !important;
 
-    &:hover {
-      border-color: darken($border, 10%) !important;
-    }
-
-    // Focus state — PrimeNG adds .p-focus class
-    &.p-focus {
-      border-color: $blue !important;
-      box-shadow: 0 0 0 3px rgba(34, 81, 204, 0.10) !important;
-      outline: none !important;
-    }
-
-    // Selected label text
-    .p-select-label {
-      font-family: $font !important;
-      font-size: 13.5px !important;
-      color: $navy-dark !important;
-      padding: 0 12px !important;
-      line-height: 38px !important;
-
-      // Placeholder
-      &.p-placeholder {
-        color: $blue-border !important;
-      }
-    }
-
-    // Dropdown arrow button
-    .p-select-dropdown {
-      width: 36px !important;
-      color: $muted !important;
-      border: none !important;
-      background: transparent !important;
-      border-radius: 0 9px 9px 0 !important;
-    }
-  }
-
-  p-select {
-    .p-select-label::before {
-      display: none !important;
-    }
-  }
-
-  .p-select-header {
-    .p-inputicon {
-      top: 25% !important;
-    }
-
-    .p-inputtext {
-      background-color: white !important;
-    }
-  }
-
-  // Dropdown panel (appendTo="body" se body pe attach hota hai)
-  .p-select-overlay {
-    border-radius: 10px !important;
-    border: 1.5px solid $border !important;
-    box-shadow: 0 8px 24px rgba(11, 30, 69, 0.12) !important;
-    background-color: #FFFFFF;
-    font-family: $font !important;
-    margin-top: 4px !important;
-
-    .p-select-option {
-      font-size: 13.5px !important;
-      font-family: $font !important;
-      color: $navy-dark !important;
-      padding: 9px 14px !important;
-
-      &:hover,
-      &.p-focus {
-        background: $blue-bg !important;
-        color: $blue !important;
-      }
-
-      &.p-select-option-selected {
-        background: $blue-light !important;
-        color: $blue !important;
-        font-weight: 600 !important;
-      }
-    }
-
-    // Filter input (agar [filter]="true" ho)
-    .p-select-filter {
-      height: 34px !important;
-      border-radius: 7px !important;
-      border: 1.5px solid $border !important;
-      font-family: $font !important;
-      font-size: 13px !important;
-      padding: 0 10px !important;
-
-      &:focus {
-        border-color: $blue !important;
-        box-shadow: 0 0 0 3px rgba(34, 81, 204, 0.10) !important;
-        outline: none !important;
-      }
-    }
-  }

@@ -1,32 +1,4 @@
-<!-- HERO -->
-<div class="profile-hero">
-    <div class="profile-av-lg">
-        {{ (profile()?.firstName?.[0] || '') + (profile()?.lastName?.[0] || '') }}
-    </div>
-    <div class="profile-hero-info">
-        <span class="profile-hero-name">{{ profile()?.fullName }}</span>
-        <span class="profile-hero-role">
-      {{ profile()?.role?.label || profile()?.role?.name }}
-            @if (profile()?.department) {
-                · {{ profile()?.department }}
-            }
-    </span>
-        <span class="profile-hero-sub">Member since {{ formatDate(profile()?.createdAt || '') }}</span>
-    </div>
-    <div class="profile-hero-actions">
-        <button (click)="activeTab.set('personal')" class="wb-btn wb-btn-primary">Edit Profile</button>
-        <button class="wb-btn wb-btn-outline">Share Profile</button>
-    </div>
-</div>
-
 <!-- STATS ROW -->
-<div class="profile-stats">
-    <div class="profile-stat"><span class="ps-val">284</span><span class="ps-lbl">Doctors Managed</span></div>
-    <div class="profile-stat"><span class="ps-val">1,847</span><span class="ps-lbl">Cases Overseen</span></div>
-    <div class="profile-stat"><span class="ps-val">48</span><span class="ps-lbl">Reports Generated</span></div>
-    <div class="profile-stat"><span class="ps-val">99.8%</span><span class="ps-lbl">Uptime</span></div>
-</div>
-
 <!-- TABS -->
 <!--<div class="tab-bar" style="margin-bottom:24px;">
     <button (click)="activeTab.set('personal')" [class.active]="activeTab()==='personal'" class="tab-btn">Personal
@@ -61,7 +33,7 @@
                         /></div>
                     <div class="avatar-meta">
                         <strong>Change Profile Photo</strong><br>
-                        JPG, PNG or WEBP. Max 2MB.
+                        JPG, PNG. Max 1MB.
                     </div>
                 </div>
 
@@ -69,33 +41,33 @@
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="form-label">First Name</label>
-                            <input class="form-input" formControlName="firstName">
+                            <input class="form-input" formControlName="firstName" placeholder="First Name">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Last Name</label>
-                            <input class="form-input" formControlName="lastName">
+                            <input class="form-input" formControlName="lastName" placeholder="Last Name">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Email</label>
-                            <input class="form-input" type="email" formControlName="email">
+                            <input class="form-input" type="email" formControlName="email" placeholder="Email">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Phone</label>
-                            <input class="form-input" formControlName="phone">
+                            <input class="form-input" formControlName="phone" placeholder="+1 (555) 123-4567">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Location</label>
-                            <input class="form-input" formControlName="location">
+                            <input class="form-input" formControlName="location" placeholder="City, Country">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Department</label>
-                            <input class="form-input" formControlName="department">
+                            <input class="form-input" formControlName="department" placeholder="e.g. Cardiology">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Bio</label>
-                        <textarea class="form-input" rows="4" formControlName="bio" style="resize:vertical;"></textarea>
+                        <textarea class="form-input" rows="4" formControlName="bio" placeholder="Add Your Bio here" style="resize:vertical;"></textarea>
                     </div>
 
                     <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px;">
