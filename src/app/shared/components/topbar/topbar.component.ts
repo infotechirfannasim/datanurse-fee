@@ -2,6 +2,7 @@ import { Component, inject, signal, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavService } from '../../../core/services/nav.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { SidebarStateService } from '../../../core/services/sidebar-state.service';  // ← naya
 
 @Component({
   selector: 'app-topbar',
@@ -10,12 +11,14 @@ import { ToastService } from '../../../core/services/toast.service';
   styleUrl: './topbar.component.scss'
 })
 export class TopbarComponent {
-  private router = inject(Router);
-  navService = inject(NavService);
-  toastService = inject(ToastService);
 
-  notifOpen = signal(false);
-  searchValue = signal('');
+  private router   = inject(Router);
+  navService       = inject(NavService);
+  toastService     = inject(ToastService);
+  sidebarState     = inject(SidebarStateService);  // ← naya
+
+  notifOpen    = signal(false);
+  searchValue  = signal('');
 
   toggleNotif(): void {
     this.notifOpen.update(v => !v);
@@ -37,7 +40,6 @@ export class TopbarComponent {
   }
 
   openAddDoctor(): void {
-    // Emit event — doctors page listens
     this.router.navigate(['/doctors']);
   }
 }
