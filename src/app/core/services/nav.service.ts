@@ -10,13 +10,13 @@ const PAGE_META: Record<string, PageMeta> = {
   doctors:    { title: 'Doctor Registry', breadcrumb: 'Physicians' },
   users: {title: 'Users', breadcrumb: 'User Management'},
   roles: {title: 'Roles', breadcrumb: 'Role Management'},
-  cases:      { title: 'Cases',           breadcrumb: 'Patient Records' },
+  patients:      { title: 'Patients',           breadcrumb: 'Patient Records' },
   search:     { title: 'Search',          breadcrumb: 'Find Records' },
   reports:    { title: 'Reports',         breadcrumb: 'Analytics' },
   data:       { title: 'Data Management', breadcrumb: 'CRUD Operations' },
   profile:    { title: 'My Profile',      breadcrumb: 'Account' },
   settings:   { title: 'Settings',        breadcrumb: 'Configuration' },
-  lovs:   { title: 'Data Reference Listing', breadcrumb: 'Data Reference Listing' },
+  lovs:   { title: 'Reference Data Listing', breadcrumb: 'Reference Data Listing' },
 
 };
 

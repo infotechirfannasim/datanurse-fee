@@ -1,355 +1,360 @@
 <!-- WELCOME BANNER -->
 <div class="welcome-banner">
-    <div class="welcome-text">
-        <span class="welcome-greeting">Good Morning</span>
-        <span class="welcome-name">Cardiac Surgery Unit</span>
-        <span class="welcome-sub">Here's what's happening across DataNurse today</span>
-    </div>
-    <div class="image-docter">
-        <img class="header-icon" src="./assets/images/doctor.png" alt="">
-    </div>
+  <div class="welcome-text">
+    <span class="welcome-greeting">Good Morning</span>
+    <span class="welcome-name">{{ userInfo()?.firstName }} {{ userInfo()?.lastName }}</span>
+    <span class="welcome-sub">Here's what's happening across DataNurse today</span>
+  </div>
+  <div class="image-docter">
+    <img class="header-icon" src="./assets/images/doctor.png" alt="">
+  </div>
 </div>
 
 <!-- STATS GRID -->
 <div class="stats-grid">
-    @for (card of statCards; track card.id) {
-        <div class="stat-card">
-            <div class="stat-card-accent" [style.background]="card.accentColor"></div>
-            <div class="stat-card-top">
-                <div class="stat-ico" [style.background]="card.bgColor">
-                    <img src="{{ card.icon }}" alt="">
-                </div>
-                <div class="stat-trend"
-                     [class.trend-up]="card.trendType==='up'"
-                     [class.trend-down]="card.trendType==='down'"
-                     [class.trend-neu]="card.trendType==='neu'">
-                    {{ card.trend }}
-                </div>
-            </div>
-            <span class="stat-val">
+  @for (card of statCards; track card.id) {
+    <div class="stat-card">
+      <div class="stat-card-accent" [style.background]="card.accentColor"></div>
+      <div class="stat-card-top">
+        <div class="stat-ico" [style.background]="card.bgColor">
+          <img src="{{ card.icon }}" alt="">
+        </div>
+        <div class="stat-trend"
+             [class.trend-up]="card.trendType==='up'"
+             [class.trend-down]="card.trendType==='down'"
+             [class.trend-neu]="card.trendType==='neu'">
+          {{ card.trend }}
+        </div>
+      </div>
+      <span class="stat-val">
         {{ card.value.toLocaleString() }}{{ card.suffix ?? '' }}
       </span>
-            <span class="stat-lbl">{{ card.label }}</span>
-            <div class="stat-bar-wrap">
-                <div class="stat-bar" [style.width]="card.barWidth" [style.background]="card.barColor"></div>
-            </div>
-        </div>
-    }
+      <span class="stat-lbl">{{ card.label }}</span>
+      <div class="stat-bar-wrap">
+        <div class="stat-bar" [style.width]="card.barWidth" [style.background]="card.barColor"></div>
+      </div>
+    </div>
+  }
 </div>
 
 <!-- BOTTOM GRID: Surgeons | Activity | Procedure Ring -->
 <div class="bottom-grid">
-
-    <!-- Top Surgeons -->
-    <div class="section-card">
-        <div class="section-header">
-            <div class="section-title">Top Surgeons</div>
-        </div>
-        <div class="doctor-list">
-            @for (s of topSurgeons; track s.name) {
-                <div class="doctor-item">
-                    <div class="d-avatar" [style.background]="s.avatarColor">{{ s.initials }}</div>
-                    <div style="flex:1; min-width:0;">
-                        <span class="d-name">{{ s.name }}</span>
-                        <span class="d-spec">{{ s.specialty }}</span>
-                        <div class="surgeon-bar-wrap">
-                            <div class="surgeon-bar" [style.width]="s.successRate + '%'" [style.background]="s.avatarColor"></div>
-                        </div>
-                    </div>
-                    <div class="d-cases">
-                        <span class="d-cases-val">{{ s.cases }}</span>
-                        <span class="d-cases-lbl">cases</span>
-                        <span class="surgeon-rate">{{ s.successRate }}%</span>
-                    </div>
-                </div>
-            }
-        </div>
+  
+  <!-- Top Surgeons -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-title">Top Surgeons</div>
     </div>
-
-    <!-- Recent Activity -->
-    <div class="section-card">
-        <div class="section-header">
-            <div class="section-title">Recent Activity</div>
+    <div class="doctor-list">
+      @for (s of topSurgeons; track s.name) {
+        <div class="doctor-item">
+          <div class="d-avatar" [style.background]="s.avatarColor">{{ s.initials }}</div>
+          <div style="flex:1; min-width:0;">
+            <span class="d-name">{{ s.name }}</span>
+            <span class="d-spec">{{ s.specialty }}</span>
+            <div class="surgeon-bar-wrap">
+              <div class="surgeon-bar" [style.width]="s.successRate + '%'" [style.background]="s.avatarColor"></div>
+            </div>
+          </div>
+          <div class="d-cases">
+            <span class="d-cases-val">{{ s.cases }}</span>
+            <span class="d-cases-lbl">cases</span>
+            <span class="surgeon-rate">{{ s.successRate }}%</span>
+          </div>
         </div>
-        <div class="feed-list">
-            <div class="feed-item">
-                <div class="feed-ico" style="background:#EEF2FF">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#2251CC" stroke-width="2"/>
-                        <circle cx="12" cy="7" r="4" stroke="#2251CC" stroke-width="2"/>
-                    </svg>
-                </div>
-                <div class="feed-content">
-                    <div class="feed-text"><strong>Ahmed Raza</strong> admitted for ASD repair surgery</div>
-                    <span class="feed-time">5 minutes ago</span>
-                </div>
-            </div>
-            <div class="feed-item">
-                <div class="feed-ico" style="background:rgba(14,165,160,0.1)">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                        <path d="M9 11l3 3L22 4" stroke="#0EA5A0" stroke-width="2"/>
-                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="#0EA5A0" stroke-width="2"/>
-                    </svg>
-                </div>
-                <div class="feed-content">
-                    <div class="feed-text"><strong>Case CS-2024-0892</strong> marked as Recovered</div>
-                    <span class="feed-time">22 minutes ago</span>
-                </div>
-            </div>
-            <div class="feed-item">
-                <div class="feed-ico" style="background:rgba(245,158,11,0.1)">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#F59E0B" stroke-width="2"/>
-                        <polyline points="14 2 14 8 20 8" stroke="#F59E0B" stroke-width="2"/>
-                    </svg>
-                </div>
-                <div class="feed-content">
-                    <div class="feed-text"><strong>Q1-2026 PDF Report</strong> generated and exported</div>
-                    <span class="feed-time">1 hour ago</span>
-                </div>
-            </div>
-            <div class="feed-item">
-                <div class="feed-ico" style="background:rgba(232,52,74,0.1)">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="9" stroke="#E8344A" stroke-width="2"/>
-                        <path d="M12 7v5l3 2" stroke="#E8344A" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                </div>
-                <div class="feed-content">
-                    <div class="feed-text"><strong>Follow-up overdue</strong> for Sara Malik (CS-2024-0874)</div>
-                    <span class="feed-time">3 hours ago</span>
-                </div>
-            </div>
-        </div>
+      }
     </div>
-
-    <!-- Procedure Distribution Ring -->
-    <div class="section-card">
-        <div class="section-header">
-            <div>
-                <div class="section-title">Case Distribution</div>
-                <div class="section-sub">By procedure type</div>
-            </div>
-        </div>
-        <div class="ring-wrap">
-            <div class="ring-chart-area">
-                <div class="ring-center">
-                    <svg class="ring-svg" width="120" height="120" viewBox="0 0 120 120">
-                        <circle cx="60" cy="60" r="48" fill="none" stroke="var(--bg)" stroke-width="16"/>
-                        <circle cx="60" cy="60" r="48" fill="none" stroke="#2251CC" stroke-width="16"
-                                stroke-dasharray="85 217" stroke-linecap="round" transform="rotate(-90 60 60)"/>
-                        <circle cx="60" cy="60" r="48" fill="none" stroke="#E8344A" stroke-width="16"
-                                stroke-dasharray="67 235" stroke-linecap="round" transform="rotate(51 60 60)"/>
-                        <circle cx="60" cy="60" r="48" fill="none" stroke="#0EA5A0" stroke-width="16"
-                                stroke-dasharray="58 244" stroke-linecap="round" transform="rotate(121 60 60)"/>
-                        <circle cx="60" cy="60" r="48" fill="none" stroke="#F59E0B" stroke-width="16"
-                                stroke-dasharray="55 247" stroke-linecap="round" transform="rotate(183 60 60)"/>
-                        <circle cx="60" cy="60" r="48" fill="none" stroke="#5B4FCF" stroke-width="16"
-                                stroke-dasharray="37 265" stroke-linecap="round" transform="rotate(250 60 60)"/>
-                    </svg>
-                    <div class="ring-label-wrap">
-                        <span class="ring-big">312</span>
-                        <span class="ring-small">Total</span>
-                    </div>
-                </div>
-                <div class="ring-legend">
-                    @for (p of procedures; track p.label) {
-                        <div class="ring-legend-item">
-                            <div class="ring-legend-dot" [style.background]="p.color"></div>
-                            <span class="ring-legend-label">{{ p.label }}</span>
-                            <span class="ring-legend-val">{{ p.percentage }}%</span>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
+  </div>
+  
+  <!-- Recent Activity -->
+<!--   <div class="section-card"> -->
+<!--     <div class="section-header"> -->
+<!--       <div class="section-title">Recent Activity</div> -->
+<!--     </div> -->
+<!--     <div class="feed-list"> -->
+<!--       <div class="feed-item"> -->
+<!--         <div class="feed-ico" style="background:#EEF2FF"> -->
+<!--           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"> -->
+<!--             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#2251CC" stroke-width="2"/> -->
+<!--             <circle cx="12" cy="7" r="4" stroke="#2251CC" stroke-width="2"/> -->
+<!--           </svg> -->
+<!--         </div> -->
+<!--         <div class="feed-content"> -->
+<!--           <div class="feed-text"><strong>Ahmed Raza</strong> admitted for ASD repair surgery</div> -->
+<!--           <span class="feed-time">5 minutes ago</span> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--       <div class="feed-item"> -->
+<!--         <div class="feed-ico" style="background:rgba(14,165,160,0.1)"> -->
+<!--           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"> -->
+<!--             <path d="M9 11l3 3L22 4" stroke="#0EA5A0" stroke-width="2"/> -->
+<!--             <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="#0EA5A0" stroke-width="2"/> -->
+<!--           </svg> -->
+<!--         </div> -->
+<!--         <div class="feed-content"> -->
+<!--           <div class="feed-text"><strong>Case CS-2024-0892</strong> marked as Recovered</div> -->
+<!--           <span class="feed-time">22 minutes ago</span> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--       <div class="feed-item"> -->
+<!--         <div class="feed-ico" style="background:rgba(245,158,11,0.1)"> -->
+<!--           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"> -->
+<!--             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#F59E0B" stroke-width="2"/> -->
+<!--             <polyline points="14 2 14 8 20 8" stroke="#F59E0B" stroke-width="2"/> -->
+<!--           </svg> -->
+<!--         </div> -->
+<!--         <div class="feed-content"> -->
+<!--           <div class="feed-text"><strong>Q1-2026 PDF Report</strong> generated and exported</div> -->
+<!--           <span class="feed-time">1 hour ago</span> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--       <div class="feed-item"> -->
+<!--         <div class="feed-ico" style="background:rgba(232,52,74,0.1)"> -->
+<!--           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"> -->
+<!--             <circle cx="12" cy="12" r="9" stroke="#E8344A" stroke-width="2"/> -->
+<!--             <path d="M12 7v5l3 2" stroke="#E8344A" stroke-width="2" stroke-linecap="round"/> -->
+<!--           </svg> -->
+<!--         </div> -->
+<!--         <div class="feed-content"> -->
+<!--           <div class="feed-text"><strong>Follow-up overdue</strong> for Sara Malik (CS-2024-0874)</div> -->
+<!--           <span class="feed-time">3 hours ago</span> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--     </div> -->
+<!--   </div> -->
+<!--    -->
+  <!-- Procedure Distribution Ring -->
+  <div class="section-card">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Case Distribution</div>
+        <div class="section-sub">By procedure type</div>
+      </div>
     </div>
+    <div class="ring-wrap">
+      <div class="ring-chart-area">
+        <div class="ring-center">
+          <svg class="ring-svg" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--bg)" stroke-width="16"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="#2251CC" stroke-width="16"
+                    stroke-dasharray="85 217" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="#E8344A" stroke-width="16"
+                    stroke-dasharray="67 235" stroke-linecap="round" transform="rotate(51 60 60)"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="#0EA5A0" stroke-width="16"
+                    stroke-dasharray="58 244" stroke-linecap="round" transform="rotate(121 60 60)"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="#F59E0B" stroke-width="16"
+                    stroke-dasharray="55 247" stroke-linecap="round" transform="rotate(183 60 60)"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="#5B4FCF" stroke-width="16"
+                    stroke-dasharray="37 265" stroke-linecap="round" transform="rotate(250 60 60)"/>
+          </svg>
+          <div class="ring-label-wrap">
+            <span class="ring-big">312</span>
+            <span class="ring-small">Total</span>
+          </div>
+        </div>
+        <div class="ring-legend">
+          @for (p of procedures; track p.label) {
+            <div class="ring-legend-item">
+              <div class="ring-legend-dot" [style.background]="p.color"></div>
+              <span class="ring-legend-label">{{ p.label }}</span>
+              <span class="ring-legend-val">{{ p.percentage }}%</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- DEMOGRAPHICS & FOLLOW-UP ROW -->
 <div class="demo-followup-grid">
-
-    <!-- Age Distribution -->
-    <div class="section-card">
-        <div class="section-header">
-            <div>
-                <div class="section-title">Patient Demographics</div>
-                <div class="section-sub">Age at time of surgery</div>
-            </div>
-        </div>
-        <div class="demo-body">
-            @for (ag of ageGroups; track ag.label) {
-                <div class="age-row">
-                    <span class="age-label">{{ ag.label }}</span>
-                    <div class="age-track">
-                        <div class="age-fill" [style.width]="ag.percentage + '%'" [style.background]="ag.color"></div>
-                    </div>
-                    <span class="age-val">{{ ag.percentage }}%</span>
-                </div>
-            }
-            <!-- Gender -->
-            <div class="gender-row">
-                <span class="gender-label">Gender</span>
-                <div class="gender-bar">
-                    <div class="gender-male" [style.width]="genderMale + '%'">Male {{ genderMale }}%</div>
-                    <div class="gender-female" [style.width]="genderFemale + '%'">Female {{ genderFemale }}%</div>
-                </div>
-            </div>
-            <!-- Province -->
-            <div class="section-sub" style="margin:16px 0 10px;font-weight:600;color:var(--navy);font-size:13px;">Province Breakdown</div>
-            @for (pv of provinces; track pv.label) {
-                <div class="age-row">
-                    <span class="age-label">{{ pv.label }}</span>
-                    <div class="age-track">
-                        <div class="age-fill" [style.width]="pv.percentage + '%'" [style.background]="pv.color"></div>
-                    </div>
-                    <span class="age-val">{{ pv.percentage }}%</span>
-                </div>
-            }
-        </div>
+  
+  <!-- Age Distribution -->
+  <div class="section-card">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Patient Demographics</div>
+        <div class="section-sub">Age at time of surgery</div>
+      </div>
     </div>
-
-    <!-- Follow-up Completion -->
-    <div class="section-card">
-        <div class="section-header">
-            <div>
-                <div class="section-title">Follow-up & Outcomes</div>
-                <div class="section-sub">Post-discharge completion rate</div>
-            </div>
+    <div class="demo-body">
+      @for (ag of ageGroups; track ag.label) {
+        <div class="age-row">
+          <span class="age-label">{{ ag.label }}</span>
+          <div class="age-track">
+            <div class="age-fill" [style.width]="ag.percentage + '%'" [style.background]="ag.color"></div>
+          </div>
+          <span class="age-val">{{ ag.percentage }}%</span>
         </div>
-        <div class="demo-body">
-            <!-- Big number -->
-            <div class="followup-hero">
-                <span class="followup-pct">78%</span>
-                <span class="followup-lbl">Overall follow-up rate</span>
-            </div>
-            @for (fu of followups; track fu.label) {
-                <div class="followup-row">
-                    <div class="followup-meta">
-                        <span class="followup-item-lbl">{{ fu.label }}</span>
-                        <span class="followup-item-val">{{ fu.rate }}%</span>
-                    </div>
-                    <div class="age-track">
-                        <div class="age-fill" [style.width]="fu.rate + '%'" [style.background]="fu.color"></div>
-                    </div>
-                </div>
-            }
-
-            <!-- Outcome summary cards -->
-            <div class="outcome-mini-grid">
-                <div class="outcome-mini-card">
-                    <span class="outcome-mini-val" style="color:#2251CC">91.4%</span>
-                    <span class="outcome-mini-lbl">30-day success</span>
-                </div>
-                <div class="outcome-mini-card">
-                    <span class="outcome-mini-val" style="color:#0EA5A0">89.1%</span>
-                    <span class="outcome-mini-lbl">In-hospital</span>
-                </div>
-                <div class="outcome-mini-card">
-                    <span class="outcome-mini-val" style="color:#5B4FCF">87.2%</span>
-                    <span class="outcome-mini-lbl">1-year survival</span>
-                </div>
-            </div>
+      }
+      <!-- Gender -->
+      <div class="gender-row">
+        <span class="gender-label">Gender</span>
+        <div class="gender-bar">
+          <div class="gender-male" [style.width]="genderMale + '%'">Male {{ genderMale }}%</div>
+          <div class="gender-female" [style.width]="genderFemale + '%'">Female {{ genderFemale }}%</div>
         </div>
+      </div>
+      <!-- Province -->
+      <div class="section-sub" style="margin:16px 0 10px;font-weight:600;color:var(--navy);font-size:13px;">Province
+                                                                                                            Breakdown
+      </div>
+      @for (pv of provinces; track pv.label) {
+        <div class="age-row">
+          <span class="age-label">{{ pv.label }}</span>
+          <div class="age-track">
+            <div class="age-fill" [style.width]="pv.percentage + '%'" [style.background]="pv.color"></div>
+          </div>
+          <span class="age-val">{{ pv.percentage }}%</span>
+        </div>
+      }
     </div>
+  </div>
+  
+  <!-- Follow-up Completion -->
+  <div class="section-card">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Follow-up & Outcomes</div>
+        <div class="section-sub">Post-discharge completion rate</div>
+      </div>
+    </div>
+    <div class="demo-body">
+      <!-- Big number -->
+      <div class="followup-hero">
+        <span class="followup-pct">78%</span>
+        <span class="followup-lbl">Overall follow-up rate</span>
+      </div>
+      @for (fu of followups; track fu.label) {
+        <div class="followup-row">
+          <div class="followup-meta">
+            <span class="followup-item-lbl">{{ fu.label }}</span>
+            <span class="followup-item-val">{{ fu.rate }}%</span>
+          </div>
+          <div class="age-track">
+            <div class="age-fill" [style.width]="fu.rate + '%'" [style.background]="fu.color"></div>
+          </div>
+        </div>
+      }
+      
+      <!-- Outcome summary cards -->
+      <div class="outcome-mini-grid">
+        <div class="outcome-mini-card">
+          <span class="outcome-mini-val" style="color:#2251CC">91.4%</span>
+          <span class="outcome-mini-lbl">30-day success</span>
+        </div>
+        <div class="outcome-mini-card">
+          <span class="outcome-mini-val" style="color:#0EA5A0">89.1%</span>
+          <span class="outcome-mini-lbl">In-hospital</span>
+        </div>
+        <div class="outcome-mini-card">
+          <span class="outcome-mini-val" style="color:#5B4FCF">87.2%</span>
+          <span class="outcome-mini-lbl">1-year survival</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- MAIN GRID: Case Volume Chart + Table -->
 <div class="main-grid">
-    <div class="section-card">
-        <div class="section-header">
-            <div>
-                <div class="section-title">Case Volume</div>
-                <div class="section-sub">New cases registered per month</div>
-            </div>
-            <div class="section-actions">
-                <button class="pill-btn"
-                        [class.pill-btn-active]="chartPeriod==='week'"
-                        [class.pill-btn-ghost]="chartPeriod!=='week'"
-                        (click)="setPeriod('week')">Week</button>
-                <button class="pill-btn"
-                        [class.pill-btn-active]="chartPeriod==='month'"
-                        [class.pill-btn-ghost]="chartPeriod!=='month'"
-                        (click)="setPeriod('month')">Month</button>
-                <button class="pill-btn"
-                        [class.pill-btn-active]="chartPeriod==='year'"
-                        [class.pill-btn-ghost]="chartPeriod!=='year'"
-                        (click)="setPeriod('year')">Year</button>
-            </div>
-        </div>
-
-        <div class="chart-wrap">
-            <div class="chart-legend">
-                <div class="legend-item">
-                    <div class="legend-dot" style="background:var(--navy)"></div>
-                    Cases
-                </div>
-                <div class="legend-item">
-                    <div class="legend-dot" style="background:var(--blue-lt)"></div>
-                    Resolved
-                </div>
-            </div>
-            <div class="chart-bars">
-                @for (d of caseVolumeData; track d.month) {
-                    <div class="bar-group">
-                        <div class="bar bar-navy" [style.height]="getBarHeightPercent(d.cases, caseVolumeData)"></div>
-                        <div class="bar bar-blue" [style.height]="getBarHeightPercent(d.resolved, caseVolumeData)"></div>
-                        <span class="bar-label">{{ d.month }}</span>
-                    </div>
-                }
-            </div>
-        </div>
-
-        <!-- Recent Cases Table -->
-        <table class="cases-table">
-            <thead>
-            <tr>
-                <th>Patient</th>
-                <th>Surgeon</th>
-                <th>Procedure</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-                @for (c of recentCases; track c.patientId) {
-                    <tr>
-                        <td>
-                            <div class="patient-cell">
-                                <div class="p-avatar" [style.background]="c.avatarColor">{{ c.initials }}</div>
-                                <div>
-                                    <div class="p-name">{{ c.patientName }}</div>
-                                    <div class="p-id">{{ c.patientId }}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>{{ c.surgeon }}</td>
-                        <td>{{ c.procedure }}</td>
-                        <td><span class="badge" [ngClass]="getStatusClass(c.status)">{{ c.status }}</span></td>
-                        <td>{{ c.date }}</td>
-                        <td>
-                            <button class="action-btn">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                                    <circle cx="12" cy="5" r="1.5" fill="var(--muted)"/>
-                                    <circle cx="12" cy="12" r="1.5" fill="var(--muted)"/>
-                                    <circle cx="12" cy="19" r="1.5" fill="var(--muted)"/>
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-        <!-- Export Button -->
-        <div class="export-row">
-            <button class="export-pdf-btn" (click)="onQuickAction('PDF Export')">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 3v12M7 10l5 5 5-5M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                Export PDF Report
-            </button>
-        </div>
+  <div class="section-card">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Case Volume</div>
+        <div class="section-sub">New cases registered per month</div>
+      </div>
+      <div class="section-actions">
+        <button class="pill-btn"
+                [class.pill-btn-active]="chartPeriod==='week'"
+                [class.pill-btn-ghost]="chartPeriod!=='week'"
+                (click)="setPeriod('week')">Week
+        </button>
+        <button class="pill-btn"
+                [class.pill-btn-active]="chartPeriod==='month'"
+                [class.pill-btn-ghost]="chartPeriod!=='month'"
+                (click)="setPeriod('month')">Month
+        </button>
+        <button class="pill-btn"
+                [class.pill-btn-active]="chartPeriod==='year'"
+                [class.pill-btn-ghost]="chartPeriod!=='year'"
+                (click)="setPeriod('year')">Year
+        </button>
+      </div>
     </div>
+    
+    <div class="chart-wrap">
+      <div class="chart-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--navy)"></div>
+          Cases
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--blue-lt)"></div>
+          Resolved
+        </div>
+      </div>
+      <div class="chart-bars">
+        @for (d of caseVolumeData; track d.month) {
+          <div class="bar-group">
+            <div class="bar bar-navy" [style.height]="getBarHeightPercent(d.cases, caseVolumeData)"></div>
+            <div class="bar bar-blue" [style.height]="getBarHeightPercent(d.resolved, caseVolumeData)"></div>
+            <span class="bar-label">{{ d.month }}</span>
+          </div>
+        }
+      </div>
+    </div>
+    
+    <!-- Recent Cases Table -->
+    <table class="cases-table">
+      <thead>
+      <tr>
+        <th>Patient</th>
+        <th>Surgeon</th>
+        <th>Procedure</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (c of recentCases; track c.patientId) {
+          <tr>
+            <td>
+              <div class="patient-cell">
+                <div class="p-avatar" [style.background]="c.avatarColor">{{ c.initials }}</div>
+                <div>
+                  <div class="p-name">{{ c.patientName }}</div>
+                  <div class="p-id">{{ c.patientId }}</div>
+                </div>
+              </div>
+            </td>
+            <td>{{ c.surgeon }}</td>
+            <td>{{ c.procedure }}</td>
+            <td><span class="badge" [ngClass]="getStatusClass(c.status)">{{ c.status }}</span></td>
+            <td>{{ c.date }}</td>
+            <td>
+              <button class="action-btn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="5" r="1.5" fill="var(--muted)"/>
+                  <circle cx="12" cy="12" r="1.5" fill="var(--muted)"/>
+                  <circle cx="12" cy="19" r="1.5" fill="var(--muted)"/>
+                </svg>
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    
+    <!-- Export Button -->
+    <div class="export-row">
+      <button class="export-pdf-btn" (click)="onQuickAction('PDF Export')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <path d="M12 3v12M7 10l5 5 5-5M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Export PDF Report
+      </button>
+    </div>
+  </div>
 </div>

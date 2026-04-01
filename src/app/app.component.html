@@ -1,14 +1,18 @@
 @if (isLoggedIn) {
-<app-sidebar></app-sidebar>
-<div class="main">
-  <app-topbar></app-topbar>
-  <div class="content">
+  <!-- Mobile overlay -->
+  @if (sidebarState.isOpen() && sidebarState.isMobile) {
+    <div class="sidebar-overlay" (click)="sidebarState.close()"></div>
+  }
+  <app-sidebar [class.sidebar-hidden]="!sidebarState.isOpen()"></app-sidebar>
+  <div class="main" [class.main-full]="!sidebarState.isOpen()">
+    <app-topbar></app-topbar>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+} @else {
+  <div class="content-login">
     <router-outlet></router-outlet>
   </div>
-</div>
-} @else {
-    <div class="content-login">
-        <router-outlet></router-outlet>
-    </div>
 }
 <app-toast></app-toast>

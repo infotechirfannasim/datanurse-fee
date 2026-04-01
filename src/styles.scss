@@ -1,4 +1,5 @@
-@import "global";
+@use 'sass:color';
+@use "global";
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -19,6 +20,7 @@
   --amber: #F59E0B;
   --green: #22C55E;
   --bg: #F0F3FA;
+  --tableheader: rgba(11, 30, 69, 0.10);
   --card: #FFFFFF;
   --border: #E2E8F4;
   --text: #0B1E45;
@@ -93,7 +95,7 @@ body {
   border-radius: 10px;
   font-size: 13px;
   font-weight: 600;
-  font-family: 'DM Sans';
+  //font-family: 'DM Sans';
   cursor: pointer;
   transition: all 0.15s;
   border: none;
@@ -245,7 +247,7 @@ body {
   font-weight: 500;
   color: var(--text);
   cursor: pointer;
-  font-family: 'DM Sans';
+  //font-family: 'DM Sans';
   transition: border-color 0.15s;
   white-space: nowrap;
 }
@@ -442,10 +444,10 @@ body {
   padding: 10px 14px;
   border: 1.5px solid var(--border);
   border-radius: 9px;
-  font-family: 'DM Sans';
+  //font-family: 'DM Sans';
   font-size: 13px;
-  background: #FFFFFF;
-  background-color: #FFFFFF;
+  background: #ffffff;
+  //background-color: #ffffff;
   color: var(--text);
   outline: none;
   transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
@@ -467,7 +469,7 @@ body {
   padding: 16px;
   border: 1.5px solid var(--border);
   border-radius: 9px;
-  font-family: 'DM Sans';
+  //font-family: 'DM Sans';
   font-size: 13px;
   color: var(--text);
   background-color: transparent;
@@ -694,7 +696,7 @@ select.form-input {
   border: none;
   outline: none;
   background: transparent;
-  font-family: 'DM Sans';
+  //font-family: 'DM Sans';
   font-size: 13px;
   color: var(--text);
   min-width: 100px;
@@ -754,7 +756,7 @@ select.form-input {
   font-weight: 600;
   color: var(--muted);
   cursor: pointer;
-  font-family: 'DM Sans';
+  //font-family: 'DM Sans';
   transition: all 0.15s;
 }
 
@@ -874,7 +876,7 @@ select.form-input {
   outline: none;
   font-size: 13px;
   color: var(--text);
-  font-family: 'DM Sans';
+  //font-family: 'DM Sans';
   width: 100%;
 }
 
@@ -1379,7 +1381,7 @@ p-multiselect {
   transition: border-color 0.15s, box-shadow 0.15s !important;
 
   &:hover {
-    border-color: darken($border, 10%) !important;
+    border-color: color.adjust($border, $lightness: -10%) !important;
   }
 
   &.p-focus {
