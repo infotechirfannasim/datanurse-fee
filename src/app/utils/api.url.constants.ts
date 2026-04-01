@@ -26,6 +26,8 @@ export const LOV_API_URL = 'lovs';
 export const LOV_TYPES_API_URL = 'lovs/types/config';
 export const GET_LOV_BY_TYPE_API_URL = 'lovs/';
 export const GET_LOV_BULK_API_URL = 'lovs/bulk';
+export const LOVS_BY_TYPE = 'lovs/type';
+export const LOVS_BY_TYPE_CODE = 'lovs/{{type}}/{{code}}';
 
 // MODULES
 export const MODULES_API_URL = 'roles/modules';

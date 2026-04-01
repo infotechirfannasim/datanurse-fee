@@ -18,6 +18,7 @@ import {JwtHelperService} from '@auth0/angular-jwt';
 import {AppConstants} from '../../utils/app-constants';
 import {RequestService} from './request.service';
 import {LOGIN_API_URL} from '../../utils/api.url.constants';
+import {ToastService} from "./toast.service";
 
 @Injectable({
     providedIn: 'root',
@@ -27,6 +28,7 @@ export class AuthService {
     private router = inject(Router);
     private jwtHelper = new JwtHelperService();
     private requestService = inject(RequestService);
+    private toastService = inject(ToastService);
 
     private currentUserSubject = new BehaviorSubject<User | null>(null);
     currentUser$ = this.currentUserSubject.asObservable();
@@ -42,7 +44,7 @@ export class AuthService {
             map((response) => {
                 if (response.success) {
                     this.handleAuthentication(response.data);
-                    // this.toastr.success('Login successful!', 'Welcome back!');
+                    this.toastService.show('Login successful!', 'success');
                     return response.data;
                 }
                 throw new Error(response.message || 'Login failed');
