@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, signal, ViewChild } from '@angular/core';
+import {Component, ElementRef, HostListener, inject, signal, ViewChild} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from "../../../core/services/auth.service";
 import { User } from "../../../core/models/user.model";

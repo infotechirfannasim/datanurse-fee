@@ -67,7 +67,7 @@
               }
             </td>
             <td style="font-size:12.5px; color: var(--muted);">
-              @if (doc.hospitalAffiliations?.length) {
+              @if (doc.hospitalAffiliations.length) {
                 @for (hospital of doc.hospitalAffiliations; track hospital.name; let last = $last) {
                   {{ hospital.name }} ({{ hospital.city }})
                   @if (!last) {

@@ -1,6 +1,6 @@
 .registry-card {
   background: var(--card);
-  border-radius: 16px;
+  border-radius: 5px;
   border: 1px solid var(--border);
   overflow: hidden;
 }
@@ -22,11 +22,11 @@
   th {
     font-size: 10.5px;
     font-weight: 600;
-    color: var(--card);
+    color: var(--navy);
     text-transform: uppercase;
     letter-spacing: 0.07em;
     padding: 12px 20px;
-    background: var(--navy);
+    background: var(--tableheader);
     text-align: left;
     border-bottom: 1px solid var(--border);
     white-space: nowrap;

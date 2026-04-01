@@ -1,20 +1,22 @@
 <div class="toast-container">
-  @for (toast of toastService.toasts(); track toast.id) {
-    <div class="toast" [class.toast-success]="toast.type === 'success'" [class.toast-error]="toast.type === 'error'">
-      <svg class="toast-ico" viewBox="0 0 24 24" fill="none">
-        @if (toast.type === 'success') {
-          <path d="M9 11l3 3L22 4" stroke="white" stroke-width="2"/>
-          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="white" stroke-width="2"/>
-        } @else if (toast.type === 'error') {
-          <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
-          <line x1="12" y1="8" x2="12" y2="12" stroke="white" stroke-width="2"/>
-          <circle cx="12" cy="16" r="1" fill="white"/>
-        } @else {
-          <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
-          <path d="M12 8v4M12 16h.01" stroke="white" stroke-width="2"/>
-        }
-      </svg>
-      <span>{{ toast.message }}</span>
-    </div>
-  }
+    @for (toast of toastService.toasts(); track toast.id) {
+        <div class="toast" [class.toast-success]="toast.type === 'success'"
+             [class.toast-error]="toast.type === 'error'">
+            <svg class="toast-ico" viewBox="0 0 24 24" fill="none">
+                @if (toast.type === 'success') {
+                    <path d="M9 11l3 3L22 4" stroke="white" stroke-width="2"/>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="white"
+                          stroke-width="2"/>
+                } @else if (toast.type === 'error') {
+                    <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
+                    <line x1="12" y1="8" x2="12" y2="12" stroke="white" stroke-width="2"/>
+                    <circle cx="12" cy="16" r="1" fill="white"/>
+                } @else {
+                    <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
+                    <path d="M12 8v4M12 16h.01" stroke="white" stroke-width="2"/>
+                }
+            </svg>
+            <span>{{ toast.message }}</span>
+        </div>
+    }
 </div>

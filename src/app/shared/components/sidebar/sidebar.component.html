@@ -19,8 +19,8 @@
     </span>
     <span class="nav-label">Dashboard</span>
   </a>
-
-    <div (click)="toggleUserManagement()" [class.expanded]="isUserManagementExpanded" class="nav-item nav-parent">
+  
+  <div (click)="toggleUserManagement()" [class.expanded]="isUserManagementExpanded" class="nav-item nav-parent">
     <span class="nav-icon">
       <svg fill="none" height="17" viewBox="0 0 24 24" width="17">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="rgba(255,255,255,0.8)" stroke-linecap="round"
@@ -30,17 +30,17 @@
         <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="rgba(255,255,255,0.8)" stroke-linecap="round" stroke-width="2"/>
       </svg>
     </span>
-        <span class="nav-label">User Management</span>
-        <span class="nav-chevron">
+    <span class="nav-label">User Management</span>
+    <span class="nav-chevron">
       <svg fill="none" height="16" viewBox="0 0 24 24" width="16">
         <polyline points="6 9 12 15 18 9" stroke="rgba(255,255,255,0.8)" stroke-linecap="round" stroke-linejoin="round"
                   stroke-width="2"/>
       </svg>
     </span>
-    </div>
-
-    <div [class.show]="isUserManagementExpanded" class="nav-submenu">
-        <a class="nav-subitem" routerLink="/users" routerLinkActive="active">
+  </div>
+  
+  <div [class.show]="isUserManagementExpanded" class="nav-submenu">
+    <a class="nav-subitem" routerLink="/users" routerLinkActive="active">
       <span class="nav-subicon">
         <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
           <circle cx="12" cy="8" r="4" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
@@ -48,32 +48,51 @@
                 stroke-width="2"/>
         </svg>
       </span>
-            <span class="nav-sublabel">Users</span>
-        </a>
-        <a class="nav-subitem" routerLink="/roles" routerLinkActive="active">
+      <span class="nav-sublabel">Users</span>
+    </a>
+    <a class="nav-subitem" routerLink="/roles" routerLinkActive="active">
       <span class="nav-subicon">
         <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
           <path d="M12 2L15 8H22L16 12L19 18L12 14L5 18L8 12L2 8H9L12 2Z" stroke="rgba(255,255,255,0.8)"
                 stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
         </svg>
       </span>
-            <span class="nav-sublabel">Roles</span>
-        </a>
-    </div>
-
+      <span class="nav-sublabel">Roles</span>
+    </a>
+  </div>
+  
+  
   <a class="nav-item" routerLink="/doctors" routerLinkActive="active">
     <span class="nav-icon">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="9" cy="7" r="4" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
+      <svg width="17" height="17" viewBox="0 0 21 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_10396_73315)">
+          <path d="M6.52988 8.09981L6.66988 8.08781C6.72062 8.08243 6.76915 8.06418 6.81087 8.03481L6.80988 8.03581C6.94388 8.49781 7.10788 8.98381 7.31288 9.49281C7.57588 10.1588 7.83488 10.7058 8.12488 11.2338L8.08488 11.1538C8.06088 11.5178 8.03188 11.8918 7.99388 12.2538C7.97687 12.4673 7.93354 12.6779 7.86487 12.8808L7.86987 12.8628C7.85787 12.8678 7.84088 14.9428 7.84088 14.9428C7.8416 15.5866 8.05873 16.2114 8.45737 16.7168C8.85601 17.2223 9.41302 17.5791 10.0389 17.7298L10.0589 17.7338C10.0862 17.6613 10.135 17.5989 10.1988 17.5549C10.2627 17.5109 10.3384 17.4875 10.4159 17.4878H10.9899C11.0665 17.4888 11.1412 17.5124 11.2045 17.5557C11.2678 17.5989 11.317 17.6598 11.3459 17.7308L11.3469 17.7338C11.978 17.5874 12.5412 17.2325 12.9457 16.7264C13.3502 16.2203 13.5722 15.5926 13.5759 14.9448C13.5759 14.9448 13.5409 12.8778 13.5229 12.8638C13.4623 12.6708 13.4214 12.4721 13.4009 12.2708L13.3999 12.2558C13.3649 11.8918 13.3419 11.5268 13.3089 11.1558C13.5559 10.7098 13.8149 10.1638 14.0429 9.60081L14.0809 9.49481C14.2859 8.98581 14.4449 8.50081 14.5839 8.03781C14.625 8.06687 14.6728 8.0851 14.7229 8.09081H14.7239L14.8649 8.10281C15.0349 8.12081 15.1849 7.98081 15.1989 7.76381L15.3509 5.83281V5.83081C15.3508 5.75311 15.3224 5.67809 15.2711 5.61976C15.2197 5.56143 15.1489 5.52377 15.0719 5.51381H15.0529C15.1874 4.50834 15.1049 3.48571 14.8109 2.51481L14.8239 2.56581C14.5418 1.93953 14.1128 1.39054 13.5733 0.965415C13.0338 0.540293 12.3998 0.251593 11.7249 0.123813L11.6989 0.119813C11.3716 0.0549322 11.0394 0.017469 10.7059 0.0078125H10.6849C10.3359 0.0141222 9.98835 0.0536337 9.64688 0.125813L9.68287 0.119813C9.00851 0.245405 8.37397 0.530512 7.83225 0.951328C7.29053 1.37214 6.85735 1.91645 6.56887 2.53881L6.55788 2.56581C6.27006 3.53323 6.19333 4.55118 6.33288 5.55081L6.32888 5.51381C6.25161 5.52217 6.18013 5.55872 6.1281 5.61646C6.07608 5.6742 6.04716 5.74909 6.04688 5.82681V5.83381L6.19887 7.76481C6.21287 7.98681 6.36487 8.12081 6.52887 8.10281L6.52988 8.09981Z" fill="rgba(255,255,255,0.8)"/>
+          <path d="M21.4168 20.8761C21.3468 17.8361 21.0428 17.1481 20.8788 16.6821C20.8138 16.4951 20.7608 15.2311 18.6728 14.4111C17.3928 13.9071 15.7408 13.8971 14.3428 13.3061V14.9501C14.3418 15.793 14.0474 16.6092 13.5102 17.2588C12.973 17.9084 12.2265 18.3508 11.3988 18.5101L11.3758 18.5141C11.3608 18.6028 11.3152 18.6834 11.2468 18.7419C11.1785 18.8003 11.0918 18.833 11.0018 18.8341H10.9838V20.0741C10.9838 20.6559 11.215 21.214 11.6264 21.6255C12.0379 22.0369 12.5959 22.2681 13.1778 22.2681C13.7597 22.2681 14.3178 22.0369 14.7292 21.6255C15.1407 21.214 15.3718 20.6559 15.3718 20.0741V19.2081C15.0698 19.1638 14.7945 19.0103 14.598 18.7768C14.4015 18.5432 14.2973 18.2457 14.3053 17.9406C14.3133 17.6355 14.4328 17.3439 14.6413 17.1209C14.8498 16.8979 15.1328 16.7591 15.4367 16.7307C15.7406 16.7023 16.0444 16.7862 16.2906 16.9666C16.5368 17.1471 16.7083 17.4115 16.7728 17.7098C16.8372 18.0082 16.7901 18.3198 16.6403 18.5858C16.4905 18.8517 16.2484 19.0535 15.9598 19.1531L15.9508 19.1561V20.1211C15.9508 20.8568 15.6586 21.5624 15.1383 22.0826C14.6181 22.6028 13.9125 22.8951 13.1768 22.8951C12.4411 22.8951 11.7355 22.6028 11.2153 22.0826C10.6951 21.5624 10.4028 20.8568 10.4028 20.1211V20.0711V20.0731V18.8221C10.3171 18.8164 10.2359 18.7819 10.1723 18.7241C10.1088 18.6664 10.0666 18.5888 10.0528 18.5041V18.5021C9.22436 18.3441 8.47662 17.9029 7.9377 17.2542C7.39878 16.6054 7.10222 15.7894 7.09882 14.9461V13.2891C5.69482 13.8921 4.03282 13.9041 2.74582 14.4091C0.651823 15.2281 0.603823 16.4891 0.539823 16.6791C0.379823 17.1471 0.071823 17.8321 0.00182301 20.8741C-0.010177 21.2741 0.00182307 21.8871 1.20782 22.4231C3.83382 23.4531 7.21682 23.7731 10.5518 24.0031H10.8718C14.2138 23.7751 17.5918 23.4561 20.2158 22.4231C21.4168 21.8901 21.4278 21.2801 21.4168 20.8761ZM6.73582 19.6361H5.48982V20.8871H4.59982V19.6401H3.35382V18.7501H4.59982V17.5041H5.48982V18.7501H6.73582V19.6361Z" fill="rgba(255,255,255,0.8)" />
+          <path d="M16.2288 17.9626C16.2287 17.7841 16.1577 17.612 16.0314 17.4859C15.9052 17.3598 15.734 17.289 15.5556 17.2891C15.3771 17.2891 15.206 17.3601 15.0798 17.4863C14.9537 17.6125 14.8828 17.7836 14.8828 17.9621C14.8828 18.1405 14.9537 18.3117 15.0798 18.4379C15.206 18.5641 15.3771 18.635 15.5556 18.6351C15.734 18.6351 15.9052 18.5643 16.0314 18.4382C16.1577 18.3121 16.2287 18.141 16.2288 17.9626Z" />
+        </g>
+        <defs>
+          <clipPath id="clip0_10396_73315">
+            <rect width="21" height="24" fill="white"/>
+          </clipPath>
+        </defs>
       </svg>
     </span>
     <span class="nav-label">Doctor Registry</span>
   </a>
-
-    <a class="nav-item" routerLink="/lovs" routerLinkActive="active">
+  
+  <a class="nav-item" routerLink="/patients" routerLinkActive="active">
+    <span class="nav-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
+        <polyline points="14 2 14 8 20 8" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+        <line x1="16" y1="13" x2="8" y2="13" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="16" y1="17" x2="8" y2="17" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="nav-label">Patients</span>
+  </a>
+  
+  <a class="nav-item" routerLink="/lovs" routerLinkActive="active">
     <span class="nav-icon">
       <svg fill="none" height="17" viewBox="0 0 24 24" width="17">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="rgba(255,255,255,0.8)" stroke-linecap="round"
@@ -83,56 +102,43 @@
         <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="rgba(255,255,255,0.8)" stroke-linecap="round" stroke-width="2"/>
       </svg>
     </span>
-        <span class="nav-label">Reference Data Listing</span>
-    </a>
+    <span class="nav-label">Reference Data Listing</span>
+  </a>
+  
+  <!--<a class="nav-item" routerLink="/search" routerLinkActive="active">
+    <span class="nav-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+        <circle cx="11" cy="11" r="8" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+        <path d="M21 21l-4.35-4.35" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="nav-label">Search</span>
+  </a>
 
-    <!--<a class="nav-item" routerLink="/cases" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
-          <polyline points="14 2 14 8 20 8" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <line x1="16" y1="13" x2="8" y2="13" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
-          <line x1="16" y1="17" x2="8" y2="17" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </span>
-      <span class="nav-label">Cases</span>
-      <span class="nav-badge">17</span>
-    </a>
-  -->
-    <!--<a class="nav-item" routerLink="/search" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <circle cx="11" cy="11" r="8" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M21 21l-4.35-4.35" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </span>
-      <span class="nav-label">Search</span>
-    </a>
+  <div class="sidebar-section-label">Analytics</div>
 
-    <div class="sidebar-section-label">Analytics</div>
+  <a class="nav-item" routerLink="/reports" routerLinkActive="active">
+    <span class="nav-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <span class="nav-label">Reports</span>
+  </a>
 
-    <a class="nav-item" routerLink="/reports" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      <span class="nav-label">Reports</span>
-    </a>
-
-    <a class="nav-item" routerLink="/data" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <ellipse cx="12" cy="5" rx="9" ry="3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-        </svg>
-      </span>
-      <span class="nav-label">Data Management</span>
-    </a>-->
-
+  <a class="nav-item" routerLink="/data" routerLinkActive="active">
+    <span class="nav-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+        <ellipse cx="12" cy="5" rx="9" ry="3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+        <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+        <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+      </svg>
+    </span>
+    <span class="nav-label">Data Management</span>
+  </a>-->
+  
   <div class="sidebar-section-label">Account</div>
-
+  
   <a class="nav-item" routerLink="/profile" routerLinkActive="active">
     <span class="nav-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
@@ -142,34 +148,34 @@
     </span>
     <span class="nav-label">My Profile</span>
   </a>
-
-    <!--<a class="nav-item" routerLink="/settings" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-        </svg>
-      </span>
-      <span class="nav-label">Settings</span>
-    </a>
-  -->
+  
+  <!--<a class="nav-item" routerLink="/settings" routerLinkActive="active">
+    <span class="nav-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+      </svg>
+    </span>
+    <span class="nav-label">Settings</span>
+  </a>
+-->
   <div class="sidebar-footer">
     <div class="sidebar-user">
       <div class="profile-side">
         <div class="s-avatar">{{ getUserInitials(userInfo()) }}</div>
         <div>
-          <span class="s-name">{{ userInfo()?.firstName}}</span>
+          <span class="s-name">{{ userInfo()?.firstName }}</span>
           <span class="s-role">{{ userInfo()?.role?.label }}</span>
         </div>
       </div>
-          <div class="user-menu-item logout" (click)="logout()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"
-                    fill="none"/>
-              <polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2" fill="none"/>
-              <line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/>
-            </svg>
-          </div>
-        </div>
+      <div class="user-menu-item logout" (click)="logout()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"
+                fill="none"/>
+          <polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2" fill="none"/>
+          <line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </div>
     </div>
+  </div>
 </aside>
