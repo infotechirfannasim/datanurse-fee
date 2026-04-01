@@ -168,7 +168,6 @@
 
 <!-- DEMOGRAPHICS & FOLLOW-UP ROW -->
 <div class="demo-followup-grid">
-  
   <!-- Age Distribution -->
   <div class="section-card">
     <div class="section-header">
@@ -257,104 +256,104 @@
 </div>
 
 <!-- MAIN GRID: Case Volume Chart + Table -->
-<div class="main-grid">
-  <div class="section-card">
-    <div class="section-header">
-      <div>
-        <div class="section-title">Case Volume</div>
-        <div class="section-sub">New cases registered per month</div>
-      </div>
-      <div class="section-actions">
-        <button class="pill-btn"
-                [class.pill-btn-active]="chartPeriod==='week'"
-                [class.pill-btn-ghost]="chartPeriod!=='week'"
-                (click)="setPeriod('week')">Week
-        </button>
-        <button class="pill-btn"
-                [class.pill-btn-active]="chartPeriod==='month'"
-                [class.pill-btn-ghost]="chartPeriod!=='month'"
-                (click)="setPeriod('month')">Month
-        </button>
-        <button class="pill-btn"
-                [class.pill-btn-active]="chartPeriod==='year'"
-                [class.pill-btn-ghost]="chartPeriod!=='year'"
-                (click)="setPeriod('year')">Year
-        </button>
-      </div>
-    </div>
-    
-    <div class="chart-wrap">
-      <div class="chart-legend">
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--navy)"></div>
-          Cases
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--blue-lt)"></div>
-          Resolved
-        </div>
-      </div>
-      <div class="chart-bars">
-        @for (d of caseVolumeData; track d.month) {
-          <div class="bar-group">
-            <div class="bar bar-navy" [style.height]="getBarHeightPercent(d.cases, caseVolumeData)"></div>
-            <div class="bar bar-blue" [style.height]="getBarHeightPercent(d.resolved, caseVolumeData)"></div>
-            <span class="bar-label">{{ d.month }}</span>
-          </div>
-        }
-      </div>
-    </div>
-    
-    <!-- Recent Cases Table -->
-    <table class="cases-table">
-      <thead>
-      <tr>
-        <th>Patient</th>
-        <th>Surgeon</th>
-        <th>Procedure</th>
-        <th>Status</th>
-        <th>Date</th>
-        <th></th>
-      </tr>
-      </thead>
-      <tbody>
-        @for (c of recentCases; track c.patientId) {
-          <tr>
-            <td>
-              <div class="patient-cell">
-                <div class="p-avatar" [style.background]="c.avatarColor">{{ c.initials }}</div>
-                <div>
-                  <div class="p-name">{{ c.patientName }}</div>
-                  <div class="p-id">{{ c.patientId }}</div>
-                </div>
-              </div>
-            </td>
-            <td>{{ c.surgeon }}</td>
-            <td>{{ c.procedure }}</td>
-            <td><span class="badge" [ngClass]="getStatusClass(c.status)">{{ c.status }}</span></td>
-            <td>{{ c.date }}</td>
-            <td>
-              <button class="action-btn">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="5" r="1.5" fill="var(--muted)"/>
-                  <circle cx="12" cy="12" r="1.5" fill="var(--muted)"/>
-                  <circle cx="12" cy="19" r="1.5" fill="var(--muted)"/>
-                </svg>
-              </button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-    
-    <!-- Export Button -->
-    <div class="export-row">
-      <button class="export-pdf-btn" (click)="onQuickAction('PDF Export')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-          <path d="M12 3v12M7 10l5 5 5-5M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        Export PDF Report
-      </button>
-    </div>
-  </div>
-</div>
+<!-- <div class="main-grid"> -->
+<!--   <div class="section-card"> -->
+<!--     <div class="section-header"> -->
+<!--       <div> -->
+<!--         <div class="section-title">Case Volume</div> -->
+<!--         <div class="section-sub">New cases registered per month</div> -->
+<!--       </div> -->
+<!--       <div class="section-actions"> -->
+<!--         <button class="pill-btn" -->
+<!--                 [class.pill-btn-active]="chartPeriod==='week'" -->
+<!--                 [class.pill-btn-ghost]="chartPeriod!=='week'" -->
+<!--                 (click)="setPeriod('week')">Week -->
+<!--         </button> -->
+<!--         <button class="pill-btn" -->
+<!--                 [class.pill-btn-active]="chartPeriod==='month'" -->
+<!--                 [class.pill-btn-ghost]="chartPeriod!=='month'" -->
+<!--                 (click)="setPeriod('month')">Month -->
+<!--         </button> -->
+<!--         <button class="pill-btn" -->
+<!--                 [class.pill-btn-active]="chartPeriod==='year'" -->
+<!--                 [class.pill-btn-ghost]="chartPeriod!=='year'" -->
+<!--                 (click)="setPeriod('year')">Year -->
+<!--         </button> -->
+<!--       </div> -->
+<!--     </div> -->
+<!--      -->
+<!--     <div class="chart-wrap"> -->
+<!--       <div class="chart-legend"> -->
+<!--         <div class="legend-item"> -->
+<!--           <div class="legend-dot" style="background:var(&#45;&#45;navy)"></div> -->
+<!--           Cases -->
+<!--         </div> -->
+<!--         <div class="legend-item"> -->
+<!--           <div class="legend-dot" style="background:var(&#45;&#45;blue-lt)"></div> -->
+<!--           Resolved -->
+<!--         </div> -->
+<!--       </div> -->
+<!--       <div class="chart-bars"> -->
+<!--         @for (d of caseVolumeData; track d.month) { -->
+<!--           <div class="bar-group"> -->
+<!--             <div class="bar bar-navy" [style.height]="getBarHeightPercent(d.cases, caseVolumeData)"></div> -->
+<!--             <div class="bar bar-blue" [style.height]="getBarHeightPercent(d.resolved, caseVolumeData)"></div> -->
+<!--             <span class="bar-label">{{ d.month }}</span> -->
+<!--           </div> -->
+<!--         } -->
+<!--       </div> -->
+<!--     </div> -->
+<!--      -->
+<!--     &lt;!&ndash; Recent Cases Table &ndash;&gt; -->
+<!--     <table class="cases-table"> -->
+<!--       <thead> -->
+<!--       <tr> -->
+<!--         <th>Patient</th> -->
+<!--         <th>Surgeon</th> -->
+<!--         <th>Procedure</th> -->
+<!--         <th>Status</th> -->
+<!--         <th>Date</th> -->
+<!--         <th></th> -->
+<!--       </tr> -->
+<!--       </thead> -->
+<!--       <tbody> -->
+<!--         @for (c of recentCases; track c.patientId) { -->
+<!--           <tr> -->
+<!--             <td> -->
+<!--               <div class="patient-cell"> -->
+<!--                 <div class="p-avatar" [style.background]="c.avatarColor">{{ c.initials }}</div> -->
+<!--                 <div> -->
+<!--                   <div class="p-name">{{ c.patientName }}</div> -->
+<!--                   <div class="p-id">{{ c.patientId }}</div> -->
+<!--                 </div> -->
+<!--               </div> -->
+<!--             </td> -->
+<!--             <td>{{ c.surgeon }}</td> -->
+<!--             <td>{{ c.procedure }}</td> -->
+<!--             <td><span class="badge" [ngClass]="getStatusClass(c.status)">{{ c.status }}</span></td> -->
+<!--             <td>{{ c.date }}</td> -->
+<!--             <td> -->
+<!--               <button class="action-btn"> -->
+<!--                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none"> -->
+<!--                   <circle cx="12" cy="5" r="1.5" fill="var(&#45;&#45;muted)"/> -->
+<!--                   <circle cx="12" cy="12" r="1.5" fill="var(&#45;&#45;muted)"/> -->
+<!--                   <circle cx="12" cy="19" r="1.5" fill="var(&#45;&#45;muted)"/> -->
+<!--                 </svg> -->
+<!--               </button> -->
+<!--             </td> -->
+<!--           </tr> -->
+<!--         } -->
+<!--       </tbody> -->
+<!--     </table> -->
+<!--      -->
+<!--     &lt;!&ndash; Export Button &ndash;&gt; -->
+<!--     <div class="export-row"> -->
+<!--       <button class="export-pdf-btn" (click)="onQuickAction('PDF Export')"> -->
+<!--         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"> -->
+<!--           <path d="M12 3v12M7 10l5 5 5-5M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/> -->
+<!--         </svg> -->
+<!--         Export PDF Report -->
+<!--       </button> -->
+<!--     </div> -->
+<!--   </div> -->
+<!-- </div> -->
