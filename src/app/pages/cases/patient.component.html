@@ -1,0 +1,167 @@
+<div class="-row">
+    <div class="filter-bar">
+        <div class="filter-search">
+            <svg fill="none" height="15" viewBox="0 0 24 24" width="15">
+                <circle cx="11" cy="11" r="8" stroke="#7A8BB0" stroke-width="2"/>
+                <path d="M21 21l-4.35-4.35" stroke="#7A8BB0" stroke-linecap="round" stroke-width="2"/>
+            </svg>
+            <input (input)="searchQuery.set($any($event.target).value); onSearchChange()" [value]="searchQuery()"
+                   placeholder="Search patient…"/>
+        </div>
+    </div>
+</div>
+<div class="registry-card">
+    <div class="registry-table-wrap">
+        <table class="registry-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>PT No</th>
+                <th>Gender</th>
+                <th>Cases</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (p of patients; track p._id) {
+                    <tr>
+                        <td>
+                            <div class="doc-cell">
+                                <div class="doc-av"
+                                     [style.background]="'#3b82f6'">
+                                    {{ p.firstName[0] + p.lastName[0] }}
+                                </div>
+                                <td>
+                                    <div>
+                                        <span class="doc-nm">{{ p.firstName }}</span>
+                                        <span class="doc-em">{{ p.lastName }}</span>
+                                    </div>
+                                </td>
+                            </div>
+                        </td>
+                        <td>{{ p.mrn }}</td>
+                        <td>{{ p.gender || '—' }}</td>
+                        <td style="font-weight:700;">{{ p.casesCount || 0 }}</td>
+                        <td>
+                            <button class="action-btn" (click)="openView(p)" title="View">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="var(--muted)"
+                                          stroke-width="2"/>
+                                    <circle cx="12" cy="12" r="3" stroke="var(--muted)" stroke-width="2"/>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                } @empty {
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state"><h3>No doctors found</h3>
+                                <p>Try adjusting your search.</p></div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="table-footer">
+        <span class="table-footer-info">
+            Showing {{ patients.length }} of {{ pagination()?.total || 0 }} Patients
+        </span>
+
+        @if (pagination() && pagination().totalPages > 1) {
+            <div class="pagination">
+
+                <button class="page-btn"
+                        [disabled]="!pagination().hasPrevPage"
+                        (click)="goToPage(pageQuery() - 1)">
+                    &#8249;
+                </button>
+
+                @for (page of getPages(); track page) {
+                    <button class="page-btn"
+                            [class.active]="page === pageQuery()"
+                            (click)="goToPage(page)">
+                        {{ page }}
+                    </button>
+                }
+                <button class="page-btn"
+                        [disabled]="!pagination().hasNextPage"
+                        (click)="goToPage(pageQuery() + 1)">
+                    &#8250;
+                </button>
+
+            </div>
+        }
+    </div>
+</div>
+
+@if (showViewModal() && selectedPatient()) {
+    <div class="new-modals">
+        <div class="modal-overlay open" (click)="showViewModal.set(false)">
+            <div class="modal" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                    <div style="display:flex;align-items:center;gap:14px;">
+                        @if (getProfileImageUrl(selectedPatient())) {
+                            <img
+                                    [src]="getProfileImageUrl(selectedPatient())"
+                                    class="doc-av"
+                                    alt="Profile Photo"
+                                    style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                        } @else {
+                            <div class="doc-av"
+                                 [style.background]="'#3b82f6'">
+                                {{ selectedPatient()!.firstName[0] + selectedPatient()!.lastName[0] }}
+                            </div>
+                        }
+                        <div>
+                            <div class="modal-title">
+                                {{ selectedPatient()?.firstName }} {{ selectedPatient()?.lastName }}
+                            </div>
+                            <div class="modal-sub">{{ selectedPatient()!.email }}</div>
+                        </div>
+                    </div>
+                    <button class="modal-close" (click)="showViewModal.set(false)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                            <line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/>
+                            <line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="view-grid">
+                        <div class="view-field">
+                            <span class="view-label">PT NO</span>
+                            <span class="view-val">{{ selectedPatient()?.mrn }}</span>
+                        </div>
+
+                        <div class="view-field">
+                            <span class="view-label">Gender</span>
+                            <span class="view-val">{{ selectedPatient()?.gender }}</span>
+                        </div>
+
+                        <div class="view-field">
+                            <span class="view-label">Cases</span>
+                            <span class="view-val">{{ selectedPatient()?.cases?.length }}</span>
+                        </div>
+                        <div class="view-field"><span class="view-label">Joined</span><span
+                                class="view-val">{{ selectedPatient()!.createdAt | date: 'MMM d, y' }}</span></div>
+                    </div>
+                    <div style="margin-top:20px;">
+                        <span class="view-label">Cases</span>
+
+                        @for (c of selectedPatient()?.cases; track c._id) {
+                            <div class="case-card">
+                                <div><b>Date:</b> {{ c?.surgeryDate | date:'MMM d, y' }}</div>
+                                <div><b>Status:</b> {{ c?.operationStatus }}</div>
+                                <div><b>Doctor:</b> {{ c?.doctor?.firstName }} {{ c?.doctor?.lastName }}</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-ghost" (click)="showViewModal.set(false)">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

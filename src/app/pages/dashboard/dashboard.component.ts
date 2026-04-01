@@ -72,7 +72,6 @@ interface FollowupItem {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [NgClass],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })

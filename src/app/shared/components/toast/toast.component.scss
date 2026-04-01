@@ -31,6 +31,10 @@
   &.toast-error {
     background: var(--rose);
   }
+
+  &.toast-warning {
+    background: var(--amber);
+  }
 }
 
 @keyframes toastIn {
