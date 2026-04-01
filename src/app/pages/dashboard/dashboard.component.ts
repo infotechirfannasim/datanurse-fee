@@ -1,6 +1,13 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { NgClass } from '@angular/common';
-import { ToastService } from '../../core/services/toast.service';
+import {Component, inject, OnInit, signal} from '@angular/core';
+import {NgClass} from '@angular/common';
+import {ToastService} from '../../core/services/toast.service';
+import {AuthService} from "../../core/services/auth.service";
+import {FilterParams, User} from "../../core/models/user.model";
+import {USERS_API_URL} from "../../utils/api.url.constants";
+import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
+import {ROLES} from "../../utils/app-constants";
+import {RequestService} from "../../core/services/request.service";
+import {getUserInitials} from "../../utils/global.utils";
 
 interface StatCard {
   id: string;
@@ -35,6 +42,20 @@ interface RecentCase {
 })
 export class DashboardComponent implements OnInit {
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
+  private requestService = inject(RequestService);
+  pagination = signal<any>(null);
+  userInfo = signal<User | null>(null);
+  searchQuery = signal('');
+  pageQuery = signal(1);
+
+  doctors: User[] = [];
+
+  constructor() {
+    this.authService.currentUser$.subscribe((user: any) => {
+      this.userInfo.set(user);
+    })
+  }
 
   statCards: StatCard[] = [
     { id: 'cnt-doctors', label: 'Registered Doctors', value: 0, target: 284, trend: '+12 this month', trendType: 'up', accentColor: 'var(--blue)', bgColor: 'rgba(34,81,204,0.08)', barColor: 'var(--blue)', barWidth: '78%' },
@@ -51,17 +72,36 @@ export class DashboardComponent implements OnInit {
     { patientName: 'Nida Siddiqui', patientId: 'PT-2024-8862', avatarColor: '#E8344A', initials: 'NS', doctor: 'Dr. Salman Shah', diagnosis: 'Kidney Stone',         status: 'Active',    date: 'Mar 18, 2026' },
   ];
 
-  topDoctors = [
-    { name: 'Dr. Salman A. Shah', spec: 'Endocrinology',  cases: 312, color: '#2251CC', initials: 'SS' },
-    { name: 'Dr. Omar Farooq',    spec: 'Cardiology',      cases: 289, color: '#5B4FCF', initials: 'OF' },
-    { name: 'Dr. Amna Tariq',     spec: 'Pulmonology',     cases: 254, color: '#0EA5A0', initials: 'AT' },
-    { name: 'Dr. Zaid Awan',      spec: 'General Surgery', cases: 231, color: '#F0659A', initials: 'ZA' },
-  ];
-
   chartPeriod = 'month';
 
   ngOnInit(): void {
     this.animateCounters();
+    this.loadDoctors();
+  }
+
+  loadDoctors() {
+    const filters: FilterParams = {
+      search: this.searchQuery().toLowerCase() || '',
+      page: this.pageQuery(),
+      limit: 10
+    };
+    this.requestService.getRequest(USERS_API_URL, filters).subscribe({
+      next: (response: HttpResponse<any>) => {
+        if (response.status == 200 && response.body.data) {
+          this.doctors = Array.isArray(response.body.data)
+              ? response.body.data.filter((dr: any) => dr.role.name == ROLES.DOCTOR)
+              : [];
+          this.pagination.set(response.body.meta?.pagination || null);
+        } else {
+          this.doctors = [];
+          this.pagination.set(null);
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.doctors = [];
+        this.pagination.set(null);
+      },
+    });
   }
 
   private animateCounters(): void {
@@ -93,4 +133,6 @@ export class DashboardComponent implements OnInit {
   onQuickAction(action: string): void {
     this.toastService.show(`${action} opened`, 'info');
   }
+
+  protected readonly getUserInitials = getUserInitials;
 }

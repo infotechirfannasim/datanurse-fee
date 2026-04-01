@@ -137,16 +137,12 @@ export class RolesComponent implements OnInit {
 
         this.isEditMode = true;
         this.selectedRoleId.set(String(role._id));
-
-        // Load existing permissions - cast to any to bypass type checking
         if (role.permissions && Array.isArray(role.permissions)) {
             this.selectedPermissions.clear();
             (role.permissions as any[]).forEach(perm => {
-                // If permission is already a string
                 if (typeof perm === 'string') {
                     this.selectedPermissions.add(perm);
                 }
-                // If permission is an object with slug/name
                 else {
                     const permValue = perm.slug || perm.name || perm.code;
                     if (permValue) {
@@ -155,7 +151,6 @@ export class RolesComponent implements OnInit {
                 }
             });
         }
-
         this.form.patchValue({
             name: role.name,
             label: role.label,
@@ -163,6 +158,7 @@ export class RolesComponent implements OnInit {
             permissions: Array.from(this.selectedPermissions)
         });
 
+        this.form.get('name')?.disable();
         this.showViewModal.set(false);
         this.showAddModal.set(true);
     }
@@ -171,6 +167,7 @@ export class RolesComponent implements OnInit {
         this.form.reset();
         this.selectedPermissions.clear();
         this.isEditMode = false;
+        this.form.get('name')?.enable();
         this.selectedRoleId.set(null);
     }
 
@@ -210,7 +207,6 @@ export class RolesComponent implements OnInit {
     }
 
     selectAllModulePermissions(module: any, checked: boolean) {
-        // Select all actions in module
         if (module.actions) {
             module.actions.forEach((action: any) => {
                 if (checked) {
@@ -221,7 +217,6 @@ export class RolesComponent implements OnInit {
             });
         }
 
-        // Select all actions in children
         if (module.children) {
             module.children.forEach((child: any) => {
                 if (child.actions) {

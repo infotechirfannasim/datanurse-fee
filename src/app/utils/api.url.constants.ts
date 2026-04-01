@@ -10,6 +10,9 @@ export const ACTIVATE_ACC_API_URL = '/un-auth/reactivate/account';
 export const VERIFY_ACTIVATE_ACC_API_URL = '/un-auth/activate';
 export const GET_MULTIPLE_LOV_BY_TYPE_API_URL = '/lov/get-multi-lov';
 
+export const PROFILE_API_URL = 'auth/me';
+export const UPDATE_PROFILE_API_URL = 'users/me';
+
 export const USERS_API_URL = 'users';
 export const DELETE_USER_API_URL = 'users/';
 export const ROLES_API_URL = 'roles';

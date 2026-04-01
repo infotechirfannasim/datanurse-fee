@@ -1,6 +1,7 @@
 import {Routes} from '@angular/router';
 import {UnAuthGuard} from "./core/guards/un-auth.guard";
 import {AuthGuard} from "./core/guards/auth.guard";
+import {LovComponent} from "./pages/lovs/lov.component";
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -30,6 +31,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/roles/roles.component').then(m => m.RolesComponent)
   },
   {
+    path: 'lovs',
+    canActivate: [AuthGuard],
+    loadComponent: () => import('./pages/lovs/lov.component').then(m => m.LovComponent)
+  },
+  /*{
     path: 'cases',
     canActivate: [AuthGuard],
     loadComponent: () => import('./pages/cases/cases.component').then(m => m.CasesComponent)
@@ -48,16 +54,16 @@ export const routes: Routes = [
     path: 'data',
     canActivate: [AuthGuard],
     loadComponent: () => import('./pages/data-management/data-management.component').then(m => m.DataManagementComponent)
-  },
+  },*/
   {
     path: 'profile',
     canActivate: [AuthGuard],
     loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent)
   },
-  {
+  /*{
     path: 'settings',
     canActivate: [AuthGuard],
     loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent)
-  },
+  },*/
   { path: '**', redirectTo: 'dashboard' }
 ];

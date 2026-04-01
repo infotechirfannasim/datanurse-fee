@@ -3,6 +3,8 @@ export interface User {
     _id?: string;
     firstName: string;
     lastName: string;
+    fullName: string;
+    username: string;
     email: string;
     status: string;
     name?: string;
@@ -11,6 +13,7 @@ export interface User {
     permissions?: Permission[];
     lastActiveAt?: string;
     badge?: string;
+    cases: number
     createdAt: Date;
     updatedAt: Date;
 }

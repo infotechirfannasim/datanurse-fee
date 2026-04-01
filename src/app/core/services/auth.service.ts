@@ -174,7 +174,6 @@ export class AuthService {
                 const user = JSON.parse(userStr);
                 this.currentUserSubject.next(user);
             } catch (e) {
-                console.error('Failed to parse stored user', e);
                 this.logout();
             }
         }

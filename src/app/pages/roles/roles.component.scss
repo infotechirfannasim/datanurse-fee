@@ -215,7 +215,6 @@ $border: #e5e7eb;
 
 textarea.form-input {
   resize: vertical;
-  font-family: inherit;
 }
 
 // Permissions Container
@@ -305,8 +304,19 @@ textarea.form-input {
   }
 
   .permission-icon {
-    font-size: 14px;
-    min-width: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: #6b7280;
+
+    svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
   }
 
   &:hover {
@@ -336,7 +346,20 @@ textarea.form-input {
       margin-bottom: 12px;
 
       .child-icon {
-        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        background: #f3f4f6;
+        border-radius: 6px;
+        color: #6b7280;
+
+        svg {
+          width: 12px;
+          height: 12px;
+          stroke: currentColor;
+        }
       }
     }
   }
@@ -397,12 +420,10 @@ textarea.form-input {
 
   .no-permissions {
     color: $gray;
-    font-style: italic;
     font-size: 13px;
   }
 }
 
-// Empty State Enhancement
 .empty-state {
   text-align: center;
   padding: 60px 20px;

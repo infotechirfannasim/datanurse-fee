@@ -130,7 +130,6 @@ export class DoctorsComponent implements OnInit {
         }
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Failed to load doctors', error);
         this.doctors = [];
         this.pagination.set(null);
       },
@@ -147,7 +146,6 @@ export class DoctorsComponent implements OnInit {
         }
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Failed to load roles', error);
         this.roles = [];
       },
     });
