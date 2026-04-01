@@ -1,26 +1,11 @@
 <!-- WELCOME BANNER -->
 <div class="welcome-banner">
   <div class="welcome-text">
-    <span class="welcome-greeting">Good Morning</span>
-      <span class="welcome-name">{{ userInfo()?.firstName + ' ' + userInfo()?.lastName }}</span>
+    <span class="welcome-greeting">Good Morning
+    </span>
+    
+    <span class="welcome-name">{{ userInfo()?.firstName + ' ' + userInfo()?.lastName }}</span>
     <span class="welcome-sub">Here's what's happening across DataNurse today</span>
-  </div>
-  <div class="welcome-actions">
-    <button class="wb-btn wb-btn-primary" (click)="onQuickAction('New Case')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-        <line x1="12" y1="5" x2="12" y2="19" stroke="var(--navy)" stroke-width="2" stroke-linecap="round"/>
-        <line x1="5" y1="12" x2="19" y2="12" stroke="var(--navy)" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-      New Case
-    </button>
-    <button class="wb-btn wb-btn-outline" (click)="onQuickAction('Export Report')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="white" stroke-width="2"/>
-        <polyline points="7 10 12 15 17 10" stroke="white" stroke-width="2"/>
-        <line x1="12" y1="15" x2="12" y2="3" stroke="white" stroke-width="2"/>
-      </svg>
-      Export Report
-    </button>
   </div>
 </div>
 
@@ -31,9 +16,7 @@
       <div class="stat-card-accent" [style.background]="card.accentColor"></div>
       <div class="stat-card-top">
         <div class="stat-ico" [style.background]="card.bgColor">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="8" [attr.stroke]="card.accentColor" stroke-width="2"/>
-          </svg>
+          <img src="{{card.icon}}" alt="">
         </div>
         <div class="stat-trend" [class.trend-up]="card.trendType==='up'" [class.trend-down]="card.trendType==='down'" [class.trend-neu]="card.trendType==='neu'">
           {{ card.trend }}
@@ -48,6 +31,117 @@
   }
 </div>
 
+
+<!-- BOTTOM GRID -->
+<div class="bottom-grid">
+  
+  <!-- Top Doctors -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-title">Top Doctors</div>
+    </div>
+    <div class="doctor-list">
+      @for (doc of doctors; track doc._id) {
+        <div class="doctor-item">
+          <div class="d-avatar" style="background: #2251CC">{{ doc.firstName[0] + doc.lastName[0] }}</div>
+          <div>
+            <span class="d-name">{{ doc.firstName + ' ' + doc.lastName }}</span>
+            <span class="d-spec">{{ doc.role?.label }}</span>
+          </div>
+          <div class="d-cases">
+            <span class="d-cases-val">{{ doc.cases || '5' }}</span>
+            <span class="d-cases-lbl">cases</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+  <!-- Activity Feed -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-title">Recent Activity</div>
+    </div>
+    <div class="feed-list">
+      <div class="feed-item">
+        <div class="feed-ico" style="background:#EEF2FF">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#2251CC" stroke-width="2"/>
+            <circle cx="12" cy="7" r="4" stroke="#2251CC" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="feed-content">
+          <div class="feed-text"><strong>Dr. Omar Farooq</strong> registered and awaiting approval</div>
+          <span class="feed-time">2 minutes ago</span>
+        </div>
+      </div>
+      <div class="feed-item">
+        <div class="feed-ico" style="background:rgba(14,165,160,0.1)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M9 11l3 3L22 4" stroke="#0EA5A0" stroke-width="2"/>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="#0EA5A0" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="feed-content">
+          <div class="feed-text"><strong>Case PT-2024-8892</strong> was marked as Recovered</div>
+          <span class="feed-time">18 minutes ago</span>
+        </div>
+      </div>
+      <div class="feed-item">
+        <div class="feed-ico" style="background:rgba(245,158,11,0.1)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#F59E0B" stroke-width="2"/>
+            <polyline points="14 2 14 8 20 8" stroke="#F59E0B" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="feed-content">
+          <div class="feed-text"><strong>Report Q1-2026</strong> was generated and exported</div>
+          <span class="feed-time">1 hour ago</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Case Distribution Ring -->
+  <div class="section-card">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Case Distribution</div>
+        <div class="section-sub">By specialization</div>
+      </div>
+    </div>
+    <div class="ring-wrap">
+      <div class="ring-chart-area">
+        <div class="ring-center">
+          <svg class="ring-svg" width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--bg)" stroke-width="16"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--blue)" stroke-width="16" stroke-dasharray="120 182" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--indigo)" stroke-width="16" stroke-dasharray="72 230" stroke-linecap="round" transform="rotate(29 60 60)"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--teal)" stroke-width="16" stroke-dasharray="52 250" stroke-linecap="round" transform="rotate(107 60 60)"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--amber)" stroke-width="16" stroke-dasharray="38 264" stroke-linecap="round" transform="rotate(165 60 60)"/>
+          </svg>
+          <div class="ring-label-wrap">
+            <span class="ring-big">1,847</span>
+            <span class="ring-small">Total</span>
+          </div>
+        </div>
+        <div class="ring-legend">
+          <div class="ring-legend-item">
+            <div class="ring-legend-dot" style="background:var(--blue)"></div>
+            <span class="ring-legend-label">Cardiology</span><span class="ring-legend-val">38%</span></div>
+          <div class="ring-legend-item">
+            <div class="ring-legend-dot" style="background:var(--indigo)"></div>
+            <span class="ring-legend-label">Neurology</span><span class="ring-legend-val">24%</span></div>
+          <div class="ring-legend-item">
+            <div class="ring-legend-dot" style="background:var(--teal)"></div>
+            <span class="ring-legend-label">Pulmonology</span><span class="ring-legend-val">20%</span></div>
+          <div class="ring-legend-item">
+            <div class="ring-legend-dot" style="background:var(--amber)"></div>
+            <span class="ring-legend-label">Other</span><span class="ring-legend-val">18%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MAIN GRID -->
 <div class="main-grid">
   <!-- Cases Chart -->
@@ -58,15 +152,27 @@
         <div class="section-sub">New cases registered per month</div>
       </div>
       <div class="section-actions">
-        <button class="pill-btn" [class.pill-btn-active]="chartPeriod==='week'" [class.pill-btn-ghost]="chartPeriod!=='week'" (click)="setPeriod('week')">Week</button>
-        <button class="pill-btn" [class.pill-btn-active]="chartPeriod==='month'" [class.pill-btn-ghost]="chartPeriod!=='month'" (click)="setPeriod('month')">Month</button>
-        <button class="pill-btn" [class.pill-btn-active]="chartPeriod==='year'" [class.pill-btn-ghost]="chartPeriod!=='year'" (click)="setPeriod('year')">Year</button>
+        <button class="pill-btn" [class.pill-btn-active]="chartPeriod==='week'" [class.pill-btn-ghost]="chartPeriod!=='week'" (click)="setPeriod('week')">
+          Week
+        </button>
+        <button class="pill-btn" [class.pill-btn-active]="chartPeriod==='month'" [class.pill-btn-ghost]="chartPeriod!=='month'" (click)="setPeriod('month')">
+          Month
+        </button>
+        <button class="pill-btn" [class.pill-btn-active]="chartPeriod==='year'" [class.pill-btn-ghost]="chartPeriod!=='year'" (click)="setPeriod('year')">
+          Year
+        </button>
       </div>
     </div>
     <div class="chart-wrap">
       <div class="chart-legend">
-        <div class="legend-item"><div class="legend-dot" style="background:var(--navy)"></div>Cases</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--blue-lt)"></div>Resolved</div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--navy)"></div>
+          Cases
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--blue-lt)"></div>
+          Resolved
+        </div>
       </div>
       <div class="chart-bars">
         <div class="bar-group">
@@ -104,14 +210,14 @@
     <!-- Recent Cases Table -->
     <table class="cases-table">
       <thead>
-        <tr>
-          <th>Patient</th>
-          <th>Doctor</th>
-          <th>Diagnosis</th>
-          <th>Status</th>
-          <th>Date</th>
-          <th></th>
-        </tr>
+      <tr>
+        <th>Patient</th>
+        <th>Doctor</th>
+        <th>Diagnosis</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th></th>
+      </tr>
       </thead>
       <tbody>
         @for (c of recentCases; track c.patientId) {
@@ -142,164 +248,5 @@
         }
       </tbody>
     </table>
-  </div>
-
-  <!-- Right Panel -->
-  <div class="right-panel">
-    <!-- Case Distribution Ring -->
-    <div class="section-card">
-      <div class="section-header">
-        <div>
-          <div class="section-title">Case Distribution</div>
-          <div class="section-sub">By specialization</div>
-        </div>
-      </div>
-      <div class="ring-wrap">
-        <div class="ring-chart-area">
-          <div class="ring-center">
-            <svg class="ring-svg" width="120" height="120" viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r="48" fill="none" stroke="var(--bg)" stroke-width="16"/>
-              <circle cx="60" cy="60" r="48" fill="none" stroke="var(--blue)" stroke-width="16" stroke-dasharray="120 182" stroke-linecap="round" transform="rotate(-90 60 60)"/>
-              <circle cx="60" cy="60" r="48" fill="none" stroke="var(--indigo)" stroke-width="16" stroke-dasharray="72 230" stroke-linecap="round" transform="rotate(29 60 60)"/>
-              <circle cx="60" cy="60" r="48" fill="none" stroke="var(--teal)" stroke-width="16" stroke-dasharray="52 250" stroke-linecap="round" transform="rotate(107 60 60)"/>
-              <circle cx="60" cy="60" r="48" fill="none" stroke="var(--amber)" stroke-width="16" stroke-dasharray="38 264" stroke-linecap="round" transform="rotate(165 60 60)"/>
-            </svg>
-            <div class="ring-label-wrap">
-              <span class="ring-big">1,847</span>
-              <span class="ring-small">Total</span>
-            </div>
-          </div>
-          <div class="ring-legend">
-            <div class="ring-legend-item"><div class="ring-legend-dot" style="background:var(--blue)"></div><span class="ring-legend-label">Cardiology</span><span class="ring-legend-val">38%</span></div>
-            <div class="ring-legend-item"><div class="ring-legend-dot" style="background:var(--indigo)"></div><span class="ring-legend-label">Neurology</span><span class="ring-legend-val">24%</span></div>
-            <div class="ring-legend-item"><div class="ring-legend-dot" style="background:var(--teal)"></div><span class="ring-legend-label">Pulmonology</span><span class="ring-legend-val">20%</span></div>
-            <div class="ring-legend-item"><div class="ring-legend-dot" style="background:var(--amber)"></div><span class="ring-legend-label">Other</span><span class="ring-legend-val">18%</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Top Doctors -->
-    <div class="section-card">
-      <div class="section-header">
-        <div class="section-title">Top Doctors</div>
-      </div>
-      <div class="doctor-list">
-          @for (doc of doctors; track doc._id) {
-          <div class="doctor-item">
-              <div class="d-avatar" style="background: #2251CC">{{ doc.firstName[0] + doc.lastName[0] }}</div>
-            <div>
-                <span class="d-name">{{ doc.firstName + ' ' + doc.lastName }}</span>
-                <span class="d-spec">{{ doc.role?.label }}</span>
-            </div>
-            <div class="d-cases">
-                <span class="d-cases-val">{{ doc.cases || '5' }}</span>
-              <span class="d-cases-lbl">cases</span>
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- BOTTOM GRID -->
-<div class="bottom-grid">
-  <!-- Activity Feed -->
-  <div class="section-card">
-    <div class="section-header">
-      <div class="section-title">Recent Activity</div>
-    </div>
-    <div class="feed-list">
-      <div class="feed-item">
-        <div class="feed-ico" style="background:#EEF2FF">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#2251CC" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="#2251CC" stroke-width="2"/></svg>
-        </div>
-        <div class="feed-content">
-          <div class="feed-text"><strong>Dr. Omar Farooq</strong> registered and awaiting approval</div>
-          <span class="feed-time">2 minutes ago</span>
-        </div>
-      </div>
-      <div class="feed-item">
-        <div class="feed-ico" style="background:rgba(14,165,160,0.1)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="#0EA5A0" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="#0EA5A0" stroke-width="2"/></svg>
-        </div>
-        <div class="feed-content">
-          <div class="feed-text"><strong>Case PT-2024-8892</strong> was marked as Recovered</div>
-          <span class="feed-time">18 minutes ago</span>
-        </div>
-      </div>
-      <div class="feed-item">
-        <div class="feed-ico" style="background:rgba(245,158,11,0.1)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#F59E0B" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="#F59E0B" stroke-width="2"/></svg>
-        </div>
-        <div class="feed-content">
-          <div class="feed-text"><strong>Report Q1-2026</strong> was generated and exported</div>
-          <span class="feed-time">1 hour ago</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Quick Actions -->
-  <div class="section-card">
-    <div class="section-header">
-      <div class="section-title">Quick Actions</div>
-    </div>
-    <div class="quick-grid">
-      <div class="quick-item" (click)="onQuickAction('Add Doctor')">
-        <div class="quick-ico" style="background:#EEF2FF">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#2251CC" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="#2251CC" stroke-width="2"/><line x1="19" y1="8" x2="19" y2="14" stroke="#2251CC" stroke-width="2"/><line x1="22" y1="11" x2="16" y2="11" stroke="#2251CC" stroke-width="2"/></svg>
-        </div>
-        <span class="quick-lbl">Add Doctor</span>
-        <span class="quick-sub">Register new physician</span>
-      </div>
-      <div class="quick-item" (click)="onQuickAction('New Case')">
-        <div class="quick-ico" style="background:rgba(91,79,207,0.08)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#5B4FCF" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="#5B4FCF" stroke-width="2"/><line x1="12" y1="18" x2="12" y2="12" stroke="#5B4FCF" stroke-width="2"/><line x1="9" y1="15" x2="15" y2="15" stroke="#5B4FCF" stroke-width="2"/></svg>
-        </div>
-        <span class="quick-lbl">New Case</span>
-        <span class="quick-sub">Submit patient record</span>
-      </div>
-      <div class="quick-item" (click)="onQuickAction('Generate Report')">
-        <div class="quick-ico" style="background:rgba(14,165,160,0.08)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="#0EA5A0" stroke-width="2" stroke-linecap="round"/></svg>
-        </div>
-        <span class="quick-lbl">Generate Report</span>
-        <span class="quick-sub">Analytics export</span>
-      </div>
-      <div class="quick-item" (click)="onQuickAction('Search Records')">
-        <div class="quick-ico" style="background:rgba(245,158,11,0.08)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="#F59E0B" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/></svg>
-        </div>
-        <span class="quick-lbl">Search Records</span>
-        <span class="quick-sub">Find patient / doctor</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- System Status -->
-  <div class="section-card">
-    <div class="section-header">
-      <div class="section-title">System Status</div>
-    </div>
-    <div class="feed-list">
-      <div class="feed-item" style="justify-content:space-between; align-items:center;">
-        <span style="font-size:13px;font-weight:500;">API Services</span>
-        <span class="badge badge-green">Operational</span>
-      </div>
-      <div class="feed-item" style="justify-content:space-between; align-items:center;">
-        <span style="font-size:13px;font-weight:500;">Database</span>
-        <span class="badge badge-green">Operational</span>
-      </div>
-      <div class="feed-item" style="justify-content:space-between; align-items:center;">
-        <span style="font-size:13px;font-weight:500;">Storage</span>
-        <span class="badge badge-amber">76% Used</span>
-      </div>
-      <div class="feed-item" style="justify-content:space-between; align-items:center;">
-        <span style="font-size:13px;font-weight:500;">Backup</span>
-        <span class="badge badge-green">Up to date</span>
-      </div>
-    </div>
   </div>
 </div>

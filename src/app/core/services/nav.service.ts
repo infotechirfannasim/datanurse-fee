@@ -6,10 +6,10 @@ export interface PageMeta {
 }
 
 const PAGE_META: Record<string, PageMeta> = {
-  dashboard:  { title: 'Dashboard',       breadcrumb: 'Overview' },
+  dashboard:  { title: 'Dashboard',        breadcrumb: 'Dashboard' },
   doctors:    { title: 'Doctor Registry', breadcrumb: 'Physicians' },
   users: {title: 'Users', breadcrumb: 'User Management'},
-  roles: {title: 'Roles', breadcrumb: 'User Management'},
+  roles: {title: 'Roles', breadcrumb: 'Role Management'},
   cases:      { title: 'Cases',           breadcrumb: 'Patient Records' },
   search:     { title: 'Search',          breadcrumb: 'Find Records' },
   reports:    { title: 'Reports',         breadcrumb: 'Analytics' },

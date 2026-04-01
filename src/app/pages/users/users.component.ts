@@ -167,15 +167,9 @@ export class UsersComponent implements OnInit {
         return map[status] ?? 'badge-gray';
     }
 
-    onEditProfile() {
-        const user = this.selectedUser();
-
-        if (!user) return;
-
+    onEditProfile(doc: Doctor): void {
+        this.selectedUser.set(doc);
         this.isEditMode = true;
-        this.selectedUserId.set(user._id);
-        this.form.patchValue(this.mapDoctorToForm(this.selectedUser()));
-        this.showViewModal.set(false);
         this.showAddModal.set(true);
     }
 
