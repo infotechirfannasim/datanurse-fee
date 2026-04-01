@@ -44,6 +44,8 @@ export class UsersComponent implements OnInit {
     hospitalOptions: any[] = [];
     cityOptions: any[] = [];
     users: Doctor[] = [];
+    showPassword = false;
+    showConfirmPassword = false;
     private fb = inject(FormBuilder);
     private requestService = inject(RequestService);
     private searchSubject = new Subject<string>();
@@ -66,6 +68,8 @@ export class UsersComponent implements OnInit {
             lastName: ['', [Validators.required, Validators.minLength(2)]],
             email: ['', [Validators.required, Validators.email]],
             role: ['', Validators.required],
+            password: ['', Validators.required],
+            confirmPassword: ['', Validators.required],
             status: ['active', Validators.required],
         });
     }
@@ -116,7 +120,7 @@ export class UsersComponent implements OnInit {
             next: (response: HttpResponse<any>) => {
                 if (response.status == 200 && response.body.data) {
                     this.roles = Array.isArray(response.body.data)
-                        ? response.body.data.filter((user: any) => user.name.toLowerCase() != ROLES.SUPER_ADMIN.toLowerCase())
+                        ? response.body.data.filter((user: any) => user.name.toLowerCase() == ROLES.SUPER_ADMIN.toLowerCase())
                         : [];
                 } else {
                     this.roles = [];
@@ -167,8 +171,16 @@ export class UsersComponent implements OnInit {
         return map[status] ?? 'badge-gray';
     }
 
+    onAddUer(): void {
+        this.resetForm();
+        this.selectedUser.set(null);
+        this.isEditMode = false;
+        this.showAddModal.set(true);
+    }
+
     onEditProfile(doc: Doctor): void {
         this.selectedUser.set(doc);
+        this.form.patchValue(this.mapDoctorToForm(doc));
         this.isEditMode = true;
         this.showAddModal.set(true);
     }
@@ -226,11 +238,24 @@ export class UsersComponent implements OnInit {
             this.form.markAllAsTouched();
             return;
         }
+
+        if (!this.isEditMode) {
+            const password = this.form.value.password;
+            const confirmPassword = this.form.value.confirmPassword;
+
+            if (!password || !confirmPassword) {
+                this.toastService.show('Password and Confirm Password are required', 'error');
+                return;
+            }
+        }
+
         const formData = new FormData();
         formData.append('firstName', this.form.value.firstName);
         formData.append('lastName', this.form.value.lastName);
         formData.append('email', this.form.value.email);
-        formData.append('role', this.roles.find((role: Role) => role.name === ROLES.DOCTOR)?._id);
+        formData.append('password', this.form.value.password);
+        formData.append('mustSetPassword', 'false');
+        formData.append('role', this.roles.find((role: Role) => role.name === ROLES.SUPER_ADMIN)?._id);
         formData.append('status', this.form.value.status);
 
         if (this.selectedFile) {
@@ -256,6 +281,7 @@ export class UsersComponent implements OnInit {
 
     resetForm(): void {
         this.form.reset();
+        this.selectedUser.set(null);
         this.imagePreview = null;
         this.selectedFile = null;
     }
@@ -276,5 +302,13 @@ export class UsersComponent implements OnInit {
     getProfileImageUrl(doc: any = this.selectedUser()): string | null {
         if (!doc?.profileImage?.data || !doc?.profileImage?.contentType) return null;
         return `data:${doc.profileImage.contentType};base64,${doc.profileImage.data}`;
+    }
+
+    togglePassword(): void {
+        this.showPassword = !this.showPassword;
+    }
+
+    toggleConfirmPassword(): void {
+        this.showConfirmPassword = !this.showConfirmPassword;
     }
 }
