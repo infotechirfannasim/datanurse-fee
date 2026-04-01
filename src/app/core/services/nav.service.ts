@@ -16,6 +16,8 @@ const PAGE_META: Record<string, PageMeta> = {
   data:       { title: 'Data Management', breadcrumb: 'CRUD Operations' },
   profile:    { title: 'My Profile',      breadcrumb: 'Account' },
   settings:   { title: 'Settings',        breadcrumb: 'Configuration' },
+  lovs:   { title: 'Data Reference Listing', breadcrumb: 'Data Reference Listing' },
+
 };
 
 @Injectable({ providedIn: 'root' })

@@ -53,7 +53,7 @@ export class SidebarComponent {
     this.menuOpen = !this.menuOpen;
   }
 
-  onMenuClick() {
+  logout() {
     this.authService.logout();
     this.menuOpen = false;
   }

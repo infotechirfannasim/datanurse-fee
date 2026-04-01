@@ -166,7 +166,7 @@
 
 .sidebar-footer {
   margin-top: auto;
-  padding: 16px 22px 24px;
+  padding-top: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   position: relative;
   z-index: 1;
@@ -175,8 +175,16 @@
 .sidebar-user {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   cursor: pointer;
+  width: 100%;
+}
+
+.profile-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .s-avatar {
@@ -514,22 +522,10 @@
   font-size: 14px;
 
   &:hover {
-    background-color: #f3f4f6;
+    background-color: #F3F4F63A;
   }
 
   svg {
     color: #6b7280;
-  }
-
-  &.logout {
-    color: #dc2626;
-
-    svg {
-      color: #dc2626;
-    }
-
-    &:hover {
-      background-color: #fee2e2;
-    }
   }
 }

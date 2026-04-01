@@ -29,9 +29,6 @@
     right: -30px;
   }
 }
-.topbar-breadcrumb {
-
-}
 .welcome-text {
   position: relative;
   z-index: 1;
@@ -209,7 +206,12 @@
   height: 100%;
   border-radius: 4px;
 }
-
+.image-docter .header-icon {
+  width: 120px;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+}
 .main-grid {
   display: grid;
   grid-template-columns: 1fr;

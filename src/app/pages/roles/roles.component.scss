@@ -9,6 +9,12 @@
   overflow-x: auto;
 }
 
+.new-modals .modal.modal-lg {
+  width: 90%;
+  max-width: 900px;
+  overflow: auto;
+}
+
 .registry-table {
   width: 100%;
   border-collapse: collapse;
@@ -219,8 +225,8 @@ textarea.form-input {
 
 // Permissions Container
 .permissions-container {
-  max-height: 500px;
-  overflow-y: auto;
+  //max-height: 500px;
+  //overflow-y: auto;
   padding-right: 8px;
 
   &::-webkit-scrollbar {
