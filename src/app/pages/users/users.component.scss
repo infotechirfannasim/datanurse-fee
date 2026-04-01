@@ -126,3 +126,20 @@
   color: var(--navy);
   font-weight: 500;
 }
+
+.dark-input-wrap {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+}
+
+

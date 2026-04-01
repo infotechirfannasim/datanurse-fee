@@ -2,7 +2,7 @@ export const lovCode = 'code';
 export const lovLabel = 'label';
 
 export const ROLES = {
-  SUPER_ADMIN: 'superAdmin',
+  SUPER_ADMIN: 'superadmin',
   DOCTOR: 'doctor',
   PATIENT: 'patient',
 };
