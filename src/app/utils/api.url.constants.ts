@@ -13,6 +13,7 @@ export const GET_MULTIPLE_LOV_BY_TYPE_API_URL = '/lov/get-multi-lov';
 export const PROFILE_API_URL = 'auth/me';
 export const UPDATE_PROFILE_API_URL = 'users/me';
 
+// Users
 export const USERS_API_URL = 'users';
 export const DELETE_USER_API_URL = 'users/';
 export const ROLES_API_URL = 'roles';
@@ -28,3 +29,5 @@ export const GET_LOV_BULK_API_URL = 'lovs/bulk';
 
 // MODULES
 export const MODULES_API_URL = 'roles/modules';
+
+// Doctors
