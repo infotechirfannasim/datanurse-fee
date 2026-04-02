@@ -10,6 +10,7 @@ import {FilterParams} from "../../core/models/user.model";
 import {MultiSelectModule} from "primeng/multiselect";
 import {SelectModule} from "primeng/select";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
+import {getUserInitials} from "../../utils/global.utils";
 
 @Component({
     selector: 'app-cases',
@@ -172,4 +173,6 @@ export class PatientComponent implements OnInit {
         if (!doc?.profileImage?.data || !doc?.profileImage?.contentType) return null;
         return `data:${doc.profileImage.contentType};base64,${doc.profileImage.data}`;
     }
+
+    protected readonly getUserInitials = getUserInitials;
 }

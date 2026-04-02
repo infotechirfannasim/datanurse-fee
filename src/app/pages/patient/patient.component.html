@@ -30,7 +30,7 @@
                             <div class="doc-cell">
                                 <div class="doc-av"
                                      [style.background]="'#3b82f6'">
-                                    {{ p.firstName[0] + p.lastName[0] }}
+                                    {{ getUserInitials(p) }}
                                 </div>
                                 <td>
                                     <div>
@@ -57,14 +57,11 @@
                 } @empty {
                     <tr>
                         <td colspan="8">
-<<<<<<< HEAD:src/app/pages/patient/patient.component.html
                             <div class="empty-state"><h3>No patients found</h3>
                                 <p>Try adjusting your search.</p></div>
-=======
                             <div class="empty-state">
                                 <h3>No patients found</h3>
                             </div>
->>>>>>> 9b4931778e9a09bc253d2ddc22139313854207da:src/app/pages/cases/patient.component.html
                         </td>
                     </tr>
                 }
