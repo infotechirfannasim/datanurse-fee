@@ -40,11 +40,10 @@
                         <td>
                             <div class="doc-cell">
                                 @if (getProfileImageUrl(doc)) {
-                                    <img
-                                            [src]="getProfileImageUrl(doc)"
-                                            class="doc-av"
-                                            alt="Profile Photo"
-                                            style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                    <img [src]="getProfileImageUrl(doc)"
+                                         class="doc-av"
+                                         alt="Profile Photo"
+                                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
                                 } @else {
                                     <div class="doc-av"
                                          [style.background]="doc.avatarColor || '#3b82f6'">
@@ -69,44 +68,45 @@
                                 <span style="color: #9ca3af;">—</span>
                             }
                         </td>
-            <td><span class="badge" [ngClass]="getStatusClass(doc.status)">{{ doc.status }}</span></td>
+                        <td><span class="badge" [ngClass]="getStatusClass(doc.status)">{{ doc.status }}</span></td>
                         <td style="font-size:12.5px;color:var(--muted);">{{ doc.createdAt | date: 'MMM d, y' }}</td>
-            <td>
-              <td>
-              <button class="action-btn" (click)="openView(doc)" title="View">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="var(--muted)"
-                        stroke-width="2"/>
-                  <circle cx="12" cy="12" r="3" stroke="var(--muted)" stroke-width="2"/>
-                </svg>
-              </button>
-              <button class="action-btn" (click)="onEditProfile()" title="Edit">
-                <svg  width="13" height="13" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                  <path stroke="var(--blue-lt)" stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                </svg>
-              </button>
-              
-              <button class="action-btn" (click)="openDelete(doc)" title="Remove">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                  <polyline points="3 6 5 6 21 6" stroke="var(--rose)" stroke-width="2"/>
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"
-                        stroke="var(--rose)" stroke-width="2"/>
-                </svg>
-              </button>
-            </td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="8">
-              <div class="empty-state"><h3>No doctors found</h3>
-                <p>Try adjusting your search.</p></div>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  <div class="table-footer">
+                        <td>
+                            <button class="action-btn" (click)="openView(doc)" title="View">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="var(--muted)"
+                                          stroke-width="2"/>
+                                    <circle cx="12" cy="12" r="3" stroke="var(--muted)" stroke-width="2"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn" (click)="onEditProfile()" title="Edit">
+                                <svg width="13" height="13" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke="var(--blue-lt)" stroke-linecap="round" stroke-linejoin="round"
+                                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
+                                </svg>
+                            </button>
+
+                            <button class="action-btn" (click)="openDelete(doc)" title="Remove">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                                    <polyline points="3 6 5 6 21 6" stroke="var(--rose)" stroke-width="2"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"
+                                          stroke="var(--rose)" stroke-width="2"/>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                } @empty {
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state"><h3>No doctors found</h3>
+                                <p>Try adjusting your search.</p></div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="table-footer">
   <span class="table-footer-info">
     Showing {{ doctors.length }} of {{ pagination()?.total || 0 }} doctors
   </span>
@@ -161,90 +161,91 @@
 
                 <div class="modal-body">
                     <div class="avatar-upload-wrap">
-            <div class="avatar-upload" (click)="fileInput.click()">
-              @if (imagePreview) {
-                <img [src]="imagePreview" class="preview-image" alt="Preview">
-              } @else {
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#7A8BB0" stroke-width="2"/>
-                  <circle cx="12" cy="7" r="4" stroke="#7A8BB0" stroke-width="2"/>
-                </svg>
-              }
-              <input #fileInput type="file" accept="image/jpeg,image/png,image/webp"
-                     (change)="onImageSelected($event)" style="display: none;">
-            </div>
-            <div class="avatar-meta">
-              <strong>Upload Profile Photo</strong>
-              <br>JPG, PNG or WEBP. Max 2MB.
-            </div>
-          </div>
+                        <div class="avatar-upload" (click)="fileInput.click()">
+                            @if (imagePreview) {
+                                <img [src]="imagePreview" class="preview-image" alt="Preview">
+                            } @else {
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#7A8BB0"
+                                          stroke-width="2"/>
+                                    <circle cx="12" cy="7" r="4" stroke="#7A8BB0" stroke-width="2"/>
+                                </svg>
+                            }
+                            <input #fileInput type="file" accept="image/jpeg,image/png,image/webp"
+                                   (change)="onImageSelected($event)" style="display: none;">
+                        </div>
+                        <div class="avatar-meta">
+                            <strong>Upload Profile Photo</strong>
+                            <br>JPG, PNG or WEBP. Max 2MB.
+                        </div>
+                    </div>
 
-          <form [formGroup]="doctorForm">
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label class="form-label">Full Name *</label>
-                <input class="form-input" formControlName="name" placeholder="Dr. Full Name">
-                @if (doctorForm.get('name')?.invalid && doctorForm.get('name')?.touched) {
-                  <small class="error">Full name is required (min 3 chars)</small>
-                }
-              </div>
+                    <form [formGroup]="doctorForm">
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label class="form-label">Full Name *</label>
+                                <input class="form-input" formControlName="name" placeholder="Dr. Full Name">
+                                @if (doctorForm.get('name')?.invalid && doctorForm.get('name')?.touched) {
+                                    <small class="error">Full name is required (min 3 chars)</small>
+                                }
+                            </div>
 
-              <div class="form-group">
-                <label class="form-label">Email Address *</label>
-                <input class="form-input" type="email" formControlName="email"
-                       placeholder="doctor@example.com">
-                @if (doctorForm.get('email')?.invalid && doctorForm.get('email')?.touched) {
-                  <small class="error">Valid email is required</small>
-                }
-              </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Address *</label>
+                                <input class="form-input" type="email" formControlName="email"
+                                       placeholder="doctor@example.com">
+                                @if (doctorForm.get('email')?.invalid && doctorForm.get('email')?.touched) {
+                                    <small class="error">Valid email is required</small>
+                                }
+                            </div>
 
-              <div class="form-group">
-                <label class="form-label">Phone Number</label>
-                <input class="form-input" formControlName="phone" placeholder="+92-300-0000000">
-              </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone Number</label>
+                                <input class="form-input" formControlName="phone" placeholder="+92-300-0000000">
+                            </div>
 
-              <div class="form-group">
-                <label class="form-label">PMDC Registration No. *</label>
-                <input class="form-input" formControlName="pmdc" placeholder="PMDC-XXXXX">
-                @if (doctorForm.get('pmdc')?.invalid && doctorForm.get('pmdc')?.touched) {
-                  <small class="error">Valid PMDC number is required</small>
-                }
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Specializations *</label>
-              <p-multiSelect
-                      [options]="specialtyOptions"
-                      formControlName="specialities"
-                      optionLabel="label"
-                      optionValue="code"
-                      placeholder="Select Specializations"
-                      display="chip"
-                      [showToggleAll]="true"
-                      class="w-full">
-              </p-multiSelect>
-            </div>
-            <!-- Hospitals -->
-            <div class="form-group">
-              <label class="form-label">Affiliated Hospitals</label>
-              <div class="hospital-list-modal" formArrayName="hospitals">
-                @for (hospital of hospitals.controls; track $index; let i = $index) {
-                  <div class="hospital-row" [formGroupName]="i">
-                    <div>
-                      <label class="form-label">Hospital name *</label>
-                      <p-select
-                        #dropdown
-                        [disabled]="false"
-                        [filter]="true"
-                        id="name"
-                        formControlName="name"
-                        optionLabel="label"
-                        optionValue="code"
-                        [options]="hospitalOptions"
-                        [placeholder]="''"
-                        [readonly]="false"
-                        appendTo="body"
-                        class="form-input"
+                            <div class="form-group">
+                                <label class="form-label">PMDC Registration No. *</label>
+                                <input class="form-input" formControlName="pmdc" placeholder="PMDC-XXXXX">
+                                @if (doctorForm.get('pmdc')?.invalid && doctorForm.get('pmdc')?.touched) {
+                                    <small class="error">Valid PMDC number is required</small>
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Specializations *</label>
+                            <p-multiSelect
+                                    [options]="specialtyOptions"
+                                    formControlName="specialities"
+                                    optionLabel="label"
+                                    optionValue="code"
+                                    placeholder="Select Specializations"
+                                    display="chip"
+                                    [showToggleAll]="true"
+                                    class="w-full">
+                            </p-multiSelect>
+                        </div>
+                        <!-- Hospitals -->
+                        <div class="form-group">
+                            <label class="form-label">Affiliated Hospitals</label>
+                            <div class="hospital-list-modal" formArrayName="hospitals">
+                                @for (hospital of hospitals.controls; track $index; let i = $index) {
+                                    <div class="hospital-row" [formGroupName]="i">
+                                        <div>
+                                            <label class="form-label">Hospital name *</label>
+                                            <p-select
+                                                #dropdown
+                                                [disabled]="false"
+                                                [filter]="true"
+                                                id="name"
+                                                formControlName="name"
+                                                optionLabel="label"
+                                                optionValue="code"
+                                                [options]="hospitalOptions"
+                                                [placeholder]="''"
+                                                [readonly]="false"
+                                                appendTo="body"
+                                                class="form-input"
                                             />
                                         </div>
                                         <div>
