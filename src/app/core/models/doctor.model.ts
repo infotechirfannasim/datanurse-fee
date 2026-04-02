@@ -14,6 +14,7 @@ export interface Doctor {
   phone?: string;
   pmdc?: string;
   profileImage: any;
+  role: any;
 }
 
 export interface HospitalEntry {
