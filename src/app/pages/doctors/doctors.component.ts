@@ -64,21 +64,9 @@ export class DoctorsComponent implements OnInit {
         );
     }
 
-<<<<<<< HEAD
-  get hospitals(): FormArray {
-    return this.doctorForm.get('hospitals') as FormArray;
-  }
-=======
-    // Getter for specializations FormArray
-    get specializations(): FormArray {
-        return this.doctorForm.get('specializations') as FormArray;
-    }
-
-    // Getter for hospitals FormArray
     get hospitals(): FormArray {
         return this.doctorForm.get('hospitals') as FormArray;
     }
->>>>>>> 9b4931778e9a09bc253d2ddc22139313854207da
 
     ngOnInit() {
         this.loadDoctors();

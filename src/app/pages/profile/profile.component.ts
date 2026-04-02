@@ -7,26 +7,6 @@ import {PROFILE_API_URL, UPDATE_PROFILE_API_URL} from "../../utils/api.url.const
 import {HttpErrorResponse} from "@angular/common/http";
 import {User} from "../../core/models/user.model";
 
-<<<<<<< HEAD
-=======
-interface UserProfile {
-    _id: string;
-    firstName: string;
-    lastName: string;
-    fullName: string;
-    email: string;
-    username: string;
-    phone: string;
-    role: { label: string; name: string };
-    department?: string;
-    bio?: string;
-    location?: string;
-    createdAt: string;
-    lastLoginAt: string;
-    status: string;
-    isEmailVerified: boolean;
-}
->>>>>>> 9b4931778e9a09bc253d2ddc22139313854207da
 
 @Component({
     selector: 'app-profile',
@@ -43,13 +23,8 @@ export class ProfileComponent implements OnInit {
 
     activeTab = signal<'personal' | 'security' | 'activity'>('personal');
 
-<<<<<<< HEAD
-  profile = signal<User | null>(null);
-  isLoading = signal(true);
-=======
-    profile = signal<UserProfile | null>(null);
+    profile = signal<User | null>(null);
     isLoading = signal(true);
->>>>>>> 9b4931778e9a09bc253d2ddc22139313854207da
 
     // Reactive Forms
     personalForm!: FormGroup;
@@ -59,33 +34,13 @@ export class ProfileComponent implements OnInit {
     selectedFile: File | null = null;
 
     recentActivity = [
-        {action: 'Logged in from Lahore, PK', time: 'Today, 9:00 AM', type: 'login'},
+        { action: 'Logged in from Lahore, PK', time: 'Today, 9:00 AM', type: 'login' },
         {action: 'Updated profile information', time: 'Yesterday, 2:30 PM', type: 'update'},
     ];
 
     ngOnInit(): void {
         this.initForms();
         this.loadProfile();
-<<<<<<< HEAD
-      },
-      error: (error: HttpErrorResponse) => {
-        const errMsg = error.error?.message || error.message || 'Failed to update profile';
-        this.toastService.show(errMsg, 'error');
-      }
-    });
-  }
-
-  getProfileImageUrl(): string | null {
-    if (!this.profile()?.profileImage?.data || !this.profile()?.profileImage?.contentType) return null;
-    return `data:${this.profile()?.profileImage.contentType};base64,${this.profile()?.profileImage.data}`;
-  }
-
-  changePassword(): void {
-    if (this.passwordForm.invalid) {
-      this.passwordForm.markAllAsTouched();
-      return;
-=======
->>>>>>> 9b4931778e9a09bc253d2ddc22139313854207da
     }
 
     initForms(): void {
@@ -184,6 +139,11 @@ export class ProfileComponent implements OnInit {
                 this.toastService.show(errMsg, 'error');
             }
         });
+    }
+
+    getProfileImageUrl(): string | null {
+        if (!this.profile()?.profileImage?.data || !this.profile()?.profileImage?.contentType) return null;
+        return `data:${this.profile()?.profileImage.contentType};base64,${this.profile()?.profileImage.data}`;
     }
 
     changePassword(): void {
