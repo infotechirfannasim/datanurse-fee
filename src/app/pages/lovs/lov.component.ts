@@ -396,7 +396,7 @@ export class LovComponent implements OnInit, OnDestroy {
     rootType = computed(() => this.navigationStack().at(0)?.type ?? '');
 
     topLevelLovTypes = computed(() =>
-        this.lovTypes.filter((t: any) => !t.hasParent && t.childMeta?.length === 0)
+        this.lovTypes().filter((t: any) => !t.hasParent && t.childMeta?.length === 0)
     );
 
     // Computed
@@ -417,22 +417,23 @@ export class LovComponent implements OnInit, OnDestroy {
         if (stack.length === 0) return items;
 
         // Root type
-        const rootLabel = this.lovTypes.find((t: any) => t.key === stack[0].type)?.label || stack[0].type;
+        const rootLabel = this.lovTypes().find((t: any) => t.key === stack[0].type)?.label || stack[0].type;
         items.push({label: rootLabel, targetLevel: 1});
 
         for (let i = 1; i < stack.length; i++) {
             const ctx = stack[i].parentContext;
             if (ctx) items.push({label: ctx.label, targetLevel: i + 1});
 
-            const typeLabel = this.lovTypes.find((t: any) => t.key === stack[i].type)?.label || stack[i].type;
+            const typeLabel = this.lovTypes().find((t: any) => t.key === stack[i].type)?.label || stack[i].type;
             items.push({label: typeLabel, targetLevel: i + 1});
         }
         return items;
     });
 
-    // Regular properties
-    lovTypes: any[] = [];
+    lovTypes = signal<any[]>([]);
     childTypesMap = signal<{ [parentKey: string]: any[] }>({});
+
+    // Regular properties
     selectedLovRelations: any[] = [];
     lovName: string = '';
     isEditMode = false;
@@ -464,11 +465,11 @@ export class LovComponent implements OnInit, OnDestroy {
     }
 
     // ==================== LOAD TYPES ====================
-    private getAllLovTypes(): void {
+    getAllLovTypes(): void {
         this.requestService.getRequest(LOV_TYPES_API_URL).subscribe({
             next: (res: HttpResponse<any>) => {
                 if (res.status === 200) {
-                    this.lovTypes = res.body?.data || [];
+                    this.lovTypes.set(res.body?.data || []);
                     this.buildChildTypesMap();
                 }
             },
@@ -482,9 +483,9 @@ export class LovComponent implements OnInit, OnDestroy {
         this.getLovValueOptions();
     }
 
-    private buildChildTypesMap(): void {
+    buildChildTypesMap(): void {
         const map: { [key: string]: any[] } = {};
-        this.lovTypes.forEach((t: any) => {
+        this.lovTypes().forEach((t: any) => {
             if (t.childMeta?.length) {
                 t.childMeta.forEach((meta: any) => {
                     const pKey = meta.parentLovKey;
@@ -574,11 +575,7 @@ export class LovComponent implements OnInit, OnDestroy {
             const parent = lov?.parents?.find((item: any) => item.type === col.parentLovKey);
             group[col.formKey] = [parent ? parent.code : '', Validators.required];
         });
-
-        console.log(this.selectedLovRelations);
         this.form = this.fb.group(group);
-
-        console.log(this.form.value)
     }
 
     prefillParentContext(): void {
@@ -695,7 +692,6 @@ export class LovComponent implements OnInit, OnDestroy {
         this.resetForm();
         this.getParentLOVs();
         this.showAddModal.set(true);
-        this.lovName = this.breadcrumbItems().at(-1)?.label as string;
     }
 
     openEdit(lov: LOV | null): void {
@@ -713,7 +709,6 @@ export class LovComponent implements OnInit, OnDestroy {
         this.form.get('code')?.disable();
         this.getParentLOVs();
         this.showAddModal.set(true);
-        this.lovName = this.breadcrumbItems().at(-1)?.label as string;
     }
 
     closeAddModal(): void {
@@ -726,12 +721,11 @@ export class LovComponent implements OnInit, OnDestroy {
     }
 
     updateLovName(): void {
-        const selected = this.lovTypes.find(t => t.key === this.currentLovType());
-        this.lovName = selected?.label || '';
+        this.lovName = this.breadcrumbItems().at(-1)?.label as string || '';
     }
 
     setTableColumns(): void {
-        const selectedType = this.lovTypes.find(t => t.key === this.currentLovType());
+        const selectedType = this.lovTypes().find(t => t.key === this.currentLovType());
         this.selectedLovRelations = selectedType?.childMeta || [];
     }
 

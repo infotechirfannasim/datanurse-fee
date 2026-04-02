@@ -64,12 +64,6 @@ export class DoctorsComponent implements OnInit {
     );
   }
 
-  // Getter for specializations FormArray
-  get specializations(): FormArray {
-    return this.doctorForm.get('specializations') as FormArray;
-  }
-
-  // Getter for hospitals FormArray
   get hospitals(): FormArray {
     return this.doctorForm.get('hospitals') as FormArray;
   }

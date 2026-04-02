@@ -21,7 +21,7 @@
                 [value]="rootType()"
                 required>
           <option value="">Select Type</option>
-          @for (type of lovTypes; track type.key) {
+          @for (type of topLevelLovTypes(); track type.key) {
             <option [value]="type.key">
               {{ type.label }}
             </option>

@@ -171,6 +171,15 @@
   display: grid;
   grid-template-columns: 1fr 320px;
   gap: 20px;
+
+  .mask {
+    filter: blur(4px);
+    user-select: none;
+
+    &:hover {
+      filter: none;
+    }
+  }
 }
 
 .activity-item {

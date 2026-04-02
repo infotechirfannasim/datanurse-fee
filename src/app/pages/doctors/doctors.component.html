@@ -78,17 +78,10 @@
                 <span style="color: #9ca3af;">—</span>
               }
             </td>
-            <!--<td style="font-weight:700;color:var(&#45;&#45;navy);">{{ doc.cases }}</td>
-            <td>
-                <span style="display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B"><path
-                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    {{ doc.rating }}
-                </span>
-            </td>-->
             <td><span class="badge" [ngClass]="getStatusClass(doc.status)">{{ doc.status }}</span></td>
             <td style="font-size:12.5px;color:var(--muted);">{{ doc.createdAt | date: 'MMM d, y' }}</td>
             <td>
+              <td>
               <button class="action-btn" (click)="openView(doc)" title="View">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="var(--muted)"
@@ -176,7 +169,6 @@
         </div>
         
         <div class="modal-body">
-          <!-- Image Upload -->
           <div class="avatar-upload-wrap">
             <div class="avatar-upload" (click)="fileInput.click()">
               @if (imagePreview) {
@@ -262,7 +254,6 @@
                         [readonly]="false"
                         appendTo="body"
                         class="form-input"
-                        styleClass="dropdown-dual-lang"
                       />
                     </div>
                     <div>

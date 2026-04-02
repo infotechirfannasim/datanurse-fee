@@ -5,24 +5,8 @@ import {ToastService} from '../../core/services/toast.service';
 import {RequestService} from '../../core/services/request.service';
 import {PROFILE_API_URL, UPDATE_PROFILE_API_URL} from "../../utils/api.url.constants";
 import {HttpErrorResponse} from "@angular/common/http";
+import {User} from "../../core/models/user.model";
 
-interface UserProfile {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  email: string;
-  username: string;
-  phone: string;
-  role: { label: string; name: string };
-  department?: string;
-  bio?: string;
-  location?: string;
-  createdAt: string;
-  lastLoginAt: string;
-  status: string;
-  isEmailVerified: boolean;
-}
 
 @Component({
   selector: 'app-profile',
@@ -39,7 +23,7 @@ export class ProfileComponent implements OnInit {
 
   activeTab = signal<'personal' | 'security' | 'activity'>('personal');
 
-  profile = signal<UserProfile | null>(null);
+  profile = signal<User | null>(null);
   isLoading = signal(true);
 
   // Reactive Forms
@@ -155,6 +139,11 @@ export class ProfileComponent implements OnInit {
         this.toastService.show(errMsg, 'error');
       }
     });
+  }
+
+  getProfileImageUrl(): string | null {
+    if (!this.profile()?.profileImage?.data || !this.profile()?.profileImage?.contentType) return null;
+    return `data:${this.profile()?.profileImage.contentType};base64,${this.profile()?.profileImage.data}`;
   }
 
   changePassword(): void {

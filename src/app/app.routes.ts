@@ -1,7 +1,6 @@
 import {Routes} from '@angular/router';
 import {UnAuthGuard} from "./core/guards/un-auth.guard";
 import {AuthGuard} from "./core/guards/auth.guard";
-import {LovComponent} from "./pages/lovs/lov.component";
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -38,7 +37,7 @@ export const routes: Routes = [
   {
     path: 'patients',
     canActivate: [AuthGuard],
-    loadComponent: () => import('./pages/cases/patient.component').then(m => m.PatientComponent)
+    loadComponent: () => import('./pages/patient/patient.component').then(m => m.PatientComponent)
   },
   /*
   {

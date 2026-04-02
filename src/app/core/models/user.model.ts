@@ -13,9 +13,17 @@ export interface User {
     permissions?: Permission[];
     lastActiveAt?: string;
     badge?: string;
-    cases: number
+    cases: number;
+    profileImage: ProfileImage;
     createdAt: Date;
     updatedAt: Date;
+    lastLoginAt: Date;
+}
+
+export interface ProfileImage {
+    contentType: string;
+    data: string;
+    uploadedAt: string
 }
 
 export interface FilterParams {
