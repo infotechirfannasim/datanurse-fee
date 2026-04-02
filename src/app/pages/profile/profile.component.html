@@ -1,20 +1,10 @@
-<!-- STATS ROW -->
-<!-- TABS -->
-<!--<div class="tab-bar" style="margin-bottom:24px;">
-    <button (click)="activeTab.set('personal')" [class.active]="activeTab()==='personal'" class="tab-btn">Personal
-        Info
-    </button>
-    <button (click)="activeTab.set('security')" [class.active]="activeTab()==='security'" class="tab-btn">Security
-    </button>
-</div>-->
-
 @if (activeTab() === 'personal') {
   <div class="profile-grid">
     <div class="section-card">
       <div class="section-header">
         <div class="section-title">Personal Information</div>
       </div>
-      <div style="padding:24px;">
+      <div class="section-body">
         
         <div class="avatar-upload-wrap">
           <div class="avatar-upload">
@@ -30,7 +20,8 @@
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
                     (change)="onImageSelected($event)"
-            /></div>
+            />
+          </div>
           <div class="avatar-meta">
             <strong>Change Profile Photo</strong><br>
             JPG, PNG. Max 1MB.
@@ -55,16 +46,24 @@
               <label class="form-label">Phone</label>
               <input class="form-input" formControlName="phone" placeholder="+1 (555) 123-4567">
             </div>
+            <div class="Status-group">
+              <label class="info-label">Status:</label>
+              <span class="info-value">{{ profile()?.status | titlecase }}</span>
+            </div>
+            <div class="Status-group">
+              <label class="info-label">Last Login:</label>
+              <span class="">{{ profile()?.lastLoginAt || '' | date: 'MMM d, y' }}</span>
+            </div>
           </div>
-          <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px;">
-            <!--<button type="button" class="btn btn-ghost" (click)="personalForm.reset()">Discard</button>-->
-            <button type="button" class="btn btn-primary" (click)="updateProfile()">Save Changes</button>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" (click)="updateProfile()">Save</button>
           </div>
         </form>
       </div>
     </div>
     
     <!-- Account Info -->
+<<<<<<< HEAD
     <div class="section-card" style="height:fit-content;">
       <div class="section-header">
         <div class="section-title">Account Information</div>
@@ -112,15 +111,51 @@
         </div>
       </div>
     </div>
+=======
+<!--     <div class="section-card account-info-card"> -->
+<!--       <div class="section-header"> -->
+<!--         <div class="section-title">Account Information</div> -->
+<!--       </div> -->
+<!--       <div class="account-info-body"> -->
+<!--         <div class="account-info-row"> -->
+<!--           <span class="info-label">User ID</span> -->
+<!--           <span class="info-value">{{ profile()?._id }}</span> -->
+<!--         </div> -->
+<!--         <div class="account-info-row"> -->
+<!--           <span class="info-label">Username</span> -->
+<!--           <span class="info-value">{{ profile()?.username }}</span> -->
+<!--         </div> -->
+<!--         <div class="account-info-row"> -->
+<!--           <span class="info-label">Role</span> -->
+<!--           <span class="info-value" [class.text-success]="profile()?.status === 'active'" -->
+<!--                 [class.text-danger]="profile()?.status !== 'active'"> -->
+<!--                         {{ profile()?.role?.label }} -->
+<!--                     </span> -->
+<!--         </div> -->
+<!--         <div class="account-info-row"> -->
+<!--           <span class="info-label">Status</span> -->
+<!--           <span class="info-value">{{ profile()?.status | titlecase }}</span> -->
+<!--         </div> -->
+<!--         <div class="account-info-row"> -->
+<!--           <span class="info-label">Member Since</span> -->
+<!--           <span class="info-value">{{ profile()?.createdAt || '' | date: 'MMM d, y' }}</span> -->
+<!--         </div> -->
+<!--         <div class="account-info-row"> -->
+<!--           <span class="info-label">Last Login</span> -->
+<!--           <span class="info-value">{{ profile()?.lastLoginAt || '' | date: 'MMM d, y' }}</span> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--     </div> -->
+>>>>>>> 9b4931778e9a09bc253d2ddc22139313854207da
   </div>
 }
 
 @if (activeTab() === 'security') {
-  <div class="section-card" style="max-width:560px;">
+  <div class="section-card security-card">
     <div class="section-header">
       <div class="section-title">Change Password</div>
     </div>
-    <div style="padding:24px;">
+    <div class="section-body">
       <form [formGroup]="passwordForm">
         <div class="form-group">
           <label class="form-label">Current Password</label>
@@ -134,7 +169,6 @@
           <label class="form-label">Confirm New Password</label>
           <input class="form-input" type="password" formControlName="confirmPassword" placeholder="••••••••">
         </div>
-        
         <button type="button" class="btn btn-primary" (click)="changePassword()"
                 [disabled]="passwordForm.invalid">
           Update Password
@@ -142,15 +176,15 @@
       </form>
     </div>
   </div>
-  <div class="section-card" style="max-width:560px; margin-top:20px;">
+  
+  <div class="section-card security-card security-card--mt">
     <div class="section-header">
       <div class="section-title">Two-Factor Authentication</div>
     </div>
-    <div style="padding:24px; display:flex; align-items:center; justify-content:space-between;">
+    <div class="tfa-body">
       <div>
-        <div style="font-size:14px; font-weight:600; color:var(--navy);">Authenticator App</div>
-        <div style="font-size:12.5px; color:var(--muted); margin-top:3px;">Use Google Authenticator or Authy
-        </div>
+        <div class="tfa-title">Authenticator App</div>
+        <div class="tfa-sub">Use Google Authenticator or Authy</div>
       </div>
       <button class="btn btn-ghost btn-sm">Enable 2FA</button>
     </div>

@@ -121,7 +121,7 @@ export class DashboardComponent implements OnInit {
       suffix: '%'
     },
     {
-      icon: './assets/images/doctor.svg',
+      icon: './assets/images/pending.svg',
       id: 'cnt-followup',
       label: 'Pending Follow-ups',
       value: 0,

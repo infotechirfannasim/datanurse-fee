@@ -7,132 +7,66 @@ import {PROFILE_API_URL, UPDATE_PROFILE_API_URL} from "../../utils/api.url.const
 import {HttpErrorResponse} from "@angular/common/http";
 import {User} from "../../core/models/user.model";
 
+<<<<<<< HEAD
+=======
+interface UserProfile {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
+    email: string;
+    username: string;
+    phone: string;
+    role: { label: string; name: string };
+    department?: string;
+    bio?: string;
+    location?: string;
+    createdAt: string;
+    lastLoginAt: string;
+    status: string;
+    isEmailVerified: boolean;
+}
+>>>>>>> 9b4931778e9a09bc253d2ddc22139313854207da
 
 @Component({
-  selector: 'app-profile',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss'
+    selector: 'app-profile',
+    standalone: true,
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './profile.component.html',
+    styleUrl: './profile.component.scss'
 })
 export class ProfileComponent implements OnInit {
 
-  private toastService = inject(ToastService);
-  private requestService = inject(RequestService);
-  private fb = inject(FormBuilder);
+    private toastService = inject(ToastService);
+    private requestService = inject(RequestService);
+    private fb = inject(FormBuilder);
 
-  activeTab = signal<'personal' | 'security' | 'activity'>('personal');
+    activeTab = signal<'personal' | 'security' | 'activity'>('personal');
 
+<<<<<<< HEAD
   profile = signal<User | null>(null);
   isLoading = signal(true);
+=======
+    profile = signal<UserProfile | null>(null);
+    isLoading = signal(true);
+>>>>>>> 9b4931778e9a09bc253d2ddc22139313854207da
 
-  // Reactive Forms
-  personalForm!: FormGroup;
-  passwordForm!: FormGroup;
+    // Reactive Forms
+    personalForm!: FormGroup;
+    passwordForm!: FormGroup;
 
-  imagePreview: string | null = null;
-  selectedFile: File | null = null;
+    imagePreview: string | null = null;
+    selectedFile: File | null = null;
 
-  recentActivity = [
-    { action: 'Logged in from Lahore, PK', time: 'Today, 9:00 AM', type: 'login' },
-    {action: 'Updated profile information', time: 'Yesterday, 2:30 PM', type: 'update'},
-  ];
+    recentActivity = [
+        {action: 'Logged in from Lahore, PK', time: 'Today, 9:00 AM', type: 'login'},
+        {action: 'Updated profile information', time: 'Yesterday, 2:30 PM', type: 'update'},
+    ];
 
-  ngOnInit(): void {
-    this.initForms();
-    this.loadProfile();
-  }
-
-  initForms(): void {
-    this.personalForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: [{value: '', disabled: true}],
-      phone: [''],
-    });
-
-    this.passwordForm = this.fb.group({
-      currentPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', Validators.required]
-    });
-  }
-
-  loadProfile(): void {
-    this.isLoading.set(true);
-
-    this.requestService.getRequest(PROFILE_API_URL).subscribe({
-      next: (res: any) => {
-        if (res.status == 200 && res.body.data) {
-          const data = res.body.data;
-          this.profile.set(data);
-          this.personalForm.patchValue({
-            firstName: data.firstName || '',
-            lastName: data.lastName || '',
-            email: data.email || '',
-            phone: data.phone || '',
-            location: data.location || '',
-            department: data.department || '',
-            bio: data.bio || ''
-          });
-        }
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.toastService.show('Failed to load profile', 'error');
-        this.isLoading.set(false);
-      }
-    });
-  }
-
-  onImageSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        alert('Image size must be less than 2MB');
-        return;
-      }
-      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-        alert('Only JPG, PNG or WEBP allowed');
-        return;
-      }
-
-      this.selectedFile = file;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.imagePreview = reader.result as string;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  updateProfile(): void {
-    if (this.personalForm.invalid) {
-      this.personalForm.markAllAsTouched();
-      this.toastService.show('Please fill all required fields correctly', 'error');
-      return;
-    }
-
-    const formData = new FormData();
-    const formValue = this.personalForm.getRawValue();
-
-    Object.keys(formValue).forEach(key => {
-      if (key === 'email') return;
-
-      const value = formValue[key];
-      if (value !== null && value !== undefined && value !== '') {
-        formData.append(key, value);
-      }
-    });
-    if (this.selectedFile) {
-      formData.append('profileImage', this.selectedFile);
-    }
-
-    this.requestService.patchReqWithFormData(UPDATE_PROFILE_API_URL, formData).subscribe({
-      next: (response: any) => {
-        this.toastService.show('Profile updated successfully!', 'success');
+    ngOnInit(): void {
+        this.initForms();
         this.loadProfile();
+<<<<<<< HEAD
       },
       error: (error: HttpErrorResponse) => {
         const errMsg = error.error?.message || error.message || 'Failed to update profile';
@@ -150,38 +84,144 @@ export class ProfileComponent implements OnInit {
     if (this.passwordForm.invalid) {
       this.passwordForm.markAllAsTouched();
       return;
+=======
+>>>>>>> 9b4931778e9a09bc253d2ddc22139313854207da
     }
 
-    const {currentPassword, newPassword, confirmPassword} = this.passwordForm.value;
+    initForms(): void {
+        this.personalForm = this.fb.group({
+            firstName: ['', Validators.required],
+            lastName: ['', Validators.required],
+            email: [{value: '', disabled: true}],
+            phone: [''],
+        });
 
-    if (newPassword !== confirmPassword) {
-      this.toastService.show('New passwords do not match!', 'error');
-      return;
+        this.passwordForm = this.fb.group({
+            currentPassword: ['', Validators.required],
+            newPassword: ['', [Validators.required, Validators.minLength(8)]],
+            confirmPassword: ['', Validators.required]
+        });
     }
 
-    // Call change password API here
-    // this.requestService.postRequest('/auth/change-password', { currentPassword, newPassword })...
+    loadProfile(): void {
+        this.isLoading.set(true);
 
-    this.toastService.show('Password changed successfully!', 'success');
-    this.passwordForm.reset();
-  }
+        this.requestService.getRequest(PROFILE_API_URL).subscribe({
+            next: (res: any) => {
+                if (res.status == 200 && res.body.data) {
+                    const data = res.body.data;
+                    this.profile.set(data);
+                    this.personalForm.patchValue({
+                        firstName: data.firstName || '',
+                        lastName: data.lastName || '',
+                        email: data.email || '',
+                        phone: data.phone || '',
+                        location: data.location || '',
+                        department: data.department || '',
+                        bio: data.bio || ''
+                    });
+                }
+                this.isLoading.set(false);
+            },
+            error: () => {
+                this.toastService.show('Failed to load profile', 'error');
+                this.isLoading.set(false);
+            }
+        });
+    }
 
-  getActivityColor(type: string): string {
-    const map: Record<string, string> = {
-      create: '#22C55E',
-      update: '#2251CC',
-      report: '#F59E0B',
-      delete: '#E8344A',
-      login: '#5B4FCF'
-    };
-    return map[type] ?? '#7A8BB0';
-  }
+    onImageSelected(event: any): void {
+        const file = event.target.files[0];
+        if (file) {
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Image size must be less than 2MB');
+                return;
+            }
+            if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+                alert('Only JPG, PNG or WEBP allowed');
+                return;
+            }
 
-  formatDate(dateStr: string): string {
-    if (!dateStr) return '—';
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long'
-    });
-  }
+            this.selectedFile = file;
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                this.imagePreview = reader.result as string;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    updateProfile(): void {
+        if (this.personalForm.invalid) {
+            this.personalForm.markAllAsTouched();
+            this.toastService.show('Please fill all required fields correctly', 'error');
+            return;
+        }
+
+        const formData = new FormData();
+        const formValue = this.personalForm.getRawValue();
+
+        Object.keys(formValue).forEach(key => {
+            if (key === 'email') return;
+
+            const value = formValue[key];
+            if (value !== null && value !== undefined && value !== '') {
+                formData.append(key, value);
+            }
+        });
+        if (this.selectedFile) {
+            formData.append('profileImage', this.selectedFile);
+        }
+
+        this.requestService.patchReqWithFormData(UPDATE_PROFILE_API_URL, formData).subscribe({
+            next: (response: any) => {
+                this.toastService.show('Profile updated successfully!', 'success');
+                this.loadProfile();
+            },
+            error: (error: HttpErrorResponse) => {
+                const errMsg = error.error?.message || error.message || 'Failed to update profile';
+                this.toastService.show(errMsg, 'error');
+            }
+        });
+    }
+
+    changePassword(): void {
+        if (this.passwordForm.invalid) {
+            this.passwordForm.markAllAsTouched();
+            return;
+        }
+
+        const {currentPassword, newPassword, confirmPassword} = this.passwordForm.value;
+
+        if (newPassword !== confirmPassword) {
+            this.toastService.show('New passwords do not match!', 'error');
+            return;
+        }
+
+        // Call change password API here
+        // this.requestService.postRequest('/auth/change-password', { currentPassword, newPassword })...
+
+        this.toastService.show('Password changed successfully!', 'success');
+        this.passwordForm.reset();
+    }
+
+    getActivityColor(type: string): string {
+        const map: Record<string, string> = {
+            create: '#22C55E',
+            update: '#2251CC',
+            report: '#F59E0B',
+            delete: '#E8344A',
+            login: '#5B4FCF'
+        };
+        return map[type] ?? '#7A8BB0';
+    }
+
+    formatDate(dateStr: string): string {
+        if (!dateStr) return '—';
+        return new Date(dateStr).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long'
+        });
+    }
 }

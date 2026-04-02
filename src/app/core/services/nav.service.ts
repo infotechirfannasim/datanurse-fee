@@ -7,7 +7,7 @@ export interface PageMeta {
 
 const PAGE_META: Record<string, PageMeta> = {
   dashboard:  { title: 'Dashboard',        breadcrumb: 'Dashboard' },
-  doctors:    { title: 'Doctor Registry', breadcrumb: 'Physicians' },
+  doctors:    { title: 'Doctor Registry', breadcrumb: 'Doctors' },
   users: {title: 'Users', breadcrumb: 'User Management'},
   roles: {title: 'Roles', breadcrumb: 'Role Management'},
   patients:      { title: 'Patients',           breadcrumb: 'Patient Records' },
