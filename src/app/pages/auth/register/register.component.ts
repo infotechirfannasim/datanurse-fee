@@ -88,7 +88,7 @@ import { AuthService } from '../../../core/services/auth.service';
             <label for="password" class="form-label">Password</label>
             <input
               type="password"
-              class="form-control"
+              class="form-control has-icon"
               id="password"
               formControlName="password"
               [class.is-invalid]="isFieldInvalid('password')"
@@ -104,7 +104,7 @@ import { AuthService } from '../../../core/services/auth.service';
             <label for="confirmPassword" class="form-label">Confirm Password</label>
             <input
               type="password"
-              class="form-control"
+              class="form-control has-icon"
               id="confirmPassword"
               formControlName="confirmPassword"
               [class.is-invalid]="registerForm.hasError('passwordMismatch') && isFieldInvalid('confirmPassword')"

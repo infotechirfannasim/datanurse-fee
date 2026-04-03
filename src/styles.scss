@@ -457,6 +457,10 @@ body {
     background: var(--bg);
   }
 }
+textarea.form-input {
+  padding: 10px !important;
+  height: auto !important;
+}
 
 .form-input:focus {
   border-color: var(--blue);
@@ -720,6 +724,11 @@ select.form-input {
   grid-template-columns: 1fr 1fr auto;
   gap: 10px;
   align-items: flex-end;
+
+  div {
+    max-width: 100%;
+    overflow: auto;
+  }
 }
 
 .btn-remove-row {
@@ -1004,7 +1013,11 @@ $font: 'DM Sans', sans-serif;
       max-width: 560px;
     }
     &.modal-xl {
-      max-width: 60%;
+      max-width: 50%;
+
+      @media (max-width: 768px) {
+        max-width: 80%;
+      }
     }
   }
 
@@ -1036,7 +1049,9 @@ $font: 'DM Sans', sans-serif;
     color: white;
     letter-spacing: -0.01em;
   }
-
+  .badge {
+    text-transform: capitalize;
+  }
   .modal-sub {
     font-family: $font;
     font-size: 12.5px;
@@ -1045,8 +1060,8 @@ $font: 'DM Sans', sans-serif;
   }
 
   .modal-close {
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
     border-radius: 4px;
     border: 1px solid $border;
     background: $white;
@@ -1621,6 +1636,9 @@ p-select {
   }
 }
 
+input.has-icon {
+  padding: 0 35px 0 12px !important;
+}
 
 
 

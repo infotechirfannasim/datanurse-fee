@@ -157,15 +157,15 @@
       <form [formGroup]="passwordForm">
         <div class="form-group">
           <label class="form-label">Current Password</label>
-          <input class="form-input" type="password" formControlName="currentPassword" placeholder="••••••••">
+          <input class="form-input has-icon" type="password" formControlName="currentPassword" placeholder="••••••••">
         </div>
         <div class="form-group">
           <label class="form-label">New Password</label>
-          <input class="form-input" type="password" formControlName="newPassword" placeholder="••••••••">
+          <input class="form-input has-icon" type="password" formControlName="newPassword" placeholder="••••••••">
         </div>
         <div class="form-group">
           <label class="form-label">Confirm New Password</label>
-          <input class="form-input" type="password" formControlName="confirmPassword" placeholder="••••••••">
+          <input class="form-input has-icon" type="password" formControlName="confirmPassword" placeholder="••••••••">
         </div>
         <button type="button" class="btn btn-primary" (click)="changePassword()"
                 [disabled]="passwordForm.invalid">
