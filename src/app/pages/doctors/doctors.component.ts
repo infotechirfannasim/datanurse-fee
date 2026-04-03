@@ -12,17 +12,19 @@ import {
     USERS_API_URL
 } from "../../utils/api.url.constants";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
-import {FilterParams, Role} from "../../core/models/user.model";
+import {FilterParams, Role, User} from "../../core/models/user.model";
 import {ROLES} from "../../utils/app-constants";
 import {MultiSelectModule} from "primeng/multiselect";
 import {SelectModule} from "primeng/select";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
 import {FindObjByKeyPipe} from "../../core/pipe/find-obj-by-key";
+import {getError, markAllTouched} from "../../utils/global.utils";
+import {NgxMaskDirective} from "ngx-mask";
 
 @Component({
     selector: 'app-doctors',
     standalone: true,
-    imports: [FormsModule, NgClass, ReactiveFormsModule, CommonModule, MultiSelectModule, SelectModule, FindObjByKeyPipe],
+    imports: [FormsModule, NgClass, ReactiveFormsModule, CommonModule, MultiSelectModule, SelectModule, FindObjByKeyPipe, NgxMaskDirective],
     templateUrl: './doctors.component.html',
     styleUrl: './doctors.component.scss'
 })
@@ -36,7 +38,14 @@ export class DoctorsComponent implements OnInit {
     showViewModal = signal(false);
     showDeleteModal = signal(false);
     selectedDoctor = signal<Doctor | null>(null);
-    selectedDoctorId = signal<number | null>(null);
+    errorMessages = {
+        phone: {pattern: 'Invalid Pakistani phone number'},
+        pmdcNumber: {pattern: 'Format: PMDC-12345'},
+        npiNumber: {pattern: 'Must be exactly 10 digits'},
+        tinNumber: {pattern: 'Must be 7–12 digits'},
+        firstName: {pattern: 'Only alphabets allowed'},
+        lastName: {pattern: 'Only alphabets allowed'}
+    };
     isEditMode: boolean = false;
     doctorForm!: FormGroup;
     imagePreview: string | null = null;
@@ -80,12 +89,44 @@ export class DoctorsComponent implements OnInit {
 
     buildForm() {
         this.doctorForm = this.fb.group({
-            name: ['', [Validators.required, Validators.minLength(3)]],
-            email: ['', [Validators.required, Validators.email]],
-            phone: [''],
-            role: [this.roles.find((role: Role) => role.name === ROLES.DOCTOR)?._id],
-            pmdc: ['', [Validators.required]],
-            specialities: [''],
+            firstName: ['', [
+                Validators.required,
+                Validators.minLength(3),
+                Validators.maxLength(50),
+                Validators.pattern(/^[A-Za-z ]+$/)
+            ]],
+            lastName: ['', [
+                Validators.required,
+                Validators.minLength(3),
+                Validators.maxLength(50),
+                Validators.pattern(/^[A-Za-z ]+$/)
+            ]],
+            email: ['', [
+                Validators.required,
+                Validators.email,
+                Validators.maxLength(100)
+            ]],
+            phone: ['', [
+                Validators.required,
+                Validators.pattern(/^\+92-\d{3}-\d{7}$/)
+            ]],
+            role: [this.roles.find((r: Role) => r.name === ROLES.DOCTOR)?._id, Validators.required],
+            pmdcNumber: ['', [
+                Validators.required,
+                Validators.pattern(/^PMDC-\d{5}$/)
+            ]],
+            npiNumber: ['', [
+                Validators.required,
+                Validators.pattern(/^\d{10}$/)
+            ]],
+            tinNumber: ['', [
+                Validators.required,
+                Validators.pattern(/^\d{7,12}$/)
+            ]],
+            specialities: [[], [
+                Validators.required,
+                Validators.minLength(1)
+            ]],
             hospitals: this.fb.array([]),
             profileImage: [null]
         });
@@ -137,6 +178,7 @@ export class DoctorsComponent implements OnInit {
             next: (response: HttpResponse<any>) => {
                 if (response.status == 200 && response.body.data) {
                     this.roles = response.body.data;
+                    this.doctorForm.get('role')?.setValue(this.roles.find((r: Role) => r.name === ROLES.DOCTOR)?._id);
                 } else {
                     this.roles = [];
                 }
@@ -192,14 +234,17 @@ export class DoctorsComponent implements OnInit {
         this.showAddModal.set(true);
     }
 
-    mapDoctorToForm(doc: any) {
+    mapDoctorToForm(doc: Doctor | null) {
         return {
-            name: `${doc.firstName} ${doc.lastName}`,
-            email: doc.email,
-            phone: doc.phone,
-            pmdc: doc.profile?.licenseNumber,
-            specialities: doc.specialities || [],
-            hospitals: doc.hospitalAffiliations || []
+            firstName: doc?.firstName,
+            lastName: doc?.lastName,
+            email: doc?.email,
+            phone: doc?.phone,
+            pmdcNumber: doc?.pmdcNumber,
+            tinNumber: doc?.tinNumber,
+            npiNumber: doc?.npiNumber,
+            specialities: doc?.specialities || [],
+            hospitals: doc?.hospitalAffiliations || []
         };
     }
 
@@ -219,16 +264,15 @@ export class DoctorsComponent implements OnInit {
 
     }
 
-    // Image Handling
-    onImageSelected(event: any): void {
+    onImageSelected(event: any) {
         const file = event.target.files[0];
         if (file) {
             if (file.size > 2 * 1024 * 1024) {
-                alert('Image size must be less than 2MB');
+                this.toastService.show('Image size must be less than 2MB', 'error');
                 return;
             }
             if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-                alert('Only JPG, PNG or WEBP allowed');
+                this.toastService.show('Only JPG, PNG or WEBP allowed', 'error');
                 return;
             }
 
@@ -258,18 +302,20 @@ export class DoctorsComponent implements OnInit {
 
     submitAddDoctor(): void {
         if (this.doctorForm.invalid) {
-            this.doctorForm.markAllAsTouched();
+            markAllTouched(this.doctorForm);
             return;
         }
         const formData = new FormData();
         if (!this.isEditMode) {
             formData.append('mustSetPassword', 'true');
         }
-        formData.append('firstName', this.doctorForm.value.name.split(' ').slice(0, -1).join(' ') || this.doctorForm.value.name);
-        formData.append('lastName', this.doctorForm.value.name.split(' ').slice(-1)[0] || '');
+        formData.append('firstName', this.doctorForm.value.firstName || '');
+        formData.append('lastName', this.doctorForm.value.lastName || '');
         formData.append('email', this.doctorForm.value.email);
         formData.append('phone', this.doctorForm.value.phone || '');
-        formData.append('profile.licenseNumber', this.doctorForm.value.pmdc || '');
+        formData.append('pmdcNumber', this.doctorForm.value.pmdcNumber || '');
+        formData.append('tinNumber', this.doctorForm.value.tinNumber || '');
+        formData.append('npiNumber', this.doctorForm.value.npiNumber || '');
         formData.append('role', this.roles.find((role: Role) => role.name === ROLES.DOCTOR)?._id);
 
         const specialities = this.doctorForm.value.specialities || [];
@@ -302,11 +348,11 @@ export class DoctorsComponent implements OnInit {
                 }
                 this.resetForm();
                 this.showAddModal.set(false);
-                this.toastService.show(this.isEditMode ? 'Doctor updated successfully.' : 'Doctor added successfully.')
+                this.toastService.show(this.isEditMode ? 'Doctor updated successfully.' : 'Doctor added successfully.', 'success')
                 this.loadDoctors();
             },
             error: (err: HttpErrorResponse) => {
-                const errMsg = err.message || err.error.message || 'Something went wrong';
+                const errMsg = err.error.message || err.message || 'Something went wrong';
                 this.toastService.show(errMsg || 'Failed to register doctor', 'error');
             }
         });
@@ -342,5 +388,13 @@ export class DoctorsComponent implements OnInit {
         this.resetForm();
         this.showAddModal.set(false);
         this.selectedDoctor.set(null);
+    }
+
+    getErrorMsg(controlName: string, index?: number, field?: string) {
+        return getError(this.doctorForm, controlName, {
+            index,
+            field,
+            customMessages: this.errorMessages
+        });
     }
 }

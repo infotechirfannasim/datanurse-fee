@@ -234,15 +234,15 @@ export class UsersComponent implements OnInit {
 
     }
 
-    onImageSelected(event: any): void {
+    onImageSelected(event: any) {
         const file = event.target.files[0];
         if (file) {
             if (file.size > 2 * 1024 * 1024) {
-                alert('Image size must be less than 2MB');
+                this.toastService.show('Image size must be less than 2MB', 'error');
                 return;
             }
             if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-                alert('Only JPG, PNG or WEBP allowed');
+                this.toastService.show('Only JPG, PNG or WEBP allowed', 'error');
                 return;
             }
 

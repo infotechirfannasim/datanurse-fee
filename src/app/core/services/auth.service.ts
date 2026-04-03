@@ -169,6 +169,10 @@ export class AuthService {
         this.currentUserSubject.next(response.user);
     }
 
+    set setUser(user: User){
+        this.currentUserSubject.next(user);
+    }
+
     loadStoredUser(): void {
         const userStr = localStorage.getItem(window.btoa(AppConstants.USER_INFO));
         if (userStr) {

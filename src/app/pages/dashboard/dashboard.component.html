@@ -74,19 +74,19 @@
       <div class="outcome-mini-grid">
         <div class="outcome-mini-card">
         <span class="outcome-mini-val" style="color:#2251CC">
-          {{  10 }}
+          {{ outcomes.thirtyDaySurvival ?? 10 }}
         </span>
           <span class="outcome-mini-lbl">Total Admission</span>
         </div>
         <div class="outcome-mini-card">
         <span class="outcome-mini-val" style="color:#0EA5A0">
-          {{  9 }}
+          {{ outcomes.inHospitalSurvival ?? 9 }}
         </span>
           <span class="outcome-mini-lbl">Total Alive</span>
         </div>
         <div class="outcome-mini-card">
         <span class="outcome-mini-val" style="color:#E8344A">
-          {{  1 }}
+          {{ outcomes.readmissionRate ?? 1 }}
         </span>
           <span class="outcome-mini-lbl">Total Deceased</span>
         </div>

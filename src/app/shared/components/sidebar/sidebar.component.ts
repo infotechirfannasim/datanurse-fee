@@ -30,11 +30,6 @@ export class SidebarComponent {
   @ViewChild('menuContainer') menuContainer!: ElementRef;
 
   userInfo = signal<User | null>(null);
-
-  menuItems: MenuItem[] = [
-    { label: 'Logout', action: () => this.authService.logout() }
-  ];
-
   constructor() {
     this.authService.currentUser$.subscribe((user: any) => {
       this.userInfo.set(user);
@@ -75,5 +70,10 @@ export class SidebarComponent {
 
   toggleUserManagement(): void {
     this.isUserManagementExpanded = !this.isUserManagementExpanded;
+  }
+
+  getProfileImageUrl(): string | null {
+    if (!this.userInfo()?.profileImage?.data || !this.userInfo()?.profileImage?.contentType) return null;
+    return `data:${this.userInfo()?.profileImage.contentType};base64,${this.userInfo()?.profileImage.data}`;
   }
 }

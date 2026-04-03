@@ -4,8 +4,9 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {ToastService} from '../../core/services/toast.service';
 import {RequestService} from '../../core/services/request.service';
 import {PROFILE_API_URL, UPDATE_PROFILE_API_URL} from "../../utils/api.url.constants";
-import {HttpErrorResponse} from "@angular/common/http";
+import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {User} from "../../core/models/user.model";
+import {AuthService} from "../../core/services/auth.service";
 
 
 @Component({
@@ -16,7 +17,7 @@ import {User} from "../../core/models/user.model";
     styleUrl: './profile.component.scss'
 })
 export class ProfileComponent implements OnInit {
-
+    private authService = inject(AuthService);
     private toastService = inject(ToastService);
     private requestService = inject(RequestService);
     private fb = inject(FormBuilder);
@@ -32,11 +33,6 @@ export class ProfileComponent implements OnInit {
 
     imagePreview: string | null = null;
     selectedFile: File | null = null;
-
-    recentActivity = [
-        { action: 'Logged in from Lahore, PK', time: 'Today, 9:00 AM', type: 'login' },
-        {action: 'Updated profile information', time: 'Yesterday, 2:30 PM', type: 'update'},
-    ];
 
     ngOnInit(): void {
         this.initForms();
@@ -71,9 +67,6 @@ export class ProfileComponent implements OnInit {
                         lastName: data.lastName || '',
                         email: data.email || '',
                         phone: data.phone || '',
-                        location: data.location || '',
-                        department: data.department || '',
-                        bio: data.bio || ''
                     });
                 }
                 this.isLoading.set(false);
@@ -130,8 +123,9 @@ export class ProfileComponent implements OnInit {
         }
 
         this.requestService.patchReqWithFormData(UPDATE_PROFILE_API_URL, formData).subscribe({
-            next: (response: any) => {
+            next: (response: HttpResponse<any>) => {
                 this.toastService.show('Profile updated successfully!', 'success');
+                this.authService.setUser = response.body.data;
                 this.loadProfile();
             },
             error: (error: HttpErrorResponse) => {
