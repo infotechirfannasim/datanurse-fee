@@ -2,7 +2,6 @@ import {Component, inject, OnInit, signal} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule, NgClass} from '@angular/common';
 import {ToastService} from '../../core/services/toast.service';
-import {Doctor} from '../../core/models/doctor.model';
 import {RequestService} from "../../core/services/request.service";
 import {
     ACTIVE_ROLES_API_URL,
@@ -11,11 +10,12 @@ import {
     USERS_API_URL
 } from "../../utils/api.url.constants";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
-import {FilterParams, Role} from "../../core/models/user.model";
+import {FilterParams, Role, User} from "../../core/models/user.model";
 import {ROLES} from "../../utils/app-constants";
 import {MultiSelectModule} from "primeng/multiselect";
 import {SelectModule} from "primeng/select";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
+import {getUserInitials} from "../../utils/global.utils";
 
 @Component({
     selector: 'app-doctors',
@@ -33,7 +33,7 @@ export class UsersComponent implements OnInit {
     showAddModal = signal(false);
     showViewModal = signal(false);
     showDeleteModal = signal(false);
-    selectedUser = signal<Doctor | null>(null);
+    selectedUser = signal<User | null>(null);
     selectedUserId = signal<number | null>(null);
     isEditMode: boolean = false;
     form!: FormGroup;
@@ -43,7 +43,7 @@ export class UsersComponent implements OnInit {
     specialtyOptions: any[] = [];
     hospitalOptions: any[] = [];
     cityOptions: any[] = [];
-    users: Doctor[] = [];
+    users: User[] = [];
     showPassword = false;
     showConfirmPassword = false;
     private fb = inject(FormBuilder);
@@ -68,8 +68,8 @@ export class UsersComponent implements OnInit {
             lastName: ['', [Validators.required, Validators.minLength(2)]],
             email: ['', [Validators.required, Validators.email]],
             role: ['', Validators.required],
-            password: ['', Validators.required],
-            confirmPassword: ['', Validators.required],
+            password: [''],
+            confirmPassword: [''],
             status: ['active', Validators.required],
         });
     }
@@ -107,7 +107,7 @@ export class UsersComponent implements OnInit {
                 }
             },
             error: (error: HttpErrorResponse) => {
-                const errMsg = error.message || error.error.message || 'Something went wrong';
+                const errMsg = error.error.message || error.message || 'Something went wrong';
                 this.toastService.show(errMsg, 'error')
                 this.users = [];
                 this.pagination.set(null);
@@ -127,15 +127,15 @@ export class UsersComponent implements OnInit {
                 }
             },
             error: (error: HttpErrorResponse) => {
-                const errMsg = error.message || error.error.message || 'Something went wrong';
+                const errMsg = error.error.message || error.message || 'Something went wrong';
                 this.toastService.show(errMsg, 'error')
                 this.roles = [];
             },
         });
     }
 
-    openView(doc: Doctor): void {
-        this.selectedUser.set(doc);
+    openView(user: User): void {
+        this.selectedUser.set(user);
         this.showViewModal.set(true);
     }
 
@@ -154,15 +154,15 @@ export class UsersComponent implements OnInit {
                 }
             },
             error: (error: HttpErrorResponse) => {
-                const errMsg = error.message || error.error.message || 'Something went wrong';
+                const errMsg = error.error.message || error.message || 'Something went wrong';
                 this.toastService.show(errMsg, 'error');
                 this.roles = [];
             },
         });
     }
 
-    openDelete(doc: Doctor): void {
-        this.selectedUser.set(doc);
+    openDelete(user: User): void {
+        this.selectedUser.set(user);
         this.showDeleteModal.set(true);
     }
 
@@ -175,23 +175,46 @@ export class UsersComponent implements OnInit {
         this.resetForm();
         this.selectedUser.set(null);
         this.isEditMode = false;
+        this.updateFormValidation();
         this.showAddModal.set(true);
     }
 
-    onEditProfile(doc: Doctor): void {
-        this.selectedUser.set(doc);
-        this.form.patchValue(this.mapDoctorToForm(doc));
+    onEditProfile(user: User): void {
+        if (!user) return;
+        this.selectedUser.set(user);
+        this.form.patchValue(this.mapDoctorToForm(user));
         this.isEditMode = true;
+        this.updateFormValidation();
         this.showAddModal.set(true);
     }
 
-    mapDoctorToForm(doc: any) {
+    updateFormValidation(): void {
+        const isAddMode = !this.isEditMode;
+        this.isEditMode ? this.form.get('email')?.disable() : this.form.get('email')?.enable();
+        if (isAddMode) {
+            this.form.get('password')?.setValidators([
+                Validators.required,
+                Validators.minLength(6)
+            ]);
+
+            this.form.get('confirmPassword')?.setValidators([
+                Validators.required
+            ]);
+        } else {
+            this.form.get('password')?.setValidators(null);
+            this.form.get('confirmPassword')?.setValidators(null);
+        }
+        this.form.get('password')?.updateValueAndValidity();
+        this.form.get('confirmPassword')?.updateValueAndValidity();
+    }
+
+    mapDoctorToForm(user: any) {
         return {
-            firstName: doc.firstName,
-            lastName: doc.lastName,
-            email: doc.email,
-            role: doc.role._id,
-            status: doc.status,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            role: user?.role?._id,
+            status: user.status,
         };
     }
 
@@ -204,7 +227,7 @@ export class UsersComponent implements OnInit {
                 this.loadUsers();
             },
             error: (error: HttpErrorResponse) => {
-                const errMsg = error.message || error.error.message || 'Something went wrong';
+                const errMsg = error.error.message || error.message || 'Something went wrong';
                 this.toastService.show(errMsg, 'error')
             }
         });
@@ -239,22 +262,25 @@ export class UsersComponent implements OnInit {
             return;
         }
 
+        const formData = new FormData();
         if (!this.isEditMode) {
             const password = this.form.value.password;
             const confirmPassword = this.form.value.confirmPassword;
-
             if (!password || !confirmPassword) {
-                this.toastService.show('Password and Confirm Password are required', 'error');
+                this.toastService.show('Password and Confirm Password are required.', 'error');
                 return;
             }
+            if (password !== confirmPassword) {
+                this.toastService.show('Password and Confirm Password must be same.', 'error');
+                return;
+            }
+            formData.append('password', this.form.value.password);
+            formData.append('mustSetPassword', 'false');
         }
 
-        const formData = new FormData();
         formData.append('firstName', this.form.value.firstName);
         formData.append('lastName', this.form.value.lastName);
         formData.append('email', this.form.value.email);
-        formData.append('password', this.form.value.password);
-        formData.append('mustSetPassword', 'false');
         formData.append('role', this.roles.find((role: Role) => role.name === ROLES.SUPER_ADMIN)?._id);
         formData.append('status', this.form.value.status);
 
@@ -262,7 +288,7 @@ export class UsersComponent implements OnInit {
             formData.append('profileImage', this.selectedFile);
         }
         const request$ = this.isEditMode
-            ? this.requestService.patchReqWithFormData(`${USERS_API_URL}/${this.selectedUserId()}`, formData)
+            ? this.requestService.patchReqWithFormData(`${USERS_API_URL}/${this.selectedUser()?._id}`, formData)
             : this.requestService.postReqWithFormData(USERS_API_URL, formData);
 
         request$.subscribe({
@@ -273,17 +299,17 @@ export class UsersComponent implements OnInit {
                 this.loadUsers();
             },
             error: (error: HttpErrorResponse) => {
-                const errMsg = error.message || error.error.message || 'Something went wrong';
+                const errMsg = error.error.message || error.message || 'Something went wrong';
                 this.toastService.show(errMsg, 'error')
             }
         });
     }
 
     resetForm(): void {
-        this.form.reset();
         this.selectedUser.set(null);
         this.imagePreview = null;
         this.selectedFile = null;
+        this.form.reset({status: 'active'});
     }
 
     goToPage(page: number) {
@@ -299,9 +325,9 @@ export class UsersComponent implements OnInit {
         return Array.from({length: p.totalPages}, (_, i) => i + 1);
     }
 
-    getProfileImageUrl(doc: any = this.selectedUser()): string | null {
-        if (!doc?.profileImage?.data || !doc?.profileImage?.contentType) return null;
-        return `data:${doc.profileImage.contentType};base64,${doc.profileImage.data}`;
+    getProfileImageUrl(user: any = this.selectedUser()): string | null {
+        if (!user?.profileImage?.data || !user?.profileImage?.contentType) return null;
+        return `data:${user.profileImage.contentType};base64,${user.profileImage.data}`;
     }
 
     togglePassword(): void {
@@ -311,4 +337,6 @@ export class UsersComponent implements OnInit {
     toggleConfirmPassword(): void {
         this.showConfirmPassword = !this.showConfirmPassword;
     }
+
+    protected readonly getUserInitials = getUserInitials;
 }

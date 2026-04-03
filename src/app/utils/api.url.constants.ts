@@ -38,3 +38,8 @@ export const TOP_DOCTORS_API_URL = 'users/top-doctors';
 
 // Patients
 export const PATIENTS_API_URL = 'patients'
+
+// Dashboards
+export const SUMMARY_API_URL = 'dashboard/summary';
+export const ANALYTICS_API_URL = 'dashboard/analytics';
+export const DEMOGRAPHICS_API_URL = 'dashboard/demographics';

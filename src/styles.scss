@@ -1365,6 +1365,7 @@ $font: 'DM Sans', sans-serif;
   background: var(--navy);
   padding: 2px 5px;
   border-radius: 50px;
+  color: var(--label);
 }
 
 p-select.form-input,
@@ -1543,6 +1544,7 @@ p-select {
     display: flex !important;
     align-items: center !important;
     gap: 10px !important;
+    background-color: var(--label);
 
     &:hover,
     &.p-focus {

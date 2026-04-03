@@ -10,6 +10,7 @@ export interface User {
     name?: string;
     initials?: string;
     role: Role;
+    phone: string;
     permissions?: Permission[];
     lastActiveAt?: string;
     badge?: string;

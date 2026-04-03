@@ -17,11 +17,12 @@ import {ROLES} from "../../utils/app-constants";
 import {MultiSelectModule} from "primeng/multiselect";
 import {SelectModule} from "primeng/select";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
+import {FindObjByKeyPipe} from "../../core/pipe/find-obj-by-key";
 
 @Component({
     selector: 'app-doctors',
     standalone: true,
-    imports: [FormsModule, NgClass, ReactiveFormsModule, CommonModule, MultiSelectModule, SelectModule],
+    imports: [FormsModule, NgClass, ReactiveFormsModule, CommonModule, MultiSelectModule, SelectModule, FindObjByKeyPipe],
     templateUrl: './doctors.component.html',
     styleUrl: './doctors.component.scss'
 })
@@ -125,6 +126,8 @@ export class DoctorsComponent implements OnInit {
             error: (error: HttpErrorResponse) => {
                 this.doctors = [];
                 this.pagination.set(null);
+                const errMsg = error.error.message || error.message || 'Something went wrong';
+                this.toastService.show(errMsg, 'error')
             },
         });
     }
@@ -139,7 +142,9 @@ export class DoctorsComponent implements OnInit {
                 }
             },
             error: (error: HttpErrorResponse) => {
-                this.roles = [];
+                this.doctors = [];
+                const errMsg = error.error.message || error.message || 'Something went wrong';
+                this.toastService.show(errMsg, 'error')
             },
         });
     }
@@ -159,13 +164,11 @@ export class DoctorsComponent implements OnInit {
                     this.specialtyOptions = response.body.data['specialty'];
                     this.hospitalOptions = response.body.data['hospitals'];
                     this.cityOptions = response.body.data['city'];
-                } else {
-                    this.roles = [];
                 }
             },
             error: (error: HttpErrorResponse) => {
-                console.error('Failed to load roles', error);
-                this.roles = [];
+                const errMsg = error.error.message || error.message || 'Something went wrong';
+                this.toastService.show(errMsg, 'error')
             },
         });
     }
@@ -180,15 +183,11 @@ export class DoctorsComponent implements OnInit {
         return map[status] ?? 'badge-gray';
     }
 
-    onEditProfile() {
-        const doctor = this.selectedDoctor();
-
-        if (!doctor) return;
-
+    onEditProfile(doc: Doctor) {
+        if (!doc) return;
+        this.selectedDoctor.set(doc);
         this.isEditMode = true;
-        this.selectedDoctorId.set(doctor._id);
         this.doctorForm.patchValue(this.mapDoctorToForm(this.selectedDoctor()));
-        console.log(this.doctorForm.value)
         this.showViewModal.set(false);
         this.showAddModal.set(true);
     }
@@ -208,13 +207,13 @@ export class DoctorsComponent implements OnInit {
         if (!this.selectedDoctor()) return;
         this.requestService.deleteRequest(DELETE_USER_API_URL + this.selectedDoctor()?._id).subscribe({
             next: (response) => {
-                this.toastService.show('Doctor removed successfully', 'error');
+                this.toastService.show('Doctor removed successfully', 'success');
                 this.showDeleteModal.set(false);
                 this.loadDoctors();
             },
-            error: (err) => {
-                console.error(err);
-                alert(err.error?.message || 'Failed to removed doctor');
+            error: (err: HttpErrorResponse) => {
+                const errMsg = err.message || err.error.message || 'Failed to delete doctor.';
+                this.toastService.show(errMsg, 'error');
             }
         });
 
@@ -263,6 +262,9 @@ export class DoctorsComponent implements OnInit {
             return;
         }
         const formData = new FormData();
+        if (!this.isEditMode) {
+            formData.append('mustSetPassword', 'true');
+        }
         formData.append('firstName', this.doctorForm.value.name.split(' ').slice(0, -1).join(' ') || this.doctorForm.value.name);
         formData.append('lastName', this.doctorForm.value.name.split(' ').slice(-1)[0] || '');
         formData.append('email', this.doctorForm.value.email);
@@ -291,19 +293,21 @@ export class DoctorsComponent implements OnInit {
             formData.append('profileImage', this.selectedFile);
         }
         const request$ = this.isEditMode
-            ? this.requestService.patchReqWithFormData(`${USERS_API_URL}/${this.selectedDoctorId()}`, formData)
+            ? this.requestService.patchReqWithFormData(`${USERS_API_URL}/${this.selectedDoctor()?._id}`, formData)
             : this.requestService.postReqWithFormData(USERS_API_URL, formData);
 
         request$.subscribe({
-            next: (response) => {
-                alert('Doctor registered successfully!');
+            next: (response: HttpResponse<any>) => {
+                if (response.status == 200 || response.status == 201) {
+                }
                 this.resetForm();
                 this.showAddModal.set(false);
+                this.toastService.show(this.isEditMode ? 'Doctor updated successfully.' : 'Doctor added successfully.')
                 this.loadDoctors();
             },
-            error: (err) => {
-                console.error(err);
-                alert(err.error?.message || 'Failed to register doctor');
+            error: (err: HttpErrorResponse) => {
+                const errMsg = err.message || err.error.message || 'Something went wrong';
+                this.toastService.show(errMsg || 'Failed to register doctor', 'error');
             }
         });
     }
@@ -329,8 +333,14 @@ export class DoctorsComponent implements OnInit {
         return Array.from({length: p.totalPages}, (_, i) => i + 1);
     }
 
-    getProfileImageUrl(doc: any): string | null {
+    getProfileImageUrl(doc: Doctor | null): string | null {
         if (!doc?.profileImage?.data || !doc?.profileImage?.contentType) return null;
-        return `data:${doc.profileImage.contentType};base64,${doc.profileImage.data}`;
+        return `data:${doc?.profileImage.contentType};base64,${doc?.profileImage.data}`;
+    }
+
+    closeModal() {
+        this.resetForm();
+        this.showAddModal.set(false);
+        this.selectedDoctor.set(null);
     }
 }

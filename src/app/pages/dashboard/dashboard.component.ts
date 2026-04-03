@@ -1,26 +1,30 @@
 import {Component, inject, OnInit, signal} from '@angular/core';
-import {NgClass} from '@angular/common';
 import {ToastService} from '../../core/services/toast.service';
 import {AuthService} from "../../core/services/auth.service";
 import {FilterParams, User} from "../../core/models/user.model";
-import {USERS_API_URL} from "../../utils/api.url.constants";
+import {
+  ANALYTICS_API_URL,
+  DEMOGRAPHICS_API_URL, GET_LOV_BULK_API_URL,
+  SUMMARY_API_URL,
+  TOP_DOCTORS_API_URL
+} from "../../utils/api.url.constants";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
-import {ROLES} from "../../utils/app-constants";
 import {RequestService} from "../../core/services/request.service";
-import {getUserInitials} from "../../utils/global.utils";
+import {forkJoin} from "rxjs";
+import {FindObjByKeyPipe} from "../../core/pipe/find-obj-by-key";
 
 interface StatCard {
   icon: string;
-  id: string;
+  _id: number;
   label: string;
   value: number;
-  target: number;
-  trend: string;
-  trendType: 'up' | 'down' | 'neu';
-  accentColor: string;
-  bgColor: string;
-  barColor: string;
-  barWidth: string;
+  target?: number;
+  trend?: string;
+  trendType?: 'up' | 'down' | 'neu';
+  accentColor?: string;
+  bgColor?: string;
+  barColor?: string;
+  barWidth?: string;
   suffix?: string;
 }
 
@@ -48,6 +52,7 @@ interface SurgeonItem {
   avatarColor: string;
   specialty: string;
   cases: number;
+  casePercentage?: number;
   successRate: number;
 }
 
@@ -72,6 +77,7 @@ interface FollowupItem {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
+  imports: [FindObjByKeyPipe],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -85,6 +91,7 @@ export class DashboardComponent implements OnInit {
   pageQuery = signal(1);
 
   doctors: User[] = [];
+  specialtyOptions: any[] = [];
 
   constructor() {
     this.authService.currentUser$.subscribe((user: any) => {
@@ -93,61 +100,12 @@ export class DashboardComponent implements OnInit {
   }
 
   statCards: StatCard[] = [
-    {
-      icon: './assets/images/doctor.svg',
-      id: 'cnt-cases',
-      label: 'Total Cases (YTD)',
-      value: 0,
-      target: 312,
-      trend: '+8 this month',
-      trendType: 'up',
-      accentColor: 'var(--blue)',
-      bgColor: 'rgba(34,81,204,0.08)',
-      barColor: 'var(--blue)',
-      barWidth: '68%'
-    },
-    {
-      icon: './assets/images/ActiveCases.svg',
-      id: 'cnt-success',
-      label: '30-Day Success Rate',
-      value: 0,
-      target: 91,
-      trend: '+2% vs last year',
-      trendType: 'up',
-      accentColor: 'var(--teal)',
-      bgColor: 'rgba(14,165,160,0.08)',
-      barColor: 'var(--teal)',
-      barWidth: '91%',
-      suffix: '%'
-    },
-    {
-      icon: './assets/images/pending.svg',
-      id: 'cnt-followup',
-      label: 'Pending Follow-ups',
-      value: 0,
-      target: 27,
-      trend: '−3 vs last week',
-      trendType: 'down',
-      accentColor: 'var(--amber)',
-      bgColor: 'rgba(245,158,11,0.08)',
-      barColor: 'var(--amber)',
-      barWidth: '32%'
-    },
-    {
-      icon: './assets/images/RecoveryRate.svg',
-      id: 'cnt-survival',
-      label: '1-Year Survival Rate',
-      value: 0,
-      target: 87,
-      trend: '±0 stable',
-      trendType: 'neu',
-      accentColor: 'var(--indigo)',
-      bgColor: 'rgba(91,79,207,0.08)',
-      barColor: 'var(--indigo)',
-      barWidth: '87%',
-      suffix: '%'
-    },
   ];
+  // New — for dynamic ring chart and outcome cards
+  totalCases:           number = 0;
+  ringSegments:         any[] = [];
+  outcomes:             any = {};
+  followupOverallRate:  number = 0;
 
   procedures: ProcedureItem[] = [
     { label: 'ASD Repair',      percentage: 28, color: '#2251CC', cases: 87 },
@@ -157,11 +115,11 @@ export class DashboardComponent implements OnInit {
     { label: 'Other',           percentage: 13, color: '#5B4FCF', cases: 41 },
   ];
 
-  topSurgeons: SurgeonItem[] = [
-    { name: 'Dr. Salman Shah',  initials: 'SS', avatarColor: '#2251CC', specialty: 'Congenital Heart Surgery', cases: 84, successRate: 94 },
-    { name: 'Dr. Omar Farooq', initials: 'OF', avatarColor: '#0EA5A0', specialty: 'Pediatric Cardiac Surgery',  cases: 71, successRate: 91 },
-    { name: 'Dr. Amna Tariq',  initials: 'AT', avatarColor: '#E8344A', specialty: 'Valve Reconstruction',       cases: 63, successRate: 89 },
-    { name: 'Dr. Zaid Awan',   initials: 'ZA', avatarColor: '#F59E0B', specialty: 'Neonatal Surgery',           cases: 55, successRate: 87 },
+  topSurgeons: any[] = [
+    {name: 'Dr. Salman Shah', initials: 'SS', specialty: 'Congenital Heart Surgery', cases: 84, successRate: 94},
+    {name: 'Dr. Omar Farooq', initials: 'OF', specialty: 'Pediatric Cardiac Surgery', cases: 71, successRate: 91},
+    {name: 'Dr. Amna Tariq', initials: 'AT', specialty: 'Valve Reconstruction', cases: 63, successRate: 89},
+    {name: 'Dr. Zaid Awan', initials: 'ZA', specialty: 'Neonatal Surgery', cases: 55, successRate: 87},
   ];
 
   ageGroups: AgeGroupItem[] = [
@@ -256,32 +214,134 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.animateCounters();
-    this.loadDoctors();
+    this.loadLovs();
+    this.loadDashboard()
   }
 
-  loadDoctors() {
-    const filters: FilterParams = {
-      search: this.searchQuery().toLowerCase() || '',
-      page: this.pageQuery(),
-      limit: 10
+  loadLovs() {
+    const payload = {
+      types: ['specialty', 'hospitals', 'city'],
     };
-    this.requestService.getRequest(USERS_API_URL, filters).subscribe({
+    this.requestService.postRequest(GET_LOV_BULK_API_URL, payload).subscribe({
       next: (response: HttpResponse<any>) => {
         if (response.status == 200 && response.body.data) {
-          this.doctors = Array.isArray(response.body.data)
-              ? response.body.data.filter((dr: any) => dr.role.name == ROLES.DOCTOR)
-              : [];
-          this.pagination.set(response.body.meta?.pagination || null);
+          this.specialtyOptions = response.body.data['specialty'];
         } else {
-          this.doctors = [];
-          this.pagination.set(null);
+          this.specialtyOptions = [];
         }
       },
       error: (error: HttpErrorResponse) => {
-        this.doctors = [];
-        this.pagination.set(null);
+        this.specialtyOptions = [];
+        const errMsg = error.error.message || error.message || 'Something went wrong';
+        this.toastService.show(errMsg, 'error')
       },
     });
+  }
+
+  loadDashboard() {
+    forkJoin({
+      summary: this.requestService.getRequest(SUMMARY_API_URL),
+      analytics: this.requestService.getRequest(ANALYTICS_API_URL),
+      demographics: this.requestService.getRequest(DEMOGRAPHICS_API_URL),
+    }).subscribe({
+      next: ({summary, analytics, demographics}: any) => {
+        if (summary.status !== 200 || analytics.status !== 200 || demographics.status !== 200) return;
+
+        // Summary
+        this.mapStatCards(summary.body.data.stats);
+        this.topSurgeons = summary.body.data.topSurgeons ?? [];
+
+        // Analytics
+        const analyticsData = analytics.body.data;
+        this.totalCases = analyticsData.totalCases ?? 0;
+        this.procedures = analyticsData.caseDistribution ?? [];
+        this.outcomes = analyticsData.outcomes ?? {};
+        this.followupOverallRate = analyticsData.followup?.overallRate ?? 0;
+        this.followups = analyticsData.followup?.breakdown ?? [];
+        this.ringSegments = this.buildRingSegments(analyticsData.caseDistribution ?? []);
+
+        // Demographics
+        const demoData = demographics.body.data;
+        this.ageGroups = demoData.ageGroups ?? [];
+        this.genderMale = demoData.gender?.malePercent ?? 0;
+        this.genderFemale = demoData.gender?.femalePercent ?? 0;
+        this.provinces = demoData.provinces ?? [];
+      },
+      error: (err) => console.error('Dashboard load failed', err),
+    });
+  }
+
+  // Converts procedure distribution % into SVG stroke-dasharray values
+  // circumference of r=48 circle = 2 * π * 48 ≈ 301.6
+  buildRingSegments(procedures: any[]): any[] {
+    const CIRCUMFERENCE = 301.6;
+    const COLORS = ['#2251CC', '#E8344A', '#0EA5A0', '#F59E0B', '#5B4FCF', '#10B981'];
+    let offset = -90; // start at top
+
+    return procedures.map((p, i) => {
+      const arc = (p.percentage / 100) * CIRCUMFERENCE;
+      const gap = CIRCUMFERENCE - arc;
+      const rotation = offset;
+      offset += (p.percentage / 100) * 360;
+
+      return {
+        label: p.label,
+        percentage: p.percentage,
+        count: p.count,
+        color: COLORS[i % COLORS.length],
+        dasharray: `${arc.toFixed(1)} ${gap.toFixed(1)}`,
+        rotation: `rotate(${rotation} 60 60)`,
+      };
+    });
+  }
+
+  getUserInitials(surgeon: any): string {
+    if (!surgeon?.name) return '?';
+    const parts = surgeon.name.trim().split(' ');
+    return parts.length >= 2
+        ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+        : parts[0][0].toUpperCase();
+  }
+
+  mapStatCards(stats: any) {
+    this.statCards = [
+      {
+        _id: 1, label: 'Total Patients',
+        value: stats.totalPatients.value,
+        trend: stats.totalPatients.trend,
+        trendType: stats.totalPatients.trendType,
+        barWidth: stats.totalPatients.barWidth,
+        barColor: '#2251CC', accentColor: '#2251CC',
+        bgColor: '#EEF2FF', icon: './assets/images/pending.svg',
+      },
+      {
+        _id: 2, label: 'Total Cases',
+        value: stats.totalCases.value,
+        trend: stats.totalCases.trend,
+        trendType: stats.totalCases.trendType,
+        barWidth: stats.totalCases.barWidth,
+        barColor: '#0EA5A0', accentColor: '#0EA5A0',
+        bgColor: '#F0FDFA', icon: './assets/images/ActiveCases.svg',
+      },
+      {
+        _id: 3, label: 'Active Doctors',
+        value: stats.activeDoctors.value,
+        trend: stats.activeDoctors.trend,
+        trendType: stats.activeDoctors.trendType,
+        barWidth: stats.activeDoctors.barWidth,
+        barColor: '#5B4FCF', accentColor: '#5B4FCF',
+        bgColor: '#F5F3FF', icon: './assets/images/doctor.svg',
+      },
+      {
+        _id: 4, label: 'Cases This Month',
+        value: stats.casesThisMonth.value,
+        trend: stats.casesThisMonth.trend,
+        trendType: stats.casesThisMonth.trendType,
+        barWidth: stats.casesThisMonth.barWidth,
+        barColor: '#F59E0B', accentColor: '#F59E0B',
+        bgColor: '#FFFBEB', icon: './assets/images/RecoveryRate.svg',
+      },
+    ];
   }
 
   private animateCounters(): void {
@@ -293,7 +353,7 @@ export class DashboardComponent implements OnInit {
         const elapsed = now - start;
         const progress = Math.min(elapsed / duration, 1);
         const ease = 1 - Math.pow(1 - progress, 3);
-        card.value = Math.round(ease * target);
+        // card.value = Math.round(ease * target);
         if (progress < 1) requestAnimationFrame(update);
       };
       requestAnimationFrame(update);
@@ -320,6 +380,4 @@ export class DashboardComponent implements OnInit {
     const max = Math.max(...data.map(d => d.cases));
     return ((value / max) * 90) + '%';
   }
-
-  protected readonly getUserInitials = getUserInitials;
 }

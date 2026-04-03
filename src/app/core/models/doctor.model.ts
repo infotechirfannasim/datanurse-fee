@@ -1,17 +1,12 @@
-export interface Doctor {
-  _id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
+import {User} from "./user.model";
+
+export interface Doctor extends User {
   specialities: string[];
   hospitalAffiliations: any[];
-  cases: number;
   rating: number;
   status: 'Active' | 'Inactive' | 'Pending';
   avatarInitials: string;
   avatarColor: string;
-  createdAt: string;
-  phone?: string;
   pmdc?: string;
   profileImage: any;
   role: any;

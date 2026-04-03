@@ -40,11 +40,11 @@
                                 } @else {
                                     <div class="doc-av"
                                          [style.background]="'#3b82f6'">
-                                        {{ user.firstName[0] + user.lastName[0] }}
+                                        {{ getUserInitials(user) }}
                                     </div>
                                 }
                                 <div>
-                                    <span class="doc-nm">{{ user.firstName }}</span>
+                                    <span class="doc-nm">{{ user.firstName + ' ' + user.lastName }}</span>
                                     <span class="doc-em">{{ user.email }}</span>
                                 </div>
                             </div>
@@ -260,10 +260,10 @@
                                     }
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Password *</label>
+                                    <label class="form-label">Confirm Password *</label>
                                     <div class="dark-input-wrap">
                                         <input
-                                                [type]="showPassword ? 'text' : 'password'"
+                                                [type]="showConfirmPassword ? 'text' : 'password'"
                                                 class="form-input"
                                                 formControlName="confirmPassword"
                                                 id="confirmPassword"
@@ -291,8 +291,8 @@
                                             }
                                         </button>
                                     </div>
-                                    @if (form.get('password')?.invalid && form.get('password')?.touched) {
-                                        <small class="error">Password is required</small>
+                                    @if (form.get('confirmPassword')?.invalid && form.get('confirmPassword')?.touched) {
+                                        <small class="error">Confirm password is required</small>
                                     }
                                 </div>
                             }
@@ -417,7 +417,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-ghost" (click)="showDeleteModal.set(false)">Cancel</button>
-                    <button class="btn btn-danger" (click)="confirmDelete()">Yes, Remove Doctor</button>
+                    <button class="btn btn-danger" (click)="confirmDelete()">Yes, Remove User</button>
                 </div>
             </div>
         </div>

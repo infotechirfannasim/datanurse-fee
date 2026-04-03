@@ -90,11 +90,11 @@ export class RolesComponent implements OnInit {
                 this.isLoading.set(false);
             },
             error: (error: HttpErrorResponse) => {
-                console.error('Failed to load roles', error);
                 this.roles = [];
                 this.pagination.set(null);
                 this.isLoading.set(false);
-                this.toastService.show('Failed to load roles', 'error');
+                const errMsg = error.error.message || error.message || 'Something went wrong';
+                this.toastService.show(errMsg, 'error')
             },
         });
     }
@@ -115,8 +115,9 @@ export class RolesComponent implements OnInit {
                 }
             },
             error: (error: HttpErrorResponse) => {
-                console.error('Failed to load modules', error);
                 this.modules = [];
+                const errMsg = error.error.message || error.message || 'Something went wrong';
+                this.toastService.show(errMsg, 'error')
             },
         });
     }
