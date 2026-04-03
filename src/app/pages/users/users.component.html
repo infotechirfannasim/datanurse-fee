@@ -5,7 +5,7 @@
             <path d="M21 21l-4.35-4.35" stroke="#7A8BB0" stroke-linecap="round" stroke-width="2"/>
         </svg>
         <input (input)="searchQuery.set($any($event.target).value); onSearchChange()" [value]="searchQuery()"
-               placeholder="Search users by name..."/>
+               placeholder="Search users by name"/>
     </div>
     <button (click)="onAddUer()" class="btn btn-primary">
         <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
@@ -102,7 +102,7 @@
     </div>
     <div class="table-footer">
         <span class="table-footer-info">
-            Showing {{ users.length }} of {{ pagination()?.total || 0 }} doctors
+            Showing {{ users.length }} of {{ pagination()?.total || 0 }} Users
         </span>
 
         @if (pagination() && pagination().totalPages > 1) {
@@ -228,7 +228,7 @@
                                     <div class="dark-input-wrap">
                                         <input
                                                 [type]="showPassword ? 'text' : 'password'"
-                                                class="form-input"
+                                                class="form-input has-icon"
                                                 formControlName="password"
                                                 id="password"
                                                 name="password"
@@ -236,22 +236,22 @@
                                         >
                                         <button (click)="togglePassword()" class="password-toggle" type="button">
                                             @if (!showPassword) {
-                                                <svg fill="none" height="20" id="eyeIcon" stroke="currentColor"
-                                                     stroke-linecap="round"
-                                                     stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
-                                                     width="20">
-                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                                    <circle cx="12" cy="12" r="3"></circle>
-                                                </svg>
+                                              <svg fill="none" height="20" id="eyeOffIcon" stroke="currentColor"
+                                                   stroke-linecap="round"
+                                                   stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                                   width="20">
+                                                <path
+                                                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                                <line x1="1" x2="23" y1="1" y2="23"></line>
+                                              </svg>
                                             } @else {
-                                                <svg fill="none" height="20" id="eyeOffIcon" stroke="currentColor"
-                                                     stroke-linecap="round"
-                                                     stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
-                                                     width="20">
-                                                    <path
-                                                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                                                    <line x1="1" x2="23" y1="1" y2="23"></line>
-                                                </svg>
+                                              <svg fill="none" height="20" id="eyeIcon" stroke="currentColor"
+                                                   stroke-linecap="round"
+                                                   stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                                   width="20">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                <circle cx="12" cy="12" r="3"></circle>
+                                              </svg>
                                             }
                                         </button>
                                     </div>
@@ -264,7 +264,7 @@
                                     <div class="dark-input-wrap">
                                         <input
                                                 [type]="showConfirmPassword ? 'text' : 'password'"
-                                                class="form-input"
+                                                class="form-input has-icon"
                                                 formControlName="confirmPassword"
                                                 id="confirmPassword"
                                                 name="password"
@@ -272,22 +272,22 @@
                                         >
                                         <button (click)="toggleConfirmPassword()" class="password-toggle" type="button">
                                             @if (!showConfirmPassword) {
-                                                <svg fill="none" height="20" id="eyeIcon" stroke="currentColor"
-                                                     stroke-linecap="round"
-                                                     stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
-                                                     width="20">
-                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                                    <circle cx="12" cy="12" r="3"></circle>
-                                                </svg>
+                                              <svg fill="none" height="20" id="eyeOffIcon" stroke="currentColor"
+                                                   stroke-linecap="round"
+                                                   stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                                   width="20">
+                                                <path
+                                                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                                <line x1="1" x2="23" y1="1" y2="23"></line>
+                                              </svg>
                                             } @else {
-                                                <svg fill="none" height="20" id="eyeOffIcon" stroke="currentColor"
-                                                     stroke-linecap="round"
-                                                     stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
-                                                     width="20">
-                                                    <path
-                                                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                                                    <line x1="1" x2="23" y1="1" y2="23"></line>
-                                                </svg>
+                                              <svg fill="none" height="20" id="eyeIcon" stroke="currentColor"
+                                                   stroke-linecap="round"
+                                                   stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                                   width="20">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                <circle cx="12" cy="12" r="3"></circle>
+                                              </svg>
                                             }
                                         </button>
                                     </div>
@@ -313,7 +313,7 @@
     </div>
 }
 
-<!-- ═══ VIEW DOCTOR MODAL ═══ -->
+<!-- ═══ VIEW USERS MODAL ═══ -->
 @if (showViewModal() && selectedUser()) {
     <div class="new-modals">
         <div class="modal-overlay open" (click)="showViewModal.set(false)">
@@ -333,7 +333,7 @@
                             </div>
                         }
                         <div>
-                            <div class="modal-title">{{ selectedUser()!.firstName + selectedUser()!.lastName }}</div>
+                            <div class="modal-title">{{ selectedUser()!.firstName + ' ' + selectedUser()!.lastName }}</div>
                             <div class="modal-sub">{{ selectedUser()!.email }}</div>
                         </div>
                     </div>
@@ -344,13 +344,18 @@
                         </svg>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div class="view-grid">
-                        <div class="view-field"><span class="view-label">Status</span><span class="badge"
-                                                                                            [ngClass]="getStatusClass(selectedUser()!.status)">{{ selectedUser()!.status }}</span>
+              <div class="modal-body">
+                <div class="view-grid">
+                  <div class="view-field">
+                    <span class="view-label">Status</span>
+                    <span class="badge"
+                     [ngClass]="getStatusClass(selectedUser()!.status)">
+                      {{ selectedUser()!.status }}
+                    </span>
+                  </div>
+                        <div class="view-field"><span class="view-label">Joined</span>
+                          <span class="view-val">{{ selectedUser()!.createdAt | date: 'MMM d, y' }}</span>
                         </div>
-                        <div class="view-field"><span class="view-label">Joined</span><span
-                                class="view-val">{{ selectedUser()!.createdAt | date: 'MMM d, y' }}</span></div>
                     </div>
                     <!--<div style="margin-top:16px;">
                         <span class="view-label">Specializations</span>
@@ -392,7 +397,7 @@
             <div class="modal modal-sm" (click)="$event.stopPropagation()">
                 <div class="modal-header">
                     <div>
-                        <div class="modal-title">Remove Doctor</div>
+                        <div class="modal-title">Remove User</div>
                     </div>
                     <button class="modal-close" (click)="showDeleteModal.set(false)">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
