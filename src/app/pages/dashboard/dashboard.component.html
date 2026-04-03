@@ -39,31 +39,62 @@
 
 <div class="bottom-grid">
   
-  <!-- Top Surgeons -->
+  <!-- Follow-up Completion -->
   <div class="section-card">
     <div class="section-header">
-      <div class="section-title">Top Surgeons</div>
+      <div>
+        <div class="section-title">Follow-up & Outcomes</div>
+        <div class="section-sub">Post-discharge completion rate</div>
+      </div>
     </div>
-    <div class="doctor-list">
-      @for (s of topSurgeons; track s.name) {
-        <div class="doctor-item">
-            <div class="d-avatar" [style.background]="'#2251CC'">{{ getUserInitials(s) }}</div>
-          <div style="flex:1; min-width:0;">
-            <span class="d-name">{{ s.name }}</span>
-              <span class="d-spec">{{ s.specialty | findObjByKey : 'code' : specialtyOptions : 'label' }}</span>
-            <div class="surgeon-bar-wrap">
-                <div class="surgeon-bar" [style.width]="s.casePercentage + '%'" [style.background]="'#2251CC'"></div>
-            </div>
+    <div class="demo-body">
+      
+      <!-- Overall rate — dynamic -->
+      <div class="followup-hero">
+        <span class="followup-pct">{{ followupOverallRate }}%</span>
+        <span class="followup-lbl">Overall follow-up rate</span>
+      </div>
+      
+      <!-- Breakdown bars — dynamic -->
+      @for (fu of followups; track fu.label) {
+        <div class="followup-row">
+          <div class="followup-meta">
+            <span class="followup-item-lbl">{{ fu.label }}</span>
+            <span class="followup-item-val">{{ fu.rate }}%</span>
           </div>
-          <div class="d-cases">
-            <span class="d-cases-val">{{ s.cases }}</span>
-            <span class="d-cases-lbl">cases</span>
-              <span class="surgeon-rate">{{ s.casePercentage }}%</span>
+          <div class="age-track">
+            <div class="age-fill"
+                 [style.width]="fu.rate + '%'"
+                 [style.background]="fu.color"></div>
           </div>
         </div>
       }
+      
+      <!-- Outcome mini cards — dynamic -->
+      <div class="outcome-mini-grid">
+        <div class="outcome-mini-card">
+        <span class="outcome-mini-val" style="color:#2251CC">
+          {{ outcomes.thirtyDaySurvival ?? 0 }}%
+        </span>
+          <span class="outcome-mini-lbl">30-day success</span>
+        </div>
+        <div class="outcome-mini-card">
+        <span class="outcome-mini-val" style="color:#0EA5A0">
+          {{ outcomes.inHospitalSurvival ?? 0 }}%
+        </span>
+          <span class="outcome-mini-lbl">In-hospital</span>
+        </div>
+        <div class="outcome-mini-card">
+        <span class="outcome-mini-val" style="color:#E8344A">
+          {{ outcomes.readmissionRate ?? 0 }}%
+        </span>
+          <span class="outcome-mini-lbl">Readmission rate</span>
+        </div>
+      </div>
+    
     </div>
   </div>
+  
   
   <!-- Recent Activity -->
 <!--   <div class="section-card"> -->
@@ -210,62 +241,33 @@
       }
     </div>
   </div>
-
-  <!-- Follow-up Completion -->
-    <div class="section-card">
-        <div class="section-header">
-            <div>
-                <div class="section-title">Follow-up & Outcomes</div>
-                <div class="section-sub">Post-discharge completion rate</div>
-            </div>
-        </div>
-        <div class="demo-body">
-
-            <!-- Overall rate — dynamic -->
-            <div class="followup-hero">
-                <span class="followup-pct">{{ followupOverallRate }}%</span>
-                <span class="followup-lbl">Overall follow-up rate</span>
-            </div>
-
-            <!-- Breakdown bars — dynamic -->
-            @for (fu of followups; track fu.label) {
-                <div class="followup-row">
-                    <div class="followup-meta">
-                        <span class="followup-item-lbl">{{ fu.label }}</span>
-                        <span class="followup-item-val">{{ fu.rate }}%</span>
-                    </div>
-                    <div class="age-track">
-                        <div class="age-fill"
-                             [style.width]="fu.rate + '%'"
-                             [style.background]="fu.color"></div>
-                    </div>
-                </div>
-            }
-
-            <!-- Outcome mini cards — dynamic -->
-            <div class="outcome-mini-grid">
-                <div class="outcome-mini-card">
-        <span class="outcome-mini-val" style="color:#2251CC">
-          {{ outcomes.thirtyDaySurvival ?? 0 }}%
-        </span>
-                    <span class="outcome-mini-lbl">30-day success</span>
-                </div>
-                <div class="outcome-mini-card">
-        <span class="outcome-mini-val" style="color:#0EA5A0">
-          {{ outcomes.inHospitalSurvival ?? 0 }}%
-        </span>
-                    <span class="outcome-mini-lbl">In-hospital</span>
-                </div>
-                <div class="outcome-mini-card">
-        <span class="outcome-mini-val" style="color:#E8344A">
-          {{ outcomes.readmissionRate ?? 0 }}%
-        </span>
-                    <span class="outcome-mini-lbl">Readmission rate</span>
-                </div>
-            </div>
-
-        </div>
+  
+  
+  <!-- Top Surgeons -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-title">Top Surgeons</div>
     </div>
+    <div class="doctor-list">
+      @for (s of topSurgeons; track s.name) {
+        <div class="doctor-item">
+          <div class="d-avatar" [style.background]="'#2251CC'">{{ getUserInitials(s) }}</div>
+          <div style="flex:1; min-width:0;">
+            <span class="d-name">{{ s.name }}</span>
+            <span class="d-spec">{{ s.specialty | findObjByKey : 'code' : specialtyOptions : 'label' }}</span>
+            <div class="surgeon-bar-wrap">
+              <div class="surgeon-bar" [style.width]="s.casePercentage + '%'" [style.background]="'#2251CC'"></div>
+            </div>
+          </div>
+          <div class="d-cases">
+            <span class="d-cases-val">{{ s.cases }}</span>
+            <span class="d-cases-lbl">cases</span>
+            <span class="surgeon-rate">{{ s.casePercentage }}%</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
 </div>
 
 <!-- MAIN GRID: Case Volume Chart + Table -->
