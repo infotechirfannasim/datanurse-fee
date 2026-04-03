@@ -724,6 +724,11 @@ select.form-input {
   grid-template-columns: 1fr 1fr auto;
   gap: 10px;
   align-items: flex-end;
+
+  div {
+    max-width: 100%;
+    overflow: auto;
+  }
 }
 
 .btn-remove-row {
