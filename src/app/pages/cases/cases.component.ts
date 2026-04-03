@@ -4,7 +4,7 @@ import {CommonModule} from '@angular/common';
 import {ToastService} from '../../core/services/toast.service';
 import {Doctor} from '../../core/models/doctor.model';
 import {RequestService} from "../../core/services/request.service";
-import {DELETE_USER_API_URL, PATIENTS_API_URL} from "../../utils/api.url.constants";
+import {CASES_API_URL, DELETE_USER_API_URL, PATIENTS_API_URL} from "../../utils/api.url.constants";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {FilterParams} from "../../core/models/user.model";
 import {MultiSelectModule} from "primeng/multiselect";
@@ -67,7 +67,7 @@ export class CasesComponent implements OnInit {
             limit: 10
         };
 
-        this.requestService.getRequest(PATIENTS_API_URL, filters).subscribe({
+        this.requestService.getRequest(CASES_API_URL, filters).subscribe({
             next: (response: HttpResponse<any>) => {
                 if (response.status === 200 && response.body.data) {
                     this.cases = response.body.data ?? [];

@@ -20,7 +20,6 @@ export const ROLES_API_URL = 'roles';
 export const ACTIVE_ROLES_API_URL = 'roles/active';
 export const DELETE_ROLE_API_URL = 'roles/';
 
-
 // LOVs
 export const LOV_API_URL = 'lovs';
 export const LOV_TYPES_API_URL = 'lovs/types/config';
@@ -43,3 +42,6 @@ export const PATIENTS_API_URL = 'patients'
 export const SUMMARY_API_URL = 'dashboard/summary';
 export const ANALYTICS_API_URL = 'dashboard/analytics';
 export const DEMOGRAPHICS_API_URL = 'dashboard/demographics';
+
+// Cases
+export const CASES_API_URL = 'cases';
