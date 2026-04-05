@@ -138,6 +138,10 @@
   align-items: center;
   flex-wrap: wrap;
   margin-left: auto;
+
+  .p-select-dropdown {
+    justify-content: end !important;
+  }
 }
 
 .filter-bar{

@@ -2,6 +2,7 @@
   width: var(--sidebar-w);
   background: var(--navy);
   min-height: 100vh;
+  border-right: 1px solid var(--navy);
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -36,7 +37,7 @@
 }
 
 .sidebar-logo {
-  padding-bottom: 20px;
+  padding: 20px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -52,6 +53,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.sidebar-menu {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: auto;
 }
 
 .sidebar-brand {
@@ -167,10 +176,29 @@
 
 .sidebar-footer {
   margin-top: auto;
-  padding-top: 16px;
+  padding: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   position: relative;
+  //background-color: var(--card);
   z-index: 1;
+  &:hover {
+    background-color: #100470;
+  }
+
+
+  .powered-by {
+    color: #8c9dc4;
+    display: flex;
+    font-weight: 700;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+
+    img {
+      width: 180px;
+      height: auto;
+    }
+  }
 }
 
 .sidebar-user {
@@ -434,7 +462,6 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 20px;
 }
 
 /* Optional: Add active state styling for parent item */
@@ -526,5 +553,110 @@
 
   svg {
     color: var(--muted);
+  }
+}
+
+
+
+.infotech-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.60);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  overflow: auto;
+}
+
+.infotech-modal {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 560px;
+  overflow: hidden;
+}
+
+.it-hero {
+  background: #0B1E45;
+  padding: 24px 24px 20px;
+
+  .it-hero-top { display: flex; align-items: flex-start; justify-content: space-between; }
+
+  .it-brand-row { display: flex; align-items: center; gap: 12px; }
+
+  .it-brand-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .it-brand-name { font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 0.02em; }
+  .it-brand-tagline { font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+
+  .it-close {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(255,255,255,0.1); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.6);
+    &:hover { background: rgba(255,255,255,0.18); }
+  }
+
+  .it-desc { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 14px; line-height: 1.6; }
+
+  .it-stats {
+    display: flex;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: 20px; padding-top: 16px;
+
+    .it-stat {
+      flex: 1; text-align: center;
+      & + .it-stat { border-left: 1px solid rgba(255,255,255,0.1); }
+    }
+
+    .it-stat-num { display: block; font-size: 18px; font-weight: 700; color: #fff; }
+    .it-stat-lbl { display: block; font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+  }
+}
+
+.it-body {
+  padding: 20px 24px;
+
+  .it-section-title { font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+
+  .it-services { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+
+  .it-chip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 12px; border-radius: 8px;
+    background: #f8f9fb; border: 0.5px solid #e5e7eb;
+    font-size: 12px; color: #374151; font-weight: 500;
+  }
+
+  .it-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+  .it-divider { height: 1px; background: #f0f0f0; margin: 4px 0 16px; }
+
+  .it-note { font-size: 13px; color: #6b7280; line-height: 1.65; }
+}
+
+.it-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 24px;
+  background: #f8f9fb;
+  border-top: 0.5px solid #e5e7eb;
+
+  .it-footer-url { font-size: 11px; color: #9ca3af; }
+
+  .it-visit-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 8px;
+    background: #0B1E45; color: #fff;
+    font-size: 12px; font-weight: 500;
+    border: none; cursor: pointer; text-decoration: none;
+    transition: background 0.15s;
+    &:hover { background: #152d66; }
   }
 }

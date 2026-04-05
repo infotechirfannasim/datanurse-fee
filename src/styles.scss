@@ -7,6 +7,35 @@
   padding: 0;
 }
 
+
+.main .topbar {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 64px;
+  width: calc(100% - var(--sidebar-w));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  z-index: 50;
+}
+
+.main.main-full .topbar {
+  width: 100%;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  z-index: 50;
+}
+
 :root {
   --sidebar-w: 240px;
 
@@ -456,20 +485,27 @@ body {
   margin-bottom: 7px;
 }
 
-.form-input {
+input {
   width: 100%;
   padding: 10px 14px;
   border: 1.5px solid var(--border);
   border-radius: 9px;
   font-size: 13px;
-  background: var(--card);
+  background: var(--bg) !important;
+  background-color: var(--bg) !important;
   color: var(--text);
   outline: none;
   transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
 
-  &:disabled {
-    cursor: not-allowed;
-    background: var(--bg);
+  // ← yeh add karo
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px var(--card) inset !important;
+    -webkit-text-fill-color: var(--text) !important;
+    caret-color: var(--text);
+    transition: background-color 9999s ease-in-out 0s;
   }
 }
 
@@ -946,7 +982,6 @@ $font: 'DM Sans', sans-serif;
   letter-spacing: 0.08em;
 }
 
-.new-modals {
 
   $navy: #0A0061;
   $navy-dark: #0656C5;
@@ -1230,6 +1265,7 @@ $font: 'DM Sans', sans-serif;
     font-family: $font;
     color: $navy-dark;
     background: $white;
+    background-color: $white;
     outline: none;
     transition: border-color 0.15s, box-shadow 0.15s;
     width: 100%;
@@ -1374,7 +1410,6 @@ $font: 'DM Sans', sans-serif;
       color: $navy;
     }
   }
-}
 
 
 // ── PrimeNG p-select + p-multiselect Override ──
@@ -1435,6 +1470,7 @@ p-select.form-input {
     border-radius: 0 9px 9px 0 !important;
   }
 }
+
 
 // ── p-multiselect internals ──
 p-multiselect.form-input {

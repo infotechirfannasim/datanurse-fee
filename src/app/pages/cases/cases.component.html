@@ -15,8 +15,8 @@
         <table class="registry-table">
             <thead>
             <tr>
-                <th>Patient</th>
-                <th>PT-No</th>
+              <th>PT-No</th>
+              <th>Patient Name</th>
                 <th>Diagnosis</th>
                 <th>Procedure</th>
                 <th>Surgery Date</th>
@@ -28,16 +28,16 @@
             <tbody>
                 @for (c of cases; track c._id) {
                     <tr>
-                        <td>
-                            <div class="doc-cell">
-                                <div>
-                                    <span class="doc-nm">{{ c.patient?.firstName }} {{ c.patient?.lastName }}</span>
-                                    <span class="doc-em">{{ c.patientCitizenNo || '—' }}</span>
-                                </div>
-                            </div>
-                        </td>
                         <td>{{ c.patientMrn || '—' }}</td>
-                        <td style="font-size:12.5px; color: var(--muted);">
+                      <td>
+                        <div class="doc-cell">
+                          <div>
+                            <span class="doc-nm">{{ c.patient?.firstName }} {{ c.patient?.lastName }}</span>
+                            <!--                                     <span class="doc-em">{{ c.patientCitizenNo || '—' }}</span> -->
+                          </div>
+                        </div>
+                      </td>
+                      <td style="font-size:12.5px; color: var(--muted);">
                             @for (diagnosis of c.selectedDiagnoses || []; track diagnosis.code; let last = $last) {
                                 {{ diagnosis.name }}
                                 @if (!last) {

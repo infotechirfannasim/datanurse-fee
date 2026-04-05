@@ -90,6 +90,31 @@
 <!--       </svg> -->
 <!--       New Doctor -->
 <!--     </button> -->
+    
+    
+    <div class="sidebar-user" (click)="logout()" >
+      <div class="profile-side">
+        @if (getProfileImageUrl()) {
+          <img [src]="getProfileImageUrl()"
+               alt="Profile Photo"
+               class="s-avatar">
+        } @else {
+          <div class="s-avatar">{{ getUserInitials(userInfo()) }}</div>
+        }
+        <div>
+          <span class="s-name">{{ userInfo()?.firstName + ' ' + userInfo()?.lastName }}</span>
+          <span class="s-role">{{ userInfo()?.role?.label }}</span>
+        </div>
+      </div>
+      <div class="user-menu-item logout">
+        <svg fill="none" height="18" viewBox="0 0 24 24" width="18">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" fill="none" stroke="currentColor"
+                stroke-width="2"/>
+          <polyline fill="none" points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/>
+          <line stroke="currentColor" stroke-width="2" x1="21" x2="9" y1="12" y2="12"/>
+        </svg>
+      </div>
+    </div>
   
   </div>
 </div>

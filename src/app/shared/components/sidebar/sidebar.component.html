@@ -1,13 +1,14 @@
 <aside class="sidebar">
-    <div class="sidebar-logo">
-        <div class="logo-heart">
-            <img src="./assets/images/logo.png">
-        </div>
-        <div class="sidebar-brand">
-            <span class="sidebar-brand-name">DataNurse</span>
-            <span class="sidebar-brand-sub">CDMS</span>
-        </div>
+  <div class="sidebar-logo">
+    <div class="logo-heart">
+      <img src="./assets/images/logo.png">
     </div>
+    <div class="sidebar-brand">
+      <span class="sidebar-brand-name">DataNurse</span>
+      <span class="sidebar-brand-sub">CDMS</span>
+    </div>
+  </div>
+  <div class="sidebar-menu">
     <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
     <span class="nav-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
@@ -17,9 +18,9 @@
         <rect x="14" y="14" width="7" height="7" rx="1.5" fill="rgba(255,255,255,0.8)"/>
       </svg>
     </span>
-        <span class="nav-label">Dashboard</span>
+      <span class="nav-label">Dashboard</span>
     </a>
-
+    
     <div (click)="toggleUserManagement()" [class.expanded]="isUserManagementExpanded" class="nav-item nav-parent">
     <span class="nav-icon">
       <svg fill="none" height="17" viewBox="0 0 24 24" width="17">
@@ -30,17 +31,17 @@
         <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="rgba(255,255,255,0.8)" stroke-linecap="round" stroke-width="2"/>
       </svg>
     </span>
-        <span class="nav-label">User Management</span>
-        <span class="nav-chevron">
+      <span class="nav-label">User Management</span>
+      <span class="nav-chevron">
       <svg fill="none" height="16" viewBox="0 0 24 24" width="16">
         <polyline points="6 9 12 15 18 9" stroke="rgba(255,255,255,0.8)" stroke-linecap="round" stroke-linejoin="round"
                   stroke-width="2"/>
       </svg>
     </span>
     </div>
-
+    
     <div [class.show]="isUserManagementExpanded" class="nav-submenu">
-        <a class="nav-subitem" routerLink="/users" routerLinkActive="active">
+      <a class="nav-subitem" routerLink="/users" routerLinkActive="active">
       <span class="nav-subicon">
         <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
           <circle cx="12" cy="8" r="4" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
@@ -48,20 +49,27 @@
                 stroke-width="2"/>
         </svg>
       </span>
-            <span class="nav-sublabel">Users</span>
-        </a>
-        <a class="nav-subitem" routerLink="/roles" routerLinkActive="active">
-      <span class="nav-subicon">
-        <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
-          <path d="M12 2L15 8H22L16 12L19 18L12 14L5 18L8 12L2 8H9L12 2Z" stroke="rgba(255,255,255,0.8)"
-                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-        </svg>
+        <span class="nav-sublabel">Users</span>
+      </a>
+      <a class="nav-subitem" routerLink="/roles" routerLinkActive="active">
+        <span class="nav-subicon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_10427_73327)">
+              <path d="M9.65159 1.60309C9.57417 1.269 9.38123 0.973003 9.10682 0.767318C8.83242 0.561633 8.49417 0.459484 8.15179 0.478897C7.8094 0.498309 7.48487 0.638035 7.23547 0.873419C6.98607 1.1088 6.82783 1.42471 6.78867 1.76541C6.74951 2.1061 6.83194 2.44968 7.02143 2.73551C7.21092 3.02134 7.49528 3.23106 7.82433 3.32765C8.15338 3.42425 8.50598 3.40151 8.8199 3.26345C9.13382 3.12539 9.38888 2.88089 9.54009 2.57309C10.4606 2.78269 11.3162 3.21307 12.0333 3.82709C12.7504 4.44111 13.3073 5.22034 13.6561 6.09759L14.5436 5.74859C14.1328 4.70809 13.4712 3.78521 12.6178 3.06199C11.7643 2.33877 10.7454 1.83762 9.65159 1.60309ZM8.24059 2.42209C8.17562 2.42417 8.11089 2.41318 8.05026 2.38976C7.98962 2.36634 7.93432 2.33097 7.88762 2.28575C7.84092 2.24053 7.8038 2.18638 7.77844 2.12653C7.75308 2.06668 7.74002 2.00234 7.74002 1.93734C7.74002 1.87234 7.75308 1.808 7.77844 1.74815C7.8038 1.68829 7.84092 1.63415 7.88762 1.58893C7.93432 1.54371 7.98962 1.50834 8.05026 1.48492C8.11089 1.4615 8.17562 1.4505 8.24059 1.45259C8.36922 1.45259 8.49258 1.50369 8.58353 1.59464C8.67449 1.6856 8.72559 1.80896 8.72559 1.93759C8.72559 2.06622 8.67449 2.18958 8.58353 2.28053C8.49258 2.37149 8.36922 2.42209 8.24059 2.42209ZM6.10709 2.82509L5.74859 1.93809C4.70809 2.34891 3.78521 3.01046 3.06199 3.86391C2.33877 4.71736 1.83762 5.73628 1.60309 6.83009C1.269 6.90751 0.973003 7.10044 0.767318 7.37485C0.561633 7.64926 0.459484 7.9875 0.478897 8.32989C0.498309 8.67227 0.638035 8.9968 0.873419 9.2462C1.1088 9.4956 1.42471 9.65384 1.76541 9.69301C2.1061 9.73217 2.44968 9.64973 2.73551 9.46025C3.02134 9.27076 3.23106 8.9864 3.32765 8.65735C3.42425 8.3283 3.40151 7.9757 3.26345 7.66178C3.12539 7.34786 2.88089 7.09279 2.57309 6.94159C2.78356 6.02002 3.21533 5.16359 3.83108 4.44636C4.44683 3.72912 5.22801 3.17265 6.10709 2.82509ZM1.93709 8.72609C1.8734 8.72609 1.81033 8.71354 1.75149 8.68917C1.69264 8.6648 1.63918 8.62907 1.59414 8.58403C1.5491 8.539 1.51338 8.48553 1.48901 8.42669C1.46463 8.36785 1.45209 8.30478 1.45209 8.24109C1.45209 8.1774 1.46463 8.11433 1.48901 8.05549C1.51338 7.99664 1.5491 7.94318 1.59414 7.89814C1.63918 7.8531 1.69264 7.81738 1.75149 7.79301C1.81033 7.76863 1.8734 7.75609 1.93709 7.75609C2.06572 7.75609 2.18908 7.80719 2.28003 7.89814C2.37099 7.9891 2.42209 8.11246 2.42209 8.24109C2.42209 8.36972 2.37099 8.49308 2.28003 8.58403C2.18908 8.67499 2.06572 8.72609 1.93709 8.72609ZM8.24059 13.0896C7.9701 13.0905 7.70521 13.1667 7.47566 13.3098C7.24611 13.4529 7.06099 13.6571 6.94109 13.8996C6.02047 13.69 5.16466 13.2596 4.4475 12.6455C3.73034 12.0314 3.17335 11.252 2.82459 10.3746L1.93759 10.7331C2.34975 11.7753 3.01351 12.6994 3.86964 13.4227C4.72577 14.1461 5.74764 14.6462 6.84409 14.8786C6.90707 15.1455 7.04422 15.3892 7.23971 15.5816C7.43521 15.7739 7.68109 15.9071 7.94901 15.9658C8.21692 16.0244 8.49597 16.0062 8.75396 15.9131C9.01195 15.82 9.23838 15.656 9.40714 15.4398C9.5759 15.2236 9.68012 14.9641 9.70778 14.6912C9.73544 14.4183 9.68542 14.1432 9.56348 13.8975C9.44154 13.6519 9.25265 13.4457 9.01859 13.3027C8.78453 13.1598 8.51483 13.0859 8.24059 13.0896ZM8.24059 15.0291C8.11196 15.0291 7.9886 14.978 7.89764 14.887C7.80669 14.7961 7.75559 14.6727 7.75559 14.5441C7.75559 14.4155 7.80669 14.2921 7.89764 14.2011C7.9886 14.1102 8.11196 14.0591 8.24059 14.0591C8.36922 14.0591 8.49258 14.1102 8.58353 14.2011C8.67449 14.2921 8.72559 14.4155 8.72559 14.5441C8.72559 14.6727 8.67449 14.7961 8.58353 14.887C8.49258 14.978 8.36922 15.0291 8.24059 15.0291ZM15.9981 8.24059C15.999 7.98098 15.9304 7.72586 15.7994 7.5017C15.6685 7.27754 15.4799 7.0925 15.2534 6.96577C15.0268 6.83903 14.7704 6.77523 14.5109 6.78098C14.2514 6.78672 13.9981 6.8618 13.7773 6.99843C13.5566 7.13507 13.3764 7.32827 13.2555 7.55801C13.1346 7.78774 13.0774 8.04564 13.0897 8.30496C13.1021 8.56427 13.1836 8.81555 13.3259 9.03273C13.4681 9.24992 13.6658 9.42509 13.8986 9.54009C13.6889 10.4606 13.2585 11.3163 12.6444 12.0334C12.0303 12.7505 11.2509 13.3074 10.3736 13.6561L10.7326 14.5436C11.7748 14.1314 12.6989 13.4677 13.4222 12.6115C14.1456 11.7554 14.6457 10.7335 14.8781 9.63709C15.1937 9.56244 15.4754 9.38448 15.6783 9.13147C15.8812 8.87845 15.9938 8.56489 15.9981 8.24059ZM14.5431 8.72559C14.4145 8.72559 14.2911 8.67449 14.2001 8.58353C14.1092 8.49258 14.0581 8.36922 14.0581 8.24059C14.0581 8.11196 14.1092 7.9886 14.2001 7.89764C14.2911 7.80669 14.4145 7.75559 14.5431 7.75559C14.6717 7.75559 14.7951 7.80669 14.886 7.89764C14.977 7.9886 15.0281 8.11196 15.0281 8.24059C15.0281 8.36922 14.977 8.49258 14.886 8.58353C14.7951 8.67449 14.6717 8.72559 14.5431 8.72559Z" fill="currentColor"/>
+              <path d="M9.59731 8.17874C9.87318 7.90937 10.0625 7.56389 10.1411 7.18642C10.2197 6.80895 10.184 6.41662 10.0386 6.05953C9.89314 5.70245 9.64458 5.39681 9.32464 5.18164C9.00469 4.96648 8.62788 4.85156 8.24231 4.85156C7.85675 4.85156 7.47993 4.96648 7.15999 5.18164C6.84004 5.39681 6.59148 5.70245 6.44606 6.05953C6.30063 6.41662 6.26494 6.80895 6.34354 7.18642C6.42213 7.56389 6.61145 7.90937 6.88731 8.17874C6.55902 8.40063 6.29011 8.6996 6.1041 9.04948C5.91809 9.39936 5.82065 9.78949 5.82031 10.1857V11.1552H10.6688V10.1852C10.668 9.78858 10.5698 9.39819 10.383 9.04828C10.1962 8.69837 9.92644 8.40013 9.59731 8.17874ZM7.27481 6.79123C7.27481 6.66385 7.2999 6.53772 7.34865 6.42003C7.3974 6.30235 7.46885 6.19541 7.55892 6.10534C7.64899 6.01527 7.75592 5.94382 7.87361 5.89507C7.9913 5.84632 8.11743 5.82124 8.24481 5.82124C8.3722 5.82124 8.49833 5.84632 8.61602 5.89507C8.7337 5.94382 8.84063 6.01527 8.93071 6.10534C9.02078 6.19541 9.09223 6.30235 9.14098 6.42003C9.18972 6.53772 9.21481 6.66385 9.21481 6.79123C9.21481 7.04849 9.11262 7.29522 8.93071 7.47713C8.7488 7.65904 8.50207 7.76124 8.24481 7.76124C7.98755 7.76124 7.74083 7.65904 7.55892 7.47713C7.37701 7.29522 7.27481 7.04849 7.27481 6.79123ZM6.78981 10.1852C6.78623 9.99193 6.82121 9.79984 6.89271 9.6202C6.96421 9.44057 7.07079 9.27698 7.20623 9.139C7.34167 9.00103 7.50325 8.89143 7.68153 8.81661C7.85982 8.7418 8.05122 8.70326 8.24456 8.70326C8.43791 8.70326 8.62931 8.7418 8.80759 8.81661C8.98587 8.89143 9.14745 9.00103 9.2829 9.139C9.41834 9.27698 9.52492 9.44057 9.59642 9.6202C9.66792 9.79984 9.7029 9.99193 9.69931 10.1852H6.78981Z" fill="currentColor"/>
+            </g>
+            <defs>
+              <clipPath id="clip0_10427_73327">
+                <rect width="16" height="16" fill="white"/>
+              </clipPath>
+            </defs>
+          </svg>
       </span>
-            <span class="nav-sublabel">Roles</span>
-        </a>
+        <span class="nav-sublabel">Roles</span>
+      </a>
     </div>
-
-
+    
+    
     <a class="nav-item" routerLink="/doctors" routerLinkActive="active">
     <span class="nav-icon">
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,9 +82,9 @@
         </svg>
 
     </span>
-        <span class="nav-label">Doctor Registry</span>
+      <span class="nav-label">Doctor Registry</span>
     </a>
-
+    
     <a class="nav-item" routerLink="/patients" routerLinkActive="active">
     <span class="nav-icon">
      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -88,9 +96,9 @@
               fill="currentColor"/>
         </svg>
     </span>
-        <span class="nav-label">Patients</span>
+      <span class="nav-label">Patients</span>
     </a>
-
+    
     <a class="nav-item" routerLink="/cases" routerLinkActive="active">
         <span class="nav-icon">
            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -102,9 +110,9 @@
            </svg>
 
         </span>
-        <span class="nav-label">Cases</span>
+      <span class="nav-label">Cases</span>
     </a>
-
+    
     <a class="nav-item" routerLink="/lovs" routerLinkActive="active">
     <span class="nav-icon">
       <svg fill="none" height="17" viewBox="0 0 24 24" width="17">
@@ -115,43 +123,10 @@
         <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="rgba(255,255,255,0.8)" stroke-linecap="round" stroke-width="2"/>
       </svg>
     </span>
-        <span class="nav-label">Reference Data Listing</span>
+      <span class="nav-label">Reference Data Listing</span>
     </a>
-
-    <!--<a class="nav-item" routerLink="/search" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <circle cx="11" cy="11" r="8" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M21 21l-4.35-4.35" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </span>
-      <span class="nav-label">Search</span>
-    </a>
-
-    <div class="sidebar-section-label">Analytics</div>
-
-    <a class="nav-item" routerLink="/reports" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      <span class="nav-label">Reports</span>
-    </a>
-
-    <a class="nav-item" routerLink="/data" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <ellipse cx="12" cy="5" rx="9" ry="3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-        </svg>
-      </span>
-      <span class="nav-label">Data Management</span>
-    </a>-->
-
     <div class="sidebar-section-label">Account</div>
-
+    
     <a class="nav-item" routerLink="/profile" routerLinkActive="active">
     <span class="nav-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
@@ -160,42 +135,107 @@
         <circle cx="12" cy="7" r="4" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
       </svg>
     </span>
-        <span class="nav-label">My Profile</span>
+      <span class="nav-label">My Profile</span>
     </a>
-
-    <!--<a class="nav-item" routerLink="/settings" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-        </svg>
-      </span>
-      <span class="nav-label">Settings</span>
-    </a>
-  -->
-    <div class="sidebar-footer">
-        <div class="sidebar-user">
-            <div class="profile-side">
-                @if (getProfileImageUrl()) {
-                    <img [src]="getProfileImageUrl()"
-                         alt="Profile Photo"
-                         class="s-avatar">
-                } @else {
-                    <div class="s-avatar">{{ getUserInitials(userInfo()) }}</div>
-                }
-                <div>
-                    <span class="s-name">{{ userInfo()?.firstName + ' ' + userInfo()?.lastName }}</span>
-                    <span class="s-role">{{ userInfo()?.role?.label }}</span>
-                </div>
-            </div>
-            <div (click)="logout()" class="user-menu-item logout">
-                <svg fill="none" height="18" viewBox="0 0 24 24" width="18">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" fill="none" stroke="currentColor"
-                          stroke-width="2"/>
-                    <polyline fill="none" points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/>
-                    <line stroke="currentColor" stroke-width="2" x1="21" x2="9" y1="12" y2="12"/>
-                </svg>
-            </div>
-        </div>
+  </div>
+  
+  <!--<a class="nav-item" routerLink="/settings" routerLinkActive="active">
+    <span class="nav-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+      </svg>
+    </span>
+    <span class="nav-label">Settings</span>
+  </a>
+-->
+  <div class="sidebar-footer">
+    <div class="powered-by" (click)="showInfotechModal = true">
+      Powered by <img src="./assets/images/infotech.png" alt="">
     </div>
+  </div>
 </aside>
+
+<!-- Powered By Modal -->
+@if (showInfotechModal) {
+  <div class="infotech-overlay" (click)="showInfotechModal = false">
+    <div class="infotech-modal" (click)="$event.stopPropagation()">
+      
+      <!-- Hero Header -->
+      <div class="it-hero">
+        <div class="it-hero-top">
+          <div class="it-brand-row">
+            <div class="it-brand-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff"
+                   stroke-width="2" stroke-linecap="round">
+                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                <path d="M8 21h8M12 17v4"/>
+                <path d="M7 8h1m4 0h1m-5 3h6"/>
+              </svg>
+            </div>
+            <div>
+              <div class="it-brand-name">INFOTECH</div>
+              <div class="it-brand-tagline">Brilliantly Built</div>
+            </div>
+          </div>
+          <button class="modal-close" (click)="showInfotechModal = false">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        
+        <p class="it-desc">
+          A Pakistan-based technology company delivering enterprise software, digital
+          transformation, and IT solutions to clients across healthcare, finance, and
+          government sectors.
+        </p>
+        
+        <div class="it-stats">
+          <div class="it-stat"><span class="it-stat-num">15+</span><span class="it-stat-lbl">Years</span></div>
+          <div class="it-stat"><span class="it-stat-num">200+</span><span class="it-stat-lbl">Projects</span></div>
+          <div class="it-stat"><span class="it-stat-num">50+</span><span class="it-stat-lbl">Clients</span></div>
+          <div class="it-stat"><span class="it-stat-num">100+</span><span class="it-stat-lbl">Engineers</span></div>
+        </div>
+      </div>
+      
+      <!-- Body -->
+      <div class="it-body">
+        <div class="it-section-title">Core Services</div>
+        <div class="it-services">
+          <div class="it-chip"><span class="it-dot" style="background:#185FA5"></span>Custom Software</div>
+          <div class="it-chip"><span class="it-dot" style="background:#0F6E56"></span>Healthcare IT</div>
+          <div class="it-chip"><span class="it-dot" style="background:#854F0B"></span>Cloud Solutions</div>
+          <div class="it-chip"><span class="it-dot" style="background:#534AB7"></span>Mobile Apps</div>
+          <div class="it-chip"><span class="it-dot" style="background:#993C1D"></span>ERP Systems</div>
+          <div class="it-chip"><span class="it-dot" style="background:#A32D2D"></span>Data Analytics</div>
+        </div>
+        
+        <div class="it-divider"></div>
+        <div class="it-section-title">Built for DataNurse CDMS</div>
+        <p class="it-note">
+          This Cardiac Data Management System was designed and developed by Infotech Group —
+          combining clinical expertise with modern software engineering to streamline surgical
+          case tracking and patient data management.
+        </p>
+      </div>
+      
+      <!-- Footer -->
+      <div class="it-footer">
+        <span class="it-footer-url">infotechgroup.com</span>
+        <a href="https://infotechgroup.com" target="_blank" class="it-visit-btn">
+          Visit Website
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+        </a>
+      </div>
+    
+    </div>
+  </div>
+}

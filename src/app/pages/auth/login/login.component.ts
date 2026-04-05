@@ -7,134 +7,152 @@ import {ToastService} from '../../../core/services/toast.service';
 import {environment} from '../../../../environments/environment';
 
 declare global {
-    interface Window {
-        turnstile: any;
-        onTurnstileLoad?: () => void;
-    }
+  interface Window {
+    turnstile: any;
+    onTurnstileLoad?: () => void;
+  }
 }
 
 @Component({
-    selector: 'app-login',
-    standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
-    templateUrl: 'login.component.html',
-    styleUrls: ['login.component.scss'],
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
+  templateUrl: 'login.component.html',
+  styleUrls: ['login.component.scss'],
 })
 export class LoginComponent implements AfterViewInit, OnDestroy {
-    private fb = inject(FormBuilder);
-    private authService = inject(AuthService);
-    private router = inject(Router);
-    private toastService = inject(ToastService);
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private toastService = inject(ToastService);
 
-    loginForm: FormGroup;
-    isLoading = false;
-    showPassword = false;
+  loginForm: FormGroup;
+  isLoading = false;
+  showPassword = false;
 
-    turnstileToken = '';
-    widgetId: string | null = null;
+  turnstileToken = '';
+  widgetId: string | null = null;
 
-    constructor() {
-        this.loginForm = this.fb.group({
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required]],
-            rememberMe: [false],
-        });
+  constructor() {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]],
+      rememberMe: [false],
+    });
+  }
+
+  ngOnInit(): void {
+    this.turnstileToken = '';
+    this.widgetId = null;
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.loadTurnstileWidget();
+    }, 100);
+  }
+
+
+  ngOnDestroy(): void {
+    try {
+      if (window.turnstile && this.widgetId) {
+        window.turnstile.remove(this.widgetId);
+      }
+    } catch (e) {
     }
+  }
 
-    ngAfterViewInit(): void {
-        this.loadTurnstileWidget();
-    }
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
 
-    ngOnDestroy(): void {
-        try {
-            if (window.turnstile && this.widgetId) {
-                window.turnstile.remove(this.widgetId);
-            }
-        } catch (e) {
+  isFieldInvalid(field: string): boolean {
+    const formControl = this.loginForm.get(field);
+    return !!formControl && formControl.invalid && (formControl.dirty || formControl.touched);
+  }
+
+  private loadTurnstileWidget(): void {
+    const renderWidget = () => {
+      const container = document.getElementById('turnstile-container');
+      if (!container || !window.turnstile) return;
+
+      // ← Pehle remove karo agar widget pehle se exist karta ho
+      try {
+        if (this.widgetId) {
+          window.turnstile.remove(this.widgetId);
+          this.widgetId = null;
         }
+      } catch (e) {
+      }
+
+      container.innerHTML = '';
+
+      this.widgetId = window.turnstile.render('#turnstile-container', {
+        sitekey: environment.turnstileSiteKey,
+        callback: (token: string) => {
+          this.turnstileToken = token;
+        },
+        'expired-callback': () => {
+          this.turnstileToken = '';
+        },
+        'error-callback': () => {
+          this.turnstileToken = '';
+          this.toastService.show('Captcha load failed. Please try again.', 'error');
+        },
+        theme: 'light',
+        size: 'flexible',
+      });
+    };
+
+    const waitForTurnstile = () => {
+      if (window.turnstile) {
+        renderWidget();
+      } else {
+        setTimeout(waitForTurnstile, 300);
+      }
+    };
+
+    waitForTurnstile();
+  }
+
+  private resetTurnstile(): void {
+    this.turnstileToken = '';
+    if (window.turnstile && this.widgetId) {
+      window.turnstile.reset(this.widgetId);
+    }
+  }
+
+  onSubmit(): void {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
     }
 
-    togglePassword(): void {
-        this.showPassword = !this.showPassword;
+    if (!this.turnstileToken) {
+      this.toastService.show('Please complete captcha first.', 'warning');
+      return;
     }
 
-    isFieldInvalid(field: string): boolean {
-        const formControl = this.loginForm.get(field);
-        return !!formControl && formControl.invalid && (formControl.dirty || formControl.touched);
-    }
+    this.isLoading = true;
 
-    private loadTurnstileWidget(): void {
-        const renderWidget = () => {
-            const container = document.getElementById('turnstile-container');
-            if (!container || !window.turnstile) return;
+    const payload = {
+      ...this.loginForm.value,
+      turnstileToken: this.turnstileToken,
+      platform: 'web',
+    };
 
-            container.innerHTML = '';
-
-            this.widgetId = window.turnstile.render('#turnstile-container', {
-                sitekey: environment.turnstileSiteKey,
-                callback: (token: string) => {
-                    this.turnstileToken = token;
-                },
-                'expired-callback': () => {
-                    this.turnstileToken = '';
-                },
-                'error-callback': () => {
-                    this.turnstileToken = '';
-                    this.toastService.show('Captcha load failed. Please try again.', 'error');
-                },
-                theme: 'light',
-            });
-        };
-
-        const waitForTurnstile = () => {
-            if (window.turnstile) {
-                renderWidget();
-            } else {
-                setTimeout(waitForTurnstile, 300);
-            }
-        };
-
-        waitForTurnstile();
-    }
-
-    private resetTurnstile(): void {
-        this.turnstileToken = '';
-        if (window.turnstile && this.widgetId) {
-            window.turnstile.reset(this.widgetId);
-        }
-    }
-
-    onSubmit(): void {
-        if (this.loginForm.invalid) {
-            this.loginForm.markAllAsTouched();
-            return;
-        }
-
-        if (!this.turnstileToken) {
-            this.toastService.show('Please complete captcha first.', 'warning');
-            return;
-        }
-
-        this.isLoading = true;
-
-        const payload = {
-            ...this.loginForm.value,
-            turnstileToken: this.turnstileToken,
-            platform: 'web',
-        };
-
-        this.authService.login(payload).subscribe({
-            next: () => {
-                this.router.navigate(['/dashboard']);
-            },
-            error: (err) => {
-                this.toastService.show(err.message, 'error');
-                this.isLoading = false;
-                this.resetTurnstile();
-            },
-            complete: () => {
-                this.isLoading = false;
-            },
-        });
-    }
+    this.authService.login(payload).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.toastService.show(err.message, 'error');
+        this.isLoading = false;
+        this.resetTurnstile();
+      },
+      complete: () => {
+        this.isLoading = false;
+      },
+    });
+  }
 }
