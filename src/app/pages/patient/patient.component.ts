@@ -2,7 +2,6 @@ import {Component, inject, OnInit, signal} from '@angular/core';
 import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule, NgClass} from '@angular/common';
 import {ToastService} from '../../core/services/toast.service';
-import {Doctor} from '../../core/models/doctor.model';
 import {RequestService} from '../../core/services/request.service';
 import {DELETE_USER_API_URL, PATIENTS_API_URL} from '../../utils/api.url.constants';
 import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
@@ -24,31 +23,50 @@ export class PatientComponent implements OnInit {
   private toastService = inject(ToastService);
   private requestService = inject(RequestService);
 
+  // ── Search & Pagination ──
   searchQuery = signal('');
   pageQuery = signal(1);
   pagination = signal<any>(null);
 
+  // ── Modal Visibility ──
   showAddModal = signal(false);
   showViewModal = signal(false);
   showDeleteModal = signal(false);
-  showCaseDetailModal = signal(false);   // ← naya
 
+  // ── Tab State inside View Modal ──
+  activeTab = signal<'overview' | 'cases' | 'case-detail'>('overview');
+
+  // ── Selected Records ──
+  selectedPatient = signal<any | null>(null);
+  selectedCase = signal<any | null>(null);
+
+  // ── Misc ──
   isEditMode = false;
   doctorForm!: FormGroup;
   patients: any[] = [];
-
-  selectedPatient = signal<any | null>(null);
-  selectedCase = signal<any | null>(null);  // ← naya
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
 
   protected readonly getUserInitials = getUserInitials;
 
+  // ────────────────────────────────────────────
+  // Lifecycle
+  // ────────────────────────────────────────────
+
   ngOnInit(): void {
     this.loadPatients();
     this.setupSearchDebounce();
   }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  // ────────────────────────────────────────────
+  // Search
+  // ────────────────────────────────────────────
 
   setupSearchDebounce(): void {
     this.searchSubject.pipe(
@@ -56,6 +74,7 @@ export class PatientComponent implements OnInit {
       distinctUntilChanged(),
       takeUntil(this.destroy$)
     ).subscribe(() => {
+      this.pageQuery.set(1);
       this.loadPatients();
     });
   }
@@ -64,12 +83,17 @@ export class PatientComponent implements OnInit {
     this.searchSubject.next(this.searchQuery().toLowerCase());
   }
 
+  // ────────────────────────────────────────────
+  // Data Loading
+  // ────────────────────────────────────────────
+
   loadPatients(): void {
     const filters: FilterParams = {
       search: this.searchQuery().toLowerCase() || '',
       page: this.pageQuery(),
       limit: 10
     };
+
     this.requestService.getRequest(PATIENTS_API_URL, filters).subscribe({
       next: (response: HttpResponse<any>) => {
         if (response.status === 200 && response.body.data) {
@@ -87,11 +111,22 @@ export class PatientComponent implements OnInit {
     });
   }
 
+  // ────────────────────────────────────────────
+  // Modal Actions
+  // ────────────────────────────────────────────
+
+  /**
+   * Opens the patient view modal.
+   * Fetches full patient data (including all cases) from API.
+   * Resets tab to 'overview' and clears any previously selected case.
+   */
   openView(patient: any): void {
     this.requestService.getRequest(`${PATIENTS_API_URL}/${patient._id}`).subscribe({
       next: (res: HttpResponse<any>) => {
         if (res.status === 200) {
           this.selectedPatient.set(res.body.data);
+          this.selectedCase.set(null);
+          this.activeTab.set('overview');
           this.showViewModal.set(true);
         } else {
           this.toastService.show(res.body.message || 'Something went wrong', 'info');
@@ -103,12 +138,77 @@ export class PatientComponent implements OnInit {
     });
   }
 
-
-  openCaseDetail(caseItem: any): void {
+  /**
+   * Called when user clicks a case row inside the Cases tab.
+   * Sets the selected case and switches to Case Detail tab.
+   */
+  selectCaseFromTab(caseItem: any): void {
     this.selectedCase.set(caseItem);
-    this.showCaseDetailModal.set(true);
+    this.activeTab.set('case-detail');
   }
 
+  /**
+   * Called from anywhere to open a specific case detail.
+   * Also ensures the view modal is open.
+   */
+  openCaseDetail(caseItem: any): void {
+    this.selectedCase.set(caseItem);
+    this.activeTab.set('case-detail');
+    if (!this.showViewModal()) {
+      this.showViewModal.set(true);
+    }
+  }
+
+  /**
+   * Closes the view modal and resets all related state.
+   */
+  closeViewModal(): void {
+    this.showViewModal.set(false);
+    this.selectedPatient.set(null);
+    this.selectedCase.set(null);
+    this.activeTab.set('overview');
+  }
+
+  // ────────────────────────────────────────────
+  // Delete
+  // ────────────────────────────────────────────
+
+  confirmDelete(): void {
+    if (!this.selectedPatient()) return;
+
+    this.requestService.deleteRequest(DELETE_USER_API_URL + this.selectedPatient()?._id).subscribe({
+      next: () => {
+        this.toastService.show('Patient removed successfully', 'error');
+        this.showDeleteModal.set(false);
+        this.selectedPatient.set(null);
+        this.loadPatients();
+      },
+      error: (err) => {
+        this.toastService.show(err.error?.message || 'Failed to remove patient', 'error');
+      }
+    });
+  }
+
+  // ────────────────────────────────────────────
+  // Pagination
+  // ────────────────────────────────────────────
+
+  goToPage(page: number): void {
+    const p = this.pagination();
+    if (!p || page < 1 || page > p.totalPages) return;
+    this.pageQuery.set(page);
+    this.loadPatients();
+  }
+
+  getPages(): number[] {
+    const p = this.pagination();
+    if (!p) return [];
+    return Array.from({length: p.totalPages}, (_, i) => i + 1);
+  }
+
+  // ────────────────────────────────────────────
+  // CSS Class Helpers
+  // ────────────────────────────────────────────
 
   getCaseStatusClass(status: string): string {
     const map: Record<string, string> = {
@@ -131,6 +231,10 @@ export class PatientComponent implements OnInit {
     return 'cd-discharge-row--deceased';
   }
 
+  // ────────────────────────────────────────────
+  // Display Helpers
+  // ────────────────────────────────────────────
+
   getSurgeonInitials(name: string): string {
     if (!name) return '?';
     const parts = name.trim().replace(/^Dr\.?\s*/i, '').split(' ').filter(Boolean);
@@ -139,6 +243,25 @@ export class PatientComponent implements OnInit {
     return '?';
   }
 
+  getProfileImageUrl(doc: any): string | null {
+    if (!doc?.profileImage?.data || !doc?.profileImage?.contentType) return null;
+    return `data:${doc.profileImage.contentType};base64,${doc.profileImage.data}`;
+  }
+
+  /**
+   * Returns keys of an object where value is truthy (true / 1).
+   * Used for object-style boolean fields:
+   *   e.g. RegAnesSite: { "Thoracic Epidural Catheter": true }
+   *     => ["Thoracic Epidural Catheter"]
+   */
+  getObjectKeys(obj: Record<string, any> | null | undefined): string[] {
+    if (!obj) return [];
+    return Object.keys(obj).filter(k => obj[k] === true || obj[k] === 1);
+  }
+
+  // ────────────────────────────────────────────
+  // Misc / Legacy
+  // ────────────────────────────────────────────
 
   mapDoctorToForm(doc: any): any {
     return {
@@ -151,39 +274,18 @@ export class PatientComponent implements OnInit {
     };
   }
 
-  confirmDelete(): void {
-    if (!this.selectedPatient()) return;
-    this.requestService.deleteRequest(DELETE_USER_API_URL + this.selectedPatient()?._id).subscribe({
-      next: () => {
-        this.toastService.show('Patient removed successfully', 'error');
-        this.showDeleteModal.set(false);
-        this.loadPatients();
-      },
-      error: (err) => {
-        alert(err.error?.message || 'Failed to remove patient');
-      }
-    });
-  }
-
   resetForm(): void {
     this.doctorForm.reset();
   }
-
-  goToPage(page: number): void {
-    const p = this.pagination();
-    if (!p || page < 1 || page > p.totalPages) return;
-    this.pageQuery.set(page);
-    this.loadPatients();
-  }
-
-  getPages(): number[] {
-    const p = this.pagination();
-    if (!p) return [];
-    return Array.from({length: p.totalPages}, (_, i) => i + 1);
-  }
-
-  getProfileImageUrl(doc: any): string | null {
-    if (!doc?.profileImage?.data || !doc?.profileImage?.contentType) return null;
-    return `data:${doc.profileImage.contentType};base64,${doc.profileImage.data}`;
+  getPillClass(status: string): string {
+    const map: Record<string, string> = {
+      'Completed': 'pill-completed',
+      'Recovered': 'pill-completed',
+      'Active':    'pill-active',
+      'Salvage':   'pill-salvage',
+      'Critical':  'pill-critical',
+      'Pending':   'pill-pending',
+    };
+    return map[status] ?? 'pill-pending';
   }
 }

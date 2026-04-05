@@ -354,14 +354,15 @@
 
 /* Submenu styles */
 .nav-submenu {
-  max-height: 0;
+  display: none;
   overflow: hidden;
+  min-height: 80px;
   transition: max-height 0.3s ease-out;
   padding-left: 20px;
 }
 
 .nav-submenu.show {
-  min-height: 80px; /* Adjust based on content */
+  display: block; /* Adjust based on content */
 }
 
 .nav-subitem {

@@ -9,23 +9,34 @@
 
 :root {
   --sidebar-w: 240px;
-  --navy: #0B1E45;
-  --navy2: #122258;
-  --blue: #2251CC;
-  --blue-lt: #3B6EE8;
-  --pink: #F0659A;
-  --rose: #E8344A;
-  --indigo: #5B4FCF;
-  --teal: #0EA5A0;
-  --amber: #F59E0B;
-  --green: #22C55E;
-  --bg: #F0F3FA;
-  --tableheader: rgba(11, 30, 69, 0.10);
-  --card: #FFFFFF;
-  --border: #E2E8F4;
-  --text: #0B1E45;
-  --muted: #7A8BB0;
-  --label: #94A3C0;
+
+  /* ── Brand (Client Spec) ── */
+  --navy:    #0A0061;   /* Deep Indigo  — was #0B1E45 */
+  --navy2:   #0656C5;   /* Royal Blue   — was #122258 */
+  --blue:    #0656C5;   /* Royal Blue   — was #2251CC */
+  --blue-lt: #2ADCFE;   /* Bright Cyan  — was #3B6EE8 */
+  --pink:    #C919FE;   /* Vivid Purple — was #F0659A */
+  --rose:    #EF4444;   /* Error Red    — was #E8344A */
+  --indigo:  #C919FE;   /* Vivid Purple — was #5B4FCF */
+  --teal:    #3B82F8;   /* Info Blue    — was #0EA5A0 */
+
+  /* ── Functional (unchanged names, updated values) ── */
+  --amber:   #F59E0B;   /* Warning — same ✓ */
+  --green:   #10B981;   /* Success — was #22C55E */
+
+  /* ── Neutrals (client spec) ── */
+  --bg:          #FFFFFF;   /* Background — was #F0F3FA */
+  --card:        #F9FAFB;   /* Surface    — was #FFFFFF */
+  --border:      #E5E7EB;   /* Border     — was #E2E8F4 */
+  --text:        #111827;   /* Text       — was #0B1E45 */
+  --muted:       #6B7280;   /* subtle muted */
+  --label:       #9CA3AF;   /* Caption/label */
+  --tableheader: rgba(10, 0, 97, 0.08); /* Deep Indigo tint — was navy tint */
+
+  /* ── Gradients (optional, client gradient library) ── */
+  --grad-primary:  linear-gradient(135deg, #0CC4EA, #5145E5); /* Arctic Aurora */
+  --grad-cta:      linear-gradient(135deg, #FE2495, #FF785B); /* Neon Sunset */
+  --grad-feature:  linear-gradient(135deg, #422FFA, #FFD416); /* Prism Spectrum */
 }
 
 body {
@@ -62,27 +73,27 @@ body {
 }
 
 .badge-green {
-  background: rgba(34, 197, 94, 0.12);
-  color: #15803D;
+  background: rgba(16, 185, 129, 0.12);   /* --green */
+  color: #065F46;
 }
 
 .badge-amber {
-  background: rgba(245, 158, 11, 0.12);
+  background: rgba(245, 158, 11, 0.12);   /* --amber */
   color: #92400E;
 }
 
 .badge-blue {
-  background: rgba(34, 81, 204, 0.10);
+  background: rgba(6, 86, 197, 0.10);     /* --blue */
   color: var(--blue);
 }
 
 .badge-rose {
-  background: rgba(232, 52, 74, 0.10);
+  background: rgba(239, 68, 68, 0.10);    /* --rose */
   color: var(--rose);
 }
 
 .badge-gray {
-  background: rgba(122, 139, 176, 0.12);
+  background: rgba(107, 114, 128, 0.12);  /* --muted */
   color: var(--muted);
 }
 
@@ -95,7 +106,6 @@ body {
   border-radius: 10px;
   font-size: 13px;
   font-weight: 600;
-  //font-family: 'DM Sans';
   cursor: pointer;
   transition: all 0.15s;
   border: none;
@@ -104,7 +114,7 @@ body {
 .btn-primary {
   background: var(--navy);
   color: #fff;
-  box-shadow: 0 4px 14px rgba(11, 30, 69, 0.22);
+  box-shadow: 0 4px 14px rgba(10, 0, 97, 0.22);   /* --navy */
 }
 
 .btn-primary:hover {
@@ -121,7 +131,7 @@ body {
 .btn-ghost:hover {
   border-color: var(--blue) !important;
   color: var(--blue);
-  background: #EEF2FF;
+  background: rgba(6, 86, 197, 0.06);             /* --blue tint */
 }
 
 .btn-danger {
@@ -136,12 +146,12 @@ body {
 }
 
 .btn-success {
-  background: #22C55E;
+  background: var(--green);
   color: #fff;
 }
 
 .btn-success:hover {
-  background: #16A34A;
+  background: #059669;                            /* --green dark */
 }
 
 .btn-sm {
@@ -173,7 +183,7 @@ body {
 }
 
 .pill-btn-ghost:hover {
-  background: #E8EDF8;
+  background: rgba(6, 86, 197, 0.06);             /* --blue tint */
   color: var(--navy);
 }
 
@@ -193,7 +203,7 @@ body {
 }
 
 .action-btn:hover {
-  background: #E8EDF8;
+  background: rgba(6, 86, 197, 0.06);             /* --blue tint */
 }
 
 /* ═══ SECTION CARDS ═══ */
@@ -239,7 +249,7 @@ body {
   display: flex;
   align-items: center;
   gap: 7px;
-  background: #fff;
+  background: var(--card);
   border: 1.5px solid var(--border);
   border-radius: 10px;
   padding: 9px 14px;
@@ -247,7 +257,6 @@ body {
   font-weight: 500;
   color: var(--text);
   cursor: pointer;
-  //font-family: 'DM Sans';
   transition: border-color 0.15s;
   white-space: nowrap;
 }
@@ -258,7 +267,7 @@ body {
 
 .dropdown-btn.active {
   border-color: var(--blue);
-  background: #EEF2FF;
+  background: rgba(6, 86, 197, 0.06);             /* --blue tint */
   color: var(--blue);
 }
 
@@ -266,10 +275,10 @@ body {
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(11, 30, 69, 0.12);
+  box-shadow: 0 8px 32px rgba(10, 0, 97, 0.12);   /* --navy */
   min-width: 180px;
   z-index: 200;
   overflow: hidden;
@@ -370,7 +379,7 @@ body {
 /* ═══ SPEC TAG ═══ */
 .spec-tag {
   display: inline-block;
-  background: #EEF2FF;
+  background: rgba(6, 86, 197, 0.06);             /* --blue tint */
   color: var(--blue);
   font-size: 11px;
   font-weight: 600;
@@ -404,7 +413,7 @@ body {
   height: 32px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  background: #fff;
+  background: var(--card);
   font-size: 12px;
   font-weight: 600;
   color: var(--muted);
@@ -444,10 +453,8 @@ body {
   padding: 10px 14px;
   border: 1.5px solid var(--border);
   border-radius: 9px;
-  //font-family: 'DM Sans';
   font-size: 13px;
-  background: #ffffff;
-  //background-color: #ffffff;
+  background: var(--card);
   color: var(--text);
   outline: none;
   transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
@@ -457,6 +464,7 @@ body {
     background: var(--bg);
   }
 }
+
 textarea.form-input {
   padding: 10px !important;
   height: auto !important;
@@ -464,8 +472,8 @@ textarea.form-input {
 
 .form-input:focus {
   border-color: var(--blue);
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(34, 81, 204, 0.08);
+  background: var(--card);
+  box-shadow: 0 0 0 3px rgba(6, 86, 197, 0.08);   /* --blue */
 }
 
 .text-area {
@@ -473,7 +481,6 @@ textarea.form-input {
   padding: 16px;
   border: 1.5px solid var(--border);
   border-radius: 9px;
-  //font-family: 'DM Sans';
   font-size: 13px;
   color: var(--text);
   background-color: transparent;
@@ -511,7 +518,7 @@ select.form-input {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(11, 30, 69, 0.45);
+  background: rgba(10, 0, 97, 0.45);              /* --navy */
   backdrop-filter: blur(3px);
   z-index: 1000;
   display: none;
@@ -525,32 +532,23 @@ select.form-input {
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .modal {
-  background: #fff;
+  background: var(--card);
   border-radius: 18px;
   width: 100%;
   max-width: 640px;
   max-height: 90vh;
   overflow-y: hidden;
-  box-shadow: 0 24px 64px rgba(11, 30, 69, 0.20);
+  box-shadow: 0 24px 64px rgba(10, 0, 97, 0.20);  /* --navy */
   animation: slideUp 0.25s ease;
 }
 
-.modal-sm {
-  max-width: 440px;
-}
-
-.modal-lg {
-  max-width: 800px;
-}
+.modal-sm { max-width: 440px; }
+.modal-lg { max-width: 800px; }
 
 @keyframes slideUp {
   from {
@@ -589,7 +587,7 @@ select.form-input {
   height: 30px;
   border-radius: 8px;
   border: 1.5px solid var(--border);
-  background: #fff;
+  background: var(--card);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -663,16 +661,16 @@ select.form-input {
 
 .tag-wrap:focus-within {
   border-color: var(--blue);
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(34, 81, 204, 0.08);
+  background: var(--card);
+  box-shadow: 0 0 0 3px rgba(6, 86, 197, 0.08);   /* --blue */
 }
 
 .tag {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: #EEF2FF;
-  border: 1px solid #C5D3F5;
+  background: rgba(6, 86, 197, 0.08);             /* --blue tint */
+  border: 1px solid rgba(6, 86, 197, 0.20);       /* --blue border */
   border-radius: 5px;
   padding: 3px 8px;
   font-size: 12px;
@@ -700,7 +698,6 @@ select.form-input {
   border: none;
   outline: none;
   background: transparent;
-  //font-family: 'DM Sans';
   font-size: 13px;
   color: var(--text);
   min-width: 100px;
@@ -765,14 +762,13 @@ select.form-input {
   font-weight: 600;
   color: var(--muted);
   cursor: pointer;
-  //font-family: 'DM Sans';
   transition: all 0.15s;
 }
 
 .btn-add-row:hover {
   border-color: var(--blue);
   color: var(--blue);
-  background: #EEF2FF;
+  background: rgba(6, 86, 197, 0.06);             /* --blue tint */
 }
 
 /* ═══ AVATAR UPLOAD ═══ */
@@ -870,7 +866,7 @@ select.form-input {
   align-items: center;
   gap: 8px;
   height: 43px;
-  background: #fff;
+  background: var(--card);
   border: 1.5px solid var(--border);
   border-radius: 10px;
   padding: 12px 14px;
@@ -885,7 +881,6 @@ select.form-input {
   outline: none;
   font-size: 13px;
   color: var(--text);
-  //font-family: 'DM Sans';
   width: 100%;
 }
 
@@ -896,26 +891,23 @@ select.form-input {
 
 // ============================================
 // MODALS — SCSS
-// Register User | View Doctor | Delete Confirm
-// Font: DM Sans (Google Fonts)
-// <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 // ============================================
 
-// ── Variables ──
-$navy: #0B1E45;
-$navy-dark: #1E3A6E;
-$blue: #2251CC;
-$blue-light: #EEF2FF;
-$blue-border: #C7D7F5;
-$blue-bg: #F8FAFF;
-$danger: #E8344A;
-$border: #E2E8F0;
-$surface: #F1F5F9;
-$muted: #94A3B8;
-$text-mid: #475569;
-$text-body: #64748B;
-$white: #ffffff;
-$font: 'DM Sans', sans-serif;
+// ── Variables ── (updated to match client spec)
+$navy:        #0A0061;   // --navy  (Deep Indigo)
+$navy-dark:   #0656C5;   // --navy2 (Royal Blue)
+$blue:        #0656C5;   // --blue  (Royal Blue)
+$blue-light:  rgba(6, 86, 197, 0.08);   // --blue tint
+$blue-border: rgba(6, 86, 197, 0.20);   // --blue border
+$blue-bg:     rgba(6, 86, 197, 0.04);   // --blue subtle bg
+$danger:      #EF4444;   // --rose
+$border:      #E5E7EB;   // --border
+$surface:     #F9FAFB;   // --card
+$muted:       #6B7280;   // --muted
+$text-mid:    #374151;
+$text-body:   #6B7280;   // --muted
+$white:       #ffffff;
+$font:        'DM Sans', sans-serif;
 
 // ── Mixins ──
 @mixin flex-center {
@@ -934,29 +926,22 @@ $font: 'DM Sans', sans-serif;
 }
 
 .new-modals {
-  // ============================================
-  // MODALS — Complete SCSS
-  // Font: DM Sans (Google Fonts)
-  // <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  // ============================================
 
-  // ── Variables ──
-  $navy: #0B1E45;
-  $navy-dark: #1E3A6E;
-  $blue: #2251CC;
-  $blue-light: #EEF2FF;
-  $blue-border: #C7D7F5;
-  $blue-bg: #F8FAFF;
-  $danger: #E8344A;
-  $border: #E2E8F0;
-  $surface: #F1F5F9;
-  $muted: #94A3B8;
-  $text-mid: #475569;
-  $text-body: #64748B;
-  $white: #ffffff;
-  $font: 'DM Sans', sans-serif;
+  $navy:        #0A0061;
+  $navy-dark:   #0656C5;
+  $blue:        #0656C5;
+  $blue-light:  rgba(6, 86, 197, 0.08);
+  $blue-border: rgba(6, 86, 197, 0.20);
+  $blue-bg:     rgba(6, 86, 197, 0.04);
+  $danger:      #EF4444;
+  $border:      #E5E7EB;
+  $surface:     #F9FAFB;
+  $muted:       #6B7280;
+  $text-mid:    #374151;
+  $text-body:   #6B7280;
+  $white:       #ffffff;
+  $font:        'DM Sans', sans-serif;
 
-  // ── Mixins ──
   @mixin flex-center {
     display: flex;
     align-items: center;
@@ -976,7 +961,7 @@ $font: 'DM Sans', sans-serif;
   .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(11, 30, 69, 0.50);
+    background: rgba(10, 0, 97, 0.50);            /* --navy */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -997,39 +982,21 @@ $font: 'DM Sans', sans-serif;
     background: $white;
     border-radius: 5px;
     width: 100%;
-    //overflow: hidden;
-    box-shadow: 0 24px 60px rgba(11, 30, 69, 0.22);
+    box-shadow: 0 24px 60px rgba(10, 0, 97, 0.22); /* --navy */
     animation: modalIn 0.22s ease;
 
-    &.modal-sm {
-      max-width: 400px;
-    }
-
-    &.modal-md {
-      max-width: 480px;
-    }
-
-    &.modal-lg {
-      max-width: 560px;
-    }
-    &.modal-xl {
+    &.modal-sm  { max-width: 400px; }
+    &.modal-md  { max-width: 480px; }
+    &.modal-lg  { max-width: 560px; }
+    &.modal-xl  {
       max-width: 50%;
-
-      @media (max-width: 768px) {
-        max-width: 80%;
-      }
+      @media (max-width: 768px) { max-width: 80%; }
     }
   }
 
   @keyframes modalIn {
-    from {
-      opacity: 0;
-      transform: translateY(12px) scale(0.98);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);    }
   }
 
   // ── Modal Header ──
@@ -1049,9 +1016,11 @@ $font: 'DM Sans', sans-serif;
     color: white;
     letter-spacing: -0.01em;
   }
+
   .badge {
     text-transform: capitalize;
   }
+
   .modal-sub {
     font-family: $font;
     font-size: 12.5px;
@@ -1108,12 +1077,9 @@ $font: 'DM Sans', sans-serif;
       color: $text-mid;
       border: 1px solid $border;
 
-      &:hover {
-        background: $surface;
-      }
+      &:hover { background: $surface; }
     }
 
-    // btn-primary handled globally
     &.btn-primary:disabled {
       background: var(--muted);
       box-shadow: none;
@@ -1123,18 +1089,13 @@ $font: 'DM Sans', sans-serif;
     &.btn-danger {
       background: $danger;
       color: $white;
-      box-shadow: 0 2px 8px rgba(232, 52, 74, 0.25);
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25); /* --rose */
 
-      &:hover {
-        background: #c4263a;
-      }
+      &:hover { background: #dc2626; }
     }
   }
 
-  // ══════════════════════════════════════
-  // REGISTER / EDIT USER MODAL
-  // ══════════════════════════════════════
-
+  // ── Register / Edit User Modal ──
   .avatar-upload-wrap {
     display: flex;
     align-items: center;
@@ -1146,9 +1107,7 @@ $font: 'DM Sans', sans-serif;
     border: 1.5px dashed $blue-border;
     transition: border-color 0.15s;
 
-    &:hover {
-      border-color: $blue;
-    }
+    &:hover { border-color: $blue; }
   }
 
   .avatar-upload {
@@ -1163,9 +1122,7 @@ $font: 'DM Sans', sans-serif;
     overflow: hidden;
     transition: border-color 0.15s;
 
-    &:hover {
-      border-color: $blue;
-    }
+    &:hover { border-color: $blue; }
 
     .preview-image {
       width: 100%;
@@ -1225,14 +1182,11 @@ $font: 'DM Sans', sans-serif;
 
     &:focus {
       border-color: $blue;
-      box-shadow: 0 0 0 3px rgba(34, 81, 204, 0.10);
+      box-shadow: 0 0 0 3px rgba(6, 86, 197, 0.10); /* --blue */
     }
 
-    &::placeholder {
-      color: $blue-border;
-    }
+    &::placeholder { color: $blue-border; }
 
-    // PrimeNG p-select override
     &.dropdown-dual-lang,
     &.p-select {
       display: flex;
@@ -1248,10 +1202,7 @@ $font: 'DM Sans', sans-serif;
     margin-top: 2px;
   }
 
-  // ══════════════════════════════════════
-  // VIEW DOCTOR MODAL
-  // ══════════════════════════════════════
-
+  // ── View Doctor Modal ──
   .doc-av {
     width: 44px;
     height: 44px;
@@ -1277,19 +1228,10 @@ $font: 'DM Sans', sans-serif;
     flex-direction: column;
     gap: 4px;
 
-    &:nth-child(odd) {
-      padding-right: 20px;
-    }
-
-    &:nth-child(even) {
-      //padding-left: 20px;
-      //border-left: 1px solid $surface;
-    }
+    &:nth-child(odd)  { padding-right: 20px; }
   }
 
-  .view-label {
-    @include label-caps;
-  }
+  .view-label { @include label-caps; }
 
   .view-val {
     font-family: $font;
@@ -1313,20 +1255,9 @@ $font: 'DM Sans', sans-serif;
     font-size: 11.5px;
     font-weight: 600;
 
-    &.badge-active {
-      background: #ECFDF5;
-      color: #065F46;
-    }
-
-    &.badge-inactive {
-      background: #FEF2F2;
-      color: #991B1B;
-    }
-
-    &.badge-pending {
-      background: #FFFBEB;
-      color: #92400E;
-    }
+    &.badge-active   { background: #ECFDF5; color: #065F46; }
+    &.badge-inactive { background: #FEF2F2; color: #991B1B; }
+    &.badge-pending  { background: #FFFBEB; color: #92400E; }
   }
 
   // Specialization Tags
@@ -1342,10 +1273,7 @@ $font: 'DM Sans', sans-serif;
     margin: 3px 4px 3px 0;
   }
 
-  // ══════════════════════════════════════
-  // DELETE CONFIRM MODAL
-  // ══════════════════════════════════════
-
+  // ── Delete Confirm Modal ──
   .confirm-icon {
     width: 64px;
     height: 64px;
@@ -1371,16 +1299,13 @@ $font: 'DM Sans', sans-serif;
     max-width: 300px;
     margin: 0 auto;
 
-    strong {
-      color: $navy;
-    }
+    strong { color: $navy; }
   }
 }
 
 
 // ── PrimeNG p-select + p-multiselect Override ──
 
-// ── Shared wrapper styles ──
 .p-chip {
   background: var(--navy);
   padding: 2px 5px;
@@ -1394,7 +1319,6 @@ p-multiselect {
   height: 38px !important;
   border-radius: 9px !important;
   border: 1.5px solid $border !important;
-  //padding: 0 !important;
   background: $white !important;
   display: flex !important;
   align-items: center !important;
@@ -1407,7 +1331,7 @@ p-multiselect {
 
   &.p-focus {
     border-color: $blue !important;
-    box-shadow: 0 0 0 3px rgba(34, 81, 204, 0.10) !important;
+    box-shadow: 0 0 0 3px rgba(6, 86, 197, 0.10) !important; /* --blue */
     outline: none !important;
   }
 }
@@ -1421,13 +1345,8 @@ p-select.form-input {
     padding: 0 12px !important;
     line-height: 38px !important;
 
-    &.p-placeholder {
-      color: $blue-border !important;
-    }
-
-    &::before {
-      display: none !important;
-    }
+    &.p-placeholder { color: $blue-border !important; }
+    &::before       { display: none !important; }
   }
 
   .p-select-dropdown {
@@ -1467,7 +1386,6 @@ p-multiselect.form-input {
     }
   }
 
-  // Chips (display="chip" mode)
   .p-multiselect-chip {
     background: $blue-light !important;
     color: $blue !important;
@@ -1480,16 +1398,13 @@ p-multiselect.form-input {
     align-items: center !important;
     gap: 4px !important;
 
-    // X button inside chip
     .p-multiselect-chip-icon {
       font-size: 10px !important;
       color: $blue !important;
       opacity: 0.6 !important;
       cursor: pointer !important;
 
-      &:hover {
-        opacity: 1 !important;
-      }
+      &:hover { opacity: 1 !important; }
     }
   }
 
@@ -1508,19 +1423,12 @@ p-multiselect.form-input {
 
 // ── p-select header filter fix ──
 p-select {
-  .p-select-label::before {
-    display: none !important;
-  }
+  .p-select-label::before { display: none !important; }
 }
 
 .p-select-header {
-  .p-inputicon {
-    top: 25% !important;
-  }
-
-  .p-inputtext {
-    background-color: $white !important;
-  }
+  .p-inputicon    { top: 25% !important; }
+  .p-inputtext    { background-color: $white !important; }
 }
 
 // ── Dropdown panels (appendTo="body") ──
@@ -1528,12 +1436,11 @@ p-select {
 .p-multiselect-overlay {
   border-radius: 10px !important;
   border: 1.5px solid $border !important;
-  box-shadow: 0 8px 24px rgba(11, 30, 69, 0.12) !important;
+  box-shadow: 0 8px 24px rgba(10, 0, 97, 0.12) !important; /* --navy */
   background-color: $white !important;
   font-family: $font !important;
   margin-top: 4px !important;
 
-  // ── p-select options ──
   .p-select-option {
     font-size: 13.5px !important;
     font-family: $font !important;
@@ -1542,19 +1449,10 @@ p-select {
     transition: background 0.12s !important;
 
     &:hover,
-    &.p-focus {
-      background: $blue-bg !important;
-      color: $blue !important;
-    }
-
-    &.p-select-option-selected {
-      background: $blue-light !important;
-      color: $blue !important;
-      font-weight: 600 !important;
-    }
+    &.p-focus                { background: $blue-bg    !important; color: $blue !important; }
+    &.p-select-option-selected { background: $blue-light !important; color: $blue !important; font-weight: 600 !important; }
   }
 
-  // ── p-multiselect options ──
   .p-multiselect-option {
     font-size: 13.5px !important;
     font-family: $font !important;
@@ -1567,19 +1465,9 @@ p-select {
     background-color: var(--label);
 
     &:hover,
-    &.p-focus {
-      background: $blue-bg !important;
-      color: $blue !important;
-    }
+    &.p-focus    { background: $blue-bg    !important; color: $blue !important; }
+    &.p-highlight { background: $blue-light !important; color: $blue !important; font-weight: 600 !important; }
 
-    // Selected item highlight
-    &.p-highlight {
-      background: $blue-light !important;
-      color: $blue !important;
-      font-weight: 600 !important;
-    }
-
-    // Checkbox inside option
     .p-checkbox {
       .p-checkbox-box {
         border-radius: 5px !important;
@@ -1596,7 +1484,6 @@ p-select {
     }
   }
 
-  // ── Select All row (p-multiselect) ──
   .p-multiselect-header {
     padding: 8px 14px !important;
     border-bottom: 1px solid $border !important;
@@ -1608,7 +1495,6 @@ p-select {
     color: $navy-dark !important;
   }
 
-  // ── Filter input — works for both ──
   .p-select-filter,
   .p-multiselect-filter {
     height: 34px !important;
@@ -1624,15 +1510,13 @@ p-select {
 
     &:focus {
       border-color: $blue !important;
-      box-shadow: 0 0 0 3px rgba(34, 81, 204, 0.10) !important;
+      box-shadow: 0 0 0 3px rgba(6, 86, 197, 0.10) !important; /* --blue */
     }
   }
 
   .p-select-header,
   .p-multiselect-header {
-    .p-inputicon {
-      top: 25% !important;
-    }
+    .p-inputicon { top: 25% !important; }
   }
 }
 
@@ -1641,12 +1525,7 @@ input.has-icon {
 }
 
 
-
-
-
-
-
-
+// ── Case Detail Components ──
 
 .cd-top {
   display: flex;
@@ -1665,14 +1544,13 @@ input.has-icon {
 
 .cd-meta-item {
   font-size: 12px;
-  color: #94A3B8;
+  color: var(--muted);
 
   b {
-    color: #0B1E45;
+    color: var(--navy);
     font-weight: 600;
   }
 }
-
 
 .cd-status-badge {
   display: inline-flex;
@@ -1693,11 +1571,10 @@ input.has-icon {
 
   &.status-salvage   { background: #FEF2F2; color: #991B1B; }
   &.status-completed { background: #ECFDF5; color: #065F46; }
-  &.status-active    { background: #EEF2FF; color: #2251CC; }
+  &.status-active    { background: rgba(6, 86, 197, 0.08); color: var(--blue); } /* --blue */
   &.status-pending   { background: #FFFBEB; color: #92400E; }
   &.status-critical  { background: #FEF2F2; color: #991B1B; }
 }
-
 
 .cd-section {
   margin-bottom: 20px;
@@ -1706,7 +1583,7 @@ input.has-icon {
 .cd-section-label {
   font-size: 10px;
   font-weight: 700;
-  color: #94A3B8;
+  color: var(--label);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   display: flex;
@@ -1718,7 +1595,7 @@ input.has-icon {
     content: '';
     flex: 1;
     height: 1px;
-    background: #F1F5F9;
+    background: var(--card);
   }
 }
 
@@ -1726,39 +1603,27 @@ input.has-icon {
 .cd-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  border: 1px solid #F1F5F9;
+  border: 1px solid var(--card);
   border-radius: 10px;
   overflow: hidden;
 
-  &--mt {
-    margin-top: 8px;
-  }
+  &--mt { margin-top: 8px; }
 }
 
 .cd-cell {
   padding: 10px 13px;
-  border-right: 1px solid #F1F5F9;
-  border-bottom: 1px solid #F1F5F9;
+  border-right: 1px solid var(--card);
+  border-bottom: 1px solid var(--card);
 
-  &:nth-child(even) {
-    border-right: none;
-  }
-
-  &:nth-last-child(-n+2) {
-    border-bottom: none;
-  }
-
-
-  &:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
-    border-right: none;
-  }
+  &:nth-child(even)          { border-right: none; }
+  &:nth-last-child(-n+2)     { border-bottom: none; }
+  &:last-child:nth-child(odd) { grid-column: 1 / -1; border-right: none; }
 }
 
 .cd-key {
   font-size: 10px;
   font-weight: 700;
-  color: #94A3B8;
+  color: var(--label);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   margin-bottom: 3px;
@@ -1767,11 +1632,9 @@ input.has-icon {
 .cd-val {
   font-size: 13px;
   font-weight: 600;
-  color: #0B1E45;
+  color: var(--navy);
 
-  &--capitalize {
-    text-transform: capitalize;
-  }
+  &--capitalize { text-transform: capitalize; }
 }
 
 // ── OR Timeline ──
@@ -1781,8 +1644,8 @@ input.has-icon {
   overflow-x: auto;
   padding-bottom: 4px;
 
-  &::-webkit-scrollbar { height: 3px; }
-  &::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 4px; }
+  &::-webkit-scrollbar        { height: 3px; }
+  &::-webkit-scrollbar-thumb  { background: var(--border); border-radius: 4px; }
 }
 
 .cd-tl-item {
@@ -1793,23 +1656,19 @@ input.has-icon {
   min-width: 70px;
   position: relative;
 
-  &:last-child .cd-tl-line {
-    display: none;
-  }
+  &:last-child .cd-tl-line { display: none; }
 }
 
 .cd-tl-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #2251CC;
+  background: var(--blue);
   position: relative;
   z-index: 1;
   flex-shrink: 0;
 
-  &--exit {
-    background: #22C55E;
-  }
+  &--exit { background: var(--green); }
 }
 
 .cd-tl-line {
@@ -1818,38 +1677,37 @@ input.has-icon {
   left: calc(50% + 5px);
   right: calc(-50% + 5px);
   height: 2px;
-  background: #E2E8F0;
+  background: var(--border);
 }
 
 .cd-tl-time {
   font-size: 10.5px;
   font-weight: 600;
-  color: #0B1E45;
+  color: var(--navy);
   margin-top: 6px;
   text-align: center;
 }
 
 .cd-tl-lbl {
   font-size: 9.5px;
-  color: #94A3B8;
+  color: var(--label);
   text-align: center;
   margin-top: 2px;
 }
-
 
 .cd-surgeon-row {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 13px;
-  background: #F8FAFF;
+  background: rgba(6, 86, 197, 0.04);              /* --blue subtle */
   border-radius: 9px;
-  border: 1px solid #EEF2FF;
+  border: 1px solid rgba(6, 86, 197, 0.10);        /* --blue border */
   margin-bottom: 8px;
 
   &--secondary {
-    background: #F5F3FF;
-    border-color: #EDE9FE;
+    background: rgba(201, 25, 254, 0.04);           /* --indigo subtle */
+    border-color: rgba(201, 25, 254, 0.12);         /* --indigo border */
   }
 }
 
@@ -1857,7 +1715,7 @@ input.has-icon {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: #2251CC;
+  background: var(--blue);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1866,20 +1724,18 @@ input.has-icon {
   color: #fff;
   flex-shrink: 0;
 
-  &--secondary {
-    background: #5B4FCF;
-  }
+  &--secondary { background: var(--indigo); }
 }
 
 .cd-sr-name {
   font-size: 13px;
   font-weight: 600;
-  color: #0B1E45;
+  color: var(--navy);
 }
 
 .cd-sr-role {
   font-size: 11px;
-  color: #94A3B8;
+  color: var(--label);
   margin-top: 1px;
 }
 
@@ -1889,13 +1745,13 @@ input.has-icon {
   border-radius: 10px;
   font-size: 10px;
   font-weight: 700;
-  background: #EEF2FF;
-  color: #2251CC;
+  background: rgba(6, 86, 197, 0.08);              /* --blue tint */
+  color: var(--blue);
   flex-shrink: 0;
 
   &--secondary {
-    background: #F0EBFF;
-    color: #5B4FCF;
+    background: rgba(201, 25, 254, 0.08);           /* --indigo tint */
+    color: var(--indigo);
   }
 }
 
@@ -1924,12 +1780,12 @@ input.has-icon {
 .cd-hosp-name {
   font-size: 13px;
   font-weight: 600;
-  color: #0B1E45;
+  color: var(--navy);
 }
 
 .cd-hosp-city {
   font-size: 11.5px;
-  color: #94A3B8;
+  color: var(--label);
   margin-top: 1px;
 }
 
@@ -1949,22 +1805,15 @@ input.has-icon {
   font-size: 12px;
   font-weight: 500;
 
-  &--diag {
-    background: #EEF2FF;
-    color: #2251CC;
-  }
-
-  &--proc {
-    background: #F0FDF4;
-    color: #15803D;
-  }
+  &--diag { background: rgba(6, 86, 197, 0.08); color: var(--blue);  } /* --blue  */
+  &--proc { background: #F0FDF4;                color: #15803D; }
 }
 
 .cd-tag-primary {
   font-size: 9.5px;
   font-weight: 700;
-  background: rgba(34, 81, 204, 0.15);
-  color: #2251CC;
+  background: rgba(6, 86, 197, 0.15);             /* --blue */
+  color: var(--blue);
   padding: 1px 6px;
   border-radius: 10px;
 }
@@ -1985,29 +1834,20 @@ input.has-icon {
   border: 1px solid #FEE2E2;
   background: #FFF5F5;
 
-  &--alive {
-    border-color: #D1FAE5;
-    background: #ECFDF5;
-  }
-
-  &--deceased {
-    border-color: #FEE2E2;
-    background: #FFF5F5;
-  }
+  &--alive   { border-color: #D1FAE5; background: #ECFDF5; }
+  &--deceased { border-color: #FEE2E2; background: #FFF5F5; }
 }
 
 .cd-discharge-label {
   font-size: 12px;
-  color: #94A3B8;
+  color: var(--label);
   font-weight: 500;
 }
 
 .cd-discharge-val {
   font-size: 13px;
   font-weight: 700;
-  color: #DC2626;
+  color: var(--rose);
 
-  .cd-discharge-row--alive & {
-    color: #15803D;
-  }
+  .cd-discharge-row--alive & { color: #15803D; }
 }

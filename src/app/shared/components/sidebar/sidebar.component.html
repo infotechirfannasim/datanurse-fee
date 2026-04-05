@@ -1,14 +1,14 @@
 <aside class="sidebar">
-    <div class="sidebar-logo">
-        <div class="logo-heart">
-            <img src="./assets/images/logo.png">
-        </div>
-        <div class="sidebar-brand">
-            <span class="sidebar-brand-name">DataNurse</span>
-            <span class="sidebar-brand-sub">CDMS</span>
-        </div>
+  <div class="sidebar-logo">
+    <div class="logo-heart">
+      <img src="./assets/images/logo.png">
     </div>
-    <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
+    <div class="sidebar-brand">
+      <span class="sidebar-brand-name">DataNurse</span>
+      <span class="sidebar-brand-sub">CDMS</span>
+    </div>
+  </div>
+  <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
     <span class="nav-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
         <rect x="3" y="3" width="7" height="7" rx="1.5" fill="rgba(255,255,255,0.8)"/>
@@ -17,10 +17,10 @@
         <rect x="14" y="14" width="7" height="7" rx="1.5" fill="rgba(255,255,255,0.8)"/>
       </svg>
     </span>
-        <span class="nav-label">Dashboard</span>
-    </a>
-
-    <div (click)="toggleUserManagement()" [class.expanded]="isUserManagementExpanded" class="nav-item nav-parent">
+    <span class="nav-label">Dashboard</span>
+  </a>
+  
+  <div (click)="toggleUserManagement()" [class.expanded]="isUserManagementExpanded" class="nav-item nav-parent">
     <span class="nav-icon">
       <svg fill="none" height="17" viewBox="0 0 24 24" width="17">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="rgba(255,255,255,0.8)" stroke-linecap="round"
@@ -30,17 +30,17 @@
         <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="rgba(255,255,255,0.8)" stroke-linecap="round" stroke-width="2"/>
       </svg>
     </span>
-        <span class="nav-label">User Management</span>
-        <span class="nav-chevron">
+    <span class="nav-label">User Management</span>
+    <span class="nav-chevron">
       <svg fill="none" height="16" viewBox="0 0 24 24" width="16">
         <polyline points="6 9 12 15 18 9" stroke="rgba(255,255,255,0.8)" stroke-linecap="round" stroke-linejoin="round"
                   stroke-width="2"/>
       </svg>
     </span>
-    </div>
-
-    <div [class.show]="isUserManagementExpanded" class="nav-submenu">
-        <a class="nav-subitem" routerLink="/users" routerLinkActive="active">
+  </div>
+  
+  <div [class.show]="isUserManagementExpanded" class="nav-submenu">
+    <a class="nav-subitem" routerLink="/users" routerLinkActive="active">
       <span class="nav-subicon">
         <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
           <circle cx="12" cy="8" r="4" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
@@ -48,21 +48,21 @@
                 stroke-width="2"/>
         </svg>
       </span>
-            <span class="nav-sublabel">Users</span>
-        </a>
-        <a class="nav-subitem" routerLink="/roles" routerLinkActive="active">
+      <span class="nav-sublabel">Users</span>
+    </a>
+    <a class="nav-subitem" routerLink="/roles" routerLinkActive="active">
       <span class="nav-subicon">
         <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
           <path d="M12 2L15 8H22L16 12L19 18L12 14L5 18L8 12L2 8H9L12 2Z" stroke="rgba(255,255,255,0.8)"
                 stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
         </svg>
       </span>
-            <span class="nav-sublabel">Roles</span>
-        </a>
-    </div>
-
-
-    <a class="nav-item" routerLink="/doctors" routerLinkActive="active">
+      <span class="nav-sublabel">Roles</span>
+    </a>
+  </div>
+  
+  
+  <a class="nav-item" routerLink="/doctors" routerLinkActive="active">
     <span class="nav-icon">
       <svg width="17" height="17" viewBox="0 0 21 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g clip-path="url(#clip0_10396_73315)">
@@ -79,10 +79,10 @@
         </defs>
       </svg>
     </span>
-        <span class="nav-label">Doctor Registry</span>
-    </a>
-
-    <a class="nav-item" routerLink="/patients" routerLinkActive="active">
+    <span class="nav-label">Doctor Registry</span>
+  </a>
+  
+  <a class="nav-item" routerLink="/patients" routerLinkActive="active">
     <span class="nav-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="rgba(255,255,255,0.8)"
@@ -92,10 +92,10 @@
         <line x1="16" y1="17" x2="8" y2="17" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
       </svg>
     </span>
-        <span class="nav-label">Patients</span>
-    </a>
-
-    <a class="nav-item" routerLink="/cases" routerLinkActive="active">
+    <span class="nav-label">Patients</span>
+  </a>
+  
+  <a class="nav-item" routerLink="/cases" routerLinkActive="active">
         <span class="nav-icon">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
       <rect x="6" y="4" width="12" height="16" rx="2"
@@ -109,10 +109,10 @@
                           stroke-linejoin="round"/>
     </svg>
         </span>
-        <span class="nav-label">Cases</span>
-    </a>
-
-    <a class="nav-item" routerLink="/lovs" routerLinkActive="active">
+    <span class="nav-label">Cases</span>
+  </a>
+  
+  <a class="nav-item" routerLink="/lovs" routerLinkActive="active">
     <span class="nav-icon">
       <svg fill="none" height="17" viewBox="0 0 24 24" width="17">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="rgba(255,255,255,0.8)" stroke-linecap="round"
@@ -122,44 +122,44 @@
         <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="rgba(255,255,255,0.8)" stroke-linecap="round" stroke-width="2"/>
       </svg>
     </span>
-        <span class="nav-label">Reference Data Listing</span>
-    </a>
+    <span class="nav-label">Reference Data Listing</span>
+  </a>
+  
+  <!--<a class="nav-item" routerLink="/search" routerLinkActive="active">
+    <span class="nav-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+        <circle cx="11" cy="11" r="8" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+        <path d="M21 21l-4.35-4.35" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="nav-label">Search</span>
+  </a>
 
-    <!--<a class="nav-item" routerLink="/search" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <circle cx="11" cy="11" r="8" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M21 21l-4.35-4.35" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </span>
-      <span class="nav-label">Search</span>
-    </a>
+  <div class="sidebar-section-label">Analytics</div>
 
-    <div class="sidebar-section-label">Analytics</div>
+  <a class="nav-item" routerLink="/reports" routerLinkActive="active">
+    <span class="nav-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <span class="nav-label">Reports</span>
+  </a>
 
-    <a class="nav-item" routerLink="/reports" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      <span class="nav-label">Reports</span>
-    </a>
-
-    <a class="nav-item" routerLink="/data" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <ellipse cx="12" cy="5" rx="9" ry="3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-        </svg>
-      </span>
-      <span class="nav-label">Data Management</span>
-    </a>-->
-
-    <div class="sidebar-section-label">Account</div>
-
-    <a class="nav-item" routerLink="/profile" routerLinkActive="active">
+  <a class="nav-item" routerLink="/data" routerLinkActive="active">
+    <span class="nav-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+        <ellipse cx="12" cy="5" rx="9" ry="3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+        <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+        <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+      </svg>
+    </span>
+    <span class="nav-label">Data Management</span>
+  </a>-->
+  
+  <div class="sidebar-section-label">Account</div>
+  
+  <a class="nav-item" routerLink="/profile" routerLinkActive="active">
     <span class="nav-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="rgba(255,255,255,0.8)" stroke-width="2"
@@ -167,42 +167,42 @@
         <circle cx="12" cy="7" r="4" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
       </svg>
     </span>
-        <span class="nav-label">My Profile</span>
-    </a>
-
-    <!--<a class="nav-item" routerLink="/settings" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-        </svg>
-      </span>
-      <span class="nav-label">Settings</span>
-    </a>
-  -->
-    <div class="sidebar-footer">
-        <div class="sidebar-user">
-            <div class="profile-side">
-                @if (getProfileImageUrl()) {
-                    <img [src]="getProfileImageUrl()"
-                         alt="Profile Photo"
-                         class="s-avatar">
-                } @else {
-                    <div class="s-avatar">{{ getUserInitials(userInfo()) }}</div>
-                }
-                <div>
-                    <span class="s-name">{{ userInfo()?.firstName + ' ' + userInfo()?.lastName }}</span>
-                    <span class="s-role">{{ userInfo()?.role?.label }}</span>
-                </div>
-            </div>
-            <div (click)="logout()" class="user-menu-item logout">
-                <svg fill="none" height="18" viewBox="0 0 24 24" width="18">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" fill="none" stroke="currentColor"
-                          stroke-width="2"/>
-                    <polyline fill="none" points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/>
-                    <line stroke="currentColor" stroke-width="2" x1="21" x2="9" y1="12" y2="12"/>
-                </svg>
-            </div>
+    <span class="nav-label">My Profile</span>
+  </a>
+  
+  <!--<a class="nav-item" routerLink="/settings" routerLinkActive="active">
+    <span class="nav-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+      </svg>
+    </span>
+    <span class="nav-label">Settings</span>
+  </a>
+-->
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="profile-side">
+        @if (getProfileImageUrl()) {
+          <img [src]="getProfileImageUrl()"
+               alt="Profile Photo"
+               class="s-avatar">
+        } @else {
+          <div class="s-avatar">{{ getUserInitials(userInfo()) }}</div>
+        }
+        <div>
+          <span class="s-name">{{ userInfo()?.firstName + ' ' + userInfo()?.lastName }}</span>
+          <span class="s-role">{{ userInfo()?.role?.label }}</span>
         </div>
+      </div>
+      <div (click)="logout()" class="user-menu-item logout">
+        <svg fill="none" height="18" viewBox="0 0 24 24" width="18">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" fill="none" stroke="currentColor"
+                stroke-width="2"/>
+          <polyline fill="none" points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/>
+          <line stroke="currentColor" stroke-width="2" x1="21" x2="9" y1="12" y2="12"/>
+        </svg>
+      </div>
     </div>
+  </div>
 </aside>
