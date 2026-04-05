@@ -401,7 +401,7 @@ export class LovComponent implements OnInit, OnDestroy {
                     }));
                 }
             },
-            error: (err) => console.error('Failed to load parent LOVs', err)
+            error: (err) => console.error('Failed to load parent Data references.', err)
         });
     }
 

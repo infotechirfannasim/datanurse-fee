@@ -1,7 +1,7 @@
 <!-- WELCOME BANNER -->
 <div class="welcome-banner">
   <div class="welcome-text">
-    <span class="welcome-greeting">Good Morning</span>
+    <span class="welcome-greeting">{{getGreeting()}}</span>
     <span class="welcome-name">{{ userInfo()?.firstName }} {{ userInfo()?.lastName }}</span>
     <span class="welcome-sub">Here's what's happening across DataNurse today</span>
   </div>
@@ -94,65 +94,6 @@
     
     </div>
   </div>
-  
-  
-  <!-- Recent Activity -->
-<!--   <div class="section-card"> -->
-<!--     <div class="section-header"> -->
-<!--       <div class="section-title">Recent Activity</div> -->
-<!--     </div> -->
-<!--     <div class="feed-list"> -->
-<!--       <div class="feed-item"> -->
-<!--         <div class="feed-ico" style="background:#EEF2FF"> -->
-<!--           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"> -->
-<!--             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#2251CC" stroke-width="2"/> -->
-<!--             <circle cx="12" cy="7" r="4" stroke="#2251CC" stroke-width="2"/> -->
-<!--           </svg> -->
-<!--         </div> -->
-<!--         <div class="feed-content"> -->
-<!--           <div class="feed-text"><strong>Ahmed Raza</strong> admitted for ASD repair surgery</div> -->
-<!--           <span class="feed-time">5 minutes ago</span> -->
-<!--         </div> -->
-<!--       </div> -->
-<!--       <div class="feed-item"> -->
-<!--         <div class="feed-ico" style="background:rgba(14,165,160,0.1)"> -->
-<!--           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"> -->
-<!--             <path d="M9 11l3 3L22 4" stroke="#0EA5A0" stroke-width="2"/> -->
-<!--             <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="#0EA5A0" stroke-width="2"/> -->
-<!--           </svg> -->
-<!--         </div> -->
-<!--         <div class="feed-content"> -->
-<!--           <div class="feed-text"><strong>Case CS-2024-0892</strong> marked as Recovered</div> -->
-<!--           <span class="feed-time">22 minutes ago</span> -->
-<!--         </div> -->
-<!--       </div> -->
-<!--       <div class="feed-item"> -->
-<!--         <div class="feed-ico" style="background:rgba(245,158,11,0.1)"> -->
-<!--           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"> -->
-<!--             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#F59E0B" stroke-width="2"/> -->
-<!--             <polyline points="14 2 14 8 20 8" stroke="#F59E0B" stroke-width="2"/> -->
-<!--           </svg> -->
-<!--         </div> -->
-<!--         <div class="feed-content"> -->
-<!--           <div class="feed-text"><strong>Q1-2026 PDF Report</strong> generated and exported</div> -->
-<!--           <span class="feed-time">1 hour ago</span> -->
-<!--         </div> -->
-<!--       </div> -->
-<!--       <div class="feed-item"> -->
-<!--         <div class="feed-ico" style="background:rgba(232,52,74,0.1)"> -->
-<!--           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"> -->
-<!--             <circle cx="12" cy="12" r="9" stroke="#E8344A" stroke-width="2"/> -->
-<!--             <path d="M12 7v5l3 2" stroke="#E8344A" stroke-width="2" stroke-linecap="round"/> -->
-<!--           </svg> -->
-<!--         </div> -->
-<!--         <div class="feed-content"> -->
-<!--           <div class="feed-text"><strong>Follow-up overdue</strong> for Sara Malik (CS-2024-0874)</div> -->
-<!--           <span class="feed-time">3 hours ago</span> -->
-<!--         </div> -->
-<!--       </div> -->
-<!--     </div> -->
-<!--   </div> -->
-<!--    -->
   <!-- Procedure Distribution Ring -->
     <!-- Procedure Distribution Ring — fully dynamic -->
     <div class="section-card">
@@ -270,105 +211,3 @@
   </div>
 </div>
 
-<!-- MAIN GRID: Case Volume Chart + Table -->
-<!-- <div class="main-grid"> -->
-<!--   <div class="section-card"> -->
-<!--     <div class="section-header"> -->
-<!--       <div> -->
-<!--         <div class="section-title">Case Volume</div> -->
-<!--         <div class="section-sub">New cases registered per month</div> -->
-<!--       </div> -->
-<!--       <div class="section-actions"> -->
-<!--         <button class="pill-btn" -->
-<!--                 [class.pill-btn-active]="chartPeriod==='week'" -->
-<!--                 [class.pill-btn-ghost]="chartPeriod!=='week'" -->
-<!--                 (click)="setPeriod('week')">Week -->
-<!--         </button> -->
-<!--         <button class="pill-btn" -->
-<!--                 [class.pill-btn-active]="chartPeriod==='month'" -->
-<!--                 [class.pill-btn-ghost]="chartPeriod!=='month'" -->
-<!--                 (click)="setPeriod('month')">Month -->
-<!--         </button> -->
-<!--         <button class="pill-btn" -->
-<!--                 [class.pill-btn-active]="chartPeriod==='year'" -->
-<!--                 [class.pill-btn-ghost]="chartPeriod!=='year'" -->
-<!--                 (click)="setPeriod('year')">Year -->
-<!--         </button> -->
-<!--       </div> -->
-<!--     </div> -->
-<!--      -->
-<!--     <div class="chart-wrap"> -->
-<!--       <div class="chart-legend"> -->
-<!--         <div class="legend-item"> -->
-<!--           <div class="legend-dot" style="background:var(&#45;&#45;navy)"></div> -->
-<!--           Cases -->
-<!--         </div> -->
-<!--         <div class="legend-item"> -->
-<!--           <div class="legend-dot" style="background:var(&#45;&#45;blue-lt)"></div> -->
-<!--           Resolved -->
-<!--         </div> -->
-<!--       </div> -->
-<!--       <div class="chart-bars"> -->
-<!--         @for (d of caseVolumeData; track d.month) { -->
-<!--           <div class="bar-group"> -->
-<!--             <div class="bar bar-navy" [style.height]="getBarHeightPercent(d.cases, caseVolumeData)"></div> -->
-<!--             <div class="bar bar-blue" [style.height]="getBarHeightPercent(d.resolved, caseVolumeData)"></div> -->
-<!--             <span class="bar-label">{{ d.month }}</span> -->
-<!--           </div> -->
-<!--         } -->
-<!--       </div> -->
-<!--     </div> -->
-<!--      -->
-<!--     &lt;!&ndash; Recent Cases Table &ndash;&gt; -->
-<!--     <table class="cases-table"> -->
-<!--       <thead> -->
-<!--       <tr> -->
-<!--         <th>Patient</th> -->
-<!--         <th>Surgeon</th> -->
-<!--         <th>Procedure</th> -->
-<!--         <th>Status</th> -->
-<!--         <th>Date</th> -->
-<!--         <th></th> -->
-<!--       </tr> -->
-<!--       </thead> -->
-<!--       <tbody> -->
-<!--         @for (c of recentCases; track c.patientId) { -->
-<!--           <tr> -->
-<!--             <td> -->
-<!--               <div class="patient-cell"> -->
-<!--                 <div class="p-avatar" [style.background]="c.avatarColor">{{ c.initials }}</div> -->
-<!--                 <div> -->
-<!--                   <div class="p-name">{{ c.patientName }}</div> -->
-<!--                   <div class="p-id">{{ c.patientId }}</div> -->
-<!--                 </div> -->
-<!--               </div> -->
-<!--             </td> -->
-<!--             <td>{{ c.surgeon }}</td> -->
-<!--             <td>{{ c.procedure }}</td> -->
-<!--             <td><span class="badge" [ngClass]="getStatusClass(c.status)">{{ c.status }}</span></td> -->
-<!--             <td>{{ c.date }}</td> -->
-<!--             <td> -->
-<!--               <button class="action-btn"> -->
-<!--                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none"> -->
-<!--                   <circle cx="12" cy="5" r="1.5" fill="var(&#45;&#45;muted)"/> -->
-<!--                   <circle cx="12" cy="12" r="1.5" fill="var(&#45;&#45;muted)"/> -->
-<!--                   <circle cx="12" cy="19" r="1.5" fill="var(&#45;&#45;muted)"/> -->
-<!--                 </svg> -->
-<!--               </button> -->
-<!--             </td> -->
-<!--           </tr> -->
-<!--         } -->
-<!--       </tbody> -->
-<!--     </table> -->
-<!--      -->
-<!--     &lt;!&ndash; Export Button &ndash;&gt; -->
-<!--     <div class="export-row"> -->
-<!--       <button class="export-pdf-btn" (click)="onQuickAction('PDF Export')"> -->
-<!--         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"> -->
-<!--           <path d="M12 3v12M7 10l5 5 5-5M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/> -->
-<!--         </svg> -->
-<!--         Export PDF Report -->
-<!--       </button> -->
-<!--     </div> -->
-<!--   </div> -->
-<!-- </div> -->
