@@ -1,5 +1,5 @@
 .topbar {
-  background: #fff;
+  background: var(--card);
   border-bottom: 1px solid var(--border);
   padding: 0 32px;
   width: 100%;
@@ -82,7 +82,7 @@
   transition: background 0.15s;
 
   &:hover {
-    background: #E8EDF8;
+    background: rgba(6, 86, 197, 0.06);  /* --blue tint */
   }
 }
 
@@ -94,7 +94,7 @@
   height: 7px;
   border-radius: 50%;
   background: var(--rose);
-  border: 1.5px solid #fff;
+  border: 1.5px solid var(--card);
 }
 
 .new-btn {
@@ -110,7 +110,7 @@
   font-weight: 600;
   color: #fff;
   font-family: 'DM Sans', sans-serif;
-  box-shadow: 0 4px 14px rgba(11, 30, 69, 0.28);
+  box-shadow: 0 4px 14px rgba(10, 0, 97, 0.28);   /* --navy */
   transition: background 0.15s, transform 0.15s;
 
   &:hover {
@@ -124,10 +124,10 @@
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(11, 30, 69, 0.14);
+  box-shadow: 0 12px 40px rgba(10, 0, 97, 0.14);  /* --navy */
   width: 360px;
   z-index: 300;
   animation: dropIn 0.15s ease;
@@ -184,7 +184,7 @@
   }
 
   &.unread {
-    background: #F5F7FF;
+    background: rgba(6, 86, 197, 0.04);  /* --blue subtle */
   }
 }
 
