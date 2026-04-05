@@ -491,8 +491,8 @@ input {
   border: 1.5px solid var(--border);
   border-radius: 9px;
   font-size: 13px;
-  background: var(--card) !important;
-  background-color: var(--card) !important;
+  background: var(--bg) !important;
+  background-color: var(--bg) !important;
   color: var(--text);
   outline: none;
   transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;

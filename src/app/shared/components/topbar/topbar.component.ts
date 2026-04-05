@@ -12,9 +12,6 @@ import {DatePipe} from "@angular/common";  // ← naya
   selector: 'app-topbar',
   standalone: true,
   templateUrl: './topbar.component.html',
-  imports: [
-    DatePipe
-  ],
   styleUrl: './topbar.component.scss'
 })
 export class TopbarComponent {
