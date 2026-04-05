@@ -10,7 +10,7 @@ import {ForgotPasswordRequest} from "../../../core/models/user.model";
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './forgot-password.component.html',
-  styleUrls: []
+  styleUrls: ['../login/login.component.scss']
 })
 export class ForgotPasswordComponent {
 
