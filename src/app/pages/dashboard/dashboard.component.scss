@@ -1006,3 +1006,13 @@
     opacity: 0.88;
   }
 }
+
+.no-data-text {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}

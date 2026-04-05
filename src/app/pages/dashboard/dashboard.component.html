@@ -206,6 +206,10 @@
             <span class="surgeon-rate">{{ s.casePercentage }}%</span>
           </div>
         </div>
+      } @empty {
+        <div class="no-data-text">
+          New Data Found
+        </div>
       }
     </div>
   </div>

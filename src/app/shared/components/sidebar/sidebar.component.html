@@ -1,13 +1,14 @@
 <aside class="sidebar">
-    <div class="sidebar-logo">
-        <div class="logo-heart">
-            <img src="./assets/images/logo.png">
-        </div>
-        <div class="sidebar-brand">
-            <span class="sidebar-brand-name">DataNurse</span>
-            <span class="sidebar-brand-sub">CDMS</span>
-        </div>
+  <div class="sidebar-logo">
+    <div class="logo-heart">
+      <img src="./assets/images/logo.png">
     </div>
+    <div class="sidebar-brand">
+      <span class="sidebar-brand-name">DataNurse</span>
+      <span class="sidebar-brand-sub">CDMS</span>
+    </div>
+  </div>
+  <div class="sidebar-menu">
     <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
     <span class="nav-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
@@ -17,9 +18,9 @@
         <rect x="14" y="14" width="7" height="7" rx="1.5" fill="rgba(255,255,255,0.8)"/>
       </svg>
     </span>
-        <span class="nav-label">Dashboard</span>
+      <span class="nav-label">Dashboard</span>
     </a>
-
+    
     <div (click)="toggleUserManagement()" [class.expanded]="isUserManagementExpanded" class="nav-item nav-parent">
     <span class="nav-icon">
       <svg fill="none" height="17" viewBox="0 0 24 24" width="17">
@@ -30,17 +31,17 @@
         <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="rgba(255,255,255,0.8)" stroke-linecap="round" stroke-width="2"/>
       </svg>
     </span>
-        <span class="nav-label">User Management</span>
-        <span class="nav-chevron">
+      <span class="nav-label">User Management</span>
+      <span class="nav-chevron">
       <svg fill="none" height="16" viewBox="0 0 24 24" width="16">
         <polyline points="6 9 12 15 18 9" stroke="rgba(255,255,255,0.8)" stroke-linecap="round" stroke-linejoin="round"
                   stroke-width="2"/>
       </svg>
     </span>
     </div>
-
+    
     <div [class.show]="isUserManagementExpanded" class="nav-submenu">
-        <a class="nav-subitem" routerLink="/users" routerLinkActive="active">
+      <a class="nav-subitem" routerLink="/users" routerLinkActive="active">
       <span class="nav-subicon">
         <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
           <circle cx="12" cy="8" r="4" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
@@ -48,20 +49,20 @@
                 stroke-width="2"/>
         </svg>
       </span>
-            <span class="nav-sublabel">Users</span>
-        </a>
-        <a class="nav-subitem" routerLink="/roles" routerLinkActive="active">
+        <span class="nav-sublabel">Users</span>
+      </a>
+      <a class="nav-subitem" routerLink="/roles" routerLinkActive="active">
       <span class="nav-subicon">
         <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
           <path d="M12 2L15 8H22L16 12L19 18L12 14L5 18L8 12L2 8H9L12 2Z" stroke="rgba(255,255,255,0.8)"
                 stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
         </svg>
       </span>
-            <span class="nav-sublabel">Roles</span>
-        </a>
+        <span class="nav-sublabel">Roles</span>
+      </a>
     </div>
-
-
+    
+    
     <a class="nav-item" routerLink="/doctors" routerLinkActive="active">
     <span class="nav-icon">
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,9 +75,9 @@
         </svg>
 
     </span>
-        <span class="nav-label">Doctor Registry</span>
+      <span class="nav-label">Doctor Registry</span>
     </a>
-
+    
     <a class="nav-item" routerLink="/patients" routerLinkActive="active">
     <span class="nav-icon">
      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -88,9 +89,9 @@
               fill="currentColor"/>
         </svg>
     </span>
-        <span class="nav-label">Patients</span>
+      <span class="nav-label">Patients</span>
     </a>
-
+    
     <a class="nav-item" routerLink="/cases" routerLinkActive="active">
         <span class="nav-icon">
            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -102,9 +103,9 @@
            </svg>
 
         </span>
-        <span class="nav-label">Cases</span>
+      <span class="nav-label">Cases</span>
     </a>
-
+    
     <a class="nav-item" routerLink="/lovs" routerLinkActive="active">
     <span class="nav-icon">
       <svg fill="none" height="17" viewBox="0 0 24 24" width="17">
@@ -115,43 +116,10 @@
         <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="rgba(255,255,255,0.8)" stroke-linecap="round" stroke-width="2"/>
       </svg>
     </span>
-        <span class="nav-label">Reference Data Listing</span>
+      <span class="nav-label">Reference Data Listing</span>
     </a>
-
-    <!--<a class="nav-item" routerLink="/search" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <circle cx="11" cy="11" r="8" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M21 21l-4.35-4.35" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </span>
-      <span class="nav-label">Search</span>
-    </a>
-
-    <div class="sidebar-section-label">Analytics</div>
-
-    <a class="nav-item" routerLink="/reports" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      <span class="nav-label">Reports</span>
-    </a>
-
-    <a class="nav-item" routerLink="/data" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <ellipse cx="12" cy="5" rx="9" ry="3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-        </svg>
-      </span>
-      <span class="nav-label">Data Management</span>
-    </a>-->
-
     <div class="sidebar-section-label">Account</div>
-
+    
     <a class="nav-item" routerLink="/profile" routerLinkActive="active">
     <span class="nav-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
@@ -160,42 +128,106 @@
         <circle cx="12" cy="7" r="4" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
       </svg>
     </span>
-        <span class="nav-label">My Profile</span>
+      <span class="nav-label">My Profile</span>
     </a>
-
-    <!--<a class="nav-item" routerLink="/settings" routerLinkActive="active">
-      <span class="nav-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
-        </svg>
-      </span>
-      <span class="nav-label">Settings</span>
-    </a>
-  -->
-    <div class="sidebar-footer">
-        <div class="sidebar-user">
-            <div class="profile-side">
-                @if (getProfileImageUrl()) {
-                    <img [src]="getProfileImageUrl()"
-                         alt="Profile Photo"
-                         class="s-avatar">
-                } @else {
-                    <div class="s-avatar">{{ getUserInitials(userInfo()) }}</div>
-                }
-                <div>
-                    <span class="s-name">{{ userInfo()?.firstName + ' ' + userInfo()?.lastName }}</span>
-                    <span class="s-role">{{ userInfo()?.role?.label }}</span>
-                </div>
-            </div>
-            <div (click)="logout()" class="user-menu-item logout">
-                <svg fill="none" height="18" viewBox="0 0 24 24" width="18">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" fill="none" stroke="currentColor"
-                          stroke-width="2"/>
-                    <polyline fill="none" points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/>
-                    <line stroke="currentColor" stroke-width="2" x1="21" x2="9" y1="12" y2="12"/>
-                </svg>
-            </div>
-        </div>
+  </div>
+  
+  <!--<a class="nav-item" routerLink="/settings" routerLinkActive="active">
+    <span class="nav-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="3" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+      </svg>
+    </span>
+    <span class="nav-label">Settings</span>
+  </a>
+-->
+  <div class="sidebar-footer">
+    <div class="powered-by" (click)="showInfotechModal = true">
+      Powered by <img src="./assets/images/infotech.png" alt="">
     </div>
+  </div>
 </aside>
+
+<!-- Powered By Modal -->
+@if (showInfotechModal) {
+  <div class="infotech-overlay" (click)="showInfotechModal = false">
+    <div class="infotech-modal" (click)="$event.stopPropagation()">
+      
+      <!-- Hero Header -->
+      <div class="it-hero">
+        <div class="it-hero-top">
+          <div class="it-brand-row">
+            <div class="it-brand-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff"
+                   stroke-width="2" stroke-linecap="round">
+                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                <path d="M8 21h8M12 17v4"/><path d="M7 8h1m4 0h1m-5 3h6"/>
+              </svg>
+            </div>
+            <div>
+              <div class="it-brand-name">INFOTECH</div>
+              <div class="it-brand-tagline">Brilliantly Built</div>
+            </div>
+          </div>
+          <button class="modal-close" (click)="showInfotechModal = false">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        
+        <p class="it-desc">
+          A Pakistan-based technology company delivering enterprise software, digital
+          transformation, and IT solutions to clients across healthcare, finance, and
+          government sectors.
+        </p>
+        
+        <div class="it-stats">
+          <div class="it-stat"><span class="it-stat-num">15+</span><span class="it-stat-lbl">Years</span></div>
+          <div class="it-stat"><span class="it-stat-num">200+</span><span class="it-stat-lbl">Projects</span></div>
+          <div class="it-stat"><span class="it-stat-num">50+</span><span class="it-stat-lbl">Clients</span></div>
+          <div class="it-stat"><span class="it-stat-num">100+</span><span class="it-stat-lbl">Engineers</span></div>
+        </div>
+      </div>
+      
+      <!-- Body -->
+      <div class="it-body">
+        <div class="it-section-title">Core Services</div>
+        <div class="it-services">
+          <div class="it-chip"><span class="it-dot" style="background:#185FA5"></span>Custom Software</div>
+          <div class="it-chip"><span class="it-dot" style="background:#0F6E56"></span>Healthcare IT</div>
+          <div class="it-chip"><span class="it-dot" style="background:#854F0B"></span>Cloud Solutions</div>
+          <div class="it-chip"><span class="it-dot" style="background:#534AB7"></span>Mobile Apps</div>
+          <div class="it-chip"><span class="it-dot" style="background:#993C1D"></span>ERP Systems</div>
+          <div class="it-chip"><span class="it-dot" style="background:#A32D2D"></span>Data Analytics</div>
+        </div>
+        
+        <div class="it-divider"></div>
+        <div class="it-section-title">Built for DataNurse CDMS</div>
+        <p class="it-note">
+          This Cardiac Data Management System was designed and developed by Infotech Group —
+          combining clinical expertise with modern software engineering to streamline surgical
+          case tracking and patient data management.
+        </p>
+      </div>
+      
+      <!-- Footer -->
+      <div class="it-footer">
+        <span class="it-footer-url">infotechgroup.com</span>
+        <a href="https://infotechgroup.com" target="_blank" class="it-visit-btn">
+          Visit Website
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+        </a>
+      </div>
+    
+    </div>
+  </div>
+}

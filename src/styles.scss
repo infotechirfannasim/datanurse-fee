@@ -7,6 +7,35 @@
   padding: 0;
 }
 
+
+.main .topbar {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 64px;
+  width: calc(100% - var(--sidebar-w));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  z-index: 50;
+}
+
+.main.main-full .topbar {
+  width: 100%;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  z-index: 50;
+}
+
 :root {
   --sidebar-w: 240px;
 
@@ -938,7 +967,6 @@ $font: 'DM Sans', sans-serif;
   letter-spacing: 0.08em;
 }
 
-.new-modals {
 
   $navy: #0A0061;
   $navy-dark: #0656C5;
@@ -1366,7 +1394,6 @@ $font: 'DM Sans', sans-serif;
       color: $navy;
     }
   }
-}
 
 
 // ── PrimeNG p-select + p-multiselect Override ──
@@ -2010,3 +2037,4 @@ input.has-icon {
     color: #15803D;
   }
 }
+
