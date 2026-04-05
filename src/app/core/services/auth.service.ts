@@ -17,7 +17,7 @@ import {
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {AppConstants} from '../../utils/app-constants';
 import {RequestService} from './request.service';
-import {FORGOT_PASS_API_URL, LOGIN_API_URL} from '../../utils/api.url.constants';
+import {FORGOT_PASS_API_URL, LOGIN_API_URL, RESET_PASS_API_URL} from '../../utils/api.url.constants';
 import {ToastService} from "./toast.service";
 
 @Injectable({
@@ -80,7 +80,7 @@ export class AuthService {
     }
 
     resetPassword(data: ResetPasswordRequest): Observable<void> {
-        return this.http.post<ApiResponse<void>>(`${this.apiUrl}/reset-password`, data).pipe(
+        return this.http.post<ApiResponse<void>>(`${this.apiUrl + RESET_PASS_API_URL}`, data).pipe(
             map((response) => {
                 if (response.success) {
                     // this.toastr.success('Password reset successful!', 'You can now login');
