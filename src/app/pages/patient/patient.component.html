@@ -19,8 +19,8 @@
     <table class="registry-table">
       <thead>
       <tr>
-        <th>Name</th>
         <th>PT. No.</th>
+        <th>Name</th>
         <th>Gender</th>
         <th>Cases</th>
         <th>Doctor</th>
@@ -30,16 +30,14 @@
       <tbody>
         @for (p of patients; track p._id) {
           <tr>
+            <td>{{ p.mrn }}</td>
             <td>
               <div class="doc-cell">
-                <div class="doc-av doc-av--blue">{{ getUserInitials(p) }}</div>
                 <div>
-                  <span class="doc-nm">{{ p.firstName }}</span>
-                  <span class="doc-em">{{ p.lastName }}</span>
+                  <span class="doc-nm">{{ p.firstName }} {{ p.lastName }}</span>
                 </div>
               </div>
             </td>
-            <td>{{ p.mrn }}</td>
             <td>{{ p.gender || '—' }}</td>
             <td class="td-bold">{{ p.casesCount || 0 }}</td>
             <td>{{ p?.doctor?.fullName }}</td>

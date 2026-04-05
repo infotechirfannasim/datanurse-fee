@@ -83,6 +83,7 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
                     this.toastService.show('Captcha load failed. Please try again.', 'error');
                 },
                 theme: 'light',
+                size: 'flexible',
             });
         };
 
@@ -137,5 +138,4 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
             },
         });
     }
-
 }

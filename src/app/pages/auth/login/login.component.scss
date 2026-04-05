@@ -251,3 +251,21 @@
     margin-left: 5px;
   }
 }
+
+.turnstile-wrap {
+  width: 100%;
+
+  #turnstile-container {
+    width: 100%;
+
+    > div {
+      width: 100% !important;
+    }
+
+    iframe {
+      width: 100% !important;
+      min-width: 100% !important;
+      max-width: 100% !important;
+    }
+  }
+}
