@@ -4,6 +4,7 @@ import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 import {AuthService} from '../../../core/services/auth.service';
 import {ResetPasswordRequest} from "../../../core/models/user.model";
+import {ToastService} from "../../../core/services/toast.service";
 
 @Component({
   selector: 'app-reset-password',
@@ -32,7 +33,8 @@ export class ResetPasswordComponent {
       private fb: FormBuilder,
       private route: ActivatedRoute,
       private authService: AuthService,
-      private router: Router
+      private router: Router,
+      private toastService: ToastService
   ) {
     this.token = this.route.snapshot.queryParamMap.get('token') || '';
   }
@@ -73,7 +75,8 @@ export class ResetPasswordComponent {
         }, 2000);
       },
       error: (err: HttpErrorResponse) => {
-        this.error = err.error?.message || 'Invalid or expired reset link';
+        this.error = err.error?.message || err?.message || 'Invalid or expired reset link';
+        this.toastService.show(this.error, 'error');
         this.isLoading = false;
       }
     });

@@ -1,7 +1,7 @@
 export interface LOV {
     _id: string;
     code: string;
-    label: string;
+    name: string;
     description: string;
     status: 'active' | 'inactive';
     parents: any[];

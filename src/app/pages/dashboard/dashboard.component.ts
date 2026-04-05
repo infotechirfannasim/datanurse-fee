@@ -12,6 +12,8 @@ import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {RequestService} from "../../core/services/request.service";
 import {forkJoin} from "rxjs";
 import {FindObjByKeyPipe} from "../../core/pipe/find-obj-by-key";
+import {RouterLink} from "@angular/router";
+import {MatTooltip} from '@angular/material/tooltip';
 
 interface StatCard {
     icon: string;
@@ -26,6 +28,8 @@ interface StatCard {
     barColor?: string;
     barWidth?: string;
     suffix?: string;
+    route: string;
+    trendTooltip: string;
 }
 
 interface RecentCase {
@@ -44,16 +48,6 @@ interface ProcedureItem {
     percentage: number;
     color: string;
     cases: number;
-}
-
-interface SurgeonItem {
-    name: string;
-    initials: string;
-    avatarColor: string;
-    specialty: string;
-    cases: number;
-    casePercentage?: number;
-    successRate: number;
 }
 
 interface AgeGroupItem {
@@ -77,7 +71,7 @@ interface FollowupItem {
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [FindObjByKeyPipe],
+    imports: [FindObjByKeyPipe, RouterLink, MatTooltip],
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.scss'
 })
@@ -92,14 +86,72 @@ export class DashboardComponent implements OnInit {
 
     doctors: User[] = [];
     specialtyOptions: any[] = [];
-
+    isLoading: boolean = false;
     constructor() {
         this.authService.currentUser$.subscribe((user: any) => {
             this.userInfo.set(user);
         });
     }
 
-    statCards: StatCard[] = [];
+    statCards: StatCard[] = [
+        {
+            _id: 1,
+            label: 'Total Patients',
+            value: 0,
+            trend: '0%',
+            trendType: 'neu',
+            trendTooltip: 'compared to last month',
+            barWidth: '0%',
+            barColor: '#2251CC',
+            accentColor: '#2251CC',
+            bgColor: '#EEF2FF',
+            icon: './assets/images/pending.svg',
+            route: '/patients'
+        },
+        {
+            _id: 2,
+            label: 'Total Cases',
+            value: 0,
+            trend: '0%',
+            trendType: 'neu',
+            trendTooltip: 'compared to last month',
+            barWidth: '0%',
+            barColor: '#0EA5A0',
+            accentColor: '#0EA5A0',
+            bgColor: '#F0FDFA',
+            icon: './assets/images/ActiveCases.svg',
+            route: '/cases'
+        },
+        {
+            _id: 3,
+            label: 'Active Doctors',
+            value: 0,
+            trend: '0%',
+            trendType: 'neu',
+            trendTooltip: 'compared to last month',
+            barWidth: '0%',
+            barColor: '#5B4FCF',
+            accentColor: '#5B4FCF',
+            bgColor: '#F5F3FF',
+            icon: './assets/images/doctor.svg',
+            route: '/doctors'
+        },
+        {
+            _id: 4,
+            label: 'Cases This Month',
+            value: 0,
+            trend: '0%',
+            trendType: 'neu',
+            trendTooltip: 'compared to last month',
+            barWidth: '0%',
+            barColor: '#F59E0B',
+            accentColor: '#F59E0B',
+            bgColor: '#FFFBEB',
+            icon: './assets/images/RecoveryRate.svg',
+            route: '/cases'
+        },
+    ];
+
     // New — for dynamic ring chart and outcome cards
     totalCases: number = 0;
     ringSegments: any[] = [];
@@ -115,10 +167,6 @@ export class DashboardComponent implements OnInit {
     ];
 
     topSurgeons: any[] = [
-        {name: 'Dr. Salman Shah', initials: 'SS', specialty: 'Congenital Heart Surgery', cases: 84, successRate: 94},
-        {name: 'Dr. Omar Farooq', initials: 'OF', specialty: 'Pediatric Cardiac Surgery', cases: 71, successRate: 91},
-        {name: 'Dr. Amna Tariq', initials: 'AT', specialty: 'Valve Reconstruction', cases: 63, successRate: 89},
-        {name: 'Dr. Zaid Awan', initials: 'ZA', specialty: 'Neonatal Surgery', cases: 55, successRate: 87},
     ];
 
     ageGroups: AgeGroupItem[] = [
@@ -238,6 +286,7 @@ export class DashboardComponent implements OnInit {
     }
 
     loadDashboard() {
+        this.isLoading = true;
         forkJoin({
             summary: this.requestService.getRequest(SUMMARY_API_URL),
             analytics: this.requestService.getRequest(ANALYTICS_API_URL),
@@ -265,8 +314,11 @@ export class DashboardComponent implements OnInit {
                 this.genderMale = demoData.gender?.malePercent ?? 0;
                 this.genderFemale = demoData.gender?.femalePercent ?? 0;
                 this.provinces = demoData.provinces ?? [];
+                this.isLoading = false;
             },
-            error: (err) => console.error('Dashboard load failed', err),
+            error: (err) => {
+                this.isLoading = false;
+            },
         });
     }
 
@@ -309,36 +361,44 @@ export class DashboardComponent implements OnInit {
                 value: stats.totalPatients.value,
                 trend: stats.totalPatients.trend,
                 trendType: stats.totalPatients.trendType,
+                trendTooltip: `${stats.totalPatients.trend} compared to last month`,
                 barWidth: stats.totalPatients.barWidth,
                 barColor: '#2251CC', accentColor: '#2251CC',
                 bgColor: '#EEF2FF', icon: './assets/images/pending.svg',
+                route: '/patients'
             },
             {
                 _id: 2, label: 'Total Cases',
                 value: stats.totalCases.value,
                 trend: stats.totalCases.trend,
                 trendType: stats.totalCases.trendType,
+                trendTooltip: `${stats.totalCases.trend} compared to last month`,
                 barWidth: stats.totalCases.barWidth,
                 barColor: '#0EA5A0', accentColor: '#0EA5A0',
                 bgColor: '#F0FDFA', icon: './assets/images/ActiveCases.svg',
+                route: '/cases'
             },
             {
                 _id: 3, label: 'Active Doctors',
                 value: stats.activeDoctors.value,
                 trend: stats.activeDoctors.trend,
                 trendType: stats.activeDoctors.trendType,
+                trendTooltip: `${stats.activeDoctors.trend} compared to last month`,
                 barWidth: stats.activeDoctors.barWidth,
                 barColor: '#5B4FCF', accentColor: '#5B4FCF',
                 bgColor: '#F5F3FF', icon: './assets/images/doctor.svg',
+                route: '/doctors'
             },
             {
                 _id: 4, label: 'Cases This Month',
                 value: stats.casesThisMonth.value,
                 trend: stats.casesThisMonth.trend,
                 trendType: stats.casesThisMonth.trendType,
+                trendTooltip: `${stats.casesThisMonth.trend} compared to last month`,
                 barWidth: stats.casesThisMonth.barWidth,
                 barColor: '#F59E0B', accentColor: '#F59E0B',
                 bgColor: '#FFFBEB', icon: './assets/images/RecoveryRate.svg',
+                route: '/cases'
             },
         ];
     }

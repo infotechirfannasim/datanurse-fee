@@ -4,6 +4,7 @@ import {Router, RouterLink} from '@angular/router';
 import {HttpErrorResponse} from "@angular/common/http";
 import {AuthService} from "../../../core/services/auth.service";
 import {ForgotPasswordRequest} from "../../../core/models/user.model";
+import {ToastService} from "../../../core/services/toast.service";
 
 @Component({
   selector: 'app-forgot-password',
@@ -25,7 +26,8 @@ export class ForgotPasswordComponent {
   constructor(
       private fb: FormBuilder,
       private authService: AuthService,
-      private router: Router
+      private router: Router,
+      private toastService: ToastService
   ) {
   }
 
@@ -44,7 +46,8 @@ export class ForgotPasswordComponent {
         this.isLoading = false;
       },
       error: (err: HttpErrorResponse) => {
-        this.error = err.error?.message || 'Something went wrong';
+        this.error = err.error?.message || err?.message ||'Something went wrong';
+        this.toastService.show(this.error, 'error');
         this.isLoading = false;
       }
     });

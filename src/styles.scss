@@ -42,6 +42,14 @@ body {
   width: 5px;
 }
 
+.mdc-tooltip__surface {
+  background-color: #1e293b !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  padding: 6px 10px !important;
+  border-radius: 6px !important;
+}
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
@@ -2010,4 +2018,8 @@ input.has-icon {
   .cd-discharge-row--alive & {
     color: #15803D;
   }
+}
+
+.hover-able {
+  cursor: pointer;
 }

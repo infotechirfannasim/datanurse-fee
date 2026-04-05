@@ -6,11 +6,11 @@
                     <span class="breadcrumb-item"
                           [class.active]="isLast"
                           (click)="isLast ? null : goToLevel(item.targetLevel)">
-        {{ item.label }}
+                        {{ item.name }}
                         @if (!isLast) {
                             <span class="separator">&gt;</span>
                         }
-      </span>
+                    </span>
                 }
             </div>
         }
@@ -23,7 +23,7 @@
                     <option value="">Select Type</option>
                     @for (type of topLevelLovTypes(); track type.key) {
                         <option [value]="type.key">
-                            {{ type.label }}
+                            {{ type.name }}
                         </option>
                     }
                 </select>
@@ -36,7 +36,7 @@
                     </svg>
                     <input (input)="searchQuery.set($any($event.target).value); onSearchChange()"
                            [value]="searchQuery()"
-                           placeholder="Search Reference Data by code or label"/>
+                           placeholder="Search Reference Data by code or name"/>
                 </div>
             }
 
@@ -80,7 +80,7 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="lov-label">{{ lov.label }}</span>
+                                <span class="lov-name">{{ lov.name }}</span>
                             </td>
                             <td>
                                 <span class="lov-desc">{{ lov.description || '—' }}</span>
@@ -193,26 +193,26 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-label">Display Label *</label>
-                                    <input class="form-input" type="text" formControlName="label"
-                                           placeholder="Label">
-                                    @if (form.get('label')?.invalid && form.get('label')?.touched) {
-                                        <small class="error">Display label is required</small>
+                                    <label class="form-label">Name *</label>
+                                    <input class="form-input" type="text" formControlName="name"
+                                           placeholder="Name">
+                                    @if (form.get('label')?.invalid && form.get('name')?.touched) {
+                                        <small class="error">Name is required</small>
                                     }
                                 </div>
 
                                 @for (column of selectedLovRelations; track column) {
                                     <div class="form-group">
-                                        <label class="form-label">{{ column.label }} *</label>
+                                        <label class="form-label">{{ column.name }} *</label>
                                         <select class="form-input" [formControlName]="column.formKey">
                                             @for (type of lovOptions()[column.parentLovKey]; track type.key) {
                                                 <option [value]="type.code">
-                                                    {{ type.label }}
+                                                    {{ type.name }}
                                                 </option>
                                             }
                                         </select>
                                         @if (form.get(column.formKey)?.invalid && form.get(column.formKey)?.touched) {
-                                            <small class="error">{{ column.label }} is required</small>
+                                            <small class="error">{{ column.name }} is required</small>
                                         }
                                     </div>
                                 }
@@ -243,7 +243,7 @@
             <div class="modal" (click)="$event.stopPropagation()">
                 <div class="modal-header">
                     <div>
-                        <div class="modal-title">{{ selectedLov()!.label }}</div>
+                        <div class="modal-title">{{ selectedLov()!.name }}</div>
                         <div class="modal-sub">{{ selectedLov()!.code }}</div>
                     </div>
                     <button class="modal-close" (click)="showViewModal.set(false)">
@@ -305,7 +305,7 @@
                     </div>
                     <div class="confirm-title">Are you sure?</div>
                     <div class="confirm-text">
-                        This will permanently delete the lov <strong>{{ selectedLov()!.label }}</strong>.
+                        This will permanently delete the lov <strong>{{ selectedLov()!.name }}</strong>.
                         Users with this lov may lose access to certain features.
                     </div>
                 </div>
