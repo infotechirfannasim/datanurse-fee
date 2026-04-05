@@ -1,7 +1,7 @@
-// ─── existing styles (unchanged) ────────────────────────────────────────────
+// ─── Dashboard Component ─────────────────────────────────────────────────────
 
 .welcome-banner {
-  background: linear-gradient(135deg, var(--navy) 0%, #1A3A8F 50%, #2251CC 100%);
+  background: linear-gradient(135deg, var(--navy) 0%, #0A2A7A 50%, var(--blue) 100%);  /* Deep Indigo → Royal Blue */
   border-radius: 18px;
   padding: 28px 32px;
   display: flex;
@@ -30,7 +30,7 @@
     position: absolute;
     width: 180px;
     height: 180px;
-    background: radial-gradient(circle, rgba(240, 101, 154, 0.15) 0%, transparent 65%);
+    background: radial-gradient(circle, rgba(201, 25, 254, 0.15) 0%, transparent 65%);  /* --pink/indigo */
     bottom: -60px;
     right: -30px;
   }
@@ -137,7 +137,7 @@
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(11, 30, 69, 0.10);
+    box-shadow: 0 8px 28px rgba(10, 0, 97, 0.10);  /* --navy */
   }
 }
 
@@ -183,17 +183,17 @@
 }
 
 .trend-up {
-  background: rgba(34, 197, 94, 0.12);
-  color: #15803D;
+  background: rgba(16, 185, 129, 0.12);  /* --green */
+  color: #065F46;
 }
 
 .trend-down {
-  background: rgba(232, 52, 74, 0.10);
+  background: rgba(239, 68, 68, 0.10);   /* --rose */
   color: var(--rose);
 }
 
 .trend-neu {
-  background: rgba(122, 139, 176, 0.12);
+  background: rgba(107, 114, 128, 0.12); /* --muted */
   color: var(--muted);
 }
 
@@ -254,7 +254,6 @@
   @media (max-width: 600px) {
     margin-top: 16px;
   }
-
 }
 
 .chart-wrap {
@@ -329,7 +328,7 @@
 }
 
 .bar-blue {
-  background: var(--blue-lt);
+  background: var(--blue-lt);  /* Bright Cyan */
   opacity: 0.5;
 }
 
@@ -378,7 +377,7 @@
   cursor: pointer;
 
   &:hover {
-    background: #F7F9FE;
+    background: rgba(6, 86, 197, 0.03);  /* --blue subtle hover */
   }
 }
 
@@ -528,7 +527,7 @@
   }
 
   &:hover {
-    background: #F7F9FE;
+    background: rgba(6, 86, 197, 0.03);  /* --blue subtle */
   }
 }
 
@@ -637,7 +636,7 @@
   transition: background 0.15s;
 
   &:hover {
-    background: #F7F9FE;
+    background: rgba(6, 86, 197, 0.03);  /* --blue subtle */
   }
 }
 
@@ -664,7 +663,7 @@
   color: var(--muted);
 }
 
-// ─── NEW: section-card shared wrapper ───────────────────────────────────────
+// ─── Section card shared wrapper ─────────────────────────────────────────────
 
 .section-card {
   background: var(--card);
@@ -734,27 +733,27 @@
 }
 
 .badge-blue {
-  background: rgba(34, 81, 204, 0.10);
-  color: #2251CC;
+  background: rgba(6, 86, 197, 0.10);    /* --blue */
+  color: var(--blue);
 }
 
 .badge-green {
-  background: rgba(14, 165, 160, 0.12);
-  color: #0A7470;
+  background: rgba(16, 185, 129, 0.12);  /* --green */
+  color: #065F46;
 }
 
 .badge-amber {
-  background: rgba(245, 158, 11, 0.12);
+  background: rgba(245, 158, 11, 0.12);  /* --amber */
   color: #B45309;
 }
 
 .badge-rose {
-  background: rgba(232, 52, 74, 0.12);
-  color: #C41230;
+  background: rgba(239, 68, 68, 0.12);   /* --rose */
+  color: var(--rose);
 }
 
 .badge-gray {
-  background: rgba(122, 139, 176, 0.12);
+  background: rgba(107, 114, 128, 0.12); /* --muted */
   color: var(--muted);
 }
 
@@ -774,7 +773,7 @@
   }
 }
 
-// ─── NEW: surgeon bar ────────────────────────────────────────────────────────
+// ─── Surgeon bar ──────────────────────────────────────────────────────────────
 
 .surgeon-bar-wrap {
   margin-top: 5px;
@@ -797,7 +796,7 @@
   margin-top: 2px;
 }
 
-// ─── NEW: demographics & follow-up grid ─────────────────────────────────────
+// ─── Demographics & follow-up grid ───────────────────────────────────────────
 
 .demo-followup-grid {
   display: grid;
@@ -885,7 +884,7 @@
 }
 
 .gender-male {
-  background: #2251CC;
+  background: var(--blue);   /* Royal Blue */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -895,7 +894,7 @@
 }
 
 .gender-female {
-  background: #F0659A;
+  background: var(--pink);   /* Vivid Purple */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -904,7 +903,7 @@
   color: #fff;
 }
 
-// ─── NEW: follow-up section ───────────────────────────────────────────────────
+// ─── Follow-up section ────────────────────────────────────────────────────────
 
 .followup-hero {
   display: flex;
@@ -979,7 +978,7 @@
   margin-top: 2px;
 }
 
-// ─── NEW: export button ───────────────────────────────────────────────────────
+// ─── Export button ────────────────────────────────────────────────────────────
 
 .export-row {
   display: flex;

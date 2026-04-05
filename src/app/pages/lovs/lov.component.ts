@@ -13,6 +13,9 @@ import {
 import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {LOV} from '../../core/models/lov.model';
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from 'rxjs';
+import {SelectModule} from "primeng/select";
+import {MultiSelectModule} from "primeng/multiselect";
+
 
 interface NavigationState {
     type: string;
@@ -32,7 +35,7 @@ export interface FilterParams {
 @Component({
     selector: 'app-lov',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, MultiSelectModule, SelectModule,],
     templateUrl: './lov.component.html',
     styleUrl: './lov.component.scss'
 })
