@@ -19,7 +19,7 @@ import {MultiSelectModule} from "primeng/multiselect";
 
 interface NavigationState {
     type: string;
-    parentContext: { type: string; code: string; label: string } | null;
+    parentContext: { type: string; code: string; name: string } | null;
 }
 
 export interface FilterParams {
@@ -73,19 +73,19 @@ export class LovComponent implements OnInit, OnDestroy {
     });
     breadcrumbItems = computed(() => {
         const stack = this.navigationStack();
-        const items: { label: string; targetLevel: number }[] = [];
+        const items: { name: string; targetLevel: number }[] = [];
         if (stack.length === 0) return items;
 
         // Root type
-        const rootLabel = this.lovTypes().find((t: any) => t.key === stack[0].type)?.label || stack[0].type;
-        items.push({label: rootLabel, targetLevel: 1});
+        const rootLabel = this.lovTypes().find((t: any) => t.key === stack[0].type)?.name || stack[0].type;
+        items.push({name: rootLabel, targetLevel: 1});
 
         for (let i = 1; i < stack.length; i++) {
             const ctx = stack[i].parentContext;
-            if (ctx) items.push({label: ctx.label, targetLevel: i + 1});
+            if (ctx) items.push({name: ctx.name, targetLevel: i + 1});
 
-            const typeLabel = this.lovTypes().find((t: any) => t.key === stack[i].type)?.label || stack[i].type;
-            items.push({label: typeLabel, targetLevel: i + 1});
+            const typeLabel = this.lovTypes().find((t: any) => t.key === stack[i].type)?.name || stack[i].type;
+            items.push({name: typeLabel, targetLevel: i + 1});
         }
         return items;
     });
@@ -201,7 +201,7 @@ export class LovComponent implements OnInit, OnDestroy {
             parentContext: {
                 type: currType,
                 code: lov.code,
-                label: lov.label
+                name: lov.name
             }
         };
 
@@ -226,7 +226,7 @@ export class LovComponent implements OnInit, OnDestroy {
         const group: any = {
             type: [this.currentLovType()],
             code: [{value: lov?.code || '', disabled: this.isEditMode}, Validators.required],
-            label: [lov?.label || '', Validators.required],
+            name: [lov?.name || '', Validators.required],
             description: [lov?.description || ''],
             status: [lov?.status ?? 'active']
         };
@@ -362,7 +362,7 @@ export class LovComponent implements OnInit, OnDestroy {
         this.form.patchValue({
             type: this.currentLovType(),
             code: lov?.code,
-            label: lov?.label,
+            name: lov?.name,
             description: lov?.description || '',
             status: lov?.status
         });
@@ -381,7 +381,7 @@ export class LovComponent implements OnInit, OnDestroy {
     }
 
     updateLovName(): void {
-        this.lovName = this.breadcrumbItems().at(-1)?.label as string || '';
+        this.lovName = this.breadcrumbItems().at(-1)?.name as string || '';
     }
 
     setTableColumns(): void {
