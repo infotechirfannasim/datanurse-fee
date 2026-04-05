@@ -7,6 +7,7 @@ import {errorInterceptor} from "./core/interceptors/error.interceptor";
 import {providePrimeNG} from "primeng/config";
 import Aura from '@primeuix/themes/aura';
 import {provideAnimations} from "@angular/platform-browser/animations";
+import {provideNgxMask} from "ngx-mask";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,5 +26,6 @@ export const appConfig: ApplicationConfig = {
       }
     }),
     provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+    provideNgxMask()
   ]
 };

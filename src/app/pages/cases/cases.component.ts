@@ -86,7 +86,7 @@ export class CasesComponent implements OnInit {
 
     openView(record: any): void {
         this.requestService
-            .getRequest(`${PATIENTS_API_URL}/${record._id}`)
+            .getRequest(`${CASES_API_URL}/${record._id}`)
             .subscribe({
                 next: (res: HttpResponse<any>) => {
                     if (res.status === 200) {
@@ -110,7 +110,7 @@ export class CasesComponent implements OnInit {
     }
 
     getStatusClass(status: string): string {
-        const map: Record<string, string> = {active: 'badge-green', pending: 'badge-amber', inactive: 'badge-gray'};
+        const map: Record<string, string> = {Alive: 'badge-green', Dead: 'badge-rose'};
         return map[status] ?? 'badge-gray';
     }
 

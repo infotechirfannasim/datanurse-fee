@@ -17,7 +17,7 @@ import {
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {AppConstants} from '../../utils/app-constants';
 import {RequestService} from './request.service';
-import {LOGIN_API_URL} from '../../utils/api.url.constants';
+import {FORGOT_PASS_API_URL, LOGIN_API_URL, RESET_PASS_API_URL} from '../../utils/api.url.constants';
 import {ToastService} from "./toast.service";
 
 @Injectable({
@@ -67,7 +67,7 @@ export class AuthService {
     }
 
     forgotPassword(data: ForgotPasswordRequest): Observable<void> {
-        return this.http.post<ApiResponse<void>>(`${this.apiUrl}/forgot-password`, data).pipe(
+        return this.http.post<ApiResponse<void>>(`${this.apiUrl + FORGOT_PASS_API_URL}`, data).pipe(
             map((response) => {
                 if (response.success) {
                     // this.toastr.success('Password reset email sent!', 'Check your inbox');
@@ -80,7 +80,7 @@ export class AuthService {
     }
 
     resetPassword(data: ResetPasswordRequest): Observable<void> {
-        return this.http.post<ApiResponse<void>>(`${this.apiUrl}/reset-password`, data).pipe(
+        return this.http.post<ApiResponse<void>>(`${this.apiUrl + RESET_PASS_API_URL}`, data).pipe(
             map((response) => {
                 if (response.success) {
                     // this.toastr.success('Password reset successful!', 'You can now login');
@@ -167,6 +167,10 @@ export class AuthService {
         );
         localStorage.setItem(window.btoa(AppConstants.USER_INFO), JSON.stringify(response.user));
         this.currentUserSubject.next(response.user);
+    }
+
+    set setUser(user: User){
+        this.currentUserSubject.next(user);
     }
 
     loadStoredUser(): void {

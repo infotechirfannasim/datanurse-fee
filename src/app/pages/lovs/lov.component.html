@@ -36,7 +36,7 @@
                     </svg>
                     <input (input)="searchQuery.set($any($event.target).value); onSearchChange()"
                            [value]="searchQuery()"
-                           placeholder="Search lovs by code or label"/>
+                           placeholder="Search Reference Data by code or label"/>
                 </div>
             }
 
@@ -57,7 +57,7 @@
     @if (isLoading()) {
         <div class="loading-state">
             <div class="spinner"></div>
-            <p>Loading lovs...</p>
+            <p>Loading Data References...</p>
         </div>
     } @else {
         <div class="registry-table-wrap">
@@ -140,7 +140,7 @@
         </div>
         <div class="table-footer">
             <span class="table-footer-info">
-                Showing {{ lovOptions()[selectedLovType()]?.length }} of {{ pagination()?.total || 0 }} lovs
+                Showing {{ lovOptions()[selectedLovType()]?.length }} of {{ pagination()?.total || 0 }} Data references
             </span>
 
             @if (pagination() && pagination().totalPages > 1) {

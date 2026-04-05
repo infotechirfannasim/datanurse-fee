@@ -7,7 +7,9 @@ export interface Doctor extends User {
   status: 'Active' | 'Inactive' | 'Pending';
   avatarInitials: string;
   avatarColor: string;
-  pmdc?: string;
+  pmdcNumber?: string;
+  tinNumber?: string;
+  npiNumber?: string;
   profileImage: any;
   role: any;
 }
