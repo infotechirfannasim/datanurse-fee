@@ -19,6 +19,7 @@ export interface User {
     createdAt: Date;
     updatedAt: Date;
     lastLoginAt: Date;
+    turnstileToken?: string;
 }
 
 export interface ProfileImage {

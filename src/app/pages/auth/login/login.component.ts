@@ -1,10 +1,17 @@
-// src/app/features/auth/login.component.ts
-import {Component, inject} from '@angular/core';
+import {AfterViewInit, Component, inject, OnDestroy,} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../../core/services/auth.service';
-import {ToastService} from "../../../core/services/toast.service";
+import {ToastService} from '../../../core/services/toast.service';
+import {environment} from '../../../../environments/environment';
+
+declare global {
+    interface Window {
+        turnstile: any;
+        onTurnstileLoad?: () => void;
+    }
+}
 
 @Component({
     selector: 'app-login',
@@ -13,26 +20,18 @@ import {ToastService} from "../../../core/services/toast.service";
     templateUrl: 'login.component.html',
     styleUrls: ['login.component.scss'],
 })
-export class LoginComponent {
+export class LoginComponent implements AfterViewInit, OnDestroy {
     private fb = inject(FormBuilder);
     private authService = inject(AuthService);
     private router = inject(Router);
     private toastService = inject(ToastService);
 
-    email: string = '';
-    password: string = '';
-
-    login() {
-    }
-
     loginForm: FormGroup;
     isLoading = false;
-
     showPassword = false;
 
-    togglePassword(): void {
-        this.showPassword = !this.showPassword;
-    }
+    turnstileToken = '';
+    widgetId: string | null = null;
 
     constructor() {
         this.loginForm = this.fb.group({
@@ -42,9 +41,67 @@ export class LoginComponent {
         });
     }
 
+    ngAfterViewInit(): void {
+        this.loadTurnstileWidget();
+    }
+
+    ngOnDestroy(): void {
+        try {
+            if (window.turnstile && this.widgetId) {
+                window.turnstile.remove(this.widgetId);
+            }
+        } catch (e) {
+        }
+    }
+
+    togglePassword(): void {
+        this.showPassword = !this.showPassword;
+    }
+
     isFieldInvalid(field: string): boolean {
         const formControl = this.loginForm.get(field);
         return !!formControl && formControl.invalid && (formControl.dirty || formControl.touched);
+    }
+
+    private loadTurnstileWidget(): void {
+        const renderWidget = () => {
+            const container = document.getElementById('turnstile-container');
+            if (!container || !window.turnstile) return;
+
+            container.innerHTML = '';
+
+            this.widgetId = window.turnstile.render('#turnstile-container', {
+                sitekey: environment.turnstileSiteKey,
+                callback: (token: string) => {
+                    this.turnstileToken = token;
+                },
+                'expired-callback': () => {
+                    this.turnstileToken = '';
+                },
+                'error-callback': () => {
+                    this.turnstileToken = '';
+                    this.toastService.show('Captcha load failed. Please try again.', 'error');
+                },
+                theme: 'light',
+            });
+        };
+
+        const waitForTurnstile = () => {
+            if (window.turnstile) {
+                renderWidget();
+            } else {
+                setTimeout(waitForTurnstile, 300);
+            }
+        };
+
+        waitForTurnstile();
+    }
+
+    private resetTurnstile(): void {
+        this.turnstileToken = '';
+        if (window.turnstile && this.widgetId) {
+            window.turnstile.reset(this.widgetId);
+        }
     }
 
     onSubmit(): void {
@@ -53,13 +110,29 @@ export class LoginComponent {
             return;
         }
 
+        if (!this.turnstileToken) {
+            this.toastService.show('Please complete captcha first.', 'warning');
+            return;
+        }
+
         this.isLoading = true;
-        this.authService.login(this.loginForm.value).subscribe({
+
+        const payload = {
+            ...this.loginForm.value,
+            turnstileToken: this.turnstileToken,
+            platform: 'web',
+        };
+
+        this.authService.login(payload).subscribe({
             next: () => {
                 this.router.navigate(['/dashboard']);
             },
             error: (err) => {
                 this.toastService.show(err.message, 'error');
+                this.isLoading = false;
+                this.resetTurnstile();
+            },
+            complete: () => {
                 this.isLoading = false;
             },
         });

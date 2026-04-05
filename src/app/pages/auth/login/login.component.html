@@ -84,9 +84,12 @@
                 </button>
             </div>
 
+            <div class="form-group">
+                <div id="turnstile-container"></div>
+            </div>
             <!-- Submit -->
-            <button [disabled]="loginForm.invalid" class="btn-glow" type="submit">
-                Sign In
+            <button [disabled]="loginForm.invalid || isLoading" class="btn-glow" type="submit">
+                {{ isLoading ? 'Signing In...' : 'Sign In' }}
             </button>
 
         </form>
