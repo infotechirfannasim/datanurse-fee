@@ -11,7 +11,7 @@ export interface User {
     initials?: string;
     role: Role;
     phone: string;
-    permissions?: Permission[];
+    permissions?: [string];
     lastActiveAt?: string;
     badge?: string;
     cases: number;
@@ -43,20 +43,11 @@ export interface Role {
     name: string;
     label: string;
     description?: string;
-    permissions?: Permission[];
+    permissions?: [string];
     isSystem?: boolean;
     status: string;
     createdAt: Date;
     updatedAt: Date;
-}
-
-export interface Permission {
-    id: string;
-    name: string;
-    resource: string;
-    action: string;
-    description: string;
-    createdAt: Date;
 }
 
 export interface LoginRequest {

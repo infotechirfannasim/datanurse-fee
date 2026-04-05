@@ -142,13 +142,20 @@ export class AuthService {
 
     hasPermission(permission: string): boolean {
         const user = this.currentUserSubject.value;
-        if (!user) return false;
-        return true;
+        if (!user?.role?.permissions) {
+            return false;
+        }
 
-        // Check if user has the permission directly or through roles
-        /*return user.permissions?.some(p => p.firstName === permission) ||
-          user.roles?.some(role => role.permissions?.some(p => p.firstName === permission)) ||
-          false;*/
+        // Superadmin usually has '*' → full access
+        if (user.role.permissions.includes('*')) {
+            return true;
+        }
+
+        return user.role.permissions.includes(permission);
+    }
+
+    hasAnyPermission(permissions: string[]): boolean {
+        return permissions.some(perm => this.hasPermission(perm));
     }
 
     /*hasRole(roleName: string): boolean {

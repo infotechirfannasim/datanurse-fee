@@ -7,12 +7,14 @@ import {PROFILE_API_URL, UPDATE_PROFILE_API_URL} from "../../utils/api.url.const
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {User} from "../../core/models/user.model";
 import {AuthService} from "../../core/services/auth.service";
+import {NgxMaskDirective} from "ngx-mask";
+import {getError} from "../../utils/global.utils";
 
 
 @Component({
     selector: 'app-profile',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, NgxMaskDirective],
     templateUrl: './profile.component.html',
     styleUrl: './profile.component.scss'
 })
@@ -158,6 +160,13 @@ export class ProfileComponent implements OnInit {
 
         this.toastService.show('Password changed successfully!', 'success');
         this.passwordForm.reset();
+    }
+
+    getErrorMsg(controlName: string, index?: number, field?: string) {
+        return getError(this.personalForm, controlName, {
+            index,
+            field
+        });
     }
 
     getActivityColor(type: string): string {

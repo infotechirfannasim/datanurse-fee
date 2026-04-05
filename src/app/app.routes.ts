@@ -1,9 +1,11 @@
 import {Routes} from '@angular/router';
 import {UnAuthGuard} from "./core/guards/un-auth.guard";
 import {AuthGuard} from "./core/guards/auth.guard";
+import {PermissionGuard} from "./core/guards/permission.guard";
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+
   {
     path: 'auth',
     canActivate: [UnAuthGuard],
@@ -11,64 +13,64 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, PermissionGuard],
+    data: {permission: 'DASHBOARD_VIEW'},
     loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent)
   },
-  {
-    path: 'doctors',
-    canActivate: [AuthGuard],
-    loadComponent: () => import('./pages/doctors/doctors.component').then(m => m.DoctorsComponent)
-  },
+
   {
     path: 'users',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, PermissionGuard],
+    data: {permission: 'USER_VIEW'},
     loadComponent: () => import('./pages/users/users.component').then(m => m.UsersComponent)
   },
   {
     path: 'roles',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, PermissionGuard],
+    data: {permission: 'ROLE_VIEW'},
     loadComponent: () => import('./pages/roles/roles.component').then(m => m.RolesComponent)
   },
+
   {
-    path: 'lovs',
-    canActivate: [AuthGuard],
-    loadComponent: () => import('./pages/lovs/lov.component').then(m => m.LovComponent)
+    path: 'doctors',
+    canActivate: [AuthGuard, PermissionGuard],
+    data: {permission: 'DOCTOR_VIEW'},
+    loadComponent: () => import('./pages/doctors/doctors.component').then(m => m.DoctorsComponent)
   },
+
   {
     path: 'patients',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, PermissionGuard],
+    data: {permission: 'PATIENT_VIEW'},
     loadComponent: () => import('./pages/patient/patient.component').then(m => m.PatientComponent)
   },
+
   {
     path: 'cases',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, PermissionGuard],
+    data: {permission: 'CASE_VIEW'},
     loadComponent: () => import('./pages/cases/cases.component').then(m => m.CasesComponent)
   },
-  /*
+
   {
-    path: 'search',
-    canActivate: [AuthGuard],
-    loadComponent: () => import('./pages/search/search.component').then(m => m.SearchComponent)
+    path: 'lovs',
+    canActivate: [AuthGuard, PermissionGuard],
+    data: {permission: 'LOV_VIEW'},
+    loadComponent: () => import('./pages/lovs/lov.component').then(m => m.LovComponent)
   },
+
   {
     path: 'reports',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, PermissionGuard],
+    data: {permission: 'REPORT_VIEW'},
     loadComponent: () => import('./pages/reports/reports.component').then(m => m.ReportsComponent)
   },
   {
-    path: 'data',
-    canActivate: [AuthGuard],
-    loadComponent: () => import('./pages/data-management/data-management.component').then(m => m.DataManagementComponent)
-  },*/
-  {
     path: 'profile',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, PermissionGuard],
+    data: {permission: 'PROFILE_VIEW'},
     loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent)
   },
-  /*{
-    path: 'settings',
-    canActivate: [AuthGuard],
-    loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent)
-  },*/
+
   { path: '**', redirectTo: 'dashboard' }
 ];

@@ -28,7 +28,7 @@
             <thead>
             <tr>
                 <th>Name</th>
-                <th>Hospital(s)</th>
+                <th>Specialities</th>
                 <th>Status</th>
                 <th>Joined</th>
                 <th></th>
@@ -57,9 +57,9 @@
                             </div>
                         </td>
                         <td style="font-size:12.5px; color: var(--muted);">
-                            @if (doc.hospitalAffiliations.length) {
-                                @for (hospital of doc.hospitalAffiliations; track hospital.name; let last = $last) {
-                                    {{ hospital.name | findObjByKey : 'code' : hospitalOptions : 'label' }} ({{ hospital.city | findObjByKey : 'code' : cityOptions : 'label' }})
+                            @if (doc.specialities.length) {
+                                @for (spec of doc.specialities; track $index; let last = $last) {
+                                    {{ spec | findObjByKey : 'code' : specialtyOptions : 'name' }}
                                     @if (!last) {
                                         ,
                                     }
@@ -244,7 +244,7 @@
                             <p-multiSelect
                                     [options]="specialtyOptions"
                                     formControlName="specialities"
-                                    optionLabel="label"
+                                    optionLabel="name"
                                     optionValue="code"
                                     placeholder="Select Specializations"
                                     display="chip"
@@ -259,49 +259,82 @@
                             <div class="hospital-list-modal" formArrayName="hospitals">
                                 @for (hospital of hospitals.controls; track $index; let i = $index) {
                                     <div class="hospital-row" [formGroupName]="i">
-                                        <div class="hospital-name">
-                                            <label class="form-label">Hospital name *</label>
+                                        <div>
+                                            <label class="form-label">Country *</label>
                                             <p-select
-                                                #dropdown
-                                                [disabled]="false"
-                                                [filter]="true"
-                                                id="name"
-                                                formControlName="name"
-                                                optionLabel="label"
-                                                optionValue="code"
-                                                [options]="hospitalOptions"
-                                                [placeholder]="''"
-                                                [readonly]="false"
-                                                appendTo="body"
-                                                class="form-input"
+                                                    [filter]="true"
+                                                    formControlName="country"
+                                                    optionLabel="name"
+                                                    optionValue="code"
+                                                    [options]="countryOptions"
+                                                    placeholder="Select country"
+                                                    appendTo="body"
+                                                    class="form-input"
                                             />
-                                            <small class="error">{{ getErrorMsg('', i, 'name') }}</small>
-
+                                            <small class="error">{{ getErrorMsg('', i, 'country') }}</small>
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Province / Region *</label>
+                                            <p-select
+                                                    [filter]="true"
+                                                    formControlName="province"
+                                                    optionLabel="name"
+                                                    optionValue="code"
+                                                    [options]="rowProvinceOptions.get(i) || []"
+                                                    placeholder="Select province"
+                                                    appendTo="body"
+                                                    class="form-input"
+                                            />
+                                            <small class="error">{{ getErrorMsg('', i, 'province') }}</small>
+                                        </div>
+                                        <div>
+                                            <label class="form-label">District / County *</label>
+                                            <p-select
+                                                    [filter]="true"
+                                                    formControlName="district"
+                                                    optionLabel="name"
+                                                    optionValue="code"
+                                                    [options]="rowDistrictOptions.get(i) || []"
+                                                    placeholder="Select district"
+                                                    appendTo="body"
+                                                    class="form-input"
+                                            />
+                                            <small class="error">{{ getErrorMsg('', i, 'district') }}</small>
                                         </div>
                                         <div>
                                             <label class="form-label">City *</label>
                                             <p-select
-                                                #dropdown
-                                                [disabled]="false"
-                                                [filter]="true"
-                                                id="city"
-                                                formControlName="city"
-                                                optionLabel="label"
-                                                optionValue="code"
-                                                [options]="cityOptions"
-                                                [placeholder]="''"
-                                                [readonly]="false"
-                                                appendTo="body"
-                                                class="form-input"
+                                                    [filter]="true"
+                                                    formControlName="city"
+                                                    optionLabel="name"
+                                                    optionValue="code"
+                                                    [options]="rowCityOptions.get(i) || []"
+                                                    placeholder="Select city"
+                                                    appendTo="body"
+                                                    class="form-input"
                                             />
                                             <small class="error">{{ getErrorMsg('', i, 'city') }}</small>
-
                                         </div>
+                                        <div class="hospital-name">
+                                            <label class="form-label">Hospital name *</label>
+                                            <p-select
+                                                    [filter]="true"
+                                                    formControlName="name"
+                                                    optionLabel="name"
+                                                    optionValue="code"
+                                                    [options]="getAvailableHospitals(i)"
+                                                    placeholder="Select hospital"
+                                                    appendTo="body"
+                                                    class="form-input"
+                                            />
+                                            <small class="error">{{ getErrorMsg('', i, 'name') }}</small>
+                                        </div>
+
                                         <button type="button" class="btn-remove-row"
                                                 (click)="removeHospitalRow(i)"
-                                                *ngIf="hospitals.length > 1">
-                                            ✕
+                                                *ngIf="hospitals.length > 1">✕
                                         </button>
+
                                     </div>
                                 }
                             </div>

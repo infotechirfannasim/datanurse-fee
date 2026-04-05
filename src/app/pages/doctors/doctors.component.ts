@@ -12,7 +12,7 @@ import {
     USERS_API_URL
 } from "../../utils/api.url.constants";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
-import {FilterParams, Role, User} from "../../core/models/user.model";
+import {FilterParams, Role} from "../../core/models/user.model";
 import {ROLES} from "../../utils/app-constants";
 import {MultiSelectModule} from "primeng/multiselect";
 import {SelectModule} from "primeng/select";
@@ -20,6 +20,7 @@ import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
 import {FindObjByKeyPipe} from "../../core/pipe/find-obj-by-key";
 import {getError, markAllTouched} from "../../utils/global.utils";
 import {NgxMaskDirective} from "ngx-mask";
+import {RegexConstants} from "../../utils/regex-constants";
 
 @Component({
     selector: 'app-doctors',
@@ -51,10 +52,19 @@ export class DoctorsComponent implements OnInit {
     imagePreview: string | null = null;
     selectedFile: File | null = null;
     roles: any[] = [];
+    countryOptions: any[] = [];
     specialtyOptions: any[] = [];
     hospitalOptions: any[] = [];
     cityOptions: any[] = [];
     doctors: Doctor[] = [];
+    rowProvinceOptions: Map<number, any[]> = new Map();
+    rowDistrictOptions: Map<number, any[]> = new Map();
+    rowCityOptions: Map<number, any[]> = new Map();
+
+// All raw options stored
+    allProvinces: any[] = [];
+    allDistricts: any[] = [];
+    allCities: any[] = [];
     private fb = inject(FormBuilder);
     private requestService = inject(RequestService);
     private searchSubject = new Subject<string>();
@@ -108,22 +118,22 @@ export class DoctorsComponent implements OnInit {
             ]],
             phone: ['', [
                 Validators.required,
-                Validators.pattern(/^\+92-\d{3}-\d{7}$/)
+                Validators.pattern(RegexConstants.PHONE_REGEX)
             ]],
             role: [this.roles.find((r: Role) => r.name === ROLES.DOCTOR)?._id, Validators.required],
             pmdcNumber: ['', [
                 Validators.required,
-                Validators.pattern(/^PMDC-\d{5}$/)
+                Validators.pattern(RegexConstants.PMDC_REGEX)
             ]],
             npiNumber: ['', [
                 Validators.required,
-                Validators.pattern(/^\d{10}$/)
+                Validators.pattern(RegexConstants.NPI_REGEX)
             ]],
             tinNumber: ['', [
                 Validators.required,
-                Validators.pattern(/^\d{7,12}$/)
+                Validators.pattern(RegexConstants.TIN_REGEX)
             ]],
-            specialities: [[], [
+            specialities: [null, [
                 Validators.required,
                 Validators.minLength(1)
             ]],
@@ -178,7 +188,8 @@ export class DoctorsComponent implements OnInit {
             next: (response: HttpResponse<any>) => {
                 if (response.status == 200 && response.body.data) {
                     this.roles = response.body.data;
-                    this.doctorForm.get('role')?.setValue(this.roles.find((r: Role) => r.name === ROLES.DOCTOR)?._id);
+                    const dctRole = this.roles.find((r: Role) => r.name === ROLES.DOCTOR);
+                    this.doctorForm.get('role')?.setValue(dctRole?._id);
                 } else {
                     this.roles = [];
                 }
@@ -198,19 +209,22 @@ export class DoctorsComponent implements OnInit {
 
     loadLovs() {
         const payload = {
-            types: ['specialty', 'hospitals', 'city'],
+            types: ['specialty', 'hospitals', 'country', 'province', 'district', 'city'],
         };
         this.requestService.postRequest(GET_LOV_BULK_API_URL, payload).subscribe({
             next: (response: HttpResponse<any>) => {
                 if (response.status == 200 && response.body.data) {
                     this.specialtyOptions = response.body.data['specialty'];
                     this.hospitalOptions = response.body.data['hospitals'];
-                    this.cityOptions = response.body.data['city'];
+                    this.countryOptions = response.body.data['country'];
+                    this.allProvinces = response.body.data['province'];
+                    this.allDistricts = response.body.data['district'];
+                    this.allCities = response.body.data['city'];
                 }
             },
             error: (error: HttpErrorResponse) => {
                 const errMsg = error.error.message || error.message || 'Something went wrong';
-                this.toastService.show(errMsg, 'error')
+                this.toastService.show(errMsg, 'error');
             },
         });
     }
@@ -229,7 +243,10 @@ export class DoctorsComponent implements OnInit {
         if (!doc) return;
         this.selectedDoctor.set(doc);
         this.isEditMode = true;
-        this.doctorForm.patchValue(this.mapDoctorToForm(this.selectedDoctor()));
+        this.doctorForm.patchValue(this.mapDoctorToForm(doc));
+        this.hospitals.clear();
+        (doc.hospitalAffiliations || []).forEach(h => this.addHospitalRow(h));
+
         this.showViewModal.set(false);
         this.showAddModal.set(true);
     }
@@ -244,6 +261,7 @@ export class DoctorsComponent implements OnInit {
             tinNumber: doc?.tinNumber,
             npiNumber: doc?.npiNumber,
             specialities: doc?.specialities || [],
+            role: this.doctorForm.value?.role,
             hospitals: doc?.hospitalAffiliations || []
         };
     }
@@ -286,18 +304,100 @@ export class DoctorsComponent implements OnInit {
         }
     }
 
-    addHospitalRow(): void {
+    addHospitalRow(prefill?: any): void {
+        const i = this.hospitals.length;
+
         const hospitalGroup = this.fb.group({
-            name: ['', Validators.required],
-            city: ['', Validators.required]
+            name: [prefill?.name || null, Validators.required],
+            country: [prefill?.country || null, Validators.required],
+            province: [prefill?.province || null, Validators.required],
+            district: [prefill?.district || null, Validators.required],
+            city: [prefill?.city || null, Validators.required],
         });
+
         this.hospitals.push(hospitalGroup);
+
+        // If prefilling (edit mode), seed the cascaded options immediately
+        if (prefill?.country) {
+            this.onCountryChange(prefill.country, i);
+        }
+        if (prefill?.province) {
+            this.onProvinceChange(prefill.province, i);
+        }
+        if (prefill?.district) {
+            this.onDistrictChange(prefill.district, i);
+        }
+
+        // Subscribe to cascading changes after row is added
+        this.subscribeRowChanges(i, hospitalGroup);
     }
 
-    removeHospitalRow(index: number): void {
-        if (this.hospitals.length > 1) {
-            this.hospitals.removeAt(index);
-        }
+    subscribeRowChanges(i: number, group: FormGroup): void {
+        group.get('country')!.valueChanges.subscribe(val => {
+            group.get('province')!.reset();
+            group.get('district')!.reset();
+            group.get('city')!.reset();
+            this.onCountryChange(val, i);
+        });
+
+        group.get('province')!.valueChanges.subscribe(val => {
+            group.get('district')!.reset();
+            group.get('city')!.reset();
+            this.onProvinceChange(val, i);
+        });
+
+        group.get('district')!.valueChanges.subscribe(val => {
+            group.get('city')!.reset();
+            this.onDistrictChange(val, i);
+        });
+    }
+
+    onCountryChange(countryCode: string, i: number): void {
+        const filtered = this.allProvinces.filter(p =>
+            p.parents?.some((par: any) => par.type === 'country' && par.code === countryCode)
+        );
+        this.rowProvinceOptions.set(i, filtered);
+        this.rowDistrictOptions.set(i, []);
+        this.rowCityOptions.set(i, []);
+    }
+
+    onProvinceChange(provinceCode: string, i: number): void {
+        const filtered = this.allDistricts.filter(d =>
+            d.parents?.some((par: any) => par.type === 'province' && par.code === provinceCode)
+        );
+        this.rowDistrictOptions.set(i, filtered);
+        this.rowCityOptions.set(i, []);
+    }
+
+    onDistrictChange(districtCode: string, i: number): void {
+        const filtered = this.allCities.filter(c =>
+            c.parents?.some((par: any) => par.type === 'district' && par.code === districtCode)
+        );
+        this.rowCityOptions.set(i, filtered);
+    }
+
+    removeHospitalRow(i: number): void {
+        this.hospitals.removeAt(i);
+        // Re-key the maps after removal
+        const newProvinces = new Map<number, any[]>();
+        const newDistricts = new Map<number, any[]>();
+        const newCities = new Map<number, any[]>();
+        this.hospitals.controls.forEach((_, idx) => {
+            newProvinces.set(idx, this.rowProvinceOptions.get(idx > i ? idx + 1 : idx) || []);
+            newDistricts.set(idx, this.rowDistrictOptions.get(idx > i ? idx + 1 : idx) || []);
+            newCities.set(idx, this.rowCityOptions.get(idx > i ? idx + 1 : idx) || []);
+        });
+        this.rowProvinceOptions = newProvinces;
+        this.rowDistrictOptions = newDistricts;
+        this.rowCityOptions = newCities;
+    }
+
+// Unique hospital selection — returns options excluding already-selected hospitals (except current row)
+    getAvailableHospitals(currentIndex: number): any[] {
+        const selectedCodes = this.hospitals.controls
+            .map((ctrl, idx) => idx !== currentIndex ? ctrl.get('name')?.value : null)
+            .filter(Boolean);
+        return this.hospitalOptions.filter(h => !selectedCodes.includes(h.code));
     }
 
     submitAddDoctor(): void {
@@ -316,7 +416,7 @@ export class DoctorsComponent implements OnInit {
         formData.append('pmdcNumber', this.doctorForm.value.pmdcNumber || '');
         formData.append('tinNumber', this.doctorForm.value.tinNumber || '');
         formData.append('npiNumber', this.doctorForm.value.npiNumber || '');
-        formData.append('role', this.roles.find((role: Role) => role.name === ROLES.DOCTOR)?._id);
+        formData.append('role', this.doctorForm.value.role || '');
 
         const specialities = this.doctorForm.value.specialities || [];
         specialities.forEach((spec: string) => {
@@ -327,11 +427,20 @@ export class DoctorsComponent implements OnInit {
 
         const hospitals = this.doctorForm.value.hospitals || [];
         hospitals.forEach((hospital: any, index: number) => {
-            if (hospital?.name) {
-                formData.append(`hospitalAffiliations[${index}][name]`, hospital.name);
+            if (hospital?.country) {
+                formData.append(`hospitalAffiliations[${index}][country]`, hospital.country);
+            }
+            if (hospital?.province) {
+                formData.append(`hospitalAffiliations[${index}][province]`, hospital.province);
+            }
+            if (hospital?.district) {
+                formData.append(`hospitalAffiliations[${index}][district]`, hospital.district);
             }
             if (hospital?.city) {
                 formData.append(`hospitalAffiliations[${index}][city]`, hospital.city);
+            }
+            if (hospital?.name) {
+                formData.append(`hospitalAffiliations[${index}][name]`, hospital.name);
             }
         });
 
@@ -359,7 +468,7 @@ export class DoctorsComponent implements OnInit {
     }
 
     resetForm(): void {
-        this.doctorForm.reset();
+        this.doctorForm.reset({role: this.doctorForm.value.role});
         this.imagePreview = null;
         this.selectedFile = null;
         this.hospitals.clear();

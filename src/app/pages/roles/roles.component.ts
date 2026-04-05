@@ -132,8 +132,8 @@ export class RolesComponent implements OnInit {
         return map[status] ?? 'badge-gray';
     }
 
-    onEditRole() {
-        const role = this.selectedRole();
+    onEditRole(role: Role) {
+        this.selectedRole.set(role);
         if (!role) return;
 
         this.isEditMode = true;

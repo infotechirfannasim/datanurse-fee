@@ -33,10 +33,12 @@
             <div class="form-group">
               <label class="form-label">First Name</label>
               <input class="form-input" formControlName="firstName" placeholder="First Name">
+                <small class="error">{{ getErrorMsg('firstName') }}</small>
             </div>
             <div class="form-group">
               <label class="form-label">Last Name</label>
               <input class="form-input" formControlName="lastName" placeholder="Last Name">
+                <small class="error">{{ getErrorMsg('lastName') }}</small>
             </div>
             <div class="form-group">
               <label class="form-label">Email</label>
@@ -44,7 +46,12 @@
             </div>
             <div class="form-group">
               <label class="form-label">Phone</label>
-              <input class="form-input" formControlName="phone" placeholder="+1 (555) 123-4567">
+                <input class="form-input"
+                       formControlName="phone"
+                       mask="000-0000000"
+                       prefix="+92-"
+                       [dropSpecialCharacters]="false"
+                       placeholder="+92-300-1234567">
             </div>
             <div class="Status-group">
               <label class="info-label">Status:</label>
