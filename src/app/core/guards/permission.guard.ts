@@ -2,10 +2,11 @@
 import {inject} from '@angular/core';
 import {ActivatedRouteSnapshot, Router} from '@angular/router';
 import {AuthService} from '../services/auth.service';
+import {ToastService} from "../services/toast.service";
 
 export const PermissionGuard = (route: ActivatedRouteSnapshot) => {
   const authService = inject(AuthService);
-  const router = inject(Router);
+  const toastService = inject(ToastService);
 
   const requiredPermission = route.data?.['permission'] as string | undefined;
   if (!requiredPermission) {
@@ -14,6 +15,6 @@ export const PermissionGuard = (route: ActivatedRouteSnapshot) => {
   if (authService.hasPermission(requiredPermission)) {
     return true;
   }
-  router.navigate(['/dashboard']);
+  toastService.show("You don't have permission");
   return false;
 };
