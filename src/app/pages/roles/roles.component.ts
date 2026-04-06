@@ -218,6 +218,7 @@ export class RolesComponent implements OnInit {
             });
         }
 
+
         if (module.children) {
             module.children.forEach((child: any) => {
                 if (child.actions) {
@@ -233,6 +234,14 @@ export class RolesComponent implements OnInit {
         }
 
         this.syncFormPermissions();
+    }
+
+    isModuleFullySelected(module: any): boolean {
+        if (!module?.actions) return false;
+
+        return module.actions.every((action: any) =>
+            action?.slug && this.selectedPermissions.has(action.slug)
+        );
     }
 
     submitRole(): void {

@@ -82,7 +82,7 @@
 
   @media (max-width: 480px) {
     padding: 20px;
-    max-width: 300px;
+    max-width: 352px;
   }
 
 
@@ -260,6 +260,10 @@
     width: 240px;
     height: auto;
     margin-left: 5px;
+
+    @media (max-width: 480px) {
+      width: 130px;
+    }
   }
 }
 

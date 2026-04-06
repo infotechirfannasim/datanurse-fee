@@ -43,11 +43,13 @@ export class ForgotPasswordComponent {
         this.authService.forgotPassword(payload).subscribe({
             next: () => {
                 this.message = 'If that email is registered, a reset link has been sent.';
+                this.forgotForm.reset();
+                this.toastService.show(this.message, 'success');
                 this.isLoading = false;
             },
             error: (err: HttpErrorResponse) => {
                 this.error = err.error?.message || err?.message ||'Something went wrong';
-        this.toastService.show(this.error, 'error');
+                this.toastService.show(this.error, 'error');
                 this.isLoading = false;
             }
         });

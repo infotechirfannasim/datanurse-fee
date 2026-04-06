@@ -188,8 +188,8 @@ export class AuthService {
                 permissions: user?.role?.permissions || current?.role?.permissions || ['']
             }
         };
-
         this.currentUserSubject.next(mergedUser);
+        localStorage.setItem(window.btoa(AppConstants.USER_INFO), JSON.stringify(mergedUser));
     }
 
     loadStoredUser(): void {

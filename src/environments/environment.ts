@@ -7,5 +7,5 @@ export const environment = {
     api_context_path: '',
     api_access_client: 'datanurse',
     api_secret_client: 'datanurse',
-    turnstileSiteKey: '0x4AAAAAAC01sCJPOKQ8hylW',
+    turnstileSiteKey: '1x00000000000000000000AA',
 };
