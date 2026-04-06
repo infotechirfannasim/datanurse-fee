@@ -9,12 +9,13 @@ import {User} from "../../core/models/user.model";
 import {AuthService} from "../../core/services/auth.service";
 import {NgxMaskDirective} from "ngx-mask";
 import {getError} from "../../utils/global.utils";
+import {RouterLink} from "@angular/router";
 
 
 @Component({
     selector: 'app-profile',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, NgxMaskDirective],
+    imports: [CommonModule, ReactiveFormsModule, NgxMaskDirective, RouterLink],
     templateUrl: './profile.component.html',
     styleUrl: './profile.component.scss'
 })
