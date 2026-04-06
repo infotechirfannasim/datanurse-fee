@@ -36,16 +36,16 @@
   }
 }
 
-.sidebar-logo {
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  position: relative;
-  z-index: 1;
-}
+//.sidebar-logo {
+//  padding: 20px;
+//  display: flex;
+//  justify-content: center;
+//  align-items: center;
+//  gap: 12px;
+//  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+//  position: relative;
+//  z-index: 1;
+//}
 
 .logo-heart img {
   width: 180px;
@@ -173,6 +173,22 @@
   color: #fff;
   border-radius: 10px;
   padding: 2px 7px;
+}
+.sidebar-logo {
+  padding: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+  //background-color: var(--card);
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 245, 245, 0.09);
+  &:hover {
+    background-color: #100470;
+  }
 }
 
 .sidebar-footer {

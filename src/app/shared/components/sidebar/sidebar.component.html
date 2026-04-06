@@ -1,31 +1,31 @@
 <aside class="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-heart">
-      <img src="./assets/images/newLogo.svg">
+    <div class="sidebar-logo" routerLink="/dashboard">
+        <div class="logo-heart">
+            <img src="./assets/images/newLogo.svg">
+        </div>
     </div>
-  </div>
-  <div class="sidebar-menu">
-    @for (item of navItems; track $index) {
-      <ng-container>
-        @if (isVisible(item)) {
-          <ng-container>
-            @if (!item.children) {
-              <a
-                      [routerLink]="item.route"
-                      class="nav-item"
-                      routerLinkActive="active">
-                <span [innerHTML]="item.icon" class="nav-icon"></span>
-                <span class="nav-label">{{ item.label }}</span>
-              </a>
-            }
-            @if (item.children) {
-              <ng-container>
-                <div (click)="toggleUserManagement()"
-                     [class.expanded]="isUserManagementExpanded"
-                     class="nav-item nav-parent">
-                  <span [innerHTML]="item.icon" class="nav-icon"></span>
-                  <span class="nav-label">{{ item.label }}</span>
-                  <span class="nav-chevron">
+    <div class="sidebar-menu">
+        @for (item of navItems; track $index) {
+            <ng-container>
+                @if (isVisible(item)) {
+                    <ng-container>
+                        @if (!item.children) {
+                            <a
+                                    [routerLink]="item.route"
+                                    class="nav-item"
+                                    routerLinkActive="active">
+                                <span [innerHTML]="item.icon" class="nav-icon"></span>
+                                <span class="nav-label">{{ item.label }}</span>
+                            </a>
+                        }
+                        @if (item.children) {
+                            <ng-container>
+                                <div (click)="toggleUserManagement()"
+                                     [class.expanded]="isUserManagementExpanded"
+                                     class="nav-item nav-parent">
+                                    <span [innerHTML]="item.icon" class="nav-icon"></span>
+                                    <span class="nav-label">{{ item.label }}</span>
+                                    <span class="nav-chevron">
                                         <svg fill="none" height="16" viewBox="0 0 24 24" width="16">
                                             <polyline points="6 9 12 15 18 9"
                                                       stroke="rgba(255,255,255,0.8)"
@@ -34,121 +34,121 @@
                                                       stroke-width="2"/>
                                         </svg>
                                     </span>
-                </div>
-                
-                <div [class.show]="isUserManagementExpanded" class="nav-submenu">
-                  @for (child of item.children; track $index) {
-                    <ng-container>
-                      @if (isChildVisible(child)) {
-                        <a
-                                [routerLink]="child.route"
-                                class="nav-subitem"
-                                routerLinkActive="active">
-                          <span [innerHTML]="child.icon" class="nav-subicon"></span>
-                          <span class="nav-sublabel">{{ child.label }}</span>
-                        </a>
-                      }
+                                </div>
+
+                                <div [class.show]="isUserManagementExpanded" class="nav-submenu">
+                                    @for (child of item.children; track $index) {
+                                        <ng-container>
+                                            @if (isChildVisible(child)) {
+                                                <a
+                                                        [routerLink]="child.route"
+                                                        class="nav-subitem"
+                                                        routerLinkActive="active">
+                                                    <span [innerHTML]="child.icon" class="nav-subicon"></span>
+                                                    <span class="nav-sublabel">{{ child.label }}</span>
+                                                </a>
+                                            }
+                                        </ng-container>
+                                    }
+                                </div>
+                            </ng-container>
+                        }
                     </ng-container>
-                  }
-                </div>
-              </ng-container>
-            }
-          </ng-container>
+                }
+            </ng-container>
         }
-      </ng-container>
-    }
-  </div>
-  <div class="sidebar-footer">
-    <div (click)="showInfotechModal = true" class="powered-by">
-      Powered by <img alt="" src="./assets/images/infotech.png">
     </div>
-  </div>
+    <div class="sidebar-footer">
+        <div (click)="showInfotechModal = true" class="powered-by">
+            Powered by <img alt="" src="./assets/images/infotech.png">
+        </div>
+    </div>
 </aside>
 
 <!-- Powered By Modal -->
 @if (showInfotechModal) {
-  <div class="infotech-overlay" (click)="showInfotechModal = false">
-    <div class="infotech-modal" (click)="$event.stopPropagation()">
-      
-      <!-- Hero Header -->
-      <div class="it-hero">
-        <div class="it-hero-top">
-          <div class="it-brand-row">
-            <div class="it-brand-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff"
-                   stroke-width="2" stroke-linecap="round">
-                <rect x="2" y="3" width="20" height="14" rx="2"/>
-                <path d="M8 21h8M12 17v4"/>
-                <path d="M7 8h1m4 0h1m-5 3h6"/>
-              </svg>
+    <div class="infotech-overlay" (click)="showInfotechModal = false">
+        <div class="infotech-modal" (click)="$event.stopPropagation()">
+
+            <!-- Hero Header -->
+            <div class="it-hero">
+                <div class="it-hero-top">
+                    <div class="it-brand-row">
+                        <div class="it-brand-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff"
+                                 stroke-width="2" stroke-linecap="round">
+                                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                <path d="M8 21h8M12 17v4"/>
+                                <path d="M7 8h1m4 0h1m-5 3h6"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="it-brand-name">INFOTECH</div>
+                            <div class="it-brand-tagline">Brilliantly Built</div>
+                        </div>
+                    </div>
+                    <button class="modal-close" (click)="showInfotechModal = false">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <p class="it-desc">
+                    A Pakistan-based technology company delivering enterprise software, digital
+                    transformation, and IT solutions to clients across healthcare, finance, and
+                    government sectors.
+                </p>
+
+                <div class="it-stats">
+                    <div class="it-stat"><span class="it-stat-num">15+</span><span class="it-stat-lbl">Years</span>
+                    </div>
+                    <div class="it-stat"><span class="it-stat-num">200+</span><span class="it-stat-lbl">Projects</span>
+                    </div>
+                    <div class="it-stat"><span class="it-stat-num">50+</span><span class="it-stat-lbl">Clients</span>
+                    </div>
+                    <div class="it-stat"><span class="it-stat-num">100+</span><span class="it-stat-lbl">Engineers</span>
+                    </div>
+                </div>
             </div>
-            <div>
-              <div class="it-brand-name">INFOTECH</div>
-              <div class="it-brand-tagline">Brilliantly Built</div>
+
+            <!-- Body -->
+            <div class="it-body">
+                <div class="it-section-title">Core Services</div>
+                <div class="it-services">
+                    <div class="it-chip"><span class="it-dot" style="background:#185FA5"></span>Custom Software</div>
+                    <div class="it-chip"><span class="it-dot" style="background:#0F6E56"></span>Healthcare IT</div>
+                    <div class="it-chip"><span class="it-dot" style="background:#854F0B"></span>Cloud Solutions</div>
+                    <div class="it-chip"><span class="it-dot" style="background:#534AB7"></span>Mobile Apps</div>
+                    <div class="it-chip"><span class="it-dot" style="background:#993C1D"></span>ERP Systems</div>
+                    <div class="it-chip"><span class="it-dot" style="background:#A32D2D"></span>Data Analytics</div>
+                </div>
+
+                <div class="it-divider"></div>
+                <div class="it-section-title">Built for DataNurse CDMS</div>
+                <p class="it-note">
+                    This Cardiac Data Management System was designed and developed by Infotech Group —
+                    combining clinical expertise with modern software engineering to streamline surgical
+                    case tracking and patient data management.
+                </p>
             </div>
-          </div>
-          <button class="modal-close" (click)="showInfotechModal = false">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
+
+            <!-- Footer -->
+            <div class="it-footer">
+                <span class="it-footer-url">infotechgroup.com</span>
+                <a href="https://infotechgroup.com" target="_blank" class="it-visit-btn">
+                    Visit Website
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/>
+                        <line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                </a>
+            </div>
+
         </div>
-        
-        <p class="it-desc">
-          A Pakistan-based technology company delivering enterprise software, digital
-          transformation, and IT solutions to clients across healthcare, finance, and
-          government sectors.
-        </p>
-        
-        <div class="it-stats">
-          <div class="it-stat"><span class="it-stat-num">15+</span><span class="it-stat-lbl">Years</span>
-          </div>
-          <div class="it-stat"><span class="it-stat-num">200+</span><span class="it-stat-lbl">Projects</span>
-          </div>
-          <div class="it-stat"><span class="it-stat-num">50+</span><span class="it-stat-lbl">Clients</span>
-          </div>
-          <div class="it-stat"><span class="it-stat-num">100+</span><span class="it-stat-lbl">Engineers</span>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Body -->
-      <div class="it-body">
-        <div class="it-section-title">Core Services</div>
-        <div class="it-services">
-          <div class="it-chip"><span class="it-dot" style="background:#185FA5"></span>Custom Software</div>
-          <div class="it-chip"><span class="it-dot" style="background:#0F6E56"></span>Healthcare IT</div>
-          <div class="it-chip"><span class="it-dot" style="background:#854F0B"></span>Cloud Solutions</div>
-          <div class="it-chip"><span class="it-dot" style="background:#534AB7"></span>Mobile Apps</div>
-          <div class="it-chip"><span class="it-dot" style="background:#993C1D"></span>ERP Systems</div>
-          <div class="it-chip"><span class="it-dot" style="background:#A32D2D"></span>Data Analytics</div>
-        </div>
-        
-        <div class="it-divider"></div>
-        <div class="it-section-title">Built for DataNurse CDMS</div>
-        <p class="it-note">
-          This Cardiac Data Management System was designed and developed by Infotech Group —
-          combining clinical expertise with modern software engineering to streamline surgical
-          case tracking and patient data management.
-        </p>
-      </div>
-      
-      <!-- Footer -->
-      <div class="it-footer">
-        <span class="it-footer-url">infotechgroup.com</span>
-        <a href="https://infotechgroup.com" target="_blank" class="it-visit-btn">
-          Visit Website
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-            <polyline points="15 3 21 3 21 9"/>
-            <line x1="10" y1="14" x2="21" y2="3"/>
-          </svg>
-        </a>
-      </div>
-    
     </div>
-  </div>
 }
