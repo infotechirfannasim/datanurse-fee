@@ -58,6 +58,7 @@ export class LovComponent implements OnInit, OnDestroy {
     topLevelLovTypes = computed(() =>
         this.lovTypes().filter((t: any) => !t.hasParent && t.childMeta?.length === 0)
     );
+    isActive = true;
 
     // Computed
     currentLovType = computed(() => this.navigationStack().at(-1)?.type ?? '');

@@ -199,6 +199,9 @@
                     <small class="error">Name is required</small>
                   }
                 </div>
+                <button class="toggle-btn" [class.on]="isActive" (click)="isActive = !isActive">
+                  <div class="toggle-knob"></div>
+                </button>
 
                 @for (column of selectedLovRelations; track column) {
                   <div class="form-group">
