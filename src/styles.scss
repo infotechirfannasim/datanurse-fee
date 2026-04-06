@@ -771,7 +771,7 @@ select.form-input {
 
 .hospital-row {
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: 1fr 1fr;
   gap: 10px;
   align-items: flex-end;
 
@@ -1742,15 +1742,19 @@ input.has-icon {
 }
 
 .cd-section-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
-  color: var(--label);
+  color: var(--navy);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 10px;
+  padding: 5px 10px;
+  background-color: var(--border);
+  border-radius: 5px;
+
 
   &::after {
     content: '';
