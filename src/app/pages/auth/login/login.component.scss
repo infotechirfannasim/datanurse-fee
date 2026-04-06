@@ -162,11 +162,21 @@
   padding: 0 12px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background-color: rgb(34, 41, 82);
+  background-color: rgb(34, 41, 82) !important;
   color: #fff;
   outline: none;
   box-shadow: none;
   transition: all 0.2s ease;
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px rgb(34, 41, 82) inset !important;
+    -webkit-text-fill-color: #fff !important;
+    caret-color: #fff;
+    transition: background-color 9999s ease-in-out 0s;
+  }
 
   &::placeholder {
     background-color: rgb(34, 41, 82);

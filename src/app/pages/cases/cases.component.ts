@@ -108,10 +108,42 @@ export class CasesComponent implements OnInit {
         this.selectedCase.set(doc);
         this.showDeleteModal.set(true);
     }
+    getCaseStatusClass(status: string): string {
+        const map: Record<string, string> = {
+            'Salvage': 'status-salvage',
+            'Completed': 'status-completed',
+            'Active': 'status-active',
+            'Pending': 'status-pending',
+            'Critical': 'status-critical',
+            'Recovered': 'status-completed',
+        };
+        return map[status] ?? 'status-pending';
+    }
+
+    getDischargeClass(status: string): string {
+        if (!status) return 'cd-discharge-row--deceased';
+        const lower = status.toLowerCase();
+        if (lower.includes('alive') || lower.includes('home') || lower.includes('discharged')) {
+            return 'cd-discharge-row--alive';
+        }
+        return 'cd-discharge-row--deceased';
+    }
 
     getStatusClass(status: string): string {
         const map: Record<string, string> = {Alive: 'badge-green', Dead: 'badge-rose'};
         return map[status] ?? 'badge-gray';
+    }
+
+    getSurgeonInitials(name: string): string {
+        if (!name) return '?';
+        const parts = name.trim().replace(/^Dr\.?\s*/i, '').split(' ').filter(Boolean);
+        if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+        if (parts.length === 1) return parts[0][0].toUpperCase();
+        return '?';
+    }
+    getObjectKeys(obj: Record<string, any> | null | undefined): string[] {
+        if (!obj) return [];
+        return Object.keys(obj).filter(k => obj[k] === true || obj[k] === 1);
     }
 
     onEditProfile() {
