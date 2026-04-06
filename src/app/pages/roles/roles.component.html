@@ -279,6 +279,7 @@
                         </div>
                         <label class="checkbox select-all">
                           <input type="checkbox"
+                                 [checked]="isModuleFullySelected(module)"
                                  (change)="selectAllModulePermissions(module, $event.target.checked)">
                           <span>Select All</span>
                         </label>
