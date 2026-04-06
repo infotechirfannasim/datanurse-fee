@@ -103,3 +103,85 @@ export function markAllTouched(control: AbstractControl): void {
     }
     control.markAsTouched();
 }
+
+export interface MenuItem {
+    id: number;
+    title: string;
+    route?: string;
+    icon: string;
+    permission: string | null;
+    type: 'item' | 'parent';
+    children?: MenuItem[];
+    section?: string;
+}
+
+export const SIDEBAR_MENU: MenuItem[] = [
+    {
+        id: 1,
+        title: 'Dashboard',
+        route: '/dashboard',
+        icon: 'dashboard',
+        permission: 'DASHBOARD_VIEW',
+        type: 'item'
+    },
+    {
+        id: 2,
+        title: 'User Management',
+        icon: 'users',
+        permission: null,
+        type: 'parent',
+        children: [
+            {id: 3, title: 'Users', route: '/users', icon: 'users', permission: 'USER_VIEW', type: 'item'},
+            {id: 4, title: 'Roles', route: '/roles', icon: 'roles', permission: 'ROLE_VIEW', type: 'item'}
+        ]
+    },
+    {
+        id: 5,
+        title: 'Doctor Registry',
+        route: '/doctors',
+        icon: 'doctors',
+        permission: 'DOCTOR_VIEW',
+        type: 'item'
+    },
+    {
+        id: 6,
+        title: 'Patients',
+        route: '/patients',
+        icon: 'patients',
+        permission: 'PATIENT_VIEW',
+        type: 'item'
+    },
+    {
+        id: 7,
+        title: 'Cases',
+        route: '/cases',
+        icon: 'cases',
+        permission: 'CASE_VIEW',
+        type: 'item'
+    },
+    {
+        id: 8,
+        title: 'Reference Data Listing',
+        route: '/lovs',
+        icon: 'lovs',
+        permission: 'LOV_VIEW',
+        type: 'item'
+    },
+    {
+        id: 9,
+        title: 'Reports',
+        route: '/reports',
+        icon: 'reports',
+        permission: 'REPORT_VIEW',
+        type: 'item'
+    },
+    {
+        id: 10,
+        title: 'My Profile',
+        route: '/profile',
+        icon: 'profile',
+        permission: 'PROFILE_VIEW',
+        type: 'item',
+        section: 'Account'
+    }
+];

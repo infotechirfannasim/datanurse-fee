@@ -9,9 +9,7 @@
   </div>
   
   <div class="card-card">
-    
-    <!-- Logo / Header -->
-    <div class="card-brand">
+      <div class="card-brand">
       <div class="card-brand-icon">
         <img alt="logo" src="./assets/images/logo.png">
       </div>
@@ -21,14 +19,10 @@
     
     <h2 class="card-title">Secure Sign In</h2>
     
-    <!-- FORM (same functionality) -->
     <form (ngSubmit)="onSubmit()" [formGroup]="loginForm" class="login-form">
-      
-      <!-- Email -->
-      <div class="form-group">
+        <div class="form-group">
         <label class="dark-label">Email Address</label>
         <div class="dark-input-wrap">
-          <!--           <span class="icon">✉</span> -->
           <input
                   class="dark-input"
                   formControlName="email"
@@ -39,9 +33,7 @@
           />
         </div>
       </div>
-      
-      <!-- Password -->
-      <div class="form-group">
+        <div class="form-group">
         <label class="dark-label">Password</label>
         
         <div class="dark-input-wrap">
@@ -72,9 +64,7 @@
           </button>
         </div>
       </div>
-      
-      <!-- Forgot -->
-      <div class="dark-row">
+        <div class="dark-row">
         <label class="dark-check">
           <input type="checkbox"> Remember me
         </label>
@@ -87,7 +77,6 @@
       <div class="form-group turnstile-wrap">
         <div id="turnstile-container"></div>
       </div>
-      <!-- Submit -->
       <button [disabled]="loginForm.invalid || isLoading" class="btn-glow" type="submit">
         {{ isLoading ? 'Signing In...' : 'Sign In' }}
       </button>
