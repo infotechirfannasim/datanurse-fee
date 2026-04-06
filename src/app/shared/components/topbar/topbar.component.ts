@@ -1,5 +1,5 @@
 import { Component, inject, signal, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { NavService } from '../../../core/services/nav.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { SidebarStateService } from '../../../core/services/sidebar-state.service';
@@ -11,6 +11,7 @@ import {DatePipe} from "@angular/common";  // ← naya
 @Component({
   selector: 'app-topbar',
   standalone: true,
+  imports:[RouterLink],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss'
 })
