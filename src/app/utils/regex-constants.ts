@@ -4,4 +4,5 @@ export class RegexConstants {
     public static TIN_REGEX = /^\d{7,12}$/;
     public static NPI_REGEX = /^\d{10}$/;
     public static VALID_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    public static NO_SPACE_REGEX = /^\S+$/;
 }

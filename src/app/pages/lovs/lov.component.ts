@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {ToastService} from '../../core/services/toast.service';
 import {RequestService} from '../../core/services/request.service';
 import {
-    DELETE_ROLE_API_URL,
+    DELETE_LOV_API_URL,
     GET_LOV_BULK_API_URL,
     GET_LOV_BY_TYPE_API_URL,
     LOV_API_URL,
@@ -15,6 +15,8 @@ import {LOV} from '../../core/models/lov.model';
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from 'rxjs';
 import {SelectModule} from "primeng/select";
 import {MultiSelectModule} from "primeng/multiselect";
+import {RegexConstants} from "../../utils/regex-constants";
+import {getError} from "../../utils/global.utils";
 
 
 interface NavigationState {
@@ -40,8 +42,6 @@ export interface FilterParams {
     styleUrl: './lov.component.scss'
 })
 export class LovComponent implements OnInit, OnDestroy {
-
-    // ==================== SIGNALS ====================
     navigationStack = signal<NavigationState[]>([]);
     searchQuery = signal<string>('');
     pageQuery = signal<number>(1);
@@ -59,7 +59,6 @@ export class LovComponent implements OnInit, OnDestroy {
         this.lovTypes().filter((t: any) => !t.hasParent && t.childMeta?.length === 0)
     );
 
-    // Computed
     currentLovType = computed(() => this.navigationStack().at(-1)?.type ?? '');
     currentParentContext = computed(() => this.navigationStack().at(-1)?.parentContext ?? null);
 
@@ -76,7 +75,6 @@ export class LovComponent implements OnInit, OnDestroy {
         const items: { name: string; targetLevel: number }[] = [];
         if (stack.length === 0) return items;
 
-        // Root type
         const rootLabel = this.lovTypes().find((t: any) => t.key === stack[0].type)?.name || stack[0].type;
         items.push({name: rootLabel, targetLevel: 1});
 
@@ -93,7 +91,6 @@ export class LovComponent implements OnInit, OnDestroy {
     lovTypes = signal<any[]>([]);
     childTypesMap = signal<{ [parentKey: string]: any[] }>({});
 
-    // Regular properties
     selectedLovRelations: any[] = [];
     lovName: string = '';
     isEditMode = false;
@@ -124,7 +121,6 @@ export class LovComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
-    // ==================== LOAD TYPES ====================
     getAllLovTypes(): void {
         this.requestService.getRequest(LOV_TYPES_API_URL).subscribe({
             next: (res: HttpResponse<any>) => {
@@ -135,12 +131,6 @@ export class LovComponent implements OnInit, OnDestroy {
             },
             error: (err) => console.error('Failed to load LOV types', err)
         });
-    }
-
-    onLovTypeChange(): void {
-        this.updateLovName();
-        this.setTableColumns();
-        this.getLovValueOptions();
     }
 
     buildChildTypesMap(): void {
@@ -163,7 +153,6 @@ export class LovComponent implements OnInit, OnDestroy {
         this.searchSubject.next(this.searchQuery());
     }
 
-    // ==================== NAVIGATION ====================
     onTopLevelTypeChange(newType: string): void {
         if (!newType || newType === this.rootType()) return;
 
@@ -191,10 +180,9 @@ export class LovComponent implements OnInit, OnDestroy {
             return;
         }
 
-        // Sort by sortOrder (stable order)
         childrenTypes = [...childrenTypes].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
-        const targetChild = childrenTypes[0]; // first child type (you can extend to a modal later)
+        const targetChild = childrenTypes[0];
 
         const newState: NavigationState = {
             type: targetChild.key,
@@ -219,13 +207,15 @@ export class LovComponent implements OnInit, OnDestroy {
         this.getLovValueOptions();
     }
 
-    // ==================== FORM & CRUD (unchanged except prefill) ====================
     buildForm() {
         if (!this.currentLovType()) return;
         const lov = this.selectedLov();
         const group: any = {
             type: [this.currentLovType()],
-            code: [{value: lov?.code || '', disabled: this.isEditMode}, Validators.required],
+            code: [{
+                value: lov?.code || '',
+                disabled: this.isEditMode
+            }, [Validators.required, Validators.pattern(RegexConstants.NO_SPACE_REGEX)]],
             name: [lov?.name || '', Validators.required],
             description: [lov?.description || ''],
             status: [lov?.status ?? 'active']
@@ -255,40 +245,6 @@ export class LovComponent implements OnInit, OnDestroy {
         this.form.get('code')?.enable();
         this.prefillParentContext();
     }
-
-    // ... (setupSearchDebounce, onSearchChange, getLovValueOptions, setTableColumns, updateLovName remain the same)
-
-    /*getLovValueOptions(): void {
-        const type = this.currentLovType();
-       if (!type) return;
-
-        const filters: FilterParams = {
-            search: this.searchQuery().trim(),
-            page: this.pageQuery(),
-            limit: 10
-        };
-
-        // Apply parent filter when we are in a nested level
-        const ctx = this.currentParentContext();
-        if (ctx) {
-            filters.parentType = ctx.type;
-            filters.parentCode = ctx.code;
-        }
-
-        const url = `${GET_LOV_BY_TYPE_API_URL}${type}`;
-        this.requestService.getRequest(url, filters).subscribe({
-            next: (res: HttpResponse<any>) => {
-                if (res.status === 200) {
-                    this.lovOptions.update(current => ({
-                        ...current,
-                        [type]: res.body?.data || []
-                    }));
-                    this.pagination.set(res.body.meta?.pagination || null);
-                }
-            },
-            error: () => this.pagination.set(null)
-        });
-    }*/
 
     getLovValueOptions(): void {
         const type = this.currentLovType();
@@ -323,11 +279,10 @@ export class LovComponent implements OnInit, OnDestroy {
                         [type]: data
                     }));
 
-                    // Handle pagination (Children API returns different shape)
                     if (ctx) {
                         this.pagination.set({
                             total: res.body?.data?.total || data.length,
-                            totalPages: 1,           // Children API currently doesn't paginate
+                            totalPages: 1,
                             page: 1,
                             hasNextPage: false,
                             hasPrevPage: false
@@ -341,7 +296,6 @@ export class LovComponent implements OnInit, OnDestroy {
         });
     }
 
-    // ==================== MODALS ====================
     openAddModal(): void {
         if (!this.currentLovType()) {
             this.toastService.show('Please select LOV Type first', 'error');
@@ -462,7 +416,7 @@ export class LovComponent implements OnInit, OnDestroy {
         const lov = this.selectedLov();
         if (!lov) return;
 
-        this.requestService.deleteRequest(`${DELETE_ROLE_API_URL}/${lov._id}`).subscribe({
+        this.requestService.deleteRequest(`${DELETE_LOV_API_URL}/${lov._id}`).subscribe({
             next: () => {
                 this.toastService.show('LOV deleted successfully', 'success');
                 this.closeDeleteModal();
@@ -495,5 +449,12 @@ export class LovComponent implements OnInit, OnDestroy {
     closeDeleteModal(): void {
         this.showDeleteModal.set(false);
         this.selectedLov.set(null);
+    }
+
+    getErrorMsg(controlName: string, index?: number, field?: string) {
+        return getError(this.form, controlName, {
+            index,
+            field
+        });
     }
 }

@@ -130,7 +130,7 @@ export class CasesComponent implements OnInit {
     }
 
     getStatusClass(status: string): string {
-        const map: Record<string, string> = {Alive: 'badge-green', Dead: 'badge-rose'};
+        const map: Record<string, string> = {Alive: 'badge-green', deceased: 'badge-rose'};
         return map[status] ?? 'badge-gray';
     }
 
