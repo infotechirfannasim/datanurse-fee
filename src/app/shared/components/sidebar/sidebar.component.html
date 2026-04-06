@@ -61,22 +61,6 @@
                 }
             </ng-container>
         }
-        <ng-container>
-            <div class="sidebar-section-label">Account</div>
-            @for (item of accountItems; track $index) {
-                <ng-container>
-                    @if (isVisible(item)) {
-                        <a
-                                class="nav-item"
-                                [routerLink]="item.route"
-                                routerLinkActive="active">
-                            <span class="nav-icon" [innerHTML]="item.icon"></span>
-                            <span class="nav-label">{{ item.label }}</span>
-                        </a>
-                    }
-                </ng-container>
-            }
-        </ng-container>
     </div>
     <div class="sidebar-footer">
         <div (click)="showInfotechModal = true" class="powered-by">
