@@ -158,7 +158,55 @@
               <div class="cd-meta-item"><b>Completion:</b> {{ selectedCase()?.otherDetails?.completion || 0 }}%</div>
             </div>
           </div>
-          
+            <div class="cd-section">
+                <div class="cd-section-label">Patient Information</div>
+                <div class="cd-grid cd-grid--3">
+                    <div class="cd-cell">
+                        <div class="cd-key">Citizen Number</div>
+                        <div class="cd-val">{{ selectedCase()?.patient?.citizenNumber || '—' }}</div>
+                    </div>
+                    <div class="cd-cell">
+                        <div class="cd-key">PT. No.</div>
+                        <div class="cd-val">{{ selectedCase()?.patient?.mrn || '—' }}</div>
+                    </div>
+                    <div class="cd-cell">
+                        <div class="cd-key">First Name</div>
+                        <div class="cd-val">{{ selectedCase()?.patient?.firstName || '—' }}</div>
+                    </div>
+                    <div class="cd-cell">
+                        <div class="cd-key">Last Name</div>
+                        <div class="cd-val">{{ selectedCase()?.patient?.lastName || '—' }}</div>
+                    </div>
+                    <div class="cd-cell">
+                        <div class="cd-key">Gender</div>
+                        <div class="cd-val">{{ selectedCase()?.patient?.gender || '—' }}</div>
+                    </div>
+                    <div class="cd-cell">
+                        <div class="cd-key">Father Name</div>
+                        <div class="cd-val">{{ selectedCase()?.patient?.fatherName || '—' }}</div>
+                    </div>
+                    <div class="cd-cell">
+                        <div class="cd-key">Mother Name</div>
+                        <div class="cd-val">{{ selectedCase()?.patient?.motherName || '—' }}</div>
+                    </div>
+                    <div class="cd-cell">
+                        <div class="cd-key">Date of Birth</div>
+                        <div class="cd-val">{{ (selectedCase()?.patient?.dob | date:'MMM d, y') || '—' }}</div>
+                    </div>
+                    <div class="cd-cell">
+                        <div class="cd-key">Country</div>
+                        <div class="cd-val">{{ selectedCase()?.patient?.country || '—' }}</div>
+                    </div>
+                    <div class="cd-cell">
+                        <div class="cd-key">City</div>
+                        <div class="cd-val">{{ selectedCase()?.patient?.city || '—' }}</div>
+                    </div>
+                    <div class="cd-cell">
+                        <div class="cd-key">Joined</div>
+                        <div class="cd-val">{{ selectedCase()?.patient?.createdAt | date:'MMM d, y' }}</div>
+                    </div>
+                </div>
+            </div>
           <!-- 1. Operation Info -->
           <div class="cd-section">
             <div class="cd-section-label">Operation Info</div>

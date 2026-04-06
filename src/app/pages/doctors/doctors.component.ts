@@ -61,7 +61,6 @@ export class DoctorsComponent implements OnInit {
     rowDistrictOptions: Map<number, any[]> = new Map();
     rowCityOptions: Map<number, any[]> = new Map();
 
-// All raw options stored
     allProvinces: any[] = [];
     allDistricts: any[] = [];
     allCities: any[] = [];
@@ -245,7 +244,11 @@ export class DoctorsComponent implements OnInit {
         this.isEditMode = true;
         this.doctorForm.patchValue(this.mapDoctorToForm(doc));
         this.hospitals.clear();
-        (doc.hospitalAffiliations || []).forEach(h => this.addHospitalRow(h));
+        if (doc.hospitalAffiliations?.length) {
+            doc.hospitalAffiliations.forEach(h => this.addHospitalRow(h));
+        } else {
+            this.addHospitalRow();
+        }
 
         this.showViewModal.set(false);
         this.showAddModal.set(true);
@@ -317,7 +320,6 @@ export class DoctorsComponent implements OnInit {
 
         this.hospitals.push(hospitalGroup);
 
-        // If prefilling (edit mode), seed the cascaded options immediately
         if (prefill?.country) {
             this.onCountryChange(prefill.country, i);
         }
@@ -327,8 +329,6 @@ export class DoctorsComponent implements OnInit {
         if (prefill?.district) {
             this.onDistrictChange(prefill.district, i);
         }
-
-        // Subscribe to cascading changes after row is added
         this.subscribeRowChanges(i, hospitalGroup);
     }
 
@@ -378,7 +378,6 @@ export class DoctorsComponent implements OnInit {
 
     removeHospitalRow(i: number): void {
         this.hospitals.removeAt(i);
-        // Re-key the maps after removal
         const newProvinces = new Map<number, any[]>();
         const newDistricts = new Map<number, any[]>();
         const newCities = new Map<number, any[]>();
@@ -392,7 +391,6 @@ export class DoctorsComponent implements OnInit {
         this.rowCityOptions = newCities;
     }
 
-// Unique hospital selection — returns options excluding already-selected hospitals (except current row)
     getAvailableHospitals(currentIndex: number): any[] {
         const selectedCodes = this.hospitals.controls
             .map((ctrl, idx) => idx !== currentIndex ? ctrl.get('name')?.value : null)
@@ -472,7 +470,7 @@ export class DoctorsComponent implements OnInit {
         this.imagePreview = null;
         this.selectedFile = null;
         this.hospitals.clear();
-        this.addHospitalRow(); // Add default row again
+        this.addHospitalRow();
     }
 
     goToPage(page: number) {

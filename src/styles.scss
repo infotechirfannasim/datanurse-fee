@@ -1593,7 +1593,7 @@ p-select {
     display: flex !important;
     align-items: center !important;
     gap: 10px !important;
-    background-color: var(--label);
+    //background-color: var(--label);
 
     &:hover,
     &.p-focus {
@@ -2067,27 +2067,45 @@ input.has-icon {
 
 //Toggle Switch
 
-.toggle-btn {
-  width: 46px;
-  height: 26px;
-  border-radius: 20px;
-  border: none;
+.toggle {
+  display: inline-block;
   cursor: pointer;
-  position: relative;
-  padding: 0;
-  transition: background .25s;
-  background: #e5e7eb;
 
-  &.on { background: #3B6D11; }
-
-  .toggle-knob {
-    position: absolute;
-    top: 3px; left: 3px;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    background: #fff;
-    transition: transform .25s;
+  input {
+    display: none; // hide default checkbox
   }
 
-  &.on .toggle-knob { transform: translateX(20px); }
+  .toggle-btn {
+    width: 46px;
+    height: 26px;
+    border-radius: 20px;
+    background: #e5e7eb;
+    position: relative;
+    transition: background 0.25s;
+    display: inline-block;
+
+    .toggle-knob {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.25s;
+    }
+  }
+
+  input:checked + .toggle-btn {
+    background: #3B6D11;
+  }
+
+  input:checked + .toggle-btn .toggle-knob {
+    transform: translateX(20px);
+  }
+}
+
+
+.p-checkbox-checked .p-checkbox-box{
+  background: #0656C5 !important;
 }

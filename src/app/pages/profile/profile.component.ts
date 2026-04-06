@@ -127,6 +127,8 @@ export class ProfileComponent implements OnInit {
 
         this.requestService.patchReqWithFormData(UPDATE_PROFILE_API_URL, formData).subscribe({
             next: (response: HttpResponse<any>) => {
+                this.personalForm.markAsPristine();
+                this.personalForm.markAsUntouched();
                 this.toastService.show('Profile updated successfully!', 'success');
                 this.authService.setUser = response.body.data;
                 this.loadProfile();

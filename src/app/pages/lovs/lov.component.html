@@ -186,23 +186,15 @@
                 <div class="form-group">
                   <label class="form-label">Code *</label>
                   <input class="form-input" formControlName="code" placeholder="Code">
-                  @if (form.get('code')?.invalid && form.get('code')?.touched) {
                     <small class="error">{{ getErrorMsg('code') }}</small>
-                  }
                 </div>
 
                 <div class="form-group">
                   <label class="form-label">Name *</label>
                   <input class="form-input" type="text" formControlName="name"
                          placeholder="Name">
-                  @if (form.get('label')?.invalid && form.get('name')?.touched) {
-                    <small class="error">Name is required</small>
-                  }
+                    <small class="error">{{ getErrorMsg('name') }}</small>
                 </div>
-                <button class="toggle-btn" [class.on]="isActive" (click)="isActive = !isActive">
-                  <div class="toggle-knob"></div>
-                </button>
-
                 @for (column of selectedLovRelations; track column) {
                   <div class="form-group">
                     <label class="form-label">{{ column.name }} *</label>
@@ -213,11 +205,18 @@
                         </option>
                       }
                     </select>
-                    @if (form.get(column.formKey)?.invalid && form.get(column.formKey)?.touched) {
-                      <small class="error">{{ column.name }} is required</small>
-                    }
+                      <small class="error">{{ getErrorMsg(column.formKey) }}</small>
                   </div>
                 }
+                  <div class="form-group">
+                      <label class="form-label">Status </label>
+                      <label class="toggle">
+                          <input type="checkbox" formControlName="status"/>
+                          <span class="toggle-btn">
+                          <span class="toggle-knob"></span>
+                      </span>
+                      </label>
+                  </div>
                 <div class="form-group full-width">
                   <label class="form-label">Description</label>
                   <textarea class="text-area" formControlName="description" rows="3"

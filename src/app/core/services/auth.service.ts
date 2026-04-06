@@ -176,8 +176,20 @@ export class AuthService {
         this.currentUserSubject.next(response.user);
     }
 
-    set setUser(user: User){
-        this.currentUserSubject.next(user);
+    set setUser(user: User) {
+        const current = this.currentUserSubject.value;
+
+        const mergedUser: User = {
+            ...current,
+            ...user,
+            role: {
+                ...current?.role,
+                ...user?.role,
+                permissions: user?.role?.permissions || current?.role?.permissions || ['']
+            }
+        };
+
+        this.currentUserSubject.next(mergedUser);
     }
 
     loadStoredUser(): void {
