@@ -1,120 +1,118 @@
 <div class="topbar">
-  <div class="topbar-left">
-      <svg class="sidebar-toggle" (click)="sidebarState.toggle()" width="16" height="16" viewBox="0 0 24 24" fill="none"
-           stroke="#64748B" stroke-width="2.5" stroke-linecap="round">
-        <line x1="3" y1="6"  x2="21" y2="6"/>
-        <line x1="3" y1="12" x2="21" y2="12"/>
-        <line x1="3" y1="18" x2="21" y2="18"/>
-      </svg>
-    <div>
-      <div class="topbar-title">{{ navService.currentMeta().title }}</div>
-      <div class="topbar-breadcrumb">
-        <span>Dashboard</span>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-          <polyline points="9 18 15 12 9 6" stroke="currentColor" stroke-width="2"/>
+    <div class="topbar-left">
+        <svg class="sidebar-toggle" (click)="sidebarState.toggle()" width="16" height="16" viewBox="0 0 24 24"
+             fill="none"
+             stroke="#64748B" stroke-width="2.5" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
         </svg>
-        <span>{{ navService.currentMeta().breadcrumb }}</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="topbar-right">
-    <!--<div class="topbar-search">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-        <circle cx="11" cy="11" r="8" stroke="#7A8BB0" stroke-width="2"/>
-        <path d="M21 21l-4.35-4.35" stroke="#7A8BB0" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-      <input placeholder="Search anything…" [value]="searchValue()" (input)="onSearch($any($event.target).value)"/>
-    </div>
-
-    &lt;!&ndash; Notifications &ndash;&gt;
-    <div class="topbar-btn" id="notif-wrap" style="position:relative;">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" (click)="toggleNotif()" style="cursor:pointer">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#0B1E45" stroke-width="2" stroke-linecap="round"/>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="#0B1E45" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-      <span class="notif-dot"></span>
-
-      @if (notifOpen()) {
-        <div class="notif-dropdown">
-          <div class="notif-header">
-            <span class="notif-title">Notifications</span>
-            <span class="notif-mark" (click)="notifOpen.set(false)">Mark all read</span>
-          </div>
-          <div class="notif-item unread">
-            <div class="notif-ico" style="background:#EEF2FF;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#2251CC" stroke-width="2"/>
-                <circle cx="12" cy="7" r="4" stroke="#2251CC" stroke-width="2"/>
-              </svg>
-            </div>
-            <div style="flex:1">
-              <div class="notif-text"><strong>Dr. Omar Farooq</strong> registered and awaiting approval</div>
-              <span class="notif-time">2 min ago</span>
-            </div>
-            <div class="unread-dot"></div>
-          </div>
-          <div class="notif-item unread">
-            <div class="notif-ico" style="background:rgba(14,165,160,0.1);">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path d="M9 11l3 3L22 4" stroke="#0EA5A0" stroke-width="2"/>
-                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="#0EA5A0" stroke-width="2"/>
-              </svg>
-            </div>
-            <div style="flex:1">
-              <div class="notif-text"><strong>Case PT-2024-8892</strong> submitted by Dr. Salman A. Shah</div>
-              <span class="notif-time">18 min ago</span>
-            </div>
-            <div class="unread-dot"></div>
-          </div>
-          <div class="notif-item">
-            <div class="notif-ico" style="background:rgba(245,158,11,0.1);">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#F59E0B" stroke-width="2"/>
-                <polyline points="14 2 14 8 20 8" stroke="#F59E0B" stroke-width="2"/>
-              </svg>
-            </div>
-            <div style="flex:1">
-              <div class="notif-text"><strong>Report Q1-2026</strong> was generated and exported</div>
-              <span class="notif-time">1 hour ago</span>
-            </div>
-          </div>
-        </div>
-      }
-    </div>-->
-
-<!--     <button class="new-btn" (click)="openAddDoctor()"> -->
-<!--       <svg width="14" height="14" viewBox="0 0 24 24" fill="none"> -->
-<!--         <line x1="12" y1="5" x2="12" y2="19" stroke="white" stroke-width="2" stroke-linecap="round"/> -->
-<!--         <line x1="5" y1="12" x2="19" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/> -->
-<!--       </svg> -->
-<!--       New Doctor -->
-<!--     </button> -->
-    
-    
-    <div class="sidebar-user" (click)="logout()" >
-      <div class="profile-side">
-        @if (getProfileImageUrl()) {
-          <img [src]="getProfileImageUrl()"
-               alt="Profile Photo"
-               class="s-avatar">
-        } @else {
-          <div class="s-avatar">{{ getUserInitials(userInfo()) }}</div>
-        }
         <div>
-          <span class="s-name">{{ userInfo()?.firstName + ' ' + userInfo()?.lastName }}</span>
-          <span class="s-role">{{ userInfo()?.role?.label }}</span>
+            <div class="topbar-title">{{ navService.currentMeta().title }}</div>
+            <div class="topbar-breadcrumb">
+                <span>Dashboard</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                    <polyline points="9 18 15 12 9 6" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <span>{{ navService.currentMeta().breadcrumb }}</span>
+            </div>
         </div>
-      </div>
-      <div class="user-menu-item logout">
-        <svg fill="none" height="18" viewBox="0 0 24 24" width="18">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" fill="none" stroke="currentColor"
-                stroke-width="2"/>
-          <polyline fill="none" points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/>
-          <line stroke="currentColor" stroke-width="2" x1="21" x2="9" y1="12" y2="12"/>
-        </svg>
-      </div>
     </div>
-  
-  </div>
+
+    <div class="topbar-right">
+        <!--<div class="topbar-search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="8" stroke="#7A8BB0" stroke-width="2"/>
+            <path d="M21 21l-4.35-4.35" stroke="#7A8BB0" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input placeholder="Search anything…" [value]="searchValue()" (input)="onSearch($any($event.target).value)"/>
+        </div>
+
+        &lt;!&ndash; Notifications &ndash;&gt;
+        <div class="topbar-btn" id="notif-wrap" style="position:relative;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" (click)="toggleNotif()" style="cursor:pointer">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#0B1E45" stroke-width="2" stroke-linecap="round"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="#0B1E45" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="notif-dot"></span>
+
+          @if (notifOpen()) {
+            <div class="notif-dropdown">
+              <div class="notif-header">
+                <span class="notif-title">Notifications</span>
+                <span class="notif-mark" (click)="notifOpen.set(false)">Mark all read</span>
+              </div>
+              <div class="notif-item unread">
+                <div class="notif-ico" style="background:#EEF2FF;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#2251CC" stroke-width="2"/>
+                    <circle cx="12" cy="7" r="4" stroke="#2251CC" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div style="flex:1">
+                  <div class="notif-text"><strong>Dr. Omar Farooq</strong> registered and awaiting approval</div>
+                  <span class="notif-time">2 min ago</span>
+                </div>
+                <div class="unread-dot"></div>
+              </div>
+              <div class="notif-item unread">
+                <div class="notif-ico" style="background:rgba(14,165,160,0.1);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 11l3 3L22 4" stroke="#0EA5A0" stroke-width="2"/>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="#0EA5A0" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div style="flex:1">
+                  <div class="notif-text"><strong>Case PT-2024-8892</strong> submitted by Dr. Salman A. Shah</div>
+                  <span class="notif-time">18 min ago</span>
+                </div>
+                <div class="unread-dot"></div>
+              </div>
+              <div class="notif-item">
+                <div class="notif-ico" style="background:rgba(245,158,11,0.1);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#F59E0B" stroke-width="2"/>
+                    <polyline points="14 2 14 8 20 8" stroke="#F59E0B" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div style="flex:1">
+                  <div class="notif-text"><strong>Report Q1-2026</strong> was generated and exported</div>
+                  <span class="notif-time">1 hour ago</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>-->
+
+        <!--     <button class="new-btn" (click)="openAddDoctor()"> -->
+        <!--       <svg width="14" height="14" viewBox="0 0 24 24" fill="none"> -->
+        <!--         <line x1="12" y1="5" x2="12" y2="19" stroke="white" stroke-width="2" stroke-linecap="round"/> -->
+        <!--         <line x1="5" y1="12" x2="19" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/> -->
+        <!--       </svg> -->
+        <!--       New Doctor -->
+        <!--     </button> -->
+
+
+        <div class="sidebar-user">
+            <div class="profile-side">
+                @if (getProfileImageUrl()) {
+                    <img [src]="getProfileImageUrl()" alt="Profile Photo" class="s-avatar">
+                } @else {
+                    <div class="s-avatar">{{ getUserInitials(userInfo()) }}</div>
+                }
+                <div>
+                    <span class="s-name">{{ userInfo()?.firstName + ' ' + userInfo()?.lastName }}</span>
+                    <span class="s-role">{{ userInfo()?.role?.label }}</span>
+                </div>
+            </div>
+            <div class="user-menu-item logout" (click)="logout()">
+                <svg fill="none" height="18" viewBox="0 0 24 24" width="18">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" fill="none" stroke="currentColor"
+                          stroke-width="2"/>
+                    <polyline fill="none" points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/>
+                    <line stroke="currentColor" stroke-width="2" x1="21" x2="9" y1="12" y2="12"/>
+                </svg>
+            </div>
+        </div>
+    </div>
 </div>

@@ -68,7 +68,7 @@
   transition: background 0.15s;
 
   &:hover {
-    background: rgba(6, 86, 197, 0.06);  /* --blue tint */
+    background: rgba(6, 86, 197, 0.06); /* --blue tint */
   }
 }
 
@@ -96,7 +96,7 @@
   font-weight: 600;
   color: #fff;
   font-family: 'DM Sans', sans-serif;
-  box-shadow: 0 4px 14px rgba(10, 0, 97, 0.28);   /* --navy */
+  box-shadow: 0 4px 14px rgba(10, 0, 97, 0.28); /* --navy */
   transition: background 0.15s, transform 0.15s;
 
   &:hover {
@@ -113,7 +113,7 @@
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(10, 0, 97, 0.14);  /* --navy */
+  box-shadow: 0 12px 40px rgba(10, 0, 97, 0.14); /* --navy */
   width: 360px;
   z-index: 300;
   animation: dropIn 0.15s ease;
@@ -170,7 +170,7 @@
   }
 
   &.unread {
-    background: rgba(6, 86, 197, 0.04);  /* --blue subtle */
+    background: rgba(6, 86, 197, 0.04); /* --blue subtle */
   }
 }
 
@@ -211,8 +211,6 @@
 }
 
 
-
-
 .sidebar-user {
   display: flex;
   align-items: center;
@@ -232,7 +230,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--blue), var(--indigo));  /* Royal Blue → Vivid Purple */
+  background: linear-gradient(135deg, var(--blue), var(--indigo)); /* Royal Blue → Vivid Purple */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -267,7 +265,7 @@
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(10, 0, 97, 0.14);  /* --navy */
+  box-shadow: 0 12px 40px rgba(10, 0, 97, 0.14); /* --navy */
   width: 360px;
   z-index: 300;
   animation: dropIn 0.15s ease;
