@@ -98,6 +98,12 @@
   }
 }
 
+.error-msg {
+  color: #e66363;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
 /* ===== Header ===== */
 .card-brand {
   text-align: center;
@@ -118,6 +124,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    cursor: pointer;
   }
 
   &-name {

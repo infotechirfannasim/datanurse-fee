@@ -292,7 +292,7 @@
           <button class="btn btn-primary"
                   [disabled]="form.invalid"
                   (click)="submitUser()">
-            {{ isEditMode ? 'Update' : 'Save' }}
+            {{ isEditMode ? 'Update' : 'Create' }}
           </button>
         </div>
       </div>
@@ -403,12 +403,12 @@
           </div>
           <div class="confirm-title">Are you sure?</div>
           <div class="confirm-text">This will permanently remove
-            <strong>{{ selectedUser()!.firstName + selectedUser()!.lastName }}</strong>
+            <strong>{{ selectedUser()!.firstName + ' ' + selectedUser()!.lastName }}</strong>
                                     from the platform. This action cannot be undone.
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-ghost" (click)="showDeleteModal.set(false)">Cancel</button>
+          <button class="btn btn-ghost" (click)="showDeleteModal.set(false)">No</button>
           <button class="btn btn-danger" (click)="confirmDelete()">Yes</button>
         </div>
       </div>
