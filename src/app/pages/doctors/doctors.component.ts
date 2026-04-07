@@ -287,25 +287,39 @@ export class DoctorsComponent implements OnInit {
     }
 
     onImageSelected(event: any) {
-        const file = event.target.files[0];
-        if (file) {
-            if (file.size >  1024 * 1024) {
-                this.toastService.show('Image size must be less than 1MB', 'error');
-                return;
-            }
-            if (!['image/jpeg', 'image/png'].includes(file.type)) {
-                this.toastService.show('Only JPG and PNG', 'error');
-                return;
-            }
+        const file = event.target.files?.[0];
+        if (!file) return;
 
-            this.selectedFile = file;
+        const allowedTypes = ['image/jpeg', 'image/png'];
+        const allowedExtensions = ['jpg', 'jpeg', 'png'];
 
-            const reader = new FileReader();
-            reader.onload = () => {
-                this.imagePreview = reader.result as string;
-            };
-            reader.readAsDataURL(file);
+        const fileName = file.name.toLowerCase();
+        const ext = fileName.split('.').pop();
+
+        event.target.value = '';
+
+        if (file.size > 1024 * 1024) {
+            this.toastService.show('Max size is 1MB', 'error');
+            return;
         }
+
+        if (!ext || !allowedExtensions.includes(ext)) {
+            this.toastService.show('Only JPG and PNG allowed', 'error');
+            return;
+        }
+
+        if (!allowedTypes.includes(file.type)) {
+            this.toastService.show('Invalid file type', 'error');
+            return;
+        }
+
+        this.selectedFile = file;
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            this.imagePreview = reader.result as string;
+        };
+        reader.readAsDataURL(file);
     }
 
     addHospitalRow(prefill?: any): void {
@@ -448,7 +462,7 @@ export class DoctorsComponent implements OnInit {
             formData.append('profileImage', this.selectedFile);
         }
         const request$ = this.isEditMode
-            ? this.requestService.patchReqWithFormData(`${USERS_API_URL}/${this.selectedDoctor()?._id}`, formData)
+            ? this.requestService.putReqWithFormData(`${USERS_API_URL}/${this.selectedDoctor()?._id}`, formData)
             : this.requestService.postReqWithFormData(USERS_API_URL, formData);
 
         request$.subscribe({

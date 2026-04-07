@@ -29,6 +29,7 @@
                   required
                   type="email"
           />
+            <small class="error">{{ getErrorMsg('email') }}</small>
         </div>
       </div>
         <div class="form-group">
@@ -60,6 +61,7 @@
               </svg>
             }
           </button>
+            <small class="error">{{ getErrorMsg('password') }}</small>
         </div>
       </div>
         <div class="dark-row">

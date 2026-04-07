@@ -5,6 +5,7 @@ import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../../core/services/auth.service';
 import {ToastService} from '../../../core/services/toast.service';
 import {environment} from '../../../../environments/environment';
+import {getError} from "../../../utils/global.utils";
 
 declare global {
   interface Window {
@@ -33,10 +34,21 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
   turnstileToken = '';
   widgetId: string | null = null;
 
+  errorMessages = {
+
+    email: {required: 'Email is required', maxlength: 'Max 50 characters', email: 'Provide valid email'},
+    password: {
+      required: 'Password is required',
+      minlength: 'Min 8 characters',
+      maxlength: 'Max 20 characters',
+      pattern: 'Include upper, lower, number & special char'
+    }
+  };
+
   constructor() {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.maxLength(50), Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]],
       rememberMe: [false],
     });
   }
@@ -153,6 +165,14 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
       complete: () => {
         this.isLoading = false;
       },
+    });
+  }
+
+  getErrorMsg(controlName: string, index?: number, field?: string) {
+    return getError(this.loginForm, controlName, {
+      index,
+      field,
+      customMessages: this.errorMessages
     });
   }
 }

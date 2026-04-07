@@ -189,6 +189,12 @@ export class RequestService {
     return this.http.patch(URL, params, { headers: reqHeader, observe: 'response' });
   }
 
+  putReqWithFormData(url: any, params: FormData) {
+    const reqHeader = this.getMultipartHeaders();
+    let URL = this.getBEAPIServer() + url;
+    return this.http.put(URL, params, { headers: reqHeader, observe: 'response' });
+  }
+
   postRequestMultipartFormAndDataUpload(url: any, file: any, data: any) {
     let headers = this.getBasicMultipartHeaders();
     let formData: FormData = new FormData();

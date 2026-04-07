@@ -51,7 +51,7 @@ export class UsersComponent implements OnInit {
         firstName: {required: 'First name is required', pattern: 'Only alphabets allowed'},
         lastName: {required: 'Last name is required', pattern: 'Only alphabets allowed'},
         role: {required: 'Role is required'},
-        email: {required: 'Email is required', email: 'Provide valid email'},
+        email: {required: 'Email is required', maxlength: 'Max 50 characters', email: 'Provide valid email'},
         password: {
             required: 'Password is required',
             minlength: 'Min 8 characters',
@@ -86,7 +86,7 @@ export class UsersComponent implements OnInit {
                 Validators.minLength(5),
                 Validators.maxLength(50),
                 Validators.pattern(RegexConstants.ALPHABET_REGEX)]],
-            email: ['', [Validators.required, Validators.email]],
+            email: ['', [Validators.required, Validators.maxLength(50), Validators.email]],
             role: ['', Validators.required],
             password: [''],
             confirmPassword: [''],
@@ -259,25 +259,39 @@ export class UsersComponent implements OnInit {
     }
 
     onImageSelected(event: any) {
-        const file = event.target.files[0];
-        if (file) {
-            if (file.size > 1024 * 1024) {
-                this.toastService.show('Image size must be less than 1MB', 'error');
-                return;
-            }
-            if (!['image/jpeg', 'image/png'].includes(file.type)) {
-                this.toastService.show('Only JPG and PNG allowed', 'error');
-                return;
-            }
+        const file = event.target.files?.[0];
+        if (!file) return;
 
-            this.selectedFile = file;
+        const allowedTypes = ['image/jpeg', 'image/png'];
+        const allowedExtensions = ['jpg', 'jpeg', 'png'];
 
-            const reader = new FileReader();
-            reader.onload = () => {
-                this.imagePreview = reader.result as string;
-            };
-            reader.readAsDataURL(file);
+        const fileName = file.name.toLowerCase();
+        const ext = fileName.split('.').pop();
+
+        event.target.value = '';
+
+        if (file.size > 1024 * 1024) {
+            this.toastService.show('Max size is 1MB', 'error');
+            return;
         }
+
+        if (!ext || !allowedExtensions.includes(ext)) {
+            this.toastService.show('Only JPG and PNG allowed', 'error');
+            return;
+        }
+
+        if (!allowedTypes.includes(file.type)) {
+            this.toastService.show('Invalid file type', 'error');
+            return;
+        }
+
+        this.selectedFile = file;
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            this.imagePreview = reader.result as string;
+        };
+        reader.readAsDataURL(file);
     }
 
     submitUser(): void {
@@ -313,7 +327,7 @@ export class UsersComponent implements OnInit {
             formData.append('profileImage', this.selectedFile);
         }
         const request$ = this.isEditMode
-            ? this.requestService.patchReqWithFormData(`${USERS_API_URL}/${this.selectedUser()?._id}`, formData)
+            ? this.requestService.putReqWithFormData(`${USERS_API_URL}/${this.selectedUser()?._id}`, formData)
             : this.requestService.postReqWithFormData(USERS_API_URL, formData);
 
         request$.subscribe({

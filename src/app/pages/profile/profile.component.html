@@ -23,16 +23,18 @@
                 <circle cx="12" cy="7" r="4" stroke="#7A8BB0" stroke-width="2"/>
               </svg>
             }
-            <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    (change)="onImageSelected($event)"
-            />
+              <input
+                  #fileInput
+                  type="file"
+                  accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                  (change)="onImageSelected($event)"
+                  hidden
+              />
           </div>
-          <div class="avatar-meta">
-            <strong>Change Profile Photo</strong><br>
-            JPG, PNG. Max 1MB.
-          </div>
+            <div class="avatar-meta">
+                <strong>Upload Profile Photo</strong>
+                <br>Allowed: JPG, PNG • Max size: 1MB
+            </div>
         </div>
         
         <form [formGroup]="personalForm">
