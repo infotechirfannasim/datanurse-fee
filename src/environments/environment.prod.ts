@@ -1,10 +1,11 @@
 export const environment = {
-  production: false,
-  http_protocol: 'http',
+  production: true,
+  http_protocol: 'https',
   http_separator: '://',
-  api_end_point_url: '192.168.78.35',
-  api_end_point_port: '8080',
+  api_end_point_url: 'datanurse.io',
+  api_end_point_port: '',
   api_context_path: '',
-  api_access_client: 'drapp',
-  api_secret_client: 'drapp',
+  api_access_client: 'datanurse',
+  api_secret_client: 'datanurse',
+  turnstileSiteKey: '0x4AAAAAAC01sCJPOKQ8hylW',
 };
