@@ -3,13 +3,14 @@ import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ToastService} from '../../core/services/toast.service';
 import {RequestService} from '../../core/services/request.service';
-import {PROFILE_API_URL, UPDATE_PROFILE_API_URL} from "../../utils/api.url.constants";
+import {CHANGE_PASS_API_URL, PROFILE_API_URL, UPDATE_PROFILE_API_URL} from "../../utils/api.url.constants";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {User} from "../../core/models/user.model";
 import {AuthService} from "../../core/services/auth.service";
 import {NgxMaskDirective} from "ngx-mask";
 import {getError} from "../../utils/global.utils";
 import {RouterLink} from "@angular/router";
+import {finalize} from "rxjs";
 
 
 @Component({
@@ -36,6 +37,16 @@ export class ProfileComponent implements OnInit {
 
     imagePreview: string | null = null;
     selectedFile: File | null = null;
+    isSubmitting: boolean = false;
+    currentPassword: boolean = false
+    newPassword: boolean = false
+    confirmPassword: boolean = false
+
+    errorMessages = {
+        currentPassword: {required: 'Current password is required'},
+        newPassword: {required: 'New password is required', minLength: 'Password must be atleast 8 characters'},
+        confirmPassword: {required: 'Confirm password is required', mismatch: 'New passwords must be same'},
+    };
 
     ngOnInit(): void {
         this.initForms();
@@ -50,11 +61,37 @@ export class ProfileComponent implements OnInit {
             phone: [''],
         });
 
-        this.passwordForm = this.fb.group({
-            currentPassword: ['', Validators.required],
-            newPassword: ['', [Validators.required, Validators.minLength(8)]],
-            confirmPassword: ['', Validators.required]
-        });
+        this.passwordForm = this.fb.group(
+            {
+                currentPassword: ['', [Validators.required]],
+                newPassword: ['', [Validators.required, Validators.minLength(8)]],
+                confirmPassword: ['', [Validators.required]]
+            },
+            {validators: this.passwordMatchValidator}
+        );
+    }
+
+    passwordMatchValidator(form: FormGroup) {
+        const newPassword = form.get('newPassword')?.value;
+        const confirmPasswordControl = form.get('confirmPassword');
+
+        if (!confirmPasswordControl) return null;
+
+        if (newPassword !== confirmPasswordControl.value) {
+            confirmPasswordControl.setErrors({
+                ...confirmPasswordControl.errors,
+                mismatch: true
+            });
+        } else {
+            if (confirmPasswordControl.errors) {
+                delete confirmPasswordControl.errors['mismatch'];
+                if (!Object.keys(confirmPasswordControl.errors).length) {
+                    confirmPasswordControl.setErrors(null);
+                }
+            }
+        }
+
+        return null;
     }
 
     loadProfile(): void {
@@ -117,7 +154,7 @@ export class ProfileComponent implements OnInit {
             if (key === 'email') return;
 
             const value = formValue[key];
-            if (value !== null && value !== undefined && value !== '') {
+            if (value !== undefined) {
                 formData.append(key, value);
             }
         });
@@ -151,25 +188,42 @@ export class ProfileComponent implements OnInit {
             return;
         }
 
-        const {currentPassword, newPassword, confirmPassword} = this.passwordForm.value;
+        const {currentPassword, newPassword} = this.passwordForm.getRawValue();
 
-        if (newPassword !== confirmPassword) {
-            this.toastService.show('New passwords do not match!', 'error');
-            return;
-        }
+        const payload = {currentPassword, newPassword};
 
-        // Call change password API here
-        // this.requestService.postRequest('/auth/change-password', { currentPassword, newPassword })...
+        this.isSubmitting = true;
 
-        this.toastService.show('Password changed successfully!', 'success');
-        this.passwordForm.reset();
+        this.requestService.postRequest(CHANGE_PASS_API_URL, payload)
+            .pipe(finalize(() => (this.isSubmitting = false)))
+            .subscribe({
+                next: () => {
+                    this.toastService.show('Password changed successfully!', 'success');
+                    this.passwordForm.reset();
+                },
+                error: (err) => {
+                    const msg = err?.error?.message ?? 'Failed to change password';
+                    this.toastService.show(msg, 'error');
+                }
+            });
     }
 
     getErrorMsg(controlName: string, index?: number, field?: string) {
-        return getError(this.personalForm, controlName, {
+        return getError(this.passwordForm, controlName, {
             index,
-            field
+            field,
+            customMessages: this.errorMessages
         });
+    }
+
+    toggleButton(type: 'currentPassword' | 'newPassword' | 'confirmPassword') {
+        if (type === 'currentPassword') {
+            this.currentPassword = !this.currentPassword;
+        } else if (type === 'newPassword') {
+            this.newPassword = !this.newPassword;
+        } else if (type === 'confirmPassword') {
+            this.confirmPassword = !this.confirmPassword;
+        }
     }
 
     getActivityColor(type: string): string {
