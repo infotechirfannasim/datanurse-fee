@@ -230,7 +230,7 @@
         <div class="modal-footer">
           <button class="btn btn-ghost" (click)="showAddModal.set(false); resetForm()">Cancel</button>
           <button class="btn btn-primary" [disabled]="form.invalid" (click)="submitLov()">
-            {{ isEditMode ? 'Update' : 'Create' }}
+            {{ isEditMode ? 'Update' : 'Add' }}
           </button>
         </div>
       </div>

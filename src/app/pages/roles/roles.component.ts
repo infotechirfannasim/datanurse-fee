@@ -177,7 +177,7 @@ export class RolesComponent implements OnInit {
 
         this.requestService.deleteRequest(`${DELETE_ROLE_API_URL}/${this.selectedRole()?._id}`).subscribe({
             next: (response) => {
-                this.toastService.show('Role removed successfully', 'success');
+                this.toastService.show('Role deleted successfully', 'success');
                 this.showDeleteModal.set(false);
                 this.loadRoles();
             },
@@ -263,7 +263,7 @@ export class RolesComponent implements OnInit {
         request$.subscribe({
             next: (response) => {
                 this.toastService.show(
-                    this.isEditMode ? 'Role updated successfully!' : 'Role created successfully!',
+                    this.isEditMode ? 'Role updated successfully!' : 'Role added successfully!',
                     'success'
                 );
                 this.resetForm();
