@@ -8,7 +8,7 @@ import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {User} from "../../core/models/user.model";
 import {AuthService} from "../../core/services/auth.service";
 import {NgxMaskDirective} from "ngx-mask";
-import {getError, markAllTouched} from "../../utils/global.utils";
+import {getError, markAllTouched, passwordMatchValidator} from "../../utils/global.utils";
 import {RouterLink} from "@angular/router";
 import {finalize} from "rxjs";
 import {RegexConstants} from "../../utils/regex-constants";
@@ -44,11 +44,16 @@ export class ProfileComponent implements OnInit {
     confirmPassword: boolean = false
 
     errorMessages = {
-        currentPassword: {required: 'Current password is required'},
-        newPassword: {required: 'New password is required', minLength: 'Password must be atleast 8 characters'},
-        confirmPassword: {required: 'Confirm password is required', mismatch: 'New passwords must be same'},
         firstName: {required: 'First name is required', pattern: 'Only alphabets allowed'},
-        lastName: {required: 'Last name is required', pattern: 'Only alphabets allowed'}
+        lastName: {required: 'Last name is required', pattern: 'Only alphabets allowed'},
+        currentPassword: {required: 'Current password is required'},
+        newPassword: {
+            required: 'Password is required',
+            minlength: 'Min 8 characters',
+            maxlength: 'Max 20 characters',
+            pattern: 'Include upper, lower, number & special char'
+        },
+        confirmPassword: {required: 'Confirm password is required', mismatch: 'New passwords must be same'}
     };
 
 
@@ -77,34 +82,14 @@ export class ProfileComponent implements OnInit {
         this.passwordForm = this.fb.group(
             {
                 currentPassword: ['', [Validators.required]],
-                newPassword: ['', [Validators.required, Validators.minLength(8)]],
+                newPassword: ['', [Validators.required,
+                    Validators.minLength(8),
+                    Validators.maxLength(20),
+                    Validators.pattern(RegexConstants.PASSWORD_REGEX)]],
                 confirmPassword: ['', [Validators.required]]
             },
-            {validators: this.passwordMatchValidator}
+            {validators: passwordMatchValidator('newPassword', 'confirmPassword', {requireBoth: true})}
         );
-    }
-
-    passwordMatchValidator(form: FormGroup) {
-        const newPassword = form.get('newPassword')?.value;
-        const confirmPasswordControl = form.get('confirmPassword');
-
-        if (!confirmPasswordControl) return null;
-
-        if (newPassword !== confirmPasswordControl.value) {
-            confirmPasswordControl.setErrors({
-                ...confirmPasswordControl.errors,
-                mismatch: true
-            });
-        } else {
-            if (confirmPasswordControl.errors) {
-                delete confirmPasswordControl.errors['mismatch'];
-                if (!Object.keys(confirmPasswordControl.errors).length) {
-                    confirmPasswordControl.setErrors(null);
-                }
-            }
-        }
-
-        return null;
     }
 
     loadProfile(): void {
@@ -222,7 +207,7 @@ export class ProfileComponent implements OnInit {
     }
 
     getErrorMsg(controlName: string, index?: number, field?: string) {
-        return getError(this.passwordForm, controlName, {
+        return getError(this.personalForm, controlName, {
             index,
             field,
             customMessages: this.errorMessages

@@ -293,7 +293,7 @@ export class DoctorsComponent implements OnInit {
                 this.toastService.show('Image size must be less than 2MB', 'error');
                 return;
             }
-            if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+            if (!['image/jpeg', 'image/png'].includes(file.type)) {
                 this.toastService.show('Only JPG, PNG or WEBP allowed', 'error');
                 return;
             }

@@ -15,7 +15,7 @@ import {ROLES} from "../../utils/app-constants";
 import {MultiSelectModule} from "primeng/multiselect";
 import {SelectModule} from "primeng/select";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
-import {getError, getUserInitials, markAllTouched} from "../../utils/global.utils";
+import {getError, getUserInitials, markAllTouched, passwordMatchValidator} from "../../utils/global.utils";
 import {RegexConstants} from "../../utils/regex-constants";
 
 @Component({
@@ -50,10 +50,15 @@ export class UsersComponent implements OnInit {
     errorMessages = {
         firstName: {required: 'First name is required', pattern: 'Only alphabets allowed'},
         lastName: {required: 'Last name is required', pattern: 'Only alphabets allowed'},
-        password: {required: 'Password is required', minLength: 'Password must be atleast 8 characters'},
         role: {required: 'Role is required'},
         email: {required: 'Email is required', email: 'Provide valid email'},
-        confirmPassword: {required: 'Confirm password is required', mismatch: 'New passwords must be same'}
+        password: {
+            required: 'Password is required',
+            minlength: 'Min 8 characters',
+            maxlength: 'Max 20 characters',
+            pattern: 'Include upper, lower, number & special char'
+        },
+        confirmPassword: {required: 'Confirm password is required', mismatch: 'Passwords must be same'}
     };
     private fb = inject(FormBuilder);
     private requestService = inject(RequestService);
@@ -86,6 +91,8 @@ export class UsersComponent implements OnInit {
             password: [''],
             confirmPassword: [''],
             status: ['active', Validators.required],
+        }, {
+            validators: passwordMatchValidator('password', 'confirmPassword')
         });
     }
 
@@ -209,7 +216,9 @@ export class UsersComponent implements OnInit {
         if (isAddMode) {
             this.form.get('password')?.setValidators([
                 Validators.required,
-                Validators.minLength(6)
+                Validators.minLength(8),
+                Validators.maxLength(20),
+                Validators.pattern(RegexConstants.PASSWORD_REGEX)
             ]);
 
             this.form.get('confirmPassword')?.setValidators([

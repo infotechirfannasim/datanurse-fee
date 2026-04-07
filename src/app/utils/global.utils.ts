@@ -1,5 +1,5 @@
 import {User} from "../core/models/user.model";
-import {AbstractControl, FormArray, FormGroup} from "@angular/forms";
+import {AbstractControl, FormArray, FormGroup, ValidationErrors, ValidatorFn} from "@angular/forms";
 
 export function getUserInitials(user: User | null): string {
 
@@ -103,6 +103,50 @@ export function markAllTouched(control: AbstractControl): void {
     }
     control.markAsTouched();
 }
+
+export const passwordMatchValidator = (
+    passwordKey: string = 'password',
+    confirmKey: string = 'confirmPassword',
+    options?: { requireBoth?: boolean }
+): ValidatorFn => {
+
+    return (form: AbstractControl): ValidationErrors | null => {
+        const passwordCtrl = form.get(passwordKey);
+        const confirmCtrl = form.get(confirmKey);
+
+        if (!passwordCtrl || !confirmCtrl) return null;
+
+        const password = passwordCtrl.value;
+        const confirm = confirmCtrl.value;
+
+        // 🧠 Case 1: Edit mode (password optional)
+        if (!options?.requireBoth && !password && !confirm) {
+            confirmCtrl.setErrors(null);
+            return null;
+        }
+
+        // 🧠 Case 2: One filled, other empty
+        if (password && !confirm) {
+            confirmCtrl.setErrors({required: true});
+            return {required: true};
+        }
+
+        if (!password && confirm) {
+            confirmCtrl.setErrors({required: true});
+            return {required: true};
+        }
+
+        // 🧠 Case 3: Mismatch
+        if (password !== confirm) {
+            confirmCtrl.setErrors({mismatch: true});
+            return {mismatch: true};
+        }
+
+        // ✅ Valid
+        confirmCtrl.setErrors(null);
+        return null;
+    };
+};
 
 export interface MenuItem {
     id: number;
