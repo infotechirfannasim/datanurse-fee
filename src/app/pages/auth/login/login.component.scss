@@ -80,6 +80,11 @@
   z-index: 2;
   transition: all 0.3s ease;
 
+  @media (max-width: 768px) {
+    padding: 25px;
+    border-radius: 5px;
+  }
+
   @media (max-width: 480px) {
     padding: 20px;
     max-width: 352px;
@@ -96,14 +101,17 @@
 /* ===== Header ===== */
 .card-brand {
   text-align: center;
-  margin-bottom: 30px;
 
   &-icon {
     width: 220px;
     height: auto;
-    margin: 0 auto 12px;
+    margin: 0 auto;
     border-radius: 16px;
     overflow: hidden;
+
+    @media (max-width: 768px) {
+      width: 160px;
+    }
   }
 
   &-icon img {
@@ -127,6 +135,11 @@
 .card-title {
   color: #fff;
   font-size: 18px;
+  text-align: center;
+  margin-bottom: 30px;
+  @media (max-width: 480px) {
+    margin-bottom: 10px;
+  }
 }
 
 .card-sub {
@@ -147,6 +160,10 @@
 .dark-input-wrap {
   position: relative;
   margin-top: 10px;
+
+  @media (max-width: 480px) {
+    margin-top: 0;
+  }
 }
 
 .icon {
