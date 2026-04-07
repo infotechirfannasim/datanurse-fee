@@ -4,7 +4,7 @@ import {CommonModule} from '@angular/common';
 import {ToastService} from '../../core/services/toast.service';
 import {Doctor} from '../../core/models/doctor.model';
 import {RequestService} from "../../core/services/request.service";
-import {CASES_API_URL, DELETE_USER_API_URL, PATIENTS_API_URL} from "../../utils/api.url.constants";
+import {CASES_API_URL, DELETE_USER_API_URL} from "../../utils/api.url.constants";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {FilterParams} from "../../core/models/user.model";
 import {MultiSelectModule} from "primeng/multiselect";
@@ -108,6 +108,7 @@ export class CasesComponent implements OnInit {
         this.selectedCase.set(doc);
         this.showDeleteModal.set(true);
     }
+
     getCaseStatusClass(status: string): string {
         const map: Record<string, string> = {
             'Salvage': 'status-salvage',
@@ -141,6 +142,7 @@ export class CasesComponent implements OnInit {
         if (parts.length === 1) return parts[0][0].toUpperCase();
         return '?';
     }
+
     getObjectKeys(obj: Record<string, any> | null | undefined): string[] {
         if (!obj) return [];
         return Object.keys(obj).filter(k => obj[k] === true || obj[k] === 1);
@@ -172,13 +174,12 @@ export class CasesComponent implements OnInit {
         if (!this.selectedCase()) return;
         this.requestService.deleteRequest(DELETE_USER_API_URL + this.selectedCase()?._id).subscribe({
             next: (response) => {
-                this.toastService.show('Doctor removed successfully', 'error');
+                this.toastService.show('Case deleted successfully', 'error');
                 this.showDeleteModal.set(false);
                 this.loadCases();
             },
             error: (err) => {
-                console.error(err);
-                alert(err.error?.message || 'Failed to removed doctor');
+                this.toastService.show('Failed to delete case.', 'error');
             }
         });
 

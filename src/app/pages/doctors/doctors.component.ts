@@ -274,7 +274,7 @@ export class DoctorsComponent implements OnInit {
         if (!this.selectedDoctor()) return;
         this.requestService.deleteRequest(DELETE_USER_API_URL + this.selectedDoctor()?._id).subscribe({
             next: (response) => {
-                this.toastService.show('Doctor removed successfully', 'success');
+                this.toastService.show('Doctor deleted successfully', 'success');
                 this.showDeleteModal.set(false);
                 this.loadDoctors();
             },
@@ -289,12 +289,12 @@ export class DoctorsComponent implements OnInit {
     onImageSelected(event: any) {
         const file = event.target.files[0];
         if (file) {
-            if (file.size > 2 * 1024 * 1024) {
-                this.toastService.show('Image size must be less than 2MB', 'error');
+            if (file.size >  1024 * 1024) {
+                this.toastService.show('Image size must be less than 1MB', 'error');
                 return;
             }
             if (!['image/jpeg', 'image/png'].includes(file.type)) {
-                this.toastService.show('Only JPG, PNG or WEBP allowed', 'error');
+                this.toastService.show('Only JPG and PNG', 'error');
                 return;
             }
 

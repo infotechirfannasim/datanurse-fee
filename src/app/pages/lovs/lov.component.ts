@@ -428,7 +428,7 @@ export class LovComponent implements OnInit, OnDestroy {
         request$.subscribe({
             next: () => {
                 this.toastService.show(
-                    this.isEditMode ? 'Value updated successfully!' : 'Value created successfully!',
+                    this.isEditMode ? 'Data Reference updated successfully!' : 'Data Reference created successfully!',
                     'success'
                 );
                 this.closeAddModal();

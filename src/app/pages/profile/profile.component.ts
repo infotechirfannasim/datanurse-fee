@@ -119,12 +119,12 @@ export class ProfileComponent implements OnInit {
     onImageSelected(event: any): void {
         const file = event.target.files[0];
         if (file) {
-            if (file.size > 2 * 1024 * 1024) {
-                alert('Image size must be less than 2MB');
+            if (file.size > 1024 * 1024) {
+                this.toastService.show('Image size must be less than 1MB', 'error');
                 return;
             }
-            if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-                alert('Only JPG, PNG or WEBP allowed');
+            if (!['image/jpeg', 'image/png'].includes(file.type)) {
+                this.toastService.show('Only JPG and PNG allowed', 'error');
                 return;
             }
 
