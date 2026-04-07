@@ -1,31 +1,31 @@
 @import "imports";
 
 * {
-    scrollbar-width: thin;
+  scrollbar-width: thin;
 }
 
 body {
-    padding: 0;
-    margin: 0;
-    font-family: 'Open Sans', sans-serif;
-    font-size: var(--base-font-size);
-    color: var(--color-black);
+  padding: 0;
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  font-size: var(--base-font-size);
+  color: var(--color-black);
 
-    &.p-overflow-hidden {
-        overflow: hidden;
-    }
+  &.p-overflow-hidden {
+    overflow: hidden;
+  }
 
-    @include xxl {
-        font-size: calc(1rem * 0.75);
-    }
+  @include xxl {
+    font-size: calc(1rem * 0.75);
+  }
 
-    @include breakpoint(1440) {
-        font-size: calc(1rem * 0.75);
-    }
+  @include breakpoint(1440) {
+    font-size: calc(1rem * 0.75);
+  }
 
-    @include pixel-ratio(1.25) {
-        font-size: calc(1rem * 0.75);
-    }
+  @include pixel-ratio(1.25) {
+    font-size: calc(1rem * 0.75);
+  }
 }
 
 
@@ -33,68 +33,74 @@ body {
   Style for custom paginator data table
  */
 .p-datatable .p-datatable-thead > tr > th {
-    font-size: 0.75rem;
-    padding: 0.25rem 1rem;
-    white-space: nowrap;
-    /*background-color: var(--color-primary) !important;*/
-    /*color: var(--color-base-white-50);*/
+  font-size: 0.75rem;
+  padding: 0.25rem 1rem;
+  white-space: nowrap;
+  /*background-color: var(--color-primary) !important;*/
+  /*color: var(--color-base-white-50);*/
 }
-.p-datatable .p-datatable-tbody > tr > td {
-    color: black;
-    font-size: 0.75rem;
-    padding: 0.25rem 1rem;
-}
-.p-datatable .p-datatable-thead > tr > th {
-    &:first-child:not(:only-child) {
-        border-top-left-radius: 0.5rem;
-    }
 
-    &:last-child:not(:only-child) {
-        border-top-right-radius: 0.5rem;
-    }
+.p-datatable .p-datatable-tbody > tr > td {
+  color: black;
+  font-size: 0.75rem;
+  padding: 0.25rem 1rem;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  &:first-child:not(:only-child) {
+    border-top-left-radius: 0.5rem;
+  }
+
+  &:last-child:not(:only-child) {
+    border-top-right-radius: 0.5rem;
+  }
 }
 
 .read-only-page {
-    display: grid;
-    grid-template-rows: 0 1fr;
+  display: grid;
+  grid-template-rows: 0 1fr;
 }
 
 .form-mode {
-    display: grid;
-    grid-template-rows: 1fr;
+  display: grid;
+  grid-template-rows: 1fr;
 }
 
 .read-only-doc-preview {
-    display: grid;
-    grid-template-columns: 0 1fr 2fr;
+  display: grid;
+  grid-template-columns: 0 1fr 2fr;
 }
 
 .two-cols-read-only-doc-preview {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
 }
 
 p-dialog {
 
-    .card-body-inner-container:has(.cif-joint-account-page, .cif-guardian-account-page) {
-        display: grid;
-    }
+  .card-body-inner-container:has(.cif-joint-account-page, .cif-guardian-account-page) {
+    display: grid;
+  }
 
 }
+
 app-account-printing {
-    .p-datatable-wrapper {
-        p-tableheadercheckbox, p-tablecheckbox {
-            .p-hidden-accessible {
-                display: none !important;
-            }
-        }
+  .p-datatable-wrapper {
+    p-tableheadercheckbox, p-tablecheckbox {
+      .p-hidden-accessible {
+        display: none !important;
+      }
     }
+  }
 }
-.p-checkbox .p-checkbox-box {
 
-    transition: none;
-    &.p-highlight {
-        background-color: var(--color-primary);
-        background: var(--color-primary);
-    }
+.p-checkbox .p-checkbox-box {
+  transition: none;
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+
+  &.p-highlight {
+    background-color: var(--color-primary);
+    background: var(--color-primary);
+  }
 }
