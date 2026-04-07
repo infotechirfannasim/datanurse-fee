@@ -5,6 +5,8 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {AuthService} from "../../../core/services/auth.service";
 import {ForgotPasswordRequest} from "../../../core/models/user.model";
 import {ToastService} from "../../../core/services/toast.service";
+import {RegexConstants} from "../../../utils/regex-constants";
+import {getError, markAllTouched} from "../../../utils/global.utils";
 
 @Component({
     selector: 'app-forgot-password',
@@ -14,9 +16,16 @@ import {ToastService} from "../../../core/services/toast.service";
     styleUrls: ['../login/login.component.scss']
 })
 export class ForgotPasswordComponent {
-
+    errorMessages = {
+        email: {
+            required: 'Email is required',
+            maxlength: 'Max 50 characters',
+            email: 'Provide valid email',
+            pattern: 'Provide valid email'
+        },
+    };
     forgotForm = this.fb.group({
-        email: ['', [Validators.required, Validators.email]]
+        email: ['', [Validators.required, Validators.email, Validators.maxLength(50), Validators.pattern(RegexConstants.VALID_EMAIL_REGEX),]]
     });
 
     isLoading = false;
@@ -32,7 +41,10 @@ export class ForgotPasswordComponent {
   }
 
     onSubmit() {
-        if (this.forgotForm.invalid) return;
+        if (this.forgotForm.invalid) {
+            markAllTouched(this.forgotForm)
+            return;
+        }
 
         this.isLoading = true;
         this.error = '';
@@ -52,6 +64,14 @@ export class ForgotPasswordComponent {
                 this.toastService.show(this.error, 'error');
                 this.isLoading = false;
             }
+        });
+    }
+
+    getErrorMsg(controlName: string, index?: number, field?: string) {
+        return getError(this.forgotForm, controlName, {
+            index,
+            field,
+            customMessages: this.errorMessages
         });
     }
 }

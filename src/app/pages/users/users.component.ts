@@ -51,7 +51,12 @@ export class UsersComponent implements OnInit {
         firstName: {required: 'First name is required', pattern: 'Only alphabets allowed'},
         lastName: {required: 'Last name is required', pattern: 'Only alphabets allowed'},
         role: {required: 'Role is required'},
-        email: {required: 'Email is required', maxlength: 'Max 50 characters', email: 'Provide valid email'},
+        email: {
+            required: 'Email is required',
+            maxlength: 'Max 50 characters',
+            email: 'Provide valid email',
+            pattern: 'Provide valid email'
+        },
         password: {
             required: 'Password is required',
             minlength: 'Min 8 characters',
@@ -86,7 +91,7 @@ export class UsersComponent implements OnInit {
                 Validators.minLength(5),
                 Validators.maxLength(50),
                 Validators.pattern(RegexConstants.ALPHABET_REGEX)]],
-            email: ['', [Validators.required, Validators.maxLength(50), Validators.email]],
+            email: ['', [Validators.required, Validators.pattern(RegexConstants.VALID_EMAIL_REGEX), Validators.maxLength(50), Validators.email]],
             role: ['', Validators.required],
             password: [''],
             confirmPassword: [''],

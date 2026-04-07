@@ -1,6 +1,22 @@
 @use 'sass:color';
 @use "global";
 
+// ── Variables ── (updated to match client spec)
+$navy: #0A0061; // --navy  (Deep Indigo)
+$navy-dark: #0656C5; // --navy2 (Royal Blue)
+$blue: #0656C5; // --blue  (Royal Blue)
+$blue-light: rgba(6, 86, 197, 0.08); // --blue tint
+$blue-border: rgba(6, 86, 197, 0.20); // --blue border
+$blue-bg: rgba(6, 86, 197, 0.04); // --blue subtle bg
+$danger: #EF4444; // --rose
+$border: #E5E7EB; // --border
+$surface: #F9FAFB; // --card
+$muted: #6B7280; // --muted
+$text-mid: #374151;
+$text-body: #6B7280; // --muted
+$white: #ffffff;
+$font: 'DM Sans', sans-serif;
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -556,6 +572,7 @@ textarea.form-input {
   color: var(--text);
   background-color: transparent;
   outline: none;
+  font-family: $font;
   transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
 
@@ -1006,22 +1023,6 @@ select.form-input {
 // ============================================
 // MODALS — SCSS
 // ============================================
-
-// ── Variables ── (updated to match client spec)
-$navy: #0A0061; // --navy  (Deep Indigo)
-$navy-dark: #0656C5; // --navy2 (Royal Blue)
-$blue: #0656C5; // --blue  (Royal Blue)
-$blue-light: rgba(6, 86, 197, 0.08); // --blue tint
-$blue-border: rgba(6, 86, 197, 0.20); // --blue border
-$blue-bg: rgba(6, 86, 197, 0.04); // --blue subtle bg
-$danger: #EF4444; // --rose
-$border: #E5E7EB; // --border
-$surface: #F9FAFB; // --card
-$muted: #6B7280; // --muted
-$text-mid: #374151;
-$text-body: #6B7280; // --muted
-$white: #ffffff;
-$font: 'DM Sans', sans-serif;
 
 // ── Mixins ──
 @mixin flex-center {
@@ -2133,50 +2134,29 @@ input.has-icon {
 }
 
 
-//Toggle Switch
+.radio-group {
+  display: flex;
+  align-items: center;
+  gap: 16px; // space between radios
+}
 
-.toggle {
-  display: inline-block;
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   cursor: pointer;
 
   input {
-    display: none; // hide default checkbox
+    accent-color: var(--navy);
   }
 
-  .toggle-btn {
-    width: 46px;
-    height: 26px;
-    border-radius: 20px;
-    background: #e5e7eb;
-    position: relative;
-    transition: background 0.25s;
-    display: inline-block;
-
-    .toggle-knob {
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #fff;
-      transition: transform 0.25s;
-    }
-  }
-
-  input:checked + .toggle-btn {
-    background: #3B6D11;
-  }
-
-  input:checked + .toggle-btn .toggle-knob {
-    transform: translateX(20px);
+  span {
+    font-size: 14px;
   }
 }
-.p-checkbox .p-checkbox-box {
-  background: #FFFFFF !important;
-}
 
-
-.p-checkbox-checked .p-checkbox-box {
-  background: #0656C5 !important;
+button {
+  &:disabled {
+    cursor: default !important;
+  }
 }

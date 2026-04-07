@@ -6,6 +6,7 @@ import {AuthService} from '../../../core/services/auth.service';
 import {ToastService} from '../../../core/services/toast.service';
 import {environment} from '../../../../environments/environment';
 import {getError} from "../../../utils/global.utils";
+import {RegexConstants} from "../../../utils/regex-constants";
 
 declare global {
   interface Window {
@@ -35,8 +36,12 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
   widgetId: string | null = null;
 
   errorMessages = {
-
-    email: {required: 'Email is required', maxlength: 'Max 50 characters', email: 'Provide valid email'},
+    email: {
+      required: 'Email is required',
+      maxlength: 'Max 50 characters',
+      email: 'Provide valid email',
+      pattern: 'Provide valid email'
+    },
     password: {
       required: 'Password is required',
       minlength: 'Min 8 characters',
@@ -47,7 +52,7 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 
   constructor() {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.maxLength(50), Validators.email]],
+      email: ['', [Validators.required, Validators.maxLength(50), Validators.email, Validators.pattern(RegexConstants.VALID_EMAIL_REGEX),]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]],
       rememberMe: [false],
     });

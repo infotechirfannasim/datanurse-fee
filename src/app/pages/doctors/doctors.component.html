@@ -421,7 +421,7 @@
                         <span class="view-label">Specializations</span>
                         <div style="margin-top:8px;">
                             @for (s of selectedDoctor()!.specialities; track s) {
-                                <span class="spec-tag">{{ s | findObjByKey : 'code' : specialtyOptions : 'label' }}</span>
+                                <span class="spec-tag">{{ s | findObjByKey : 'code' : specialtyOptions : 'name' }}</span>
                             }
                         </div>
                     </div>
@@ -430,7 +430,7 @@
                         <div style="margin-top:8px;font-size:13px;color:var(--text);">
                             @if (selectedDoctor()?.hospitalAffiliations?.length) {
                                 @for (hospital of selectedDoctor()?.hospitalAffiliations; track hospital.name; let last = $last) {
-                                    {{ hospital.name | findObjByKey : 'code' : hospitalOptions : 'label' }} ({{ hospital.city | findObjByKey : 'code' : cityOptions : 'label' }})
+                                    {{ hospital.name | findObjByKey : 'code' : hospitalOptions : 'name' }} ({{ hospital.city | findObjByKey : 'code' : cityOptions : 'name' }})
 
                                     @if (!last) {
                                         ,

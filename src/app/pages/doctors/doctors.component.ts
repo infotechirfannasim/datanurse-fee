@@ -44,7 +44,11 @@ export class DoctorsComponent implements OnInit {
         pmdcNumber: {required: 'PMDC number is required', pattern: 'Format: PMDC-12345'},
         npiNumber: {required: 'NPI  number is required', pattern: 'Must be exactly 10 digits'},
         tinNumber: {required: 'TIN number is required', pattern: 'Must be 7–12 digits'},
-        email: {required: 'Email is required', email: 'Provide valid email'},
+        email: {
+            required: 'Email is required',
+            maxlength: 'Max 50 characters',
+            email: 'Provide valid email', pattern: 'Provide valid email'
+        },
         firstName: {required: 'First name is required', pattern: 'Only alphabets allowed'},
         lastName: {required: 'Last name is required', pattern: 'Only alphabets allowed'},
     };
@@ -56,7 +60,6 @@ export class DoctorsComponent implements OnInit {
     countryOptions: any[] = [];
     specialtyOptions: any[] = [];
     hospitalOptions: any[] = [];
-    cityOptions: any[] = [];
     doctors: Doctor[] = [];
     rowProvinceOptions: Map<number, any[]> = new Map();
     rowDistrictOptions: Map<number, any[]> = new Map();
@@ -64,7 +67,7 @@ export class DoctorsComponent implements OnInit {
 
     allProvinces: any[] = [];
     allDistricts: any[] = [];
-    allCities: any[] = [];
+    cityOptions: any[] = [];
     private fb = inject(FormBuilder);
     private requestService = inject(RequestService);
     private searchSubject = new Subject<string>();
@@ -114,7 +117,8 @@ export class DoctorsComponent implements OnInit {
             email: ['', [
                 Validators.required,
                 Validators.email,
-                Validators.maxLength(100)
+                Validators.pattern(RegexConstants.VALID_EMAIL_REGEX),
+                Validators.maxLength(50)
             ]],
             phone: ['', [
                 Validators.required,
@@ -219,7 +223,7 @@ export class DoctorsComponent implements OnInit {
                     this.countryOptions = response.body.data['country'];
                     this.allProvinces = response.body.data['province'];
                     this.allDistricts = response.body.data['district'];
-                    this.allCities = response.body.data['city'];
+                    this.cityOptions = response.body.data['city'];
                 }
             },
             error: (error: HttpErrorResponse) => {
@@ -385,7 +389,7 @@ export class DoctorsComponent implements OnInit {
     }
 
     onDistrictChange(districtCode: string, i: number): void {
-        const filtered = this.allCities.filter(c =>
+        const filtered = this.cityOptions.filter(c =>
             c.parents?.some((par: any) => par.type === 'district' && par.code === districtCode)
         );
         this.rowCityOptions.set(i, filtered);
@@ -485,6 +489,7 @@ export class DoctorsComponent implements OnInit {
         this.doctorForm.reset({role: this.doctorForm.value.role});
         this.imagePreview = null;
         this.selectedFile = null;
+        this.isEditMode = false;
         this.hospitals.clear();
         this.addHospitalRow();
     }

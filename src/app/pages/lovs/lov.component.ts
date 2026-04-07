@@ -12,7 +12,7 @@ import {
 } from '../../utils/api.url.constants';
 import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {LOV} from '../../core/models/lov.model';
-import {debounceTime, distinctUntilChanged, Subject, takeUntil} from 'rxjs';
+import {debounceTime, Subject, takeUntil} from 'rxjs';
 import {SelectModule} from "primeng/select";
 import {MultiSelectModule} from "primeng/multiselect";
 import {RegexConstants} from "../../utils/regex-constants";
@@ -44,6 +44,7 @@ export interface FilterParams {
 export class LovComponent implements OnInit, OnDestroy {
     navigationStack = signal<NavigationState[]>([]);
     searchQuery = signal<string>('');
+    statusFilter = signal<'active' | 'inactive' | ''>('active');
     pageQuery = signal<number>(1);
     pagination = signal<any>(null);
     showAddModal = signal<boolean>(false);
@@ -95,6 +96,22 @@ export class LovComponent implements OnInit, OnDestroy {
     lovName: string = '';
     isEditMode = false;
     form!: FormGroup;
+    errorMessages = {
+        code: {
+            required: 'Code is required', pattern: 'No spaces allowed',
+            minlength: 'Min 3 characters',
+            maxlength: 'Max 15 characters',
+        },
+        name: {
+            required: 'Name is required',
+            minlength: 'Min 8 characters',
+            maxlength: 'Max 50 characters',
+            pattern: 'Only alphabets allowed'
+        },
+        description: {
+            maxlength: 'Max 500 characters',
+        }
+    };
 
     private destroy$ = new Subject<void>();
     private searchSubject = new Subject<string>();
@@ -111,7 +128,6 @@ export class LovComponent implements OnInit, OnDestroy {
     setupSearchDebounce(): void {
         this.searchSubject.pipe(
             debounceTime(500),
-            distinctUntilChanged(),
             takeUntil(this.destroy$)
         ).subscribe(() => this.getLovValueOptions());
     }
@@ -167,6 +183,10 @@ export class LovComponent implements OnInit, OnDestroy {
 
         this.childTypesMap.set(hierarchyMap);        // Keep using this for drillDown + hasChildren
         this.relationsMap = signal(relationsMap);    // ← Add this new signal
+    }
+
+    onFilterChange(): void {
+        this.searchSubject.next(this.searchQuery());
     }
 
     onSearchChange(): void {
@@ -264,15 +284,18 @@ export class LovComponent implements OnInit, OnDestroy {
             code: [{
                 value: lov?.code || '',
                 disabled: this.isEditMode
-            }, [Validators.required, Validators.pattern(RegexConstants.NO_SPACE_REGEX)]],
-            name: [lov?.name || '', Validators.required],
-            description: [lov?.description || ''],
-            status: [lov?.status ?? 'active']
+            }, [Validators.required, Validators.minLength(3), Validators.maxLength(15), Validators.pattern(RegexConstants.NO_SPACE_REGEX)]],
+            name: [lov?.name || '', [Validators.required, Validators.minLength(5), Validators.maxLength(50), Validators.pattern(RegexConstants.ALPHABET_REGEX)]],
+            description: [lov?.description ?? '', [Validators.maxLength(500)]],
+            status: lov?.status === 'active'
         };
-
-        this.selectedLovRelations.forEach(col => {
+        this.selectedLovRelations.forEach((col, index) => {
             const parent = lov?.parents?.find((item: any) => item.type === col.parentLovKey);
-            group[col.formKey] = [parent ? (col.multiple ? parent.codes : parent.code) : '', col.required ? Validators.required : ''];
+            group[col.formKey] = [{
+                value: parent ? (col.multiple ? parent.codes : parent.code) : '',
+                disabled: index == 0
+            }, col.required || index == 0 ? Validators.required : null
+            ];
         });
         this.form = this.fb.group(group);
     }
@@ -301,6 +324,8 @@ export class LovComponent implements OnInit, OnDestroy {
 
         const ctx = this.currentParentContext();
         const search = this.searchQuery().trim();
+        const status = this.statusFilter();
+
         const page = this.pageQuery();
         const limit = 10;
 
@@ -311,12 +336,12 @@ export class LovComponent implements OnInit, OnDestroy {
             // We have a parent → use dedicated Children endpoint
             url = `${LOV_API_URL}/${ctx.type}/${ctx.code}/children`;
             params.childType = type;           // important: tell backend which child type we want
-            if (search) params.search = search;
         } else {
             // Top level → normal list by type
             url = `${GET_LOV_BY_TYPE_API_URL}${type}`;
-            if (search) params.search = search;
         }
+        if (search) params.search = search;
+        if (status) params.status = status;
 
         this.requestService.getRequest(url, params).subscribe({
             next: (res: HttpResponse<any>) => {
@@ -443,7 +468,7 @@ export class LovComponent implements OnInit, OnDestroy {
     normalizePayload(formValue: any): any {
         return {
             ...formValue,
-            status: formValue.status ? 'active' : 'inactive',
+            description: formValue.description ?? '',
             parents: this.buildParents(formValue)
         };
     }
@@ -467,7 +492,7 @@ export class LovComponent implements OnInit, OnDestroy {
 
         this.requestService.deleteRequest(`${DELETE_LOV_API_URL}/${lov._id}`).subscribe({
             next: () => {
-                this.toastService.show('Value deleted successfully', 'success');
+                this.toastService.show('Data Reference deleted successfully', 'success');
                 this.closeDeleteModal();
                 this.getLovValueOptions();
             },
@@ -503,7 +528,8 @@ export class LovComponent implements OnInit, OnDestroy {
     getErrorMsg(controlName: string, index?: number, field?: string) {
         return getError(this.form, controlName, {
             index,
-            field
+            field,
+            customMessages: this.errorMessages
         });
     }
 }

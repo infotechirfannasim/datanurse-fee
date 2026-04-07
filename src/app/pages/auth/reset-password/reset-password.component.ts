@@ -5,6 +5,8 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {AuthService} from '../../../core/services/auth.service';
 import {ResetPasswordRequest} from "../../../core/models/user.model";
 import {ToastService} from "../../../core/services/toast.service";
+import {getError, passwordMatchValidator} from "../../../utils/global.utils";
+import {RegexConstants} from "../../../utils/regex-constants";
 
 @Component({
   selector: 'app-reset-password',
@@ -25,9 +27,26 @@ export class ResetPasswordComponent {
   error = '';
 
   resetForm = this.fb.group({
-    password: ['', [Validators.required, Validators.minLength(6)]],
+        password: ['', [Validators.required,
+          Validators.minLength(8),
+          Validators.maxLength(20),
+          Validators.pattern(RegexConstants.PASSWORD_REGEX)]],
     confirmPassword: ['', [Validators.required]]
-  });
+      },
+      {
+        validators: passwordMatchValidator('password', 'confirmPassword')
+      }
+  );
+
+  errorMessages = {
+    password: {
+      required: 'Password is required',
+      minlength: 'Min 8 characters',
+      maxlength: 'Max 20 characters',
+      pattern: 'Include upper, lower, number & special char'
+    },
+    confirmPassword: {required: 'Confirm password is required', mismatch: 'Passwords must be same'}
+  };
 
   constructor(
       private fb: FormBuilder,
@@ -72,13 +91,21 @@ export class ResetPasswordComponent {
 
         setTimeout(() => {
           this.router.navigate(['/auth/login']);
-        }, 2000);
+        }, 1000);
       },
       error: (err: HttpErrorResponse) => {
         this.error = err.error?.message || err?.message || 'Invalid or expired reset link';
         this.toastService.show(this.error, 'error');
         this.isLoading = false;
       }
+    });
+  }
+
+  getErrorMsg(controlName: string, index?: number, field?: string) {
+    return getError(this.resetForm, controlName, {
+      index,
+      field,
+      customMessages: this.errorMessages
     });
   }
 }

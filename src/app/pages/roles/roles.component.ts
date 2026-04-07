@@ -9,6 +9,8 @@ import {FilterParams, Role} from "../../core/models/user.model";
 import {MultiSelectModule} from "primeng/multiselect";
 import {SelectModule} from "primeng/select";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
+import {getError, markAllTouched} from "../../utils/global.utils";
+import {RegexConstants} from "../../utils/regex-constants";
 
 @Component({
     selector: 'app-roles',
@@ -38,7 +40,22 @@ export class RolesComponent implements OnInit {
     private requestService = inject(RequestService);
     private searchSubject = new Subject<string>();
     private destroy$ = new Subject<void>();
-
+    errorMessages = {
+        name: {
+            required: 'Code is required', pattern: 'No spaces allowed',
+            minlength: 'Min 3 characters',
+            maxlength: 'Max 15 characters',
+        },
+        label: {
+            required: 'Name is required',
+            minlength: 'Min 8 characters',
+            maxlength: 'Max 50 characters',
+            pattern: 'Only alphabets allowed'
+        },
+        description: {
+            maxlength: 'Max 500 characters',
+        }
+    };
     ngOnInit() {
         this.loadRoles();
         this.buildForm();
@@ -48,9 +65,9 @@ export class RolesComponent implements OnInit {
 
     buildForm() {
         this.form = this.fb.group({
-            name: ['', [Validators.required, Validators.minLength(3)]],
-            label: ['', [Validators.required]],
-            description: [''],
+            name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15), Validators.pattern(RegexConstants.NO_SPACE_REGEX)]],
+            label: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50), Validators.pattern(RegexConstants.ALPHABET_REGEX)]],
+            description: ['', [Validators.maxLength(500)]],
             permissions: [[]]
         });
     }
@@ -246,13 +263,14 @@ export class RolesComponent implements OnInit {
 
     submitRole(): void {
         if (this.form.invalid) {
-            this.form.markAllAsTouched();
-            this.toastService.show('Please fill all required fields', 'error');
+            markAllTouched(this.form)
+            this.toastService.show('Please fill all required fields correctly', 'error');
             return;
         }
-
+        const {description} = this.form.value;
         const payload = {
             ...this.form.value,
+            description: description ? description : '',
             permissions: Array.from(this.selectedPermissions)
         };
 
@@ -288,5 +306,13 @@ export class RolesComponent implements OnInit {
         const p = this.pagination();
         if (!p) return [];
         return Array.from({length: p.totalPages}, (_, i) => i + 1);
+    }
+
+    getErrorMsg(controlName: string, index?: number, field?: string) {
+        return getError(this.form, controlName, {
+            index,
+            field,
+            customMessages: this.errorMessages
+        });
     }
 }

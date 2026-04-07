@@ -37,6 +37,31 @@
                            [value]="searchQuery()"
                            placeholder="Search Reference Data by code or label"/>
                 </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <div class="radio-group">
+                        <label class="radio">
+                            <input
+                                    type="radio"
+                                    name="status"
+                                    [checked]="statusFilter() === 'active'"
+                                    (change)="statusFilter.set('active'); onFilterChange()"
+                            />
+                            <span>Active</span>
+                        </label>
+
+                        <label class="radio">
+                            <input
+                                    type="radio"
+                                    name="status"
+                                    [checked]="statusFilter() === 'inactive'"
+                                    (change)="statusFilter.set('inactive'); onFilterChange()"
+                            />
+                            <span>Inactive</span>
+                        </label>
+
+                    </div>
+                </div>
             }
 
             @if (this.rootType()) {
@@ -200,7 +225,7 @@
                                            placeholder="Name">
                                     <small class="error">{{ getErrorMsg('name') }}</small>
                                 </div>
-                                @for (column of selectedLovRelations; track column) {
+                                @for (column of selectedLovRelations; track column; let i = $index) {
                                     @if (column.multiple) {
                                         <div class="form-group">
                                             <label class="form-label">{{ column.name }} *</label>
@@ -234,18 +259,25 @@
                                     }
                                 }
                                 <div class="form-group">
-                                    <label class="form-label">Status </label>
-                                    <label class="toggle">
-                                        <input type="checkbox" formControlName="status"/>
-                                        <span class="toggle-btn">
-                          <span class="toggle-knob"></span>
-                      </span>
-                                    </label>
+                                    <label class="form-label">Status</label>
+
+                                    <div class="radio-group">
+                                        <label class="radio">
+                                            <input type="radio" formControlName="status" value="active"/>
+                                            <span>Active</span>
+                                        </label>
+
+                                        <label class="radio">
+                                            <input type="radio" formControlName="status" value="inactive"/>
+                                            <span>Inactive</span>
+                                        </label>
+                                    </div>
                                 </div>
                                 <div class="form-group full-width">
                                     <label class="form-label">Description</label>
                                     <textarea class="text-area" formControlName="description" rows="3"
                                               placeholder="Description"></textarea>
+                                    <small class="error">{{ getErrorMsg('description') }}</small>
                                 </div>
                             </div>
                         </div>
