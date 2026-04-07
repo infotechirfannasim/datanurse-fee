@@ -15,7 +15,8 @@ import {ROLES} from "../../utils/app-constants";
 import {MultiSelectModule} from "primeng/multiselect";
 import {SelectModule} from "primeng/select";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
-import {getUserInitials} from "../../utils/global.utils";
+import {getError, getUserInitials, markAllTouched, passwordMatchValidator} from "../../utils/global.utils";
+import {RegexConstants} from "../../utils/regex-constants";
 
 @Component({
     selector: 'app-doctors',
@@ -46,6 +47,19 @@ export class UsersComponent implements OnInit {
     users: User[] = [];
     showPassword = false;
     showConfirmPassword = false;
+    errorMessages = {
+        firstName: {required: 'First name is required', pattern: 'Only alphabets allowed'},
+        lastName: {required: 'Last name is required', pattern: 'Only alphabets allowed'},
+        role: {required: 'Role is required'},
+        email: {required: 'Email is required', email: 'Provide valid email'},
+        password: {
+            required: 'Password is required',
+            minlength: 'Min 8 characters',
+            maxlength: 'Max 20 characters',
+            pattern: 'Include upper, lower, number & special char'
+        },
+        confirmPassword: {required: 'Confirm password is required', mismatch: 'Passwords must be same'}
+    };
     private fb = inject(FormBuilder);
     private requestService = inject(RequestService);
     private searchSubject = new Subject<string>();
@@ -64,13 +78,21 @@ export class UsersComponent implements OnInit {
 
     buildForm() {
         this.form = this.fb.group({
-            firstName: ['', [Validators.required, Validators.minLength(2)]],
-            lastName: ['', [Validators.required, Validators.minLength(2)]],
+            firstName: ['', [Validators.required,
+                Validators.minLength(5),
+                Validators.maxLength(50),
+                Validators.pattern(RegexConstants.ALPHABET_REGEX)]],
+            lastName: ['', [Validators.required,
+                Validators.minLength(5),
+                Validators.maxLength(50),
+                Validators.pattern(RegexConstants.ALPHABET_REGEX)]],
             email: ['', [Validators.required, Validators.email]],
             role: ['', Validators.required],
             password: [''],
             confirmPassword: [''],
             status: ['active', Validators.required],
+        }, {
+            validators: passwordMatchValidator('password', 'confirmPassword')
         });
     }
 
@@ -194,7 +216,9 @@ export class UsersComponent implements OnInit {
         if (isAddMode) {
             this.form.get('password')?.setValidators([
                 Validators.required,
-                Validators.minLength(6)
+                Validators.minLength(8),
+                Validators.maxLength(20),
+                Validators.pattern(RegexConstants.PASSWORD_REGEX)
             ]);
 
             this.form.get('confirmPassword')?.setValidators([
@@ -258,7 +282,8 @@ export class UsersComponent implements OnInit {
 
     submitUser(): void {
         if (this.form.invalid) {
-            this.form.markAllAsTouched();
+            markAllTouched(this.form);
+            this.toastService.show('Please fill all required fields correctly', 'error');
             return;
         }
 
@@ -336,6 +361,14 @@ export class UsersComponent implements OnInit {
 
     toggleConfirmPassword(): void {
         this.showConfirmPassword = !this.showConfirmPassword;
+    }
+
+    getErrorMsg(controlName: string, index?: number, field?: string) {
+        return getError(this.form, controlName, {
+            index,
+            field,
+            customMessages: this.errorMessages
+        });
     }
 
     protected readonly getUserInitials = getUserInitials;

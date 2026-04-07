@@ -1,3 +1,10 @@
+<!--<div class="tab-bar" style="margin-bottom:24px;">
+    <button (click)="activeTab.set('personal')" [class.active]="activeTab()==='personal'" class="tab-btn">Personal
+        Info
+    </button>
+    <button (click)="activeTab.set('security')" [class.active]="activeTab()==='security'" class="tab-btn">Security
+    </button>
+</div>-->
 @if (activeTab() === 'personal') {
   <div class="profile-grid">
     <div class="section-card">
@@ -166,19 +173,23 @@
         <div class="form-group">
           <label class="form-label">Current Password</label>
           <input class="form-input has-icon" type="password" formControlName="currentPassword" placeholder="••••••••">
+            <small class="error">{{ getErrorMsg('currentPassword') }}</small>
+
         </div>
         <div class="form-group">
           <label class="form-label">New Password</label>
           <input class="form-input has-icon" type="password" formControlName="newPassword" placeholder="••••••••">
+            <small class="error">{{ getErrorMsg('newPassword') }}</small>
         </div>
         <div class="form-group">
-          <label class="form-label">Confirm New Password</label>
-          <input class="form-input has-icon" type="password" formControlName="confirmPassword" placeholder="••••••••">
+            <label class="form-label">Confirm New Password</label>
+            <input class="form-input has-icon" type="password" formControlName="confirmPassword" placeholder="••••••••">
+            <small class="error">{{ getErrorMsg('confirmPassword') }}</small>
         </div>
-        <button type="button" class="btn btn-primary" (click)="changePassword()"
-                [disabled]="passwordForm.invalid">
-          Update Password
-        </button>
+          <button type="button" class="btn btn-primary" (click)="changePassword()"
+                  [disabled]="passwordForm.invalid || isSubmitting">
+              {{ isSubmitting ? 'Updating' : 'Update Password' }}
+          </button>
       </form>
     </div>
   </div>

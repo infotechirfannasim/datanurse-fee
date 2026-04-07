@@ -3,13 +3,15 @@ import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ToastService} from '../../core/services/toast.service';
 import {RequestService} from '../../core/services/request.service';
-import {PROFILE_API_URL, UPDATE_PROFILE_API_URL} from "../../utils/api.url.constants";
+import {CHANGE_PASS_API_URL, PROFILE_API_URL, UPDATE_PROFILE_API_URL} from "../../utils/api.url.constants";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {User} from "../../core/models/user.model";
 import {AuthService} from "../../core/services/auth.service";
 import {NgxMaskDirective} from "ngx-mask";
-import {getError} from "../../utils/global.utils";
+import {getError, markAllTouched, passwordMatchValidator} from "../../utils/global.utils";
 import {RouterLink} from "@angular/router";
+import {finalize} from "rxjs";
+import {RegexConstants} from "../../utils/regex-constants";
 
 
 @Component({
@@ -36,6 +38,24 @@ export class ProfileComponent implements OnInit {
 
     imagePreview: string | null = null;
     selectedFile: File | null = null;
+    isSubmitting: boolean = false;
+    currentPassword: boolean = false
+    newPassword: boolean = false
+    confirmPassword: boolean = false
+
+    errorMessages = {
+        firstName: {required: 'First name is required', pattern: 'Only alphabets allowed'},
+        lastName: {required: 'Last name is required', pattern: 'Only alphabets allowed'},
+        currentPassword: {required: 'Current password is required'},
+        newPassword: {
+            required: 'Password is required',
+            minlength: 'Min 8 characters',
+            maxlength: 'Max 20 characters',
+            pattern: 'Include upper, lower, number & special char'
+        },
+        confirmPassword: {required: 'Confirm password is required', mismatch: 'New passwords must be same'}
+    };
+
 
     ngOnInit(): void {
         this.initForms();
@@ -44,17 +64,32 @@ export class ProfileComponent implements OnInit {
 
     initForms(): void {
         this.personalForm = this.fb.group({
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
+            firstName: ['', [
+                Validators.required,
+                Validators.minLength(5),
+                Validators.maxLength(50),
+                Validators.pattern(RegexConstants.ALPHABET_REGEX)
+            ]],
+            lastName: ['',
+                [Validators.required,
+                    Validators.minLength(5),
+                    Validators.maxLength(50),
+                    Validators.pattern(RegexConstants.ALPHABET_REGEX)]],
             email: [{value: '', disabled: true}],
             phone: [''],
         });
 
-        this.passwordForm = this.fb.group({
-            currentPassword: ['', Validators.required],
-            newPassword: ['', [Validators.required, Validators.minLength(8)]],
-            confirmPassword: ['', Validators.required]
-        });
+        this.passwordForm = this.fb.group(
+            {
+                currentPassword: ['', [Validators.required]],
+                newPassword: ['', [Validators.required,
+                    Validators.minLength(8),
+                    Validators.maxLength(20),
+                    Validators.pattern(RegexConstants.PASSWORD_REGEX)]],
+                confirmPassword: ['', [Validators.required]]
+            },
+            {validators: passwordMatchValidator('newPassword', 'confirmPassword', {requireBoth: true})}
+        );
     }
 
     loadProfile(): void {
@@ -105,7 +140,7 @@ export class ProfileComponent implements OnInit {
 
     updateProfile(): void {
         if (this.personalForm.invalid) {
-            this.personalForm.markAllAsTouched();
+            markAllTouched(this.personalForm);
             this.toastService.show('Please fill all required fields correctly', 'error');
             return;
         }
@@ -117,7 +152,7 @@ export class ProfileComponent implements OnInit {
             if (key === 'email') return;
 
             const value = formValue[key];
-            if (value !== null && value !== undefined && value !== '') {
+            if (value !== undefined) {
                 formData.append(key, value);
             }
         });
@@ -151,25 +186,42 @@ export class ProfileComponent implements OnInit {
             return;
         }
 
-        const {currentPassword, newPassword, confirmPassword} = this.passwordForm.value;
+        const {currentPassword, newPassword} = this.passwordForm.getRawValue();
 
-        if (newPassword !== confirmPassword) {
-            this.toastService.show('New passwords do not match!', 'error');
-            return;
-        }
+        const payload = {currentPassword, newPassword};
 
-        // Call change password API here
-        // this.requestService.postRequest('/auth/change-password', { currentPassword, newPassword })...
+        this.isSubmitting = true;
 
-        this.toastService.show('Password changed successfully!', 'success');
-        this.passwordForm.reset();
+        this.requestService.postRequest(CHANGE_PASS_API_URL, payload)
+            .pipe(finalize(() => (this.isSubmitting = false)))
+            .subscribe({
+                next: () => {
+                    this.toastService.show('Password changed successfully!', 'success');
+                    this.passwordForm.reset();
+                },
+                error: (err) => {
+                    const msg = err?.error?.message ?? 'Failed to change password';
+                    this.toastService.show(msg, 'error');
+                }
+            });
     }
 
     getErrorMsg(controlName: string, index?: number, field?: string) {
         return getError(this.personalForm, controlName, {
             index,
-            field
+            field,
+            customMessages: this.errorMessages
         });
+    }
+
+    toggleButton(type: 'currentPassword' | 'newPassword' | 'confirmPassword') {
+        if (type === 'currentPassword') {
+            this.currentPassword = !this.currentPassword;
+        } else if (type === 'newPassword') {
+            this.newPassword = !this.newPassword;
+        } else if (type === 'confirmPassword') {
+            this.confirmPassword = !this.confirmPassword;
+        }
     }
 
     getActivityColor(type: string): string {

@@ -5,10 +5,6 @@ export const LOGOUT_USER_API_URL = '/un-auth/logout-email';
 export const CHANGE_PASS_API_URL = '/user/change-password';
 export const FORGOT_PASS_API_URL = 'auth/forgot-password';
 export const RESET_PASS_API_URL = '/auth/reset-password';
-export const SET_PASS_API_URL = '/un-auth/user/set-password';
-export const ACTIVATE_ACC_API_URL = '/un-auth/reactivate/account';
-export const VERIFY_ACTIVATE_ACC_API_URL = '/un-auth/activate';
-export const GET_MULTIPLE_LOV_BY_TYPE_API_URL = '/lov/get-multi-lov';
 
 export const PROFILE_API_URL = 'auth/me';
 export const UPDATE_PROFILE_API_URL = 'users/me';

@@ -58,8 +58,6 @@ export class LovComponent implements OnInit, OnDestroy {
     topLevelLovTypes = computed(() =>
         this.lovTypes().filter((t: any) => !t.hasParent && t.childMeta?.length === 0)
     );
-    isActive = true;
-
     currentLovType = computed(() => this.navigationStack().at(-1)?.type ?? '');
     currentParentContext = computed(() => this.navigationStack().at(-1)?.parentContext ?? null);
 
@@ -91,6 +89,7 @@ export class LovComponent implements OnInit, OnDestroy {
 
     lovTypes = signal<any[]>([]);
     childTypesMap = signal<{ [parentKey: string]: any[] }>({});
+    relationsMap = signal<{ [parentKey: string]: any[] }>({});
 
     selectedLovRelations: any[] = [];
     lovName: string = '';
@@ -130,24 +129,44 @@ export class LovComponent implements OnInit, OnDestroy {
                     this.buildChildTypesMap();
                 }
             },
-            error: (err) => console.error('Failed to load LOV types', err)
+            error: (err) => console.error('Failed to load Value types', err)
         });
     }
 
     buildChildTypesMap(): void {
-        const map: { [key: string]: any[] } = {};
+        const hierarchyMap: { [key: string]: any[] } = {};   // For normal drill-down
+        const relationsMap: { [key: string]: any[] } = {};   // For extra relations (like diagnosis → procedure)
+
         this.lovTypes().forEach((t: any) => {
-            if (t.childMeta?.length) {
-                t.childMeta.forEach((meta: any) => {
-                    const pKey = meta.parentLovKey;
-                    if (!map[pKey]) map[pKey] = [];
-                    if (!map[pKey].some((existing: any) => existing.key === t.key)) {
-                        map[pKey].push(t);
+            if (!t.childMeta?.length) return;
+
+            t.childMeta.forEach((meta: any) => {
+                const pKey = meta.parentLovKey;
+
+                // If it's a multiple relation → treat it as relation, not hierarchy
+                if (meta.multiple === true) {
+                    if (!relationsMap[pKey]) relationsMap[pKey] = [];
+                    if (!relationsMap[pKey].some((existing: any) => existing.key === t.key)) {
+                        relationsMap[pKey].push(t);
                     }
-                });
-            }
+                }
+                // Normal single parent hierarchy
+                else {
+                    if (!hierarchyMap[pKey]) hierarchyMap[pKey] = [];
+                    if (!hierarchyMap[pKey].some((existing: any) => existing.key === t.key)) {
+                        t = {
+                            ...t,
+                            multiple: meta.multiple,
+                            required: meta.required,
+                        }
+                        hierarchyMap[pKey].push(t);
+                    }
+                }
+            });
         });
-        this.childTypesMap.set(map);
+
+        this.childTypesMap.set(hierarchyMap);        // Keep using this for drillDown + hasChildren
+        this.relationsMap = signal(relationsMap);    // ← Add this new signal
     }
 
     onSearchChange(): void {
@@ -172,12 +191,41 @@ export class LovComponent implements OnInit, OnDestroy {
         this.showViewModal.set(true);
     }
 
+    /* drillDown(lov: LOV): void {
+         const currType = this.currentLovType();
+         let childrenTypes = this.childTypesMap()[currType] || [];
+
+         if (childrenTypes.length === 0) {
+             this.toastService.show('No child types defined', 'info');
+             return;
+         }
+
+         childrenTypes = [...childrenTypes].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+
+         const targetChild = childrenTypes[0];
+
+         const newState: NavigationState = {
+             type: targetChild.key,
+             parentContext: {
+                 type: currType,
+                 code: lov.code,
+                 name: lov.name
+             }
+         };
+
+         this.navigationStack.update(stack => [...stack, newState]);
+         this.updateLovName();
+         this.setTableColumns();
+         this.getLovValueOptions();
+     }
+ */
+
     drillDown(lov: LOV): void {
         const currType = this.currentLovType();
-        let childrenTypes = this.childTypesMap()[currType] || [];
+        let childrenTypes = this.childTypesMap()[currType] || [];   // ← Now only real hierarchy
 
         if (childrenTypes.length === 0) {
-            this.toastService.show('No child types defined', 'info');
+            this.toastService.show('No child types defined for this level', 'info');
             return;
         }
 
@@ -224,7 +272,7 @@ export class LovComponent implements OnInit, OnDestroy {
 
         this.selectedLovRelations.forEach(col => {
             const parent = lov?.parents?.find((item: any) => item.type === col.parentLovKey);
-            group[col.formKey] = [parent ? parent.code : '', Validators.required];
+            group[col.formKey] = [parent ? (col.multiple ? parent.codes : parent.code) : '', col.required ? Validators.required : ''];
         });
         this.form = this.fb.group(group);
     }
@@ -299,7 +347,7 @@ export class LovComponent implements OnInit, OnDestroy {
 
     openAddModal(): void {
         if (!this.currentLovType()) {
-            this.toastService.show('Please select LOV Type first', 'error');
+            this.toastService.show('Please select Value Type first', 'error');
             return;
         }
         this.isEditMode = false;
@@ -380,14 +428,14 @@ export class LovComponent implements OnInit, OnDestroy {
         request$.subscribe({
             next: () => {
                 this.toastService.show(
-                    this.isEditMode ? 'LOV updated successfully!' : 'LOV added successfully!',
+                    this.isEditMode ? 'Data Reference updated successfully!' : 'Data Reference created successfully!',
                     'success'
                 );
                 this.closeAddModal();
                 this.getLovValueOptions();
             },
             error: (err: HttpErrorResponse) => {
-                this.toastService.show(err.error?.message || 'Failed to save LOV', 'error');
+                this.toastService.show(err.error?.message || 'Failed to save Value', 'error');
             }
         });
     }
@@ -419,12 +467,12 @@ export class LovComponent implements OnInit, OnDestroy {
 
         this.requestService.deleteRequest(`${DELETE_LOV_API_URL}/${lov._id}`).subscribe({
             next: () => {
-                this.toastService.show('LOV deleted successfully', 'success');
+                this.toastService.show('Value deleted successfully', 'success');
                 this.closeDeleteModal();
                 this.getLovValueOptions();
             },
             error: (err: HttpErrorResponse) => {
-                this.toastService.show(err.error?.message || 'Failed to delete LOV', 'error');
+                this.toastService.show(err.error?.message || 'Failed to delete Value', 'error');
             }
         });
     }
