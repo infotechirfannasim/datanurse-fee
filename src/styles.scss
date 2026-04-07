@@ -1677,6 +1677,8 @@ p-select {
         width: 16px !important;
         height: 16px !important;
         transition: all 0.13s !important;
+        background-color: #FFFFFF;
+        background: #FFFFFF;
       }
 
       &.p-highlight .p-checkbox-box {
@@ -2169,6 +2171,9 @@ input.has-icon {
   input:checked + .toggle-btn .toggle-knob {
     transform: translateX(20px);
   }
+}
+.p-checkbox .p-checkbox-box {
+  background: #FFFFFF !important;
 }
 
 
