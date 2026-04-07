@@ -307,6 +307,11 @@
   gap: 10px;
   transition: background 0.15s, border-color 0.15s;
 
+
+  @media (max-width: 600px) {
+    gap: 20px;
+  }
+
   &:hover {
     background: var(--hover-bg, #f9fafb);
     border-color: var(--border-hover, #d1d5db);
@@ -317,6 +322,11 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+
+
+    @media (max-width: 600px) {
+      flex-wrap: wrap;
+    }
   }
 
   .case-title-wrap {

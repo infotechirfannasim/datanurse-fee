@@ -20,6 +20,15 @@
   position: fixed;
   top: 0;
   z-index: 50;
+
+  @media (max-width: 1024px) {
+    width: 100%;
+
+  }
+  @media (max-width: 768px) {
+    padding: 0 10px !important;
+
+  }
 }
 
 .main.main-full .topbar {
@@ -107,6 +116,24 @@ body {
   padding: 3px 10px;
   display: inline-block;
   width: fit-content;
+}
+
+.main {
+  //height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 80px 24px 24px; // 80px = topbar height
+}
+
+table tr td {
+  text-wrap: nowrap;
 }
 
 .badge-green {
@@ -544,6 +571,10 @@ select.form-input {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 /* ═══ TOAST CONTAINER ═══ */
@@ -656,6 +687,9 @@ select.form-input {
 
 .modal-body {
   padding: 24px 28px;
+  @media (max-width: 600px) {
+    padding: 15px !important;
+  }
 }
 
 .modal-footer {
@@ -775,9 +809,17 @@ select.form-input {
   gap: 10px;
   align-items: flex-end;
 
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr !important;
+  }
+
   div {
     max-width: 100%;
     overflow: auto;
+  }
+
+  button {
+    margin-left: auto;
   }
 }
 
@@ -889,6 +931,18 @@ select.form-input {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 24px;
+    @media (max-width: 600px) {
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+  .page-actions {
+    display: flex;
+    gap: 16px;
+    @media (max-width: 600px) {
+      margin-left: auto;
+    }
+  }
 }
 
 .page-title-block h2 {
@@ -983,433 +1037,439 @@ $font: 'DM Sans', sans-serif;
 }
 
 
-  $navy: #0A0061;
-  $navy-dark: #0656C5;
-  $blue: #0656C5;
-  $blue-light: rgba(6, 86, 197, 0.08);
-  $blue-border: rgba(6, 86, 197, 0.20);
-  $blue-bg: rgba(6, 86, 197, 0.04);
-  $danger: #EF4444;
-  $border: #E5E7EB;
-  $surface: #F9FAFB;
-  $muted: #6B7280;
-  $text-mid: #374151;
-  $text-body: #6B7280;
-  $white: #ffffff;
-  $font: 'DM Sans', sans-serif;
+$navy: #0A0061;
+$navy-dark: #0656C5;
+$blue: #0656C5;
+$blue-light: rgba(6, 86, 197, 0.08);
+$blue-border: rgba(6, 86, 197, 0.20);
+$blue-bg: rgba(6, 86, 197, 0.04);
+$danger: #EF4444;
+$border: #E5E7EB;
+$surface: #F9FAFB;
+$muted: #6B7280;
+$text-mid: #374151;
+$text-body: #6B7280;
+$white: #ffffff;
+$font: 'DM Sans', sans-serif;
 
-  @mixin flex-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin label-caps {
+  font-family: $font;
+  font-size: 11px;
+  font-weight: 600;
+  color: $muted;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+// ── Overlay ──
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 0, 97, 0.50); /* --navy */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+
+  &.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+
+// ── Modal Box ──
+.modal {
+  background: $white;
+  border-radius: 5px;
+  width: 100%;
+  box-shadow: 0 24px 60px rgba(10, 0, 97, 0.22); /* --navy */
+  animation: modalIn 0.22s ease;
+
+  &.modal-sm {
+    max-width: 400px;
   }
 
-  @mixin label-caps {
-    font-family: $font;
-    font-size: 11px;
-    font-weight: 600;
-    color: $muted;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+  &.modal-md {
+    max-width: 480px;
   }
 
-  // ── Overlay ──
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(10, 0, 97, 0.50); /* --navy */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 20px;
+  &.modal-lg {
+    max-width: 560px;
+  }
+
+  &.modal-xl {
+    max-width: 50%;
+    @media (max-width: 768px) {
+      max-width: 80%;
+    }
+    @media (max-width: 600px) {
+      max-width: 100%;
+    }
+  }
+}
+
+@keyframes modalIn {
+  from {
     opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-
-    &.open {
-      opacity: 1;
-      pointer-events: all;
-    }
+    transform: translateY(12px) scale(0.98);
   }
-
-  // ── Modal Box ──
-  .modal {
-    background: $white;
-    border-radius: 5px;
-    width: 100%;
-    box-shadow: 0 24px 60px rgba(10, 0, 97, 0.22); /* --navy */
-    animation: modalIn 0.22s ease;
-
-    &.modal-sm {
-      max-width: 400px;
-    }
-
-    &.modal-md {
-      max-width: 480px;
-    }
-
-    &.modal-lg {
-      max-width: 560px;
-    }
-
-    &.modal-xl {
-      max-width: 50%;
-      @media (max-width: 768px) {
-        max-width: 80%;
-      }
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
+}
 
-  @keyframes modalIn {
-    from {
-      opacity: 0;
-      transform: translateY(12px) scale(0.98);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
+// ── Modal Header ──
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid $surface;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1),
+  0 1px 2px rgba(0, 0, 0, 0.06);
+  background-color: var(--navy);
+}
 
-  // ── Modal Header ──
-  .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid $surface;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.06);
-    background-color: var(--navy);
-  }
+.modal-title {
+  font-family: $font;
+  font-size: 17px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: -0.01em;
+}
 
-  .modal-title {
-    font-family: $font;
-    font-size: 17px;
-    font-weight: 600;
-    color: white;
-    letter-spacing: -0.01em;
-  }
+.badge {
+  text-transform: capitalize;
+}
 
-  .badge {
-    text-transform: capitalize;
-  }
+.modal-sub {
+  font-family: $font;
+  font-size: 12.5px;
+  color: $muted;
+  margin-top: 3px;
+}
 
-  .modal-sub {
-    font-family: $font;
-    font-size: 12.5px;
-    color: $muted;
-    margin-top: 3px;
-  }
+.modal-close {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid $border;
+  background: $white;
+  @include flex-center;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: $text-body;
+  transition: background 0.13s;
 
-  .modal-close {
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-    border: 1px solid $border;
-    background: $white;
-    @include flex-center;
-    cursor: pointer;
-    flex-shrink: 0;
-    color: $text-body;
-    transition: background 0.13s;
+  &:hover {
+    background: $text-body;
 
-    &:hover {
-      background: $text-body;
-
-      svg {
-        color: $white;
-      }
-    }
-  }
-
-  // ── Modal Body ──
-  .modal-body {
-    padding: 22px 24px;
-    overflow: auto;
-    max-height: 60vh;
-  }
-
-  // ── Modal Footer ──
-  .modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 10px;
-    border-top: 1px solid $surface;
-    background-color: $white;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  }
-
-  // ── Buttons ──
-  .btn {
-    padding: 9px 20px;
-    border-radius: 9px;
-    font-family: $font;
-    font-size: 13.5px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: all 0.15s;
-
-    &.btn-ghost {
-      background: $blue-bg;
-      color: $text-mid;
-      border: 1px solid $border;
-
-      &:hover {
-        background: $surface;
-      }
-    }
-
-    &.btn-primary:disabled {
-      background: var(--muted);
-      box-shadow: none;
-      cursor: not-allowed;
-    }
-
-    &.btn-danger {
-      background: $danger;
+    svg {
       color: $white;
-      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25); /* --rose */
-
-      &:hover {
-        background: #dc2626;
-      }
     }
   }
+}
 
-  // ── Register / Edit User Modal ──
-  .avatar-upload-wrap {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 22px;
-    padding: 16px;
+// ── Modal Body ──
+.modal-body {
+  padding: 22px 24px;
+  overflow: auto;
+  max-height: 60vh;
+}
+
+// ── Modal Footer ──
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 10px;
+  border-top: 1px solid $surface;
+  background-color: $white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+// ── Buttons ──
+.btn {
+  padding: 9px 20px;
+  border-radius: 9px;
+  font-family: $font;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+
+  &.btn-ghost {
     background: $blue-bg;
-    border-radius: 12px;
-    border: 1.5px dashed $blue-border;
-    transition: border-color 0.15s;
-
-    &:hover {
-      border-color: $blue;
-    }
-  }
-
-  .avatar-upload {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: $blue-light;
-    border: 2px solid $blue-border;
-    @include flex-center;
-    cursor: pointer;
-    flex-shrink: 0;
-    overflow: hidden;
-    transition: border-color 0.15s;
-
-    &:hover {
-      border-color: $blue;
-    }
-
-    .preview-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-
-  .avatar-meta {
-    font-family: $font;
-    font-size: 12px;
-    color: $muted;
-    margin-top: 4px;
-    line-height: 1.5;
-
-    strong {
-      font-size: 13.5px;
-      font-weight: 600;
-      color: $navy-dark;
-      display: block;
-    }
-  }
-
-  .form-grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  .form-label {
-    font-family: $font;
-    font-size: 11.5px;
-    font-weight: 600;
     color: $text-mid;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    border: 1px solid $border;
+
+    &:hover {
+      background: $surface;
+    }
   }
 
-  .form-input {
-    height: 38px;
-    border-radius: 9px;
-    border: 1.5px solid $border;
-    padding: 0 12px;
-    font-size: 13.5px;
-    font-family: $font;
-    color: $navy-dark;
-    background: $white;
-    background-color: $white;
-    outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s;
+  &.btn-primary:disabled {
+    background: var(--muted);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  &.btn-danger {
+    background: $danger;
+    color: $white;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25); /* --rose */
+
+    &:hover {
+      background: #dc2626;
+    }
+  }
+}
+
+// ── Register / Edit User Modal ──
+.avatar-upload-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+  padding: 16px;
+  background: $blue-bg;
+  border-radius: 12px;
+  border: 1.5px dashed $blue-border;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: $blue;
+  }
+}
+
+.avatar-upload {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: $blue-light;
+  border: 2px solid $blue-border;
+  @include flex-center;
+  cursor: pointer;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: $blue;
+  }
+
+  .preview-image {
     width: 100%;
-
-    &:focus {
-      border-color: $blue;
-      box-shadow: 0 0 0 3px rgba(6, 86, 197, 0.10); /* --blue */
-    }
-
-    &::placeholder {
-      color: $blue-border;
-    }
-
-    &.dropdown-dual-lang,
-    &.p-select {
-      display: flex;
-      align-items: center;
-      padding: 0 12px;
-    }
+    height: 100%;
+    object-fit: cover;
   }
+}
 
-  small.error {
-    font-family: $font;
-    font-size: 11.5px;
-    color: $danger;
-    margin-top: 2px;
-  }
+.avatar-meta {
+  font-family: $font;
+  font-size: 12px;
+  color: $muted;
+  margin-top: 4px;
+  line-height: 1.5;
 
-  // ── View Doctor Modal ──
-  .doc-av {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: $blue-light;
-    @include flex-center;
-    font-size: 14px;
-    font-weight: 700;
-    color: $blue;
-    flex-shrink: 0;
-  }
-
-  .view-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-  }
-
-  .view-field {
-    padding: 12px 0;
-    border-bottom: 1px solid $surface;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
-    &:nth-child(odd) {
-      padding-right: 20px;
-    }
-  }
-
-  .view-label {
-    @include label-caps;
-  }
-
-  .view-val {
-    font-family: $font;
-    font-size: 14px;
-    font-weight: 500;
+  strong {
+    font-size: 13.5px;
+    font-weight: 600;
     color: $navy-dark;
-  }
-
-  .view-section-label {
-    @include label-caps;
-    font-weight: 700;
-    margin: 18px 0 10px;
     display: block;
   }
+}
 
-  // Status Badges
-  .badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 11.5px;
-    font-weight: 600;
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
 
-    &.badge-active {
-      background: #ECFDF5;
-      color: #065F46;
-    }
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  @media (max-width: 600px) {
+    margin-bottom: 10px !important;
+  }
+}
 
-    &.badge-inactive {
-      background: #FEF2F2;
-      color: #991B1B;
-    }
+.form-label {
+  font-family: $font;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: $text-mid;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
 
-    &.badge-pending {
-      background: #FFFBEB;
-      color: #92400E;
-    }
+.form-input {
+  height: 38px;
+  border-radius: 9px;
+  border: 1.5px solid $border;
+  padding: 0 12px;
+  font-size: 13.5px;
+  font-family: $font;
+  color: $navy-dark;
+  background: $white;
+  background-color: $white;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+
+  &:focus {
+    border-color: $blue;
+    box-shadow: 0 0 0 3px rgba(6, 86, 197, 0.10); /* --blue */
   }
 
-  // Specialization Tags
-  .spec-tag {
-    display: inline-block;
-    padding: 4px 11px;
-    background: $blue-light;
-    color: $blue;
-    border-radius: 6px;
-    font-family: $font;
-    font-size: 12px;
-    font-weight: 500;
-    margin: 3px 4px 3px 0;
+  &::placeholder {
+    color: $blue-border;
   }
 
-  // ── Delete Confirm Modal ──
-  .confirm-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: #FFF1F3;
-    @include flex-center;
-    margin: 0 auto 16px;
+  &.dropdown-dual-lang,
+  &.p-select {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+  }
+}
+
+small.error {
+  font-family: $font;
+  font-size: 11.5px;
+  color: $danger;
+  margin-top: 2px;
+}
+
+// ── View Doctor Modal ──
+.doc-av {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: $blue-light;
+  @include flex-center;
+  font-size: 14px;
+  font-weight: 700;
+  color: $blue;
+  flex-shrink: 0;
+}
+
+.view-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.view-field {
+  padding: 12px 0;
+  border-bottom: 1px solid $surface;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &:nth-child(odd) {
+    padding-right: 20px;
+  }
+}
+
+.view-label {
+  @include label-caps;
+}
+
+.view-val {
+  font-family: $font;
+  font-size: 14px;
+  font-weight: 500;
+  color: $navy-dark;
+}
+
+.view-section-label {
+  @include label-caps;
+  font-weight: 700;
+  margin: 18px 0 10px;
+  display: block;
+}
+
+// Status Badges
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+
+  &.badge-active {
+    background: #ECFDF5;
+    color: #065F46;
   }
 
-  .confirm-title {
-    font-family: $font;
-    font-size: 18px;
-    font-weight: 700;
+  &.badge-inactive {
+    background: #FEF2F2;
+    color: #991B1B;
+  }
+
+  &.badge-pending {
+    background: #FFFBEB;
+    color: #92400E;
+  }
+}
+
+// Specialization Tags
+.spec-tag {
+  display: inline-block;
+  padding: 4px 11px;
+  background: $blue-light;
+  color: $blue;
+  border-radius: 6px;
+  font-family: $font;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 3px 4px 3px 0;
+}
+
+// ── Delete Confirm Modal ──
+.confirm-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #FFF1F3;
+  @include flex-center;
+  margin: 0 auto 16px;
+}
+
+.confirm-title {
+  font-family: $font;
+  font-size: 18px;
+  font-weight: 700;
+  color: $navy;
+  margin-bottom: 10px;
+}
+
+.confirm-text {
+  font-family: $font;
+  font-size: 13.5px;
+  color: $text-body;
+  line-height: 1.65;
+  max-width: 300px;
+  margin: 0 auto;
+
+  strong {
     color: $navy;
-    margin-bottom: 10px;
   }
-
-  .confirm-text {
-    font-family: $font;
-    font-size: 13.5px;
-    color: $text-body;
-    line-height: 1.65;
-    max-width: 300px;
-    margin: 0 auto;
-
-    strong {
-      color: $navy;
-    }
-  }
+}
 
 
 // ── PrimeNG p-select + p-multiselect Override ──
@@ -1772,6 +1832,10 @@ input.has-icon {
   border-radius: 10px;
   overflow: hidden;
 
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr !important;
+  }
+
   &--mt {
     margin-top: 8px;
   }
@@ -2064,7 +2128,6 @@ input.has-icon {
 }
 
 
-
 //Toggle Switch
 
 .toggle {
@@ -2106,6 +2169,6 @@ input.has-icon {
 }
 
 
-.p-checkbox-checked .p-checkbox-box{
+.p-checkbox-checked .p-checkbox-box {
   background: #0656C5 !important;
 }

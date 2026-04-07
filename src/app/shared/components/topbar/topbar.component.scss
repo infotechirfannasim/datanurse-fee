@@ -239,6 +239,10 @@
   align-items: center;
   gap: 5px;
   cursor: pointer;
+
+  @media (max-width: 600px) {
+    gap: 0;
+  }
 }
 
 .s-avatar {
@@ -260,6 +264,10 @@
   font-weight: 600;
   color: var(--text);
   display: block;
+  
+  @media (max-width: 600px) {
+    display: none;
+  }
 }
 
 .s-role {
