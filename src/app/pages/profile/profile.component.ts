@@ -8,9 +8,10 @@ import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {User} from "../../core/models/user.model";
 import {AuthService} from "../../core/services/auth.service";
 import {NgxMaskDirective} from "ngx-mask";
-import {getError} from "../../utils/global.utils";
+import {getError, markAllTouched} from "../../utils/global.utils";
 import {RouterLink} from "@angular/router";
 import {finalize} from "rxjs";
+import {RegexConstants} from "../../utils/regex-constants";
 
 
 @Component({
@@ -46,7 +47,10 @@ export class ProfileComponent implements OnInit {
         currentPassword: {required: 'Current password is required'},
         newPassword: {required: 'New password is required', minLength: 'Password must be atleast 8 characters'},
         confirmPassword: {required: 'Confirm password is required', mismatch: 'New passwords must be same'},
+        firstName: {required: 'First name is required', pattern: 'Only alphabets allowed'},
+        lastName: {required: 'Last name is required', pattern: 'Only alphabets allowed'}
     };
+
 
     ngOnInit(): void {
         this.initForms();
@@ -55,8 +59,17 @@ export class ProfileComponent implements OnInit {
 
     initForms(): void {
         this.personalForm = this.fb.group({
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
+            firstName: ['', [
+                Validators.required,
+                Validators.minLength(5),
+                Validators.maxLength(50),
+                Validators.pattern(RegexConstants.ALPHABET_REGEX)
+            ]],
+            lastName: ['',
+                [Validators.required,
+                    Validators.minLength(5),
+                    Validators.maxLength(50),
+                    Validators.pattern(RegexConstants.ALPHABET_REGEX)]],
             email: [{value: '', disabled: true}],
             phone: [''],
         });
@@ -142,7 +155,7 @@ export class ProfileComponent implements OnInit {
 
     updateProfile(): void {
         if (this.personalForm.invalid) {
-            this.personalForm.markAllAsTouched();
+            markAllTouched(this.personalForm);
             this.toastService.show('Please fill all required fields correctly', 'error');
             return;
         }

@@ -179,26 +179,20 @@
               <div class="form-group">
                 <label class="form-label">First Name *</label>
                 <input class="form-input" formControlName="firstName" placeholder="First name">
-                @if (form.get('firstName')?.invalid && form.get('firstName')?.touched) {
-                  <small class="error">First name is required</small>
-                }
+                  <small class="error">{{ getErrorMsg('firstName') }}</small>
               </div>
               
               <div class="form-group">
                 <label class="form-label">Last Name *</label>
                 <input class="form-input" formControlName="lastName" placeholder="Last name">
-                @if (form.get('lastName')?.invalid && form.get('lastName')?.touched) {
-                  <small class="error">Last name is required</small>
-                }
+                  <small class="error">{{ getErrorMsg('lastName') }}</small>
               </div>
               
               <div class="form-group">
                 <label class="form-label">Email Address *</label>
                 <input class="form-input" type="email" formControlName="email"
-                       placeholder="doctor@example.com">
-                @if (form.get('email')?.invalid && form.get('email')?.touched) {
-                  <small class="error">Valid email is required</small>
-                }
+                       placeholder="user@example.com">
+                  <small class="error">{{ getErrorMsg('email') }}</small>
               </div>
               
               <div class="form-group">
@@ -216,11 +210,8 @@
                   [readonly]="false"
                   appendTo="body"
                   class="form-input"
-                  styleClass="dropdown-dual-lang"
                 />
-                @if (form.get('pmdc')?.invalid && form.get('pmdc')?.touched) {
-                  <small class="error">Valid PMDC number is required</small>
-                }
+                  <small class="error">{{ getErrorMsg('role') }}</small>
               </div>
               @if (!isEditMode) {
                 <div class="form-group">
@@ -255,9 +246,7 @@
                       }
                     </button>
                   </div>
-                  @if (form.get('password')?.invalid && form.get('password')?.touched) {
-                    <small class="error">Password is required</small>
-                  }
+                    <small class="error">{{ getErrorMsg('password') }}</small>
                 </div>
                 <div class="form-group">
                   <label class="form-label">Confirm Password *</label>
@@ -291,9 +280,7 @@
                       }
                     </button>
                   </div>
-                  @if (form.get('confirmPassword')?.invalid && form.get('confirmPassword')?.touched) {
-                    <small class="error">Confirm password is required</small>
-                  }
+                    <small class="error">{{ getErrorMsg('confirmPassword') }}</small>
                 </div>
               }
             </div>

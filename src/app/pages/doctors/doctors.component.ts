@@ -40,12 +40,13 @@ export class DoctorsComponent implements OnInit {
     showDeleteModal = signal(false);
     selectedDoctor = signal<Doctor | null>(null);
     errorMessages = {
-        phone: {pattern: 'Invalid Pakistani phone number'},
-        pmdcNumber: {pattern: 'Format: PMDC-12345'},
-        npiNumber: {pattern: 'Must be exactly 10 digits'},
-        tinNumber: {pattern: 'Must be 7–12 digits'},
-        firstName: {pattern: 'Only alphabets allowed'},
-        lastName: {pattern: 'Only alphabets allowed'}
+        phone: {required: 'Phone is required', pattern: 'Invalid Pakistani phone number'},
+        pmdcNumber: {required: 'PMDC number is required', pattern: 'Format: PMDC-12345'},
+        npiNumber: {required: 'NPI  number is required', pattern: 'Must be exactly 10 digits'},
+        tinNumber: {required: 'TIN number is required', pattern: 'Must be 7–12 digits'},
+        email: {required: 'Email is required', email: 'Provide valid email'},
+        firstName: {required: 'First name is required', pattern: 'Only alphabets allowed'},
+        lastName: {required: 'Last name is required', pattern: 'Only alphabets allowed'},
     };
     isEditMode: boolean = false;
     doctorForm!: FormGroup;
@@ -100,15 +101,15 @@ export class DoctorsComponent implements OnInit {
         this.doctorForm = this.fb.group({
             firstName: ['', [
                 Validators.required,
-                Validators.minLength(3),
+                Validators.minLength(5),
                 Validators.maxLength(50),
-                Validators.pattern(/^[A-Za-z ]+$/)
+                Validators.pattern(RegexConstants.ALPHABET_REGEX)
             ]],
             lastName: ['', [
                 Validators.required,
-                Validators.minLength(3),
+                Validators.minLength(5),
                 Validators.maxLength(50),
-                Validators.pattern(/^[A-Za-z ]+$/)
+                Validators.pattern(RegexConstants.ALPHABET_REGEX)
             ]],
             email: ['', [
                 Validators.required,
@@ -401,6 +402,7 @@ export class DoctorsComponent implements OnInit {
     submitAddDoctor(): void {
         if (this.doctorForm.invalid) {
             markAllTouched(this.doctorForm);
+            this.toastService.show('Please fill all required fields correctly', 'error');
             return;
         }
         const formData = new FormData();
