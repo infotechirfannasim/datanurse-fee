@@ -203,7 +203,7 @@
                                 </div>
                                 <div class="cd-cell">
                                     <div class="cd-key">Weight</div>
-                                    <div class="cd-val">{{ selectedPatient()?.profile?.weightKg || '—' }} kg</div>
+                                    <div class="cd-val">{{ selectedPatient()?.weight || '—' }} kg</div>
                                 </div>
                                 <div class="cd-cell">
                                     <div class="cd-key">Birth Weight</div>
@@ -211,15 +211,15 @@
                                 </div>
                                 <div class="cd-cell">
                                     <div class="cd-key">Delivery Method</div>
-                                    <div class="cd-val">{{ selectedPatient()?.profile?.deliveryMethod || '—' }}</div>
+                                    <div class="cd-val">{{ selectedPatient()?.cases[0]?.otherDetails?.deliveryMethod || '—' }}</div>
                                 </div>
                                 <div class="cd-cell">
                                     <div class="cd-key">Birth Location</div>
-                                    <div class="cd-val">{{ selectedPatient()?.profile?.birthLocation || '—' }}</div>
+                                    <div class="cd-val">{{ selectedPatient()?.birthCountry || '—' }}</div>
                                 </div>
                                 <div class="cd-cell">
                                     <div class="cd-key">Birth Province</div>
-                                    <div class="cd-val">{{ selectedPatient()?.profile?.birthProvince || '—' }}</div>
+                                    <div class="cd-val">{{ selectedPatient()?.province || '—' }}</div>
                                 </div>
                             </div>
                         </div>
@@ -229,15 +229,15 @@
                             <div class="cd-grid cd-grid--3">
                                 <div class="cd-cell">
                                     <div class="cd-key">Admitted From</div>
-                                    <div class="cd-val cd-val--capitalize">{{ selectedPatient()?.profile?.admittedFrom || '—' }}</div>
+                                    <div class="cd-val cd-val--capitalize">{{selectedPatient()?.cases[0]?.otherDetails?.admittedFrom || '—' }}</div>
                                 </div>
                                 <div class="cd-cell">
                                     <div class="cd-key">Primary Payor</div>
-                                    <div class="cd-val">{{ selectedPatient()?.profile?.primaryPayor || '—' }}</div>
+                                    <div class="cd-val">{{ selectedPatient()?.cases[0]?.otherDetails?.primaryPayor || '—' }}</div>
                                 </div>
                                 <div class="cd-cell">
                                     <div class="cd-key">Secondary Payor</div>
-                                    <div class="cd-val">{{ selectedPatient()?.profile?.secondaryPayor || '—' }}</div>
+                                    <div class="cd-val">{{ selectedPatient()?.cases[0]?.otherDetails?.secondaryPayor || '—' }}</div>
                                 </div>
                             </div>
                         </div>
