@@ -492,6 +492,7 @@ export class DoctorsComponent implements OnInit {
         this.isEditMode = false;
         this.hospitals.clear();
         this.addHospitalRow();
+        this.selectedDoctor.set(null);
     }
 
     goToPage(page: number) {

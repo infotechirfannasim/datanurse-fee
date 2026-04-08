@@ -5,6 +5,7 @@ export const LOGOUT_USER_API_URL = '/un-auth/logout-email';
 export const CHANGE_PASS_API_URL = '/user/change-password';
 export const FORGOT_PASS_API_URL = 'auth/forgot-password';
 export const RESET_PASS_API_URL = '/auth/reset-password';
+export const SET_PASS_API_URL = '/auth/set-password';
 
 export const PROFILE_API_URL = 'auth/me';
 export const UPDATE_PROFILE_API_URL = 'users/me';
@@ -39,6 +40,10 @@ export const PATIENTS_API_URL = 'patients'
 export const SUMMARY_API_URL = 'dashboard/summary';
 export const ANALYTICS_API_URL = 'dashboard/analytics';
 export const DEMOGRAPHICS_API_URL = 'dashboard/demographics';
+export const STATS_API_URL = 'dashboard/stats';
+export const TOP_SURGEONS_API_URL = 'dashboard/top-surgeons';
+export const CASE_DISTRIBUTION_API_URL = 'dashboard/case-distribution';
+export const FOLLOWUP_OUTCOMES_API_URL = 'dashboard/follow-up-outcomes';
 
 // Cases
 export const CASES_API_URL = 'cases';

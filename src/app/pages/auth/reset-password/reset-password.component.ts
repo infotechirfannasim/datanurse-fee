@@ -1,9 +1,7 @@
 import {Component} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {HttpErrorResponse} from '@angular/common/http';
 import {AuthService} from '../../../core/services/auth.service';
-import {ResetPasswordRequest} from "../../../core/models/user.model";
 import {ToastService} from "../../../core/services/toast.service";
 import {getError, passwordMatchValidator} from "../../../utils/global.utils";
 import {RegexConstants} from "../../../utils/regex-constants";
@@ -16,12 +14,10 @@ import {RegexConstants} from "../../../utils/regex-constants";
   styleUrls: ['../login/login.component.scss']
 })
 export class ResetPasswordComponent {
-
+  mode: 'reset' | 'set' = 'reset';
   token: string = '';
-
   showPassword = false;
   showConfirmPassword = false;
-
   isLoading = false;
   message = '';
   error = '';
@@ -31,7 +27,7 @@ export class ResetPasswordComponent {
           Validators.minLength(8),
           Validators.maxLength(20),
           Validators.pattern(RegexConstants.PASSWORD_REGEX)]],
-    confirmPassword: ['', [Validators.required]]
+        confirmPassword: ['', [Validators.required]]
       },
       {
         validators: passwordMatchValidator('password', 'confirmPassword')
@@ -56,6 +52,8 @@ export class ResetPasswordComponent {
       private toastService: ToastService
   ) {
     this.token = this.route.snapshot.queryParamMap.get('token') || '';
+    const currentUrl = this.router.url;
+    this.mode = currentUrl.includes('set-password') ? 'set' : 'reset';
   }
 
   togglePassword() {
@@ -75,27 +73,30 @@ export class ResetPasswordComponent {
     if (this.resetForm.invalid || this.passwordsMismatch()) return;
 
     this.isLoading = true;
-    this.error = '';
-    this.message = '';
 
-    const payload: ResetPasswordRequest = {
+    const payload = {
       token: this.token,
-      password: this.resetForm.value.password as string,
-      confirmPassword: this.resetForm.value.confirmPassword as string
+      password: this.resetForm.value.password!,
+      confirmPassword: this.resetForm.value.confirmPassword!
     };
 
-    this.authService.resetPassword(payload).subscribe({
+    const request$ =
+        this.mode === 'set'
+            ? this.authService.setPassword(payload)
+            : this.authService.resetPassword(payload);
+
+    request$.subscribe({
       next: () => {
-        this.message = 'Password reset successful. Redirecting to login...';
+        this.message =
+            this.mode === 'set'
+                ? 'Password set successfully'
+                : 'Password reset successful';
         this.isLoading = false;
 
-        setTimeout(() => {
-          this.router.navigate(['/auth/login']);
-        }, 1000);
+        setTimeout(() => this.router.navigate(['/auth/login']), 1000);
       },
-      error: (err: HttpErrorResponse) => {
-        this.error = err.error?.message || err?.message || 'Invalid or expired reset link';
-        this.toastService.show(this.error, 'error');
+      error: (err) => {
+        this.error = err.error?.message || 'Something went wrong';
         this.isLoading = false;
       }
     });
