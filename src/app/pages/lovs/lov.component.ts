@@ -104,7 +104,7 @@ export class LovComponent implements OnInit, OnDestroy {
         },
         name: {
             required: 'Name is required',
-            minlength: 'Min 8 characters',
+            minlength: 'Min 2 characters',
             maxlength: 'Max 50 characters',
             pattern: 'Only alphabets allowed'
         },
@@ -285,7 +285,7 @@ export class LovComponent implements OnInit, OnDestroy {
                 value: lov?.code || '',
                 disabled: this.isEditMode
             }, [Validators.required, Validators.minLength(3), Validators.maxLength(15), Validators.pattern(RegexConstants.NO_SPACE_REGEX)]],
-            name: [lov?.name || '', [Validators.required, Validators.minLength(5), Validators.maxLength(50), Validators.pattern(RegexConstants.ALPHABET_REGEX)]],
+            name: [lov?.name || '', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern(RegexConstants.NAME_REGEX)]],
             description: [lov?.description ?? '', [Validators.maxLength(500)]],
             status: lov?.status === 'active'
         };

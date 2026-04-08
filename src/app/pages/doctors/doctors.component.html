@@ -51,7 +51,7 @@
                                     </div>
                                 }
                                 <div>
-                                    <span class="doc-nm">{{ doc.firstName }}</span>
+                                    <span class="doc-nm">{{ doc.firstName }} {{ doc.lastName }}</span>
                                     <span class="doc-em">{{ doc.email }}</span>
                                 </div>
                             </div>
@@ -231,7 +231,6 @@
                                 <label class="form-label">TIN Number *</label>
                                 <input class="form-input"
                                        formControlName="tinNumber"
-                                       mask="000000000000"
                                        placeholder="123456789012">
                                 <small class="error">{{ getErrorMsg('tinNumber') }}</small>
                             </div>

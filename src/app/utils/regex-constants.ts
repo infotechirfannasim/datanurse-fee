@@ -6,5 +6,6 @@ export class RegexConstants {
     public static VALID_EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     public static NO_SPACE_REGEX = /^\S+$/;
     public static ALPHABET_REGEX = /^[A-Za-z ]+$/;
+    public static NAME_REGEX = /^[A-Za-z .,-_]+$/;
     public static PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
 }
