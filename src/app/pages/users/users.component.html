@@ -138,14 +138,14 @@
 
 @if (showAddModal()) {
   <div class="new-modals">
-    <div class="modal-overlay open" (click)="showAddModal.set(false); resetForm()">
+    <div class="modal-overlay open">
       <div class="modal modal-lg" (click)="$event.stopPropagation()">
         <div class="modal-header">
           <div>
             <div class="modal-title">{{ isEditMode ? 'Update User' : 'Add User' }}</div>
             <!--           <div class="modal-sub">Fill in the user's details below</div> -->
           </div>
-          <button class="modal-close" (click)="showAddModal.set(false)">
+          <button class="modal-close" (click)="closeModal()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
               <line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/>
               <line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/>
@@ -293,7 +293,7 @@
         </div>
         
         <div class="modal-footer">
-          <button class="btn btn-ghost" (click)="showAddModal.set(false); resetForm()">Cancel</button>
+          <button class="btn btn-ghost" (click)="closeModal()">Cancel</button>
           <button class="btn btn-primary"
                   [disabled]="form.invalid"
                   (click)="submitUser()">
@@ -308,7 +308,7 @@
 <!-- ═══ VIEW USERS MODAL ═══ -->
 @if (showViewModal() && selectedUser()) {
   <div class="new-modals">
-    <div class="modal-overlay open" (click)="showViewModal.set(false)">
+      <div class="modal-overlay open">
       <div class="modal" (click)="$event.stopPropagation()">
         <div class="modal-header">
           <div style="display:flex;align-items:center;gap:14px;">
@@ -385,7 +385,7 @@
 <!-- ═══ DELETE CONFIRM MODAL ═══ -->
 @if (showDeleteModal() && selectedUser()) {
   <div class="new-modals">
-    <div class="modal-overlay open" (click)="showDeleteModal.set(false)">
+      <div class="modal-overlay open">
       <div class="modal modal-sm" (click)="$event.stopPropagation()">
         <div class="modal-header">
           <div>
@@ -419,4 +419,53 @@
       </div>
     </div>
   </div>
+}
+
+
+<!-- ═══ UNSAVED CHANGES CONFIRM MODAL ═══ -->
+@if (showConfirmClose()) {
+    <div class="new-modals">
+        <div class="modal-overlay open">
+            <div class="modal modal-sm" (click)="$event.stopPropagation()">
+
+                <!-- Header -->
+                <div class="modal-header">
+                    <div>
+                        <div class="modal-title">Discard Changes</div>
+                    </div>
+                    <button class="modal-close" (click)="cancelClose()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                            <line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/>
+                            <line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:center;padding:28px;">
+                    <div class="confirm-icon">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="#F59E0B" stroke-width="2"/>
+                            <line x1="12" y1="8" x2="12" y2="13" stroke="#F59E0B" stroke-width="2"/>
+                            <circle cx="12" cy="16" r="1" fill="#F59E0B"/>
+                        </svg>
+                    </div>
+
+                    <div class="confirm-title">Unsaved Changes</div>
+
+                    <div class="confirm-text">
+                        You have unsaved changes. If you leave now, your changes will be lost.
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-ghost" (click)="cancelClose()">
+                        Continue Editing
+                    </button>
+                    <button class="btn btn-danger" (click)="discardChanges()">
+                        Discard
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 }

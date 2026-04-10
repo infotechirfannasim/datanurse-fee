@@ -53,6 +53,7 @@ export class LovComponent implements OnInit, OnDestroy {
     selectedLov = signal<LOV | null>(null);
     isLoading = signal<boolean>(false);
     selectedLovType = signal<string>('');
+    showConfirmClose = signal(false);
     lovOptions = signal<{ [key: string]: any[] }>({});
     rootType = computed(() => this.navigationStack().at(0)?.type ?? '');
 
@@ -98,15 +99,14 @@ export class LovComponent implements OnInit, OnDestroy {
     form!: FormGroup;
     errorMessages = {
         code: {
-            required: 'Code is required', pattern: 'No spaces allowed',
-            minlength: 'Min 3 characters',
+            required: 'Code is required', pattern: 'Only letters, numbers and , - _ * & + . are allowed.',
+            minlength: 'Min 1 characters',
             maxlength: 'Max 15 characters',
         },
         name: {
             required: 'Name is required',
-            minlength: 'Min 2 characters',
-            maxlength: 'Max 50 characters',
-            pattern: 'Only alphabets allowed'
+            pattern: 'Only letters and , - _ * & + . are allowed.',
+            maxLength: 'Max 50 characters'
         },
         description: {
             maxlength: 'Max 500 characters',
@@ -284,8 +284,8 @@ export class LovComponent implements OnInit, OnDestroy {
             code: [{
                 value: lov?.code || '',
                 disabled: this.isEditMode
-            }, [Validators.required, Validators.minLength(3), Validators.maxLength(15), Validators.pattern(RegexConstants.NO_SPACE_REGEX)]],
-            name: [lov?.name || '', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern(RegexConstants.NAME_REGEX)]],
+            }, [Validators.required, Validators.minLength(1), Validators.maxLength(15), Validators.pattern(RegexConstants.LOV_CODE_REGEX)]],
+            name: [lov?.name || '', [Validators.required, Validators.minLength(1), Validators.maxLength(50), Validators.pattern(RegexConstants.NAME_SPECIAL_REGEX)]],
             description: [lov?.description ?? '', [Validators.maxLength(500)]],
             status: lov?.status === 'active'
         };
@@ -531,5 +531,24 @@ export class LovComponent implements OnInit, OnDestroy {
             field,
             customMessages: this.errorMessages
         });
+    }
+
+    cancelClose() {
+        this.showConfirmClose.set(false);
+    }
+
+    closeModal() {
+        if (this.form.dirty) {
+            this.showConfirmClose.set(true);
+        } else {
+            this.showAddModal.set(false);
+            this.resetForm();
+        }
+    }
+
+    discardChanges() {
+        this.resetForm();
+        this.cancelClose();
+        this.closeModal();
     }
 }

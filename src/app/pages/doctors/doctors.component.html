@@ -145,7 +145,7 @@
 
 @if (showAddModal()) {
     <div class="new-modals">
-        <div class="modal-overlay open" (click)="closeModal()">
+        <div class="modal-overlay open">
             <div class="modal modal-lg" (click)="$event.stopPropagation()">
                 <div class="modal-header">
                     <div>
@@ -221,26 +221,9 @@
                                 <label class="form-label">PMDC Registration No. *</label>
                                 <input class="form-input"
                                        formControlName="pmdcNumber"
-                                       mask="00000"
-                                       prefix="PMDC-"
-                                       [dropSpecialCharacters]="false"
-                                       placeholder="PMDC-12345">
+                                       mask="0*"
+                                       placeholder="PMDC Registration No">
                                 <small class="error">{{ getErrorMsg('pmdcNumber') }}</small>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">TIN Number *</label>
-                                <input class="form-input"
-                                       formControlName="tinNumber"
-                                       placeholder="123456789012">
-                                <small class="error">{{ getErrorMsg('tinNumber') }}</small>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">NPI Number No. *</label>
-                                <input class="form-input"
-                                       formControlName="npiNumber"
-                                       mask="0000000000"
-                                       placeholder="1234567890">
-                                <small class="error">{{ getErrorMsg('npiNumber') }}</small>
                             </div>
                         </div>
                         <div class="form-group">
@@ -483,6 +466,55 @@
                     <button class="btn btn-ghost" (click)="showDeleteModal.set(false)">No</button>
                     <button class="btn btn-danger" (click)="confirmDelete()">Yes</button>
                 </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<!-- ═══ UNSAVED CHANGES CONFIRM MODAL ═══ -->
+@if (showConfirmClose()) {
+    <div class="new-modals">
+        <div class="modal-overlay open">
+            <div class="modal modal-sm" (click)="$event.stopPropagation()">
+
+                <!-- Header -->
+                <div class="modal-header">
+                    <div>
+                        <div class="modal-title">Discard Changes</div>
+                    </div>
+                    <button class="modal-close" (click)="cancelClose()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                            <line x1="18" y1="6" x2="6" y2="18" stroke="#0B1E45" stroke-width="2"/>
+                            <line x1="6" y1="6" x2="18" y2="18" stroke="#0B1E45" stroke-width="2"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:center;padding:28px;">
+                    <div class="confirm-icon">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="#F59E0B" stroke-width="2"/>
+                            <line x1="12" y1="8" x2="12" y2="13" stroke="#F59E0B" stroke-width="2"/>
+                            <circle cx="12" cy="16" r="1" fill="#F59E0B"/>
+                        </svg>
+                    </div>
+
+                    <div class="confirm-title">Unsaved Changes</div>
+
+                    <div class="confirm-text">
+                        You have unsaved changes. If you leave now, your changes will be lost.
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-ghost" (click)="cancelClose()">
+                        Continue Editing
+                    </button>
+                    <button class="btn btn-danger" (click)="discardChanges()">
+                        Discard
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>

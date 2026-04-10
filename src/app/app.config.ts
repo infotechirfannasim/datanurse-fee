@@ -15,6 +15,7 @@ import { provideNgxMask } from 'ngx-mask';
 import { provideLoadingBar } from '@ngx-loading-bar/core';
 import { provideLoadingBarInterceptor } from '@ngx-loading-bar/http-client';
 import { provideLoadingBarRouter } from '@ngx-loading-bar/router';
+import {preventDuplicateInterceptor} from "./core/interceptors/prevent-duplicate.interceptor";
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -34,7 +35,7 @@ export const appConfig: ApplicationConfig = {
         }),
 
         provideHttpClient(
-            withInterceptors([authInterceptor, errorInterceptor]),
+            withInterceptors([authInterceptor, errorInterceptor, preventDuplicateInterceptor]),
             withInterceptorsFromDi()
         ),
 

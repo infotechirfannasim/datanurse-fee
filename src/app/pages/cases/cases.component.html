@@ -670,7 +670,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-ghost" (click)="showViewModal.set(false)">Close</button>
+            <button class="btn" [disabled]="true">Print</button>
+            <button class="btn btn-ghost" (click)="showViewModal.set(false)">Close</button>
         </div>
       
       </div>
