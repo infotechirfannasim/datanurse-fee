@@ -53,7 +53,8 @@ export class ResetPasswordComponent {
   ) {
     this.token = this.route.snapshot.queryParamMap.get('token') || '';
     const currentUrl = this.router.url;
-    this.mode = currentUrl.includes('set-password') ? 'set' : 'reset';
+    this.mode = currentUrl.includes('reset-password') ? 'reset' : 'set';
+    console.log(this.mode)
   }
 
   togglePassword() {

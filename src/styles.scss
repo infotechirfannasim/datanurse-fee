@@ -2111,6 +2111,11 @@ input.has-icon {
     border-color: #FEE2E2;
     background: #FFF5F5;
   }
+
+  &--unknown {
+    border-color: #E5E7EB;
+    background: #F9FAFB;
+  }
 }
 
 .cd-discharge-label {
@@ -2126,6 +2131,10 @@ input.has-icon {
 
   .cd-discharge-row--alive & {
     color: #15803D;
+  }
+
+  .cd-discharge-row--unknown & {
+    color: var(--muted);
   }
 }
 
@@ -2152,6 +2161,20 @@ input.has-icon {
 
   span {
     font-size: 14px;
+  }
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+
+  input[type="checkbox"] {
+    width: 0.75rem;
+    height: 0.75rem;
+    accent-color: var(--navy);
   }
 }
 

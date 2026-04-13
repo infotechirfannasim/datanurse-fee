@@ -240,8 +240,22 @@
                             </p-multiSelect>
                             <small class="error">{{ getErrorMsg('specialities') }}</small>
                         </div>
-                        <!-- Hospitals -->
                         <div class="form-group">
+                            <label class="form-label">Affiliated Hospitals</label>
+                            <p-multiSelect
+                                    [options]="hospitalOptions"
+                                    formControlName="hospitalAffiliations"
+                                    optionLabel="name"
+                                    optionValue="code"
+                                    placeholder="Select hospitals"
+                                    display="chip"
+                                    [showToggleAll]="true"
+                                    class="w-full">
+                            </p-multiSelect>
+                            <small class="error">{{ getErrorMsg('hospitalAffiliations') }}</small>
+                        </div>
+                        <!-- Hospitals -->
+                        <!--<div class="form-group">
                             <label class="form-label">Affiliated Hospitals</label>
                             <div class="hospital-list-modal" formArrayName="hospitals">
                                 @for (hospital of hospitals.controls; track $index; let i = $index) {
@@ -328,7 +342,7 @@
                             <button type="button" class="btn-add-row" (click)="addHospitalRow()">
                                 + Add another hospital
                             </button>
-                        </div>
+                        </div>-->
                     </form>
                 </div>
 

@@ -1,16 +1,18 @@
 import {Component, inject, OnInit, signal} from '@angular/core';
-import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {ToastService} from '../../core/services/toast.service';
-import {Doctor} from '../../core/models/doctor.model';
 import {RequestService} from "../../core/services/request.service";
-import {CASES_API_URL, DELETE_USER_API_URL} from "../../utils/api.url.constants";
+import {ADD_FOLLOW_UP_API_URL, CASES_API_URL} from "../../utils/api.url.constants";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {FilterParams} from "../../core/models/user.model";
 import {MultiSelectModule} from "primeng/multiselect";
 import {SelectModule} from "primeng/select";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
-import {getUserInitials} from "../../utils/global.utils";
+import {getError, getUserInitials} from "../../utils/global.utils";
+import {CaseDetailDTO, CaseListDTO} from "../../core/models/case.model";
+import {PATIENT_STATUS} from "../../utils/app-constants";
+import {RegexConstants} from "../../utils/regex-constants";
 
 @Component({
     selector: 'app-cases',
@@ -21,6 +23,7 @@ import {getUserInitials} from "../../utils/global.utils";
 })
 export class CasesComponent implements OnInit {
     private toastService = inject(ToastService);
+    private fb = inject(FormBuilder);
 
     searchQuery = signal('');
     pageQuery = signal(1);
@@ -28,19 +31,38 @@ export class CasesComponent implements OnInit {
     showAddModal = signal(false);
     showViewModal = signal(false);
     showDeleteModal = signal(false);
-    isEditMode: boolean = false;
-    doctorForm!: FormGroup;
-    cases: any[] = [];
-    selectedCase = signal<any | null>(null);
+    showFollowupModal = signal(false);
+    selectedCaseForFollowup = signal<any>(null);
+
+    followupForm!: FormGroup;
+    cases: CaseListDTO[] = [];
+    selectedCase = signal<CaseDetailDTO>(new CaseDetailDTO());
     private requestService = inject(RequestService);
     private searchSubject = new Subject<string>();
     private destroy$ = new Subject<void>();
+    errorMessages = {
+        causeOfDeath: {
+            required: 'Cause of death is required',
+            pattern: 'Only letters and , - _ * & + . are allowed.',
+            maxLength: 'Max 50 characters',
+            minLength: 'Max 3 characters'
+        },
+        notes: {
+            maxlength: 'Max 500 characters',
+            pattern: 'Only letters and , - _ * & + . are allowed.',
+        },
+        readmissionReason: {
+            maxlength: 'Max 500 characters',
+            pattern: 'Only letters and , - _ * & + . are allowed.',
+        }
+    };
 
     constructor() {
     }
 
     ngOnInit() {
         this.loadCases();
+        this.initFollowupForm();
         this.setupSearchDebounce();
     }
 
@@ -54,6 +76,43 @@ export class CasesComponent implements OnInit {
             .subscribe(() => {
                 this.loadCases();
             });
+    }
+
+    initFollowupForm() {
+        this.followupForm = this.fb.group({
+            followupDate: [new Date(), Validators.required],
+            patientStatus: [PATIENT_STATUS.ALIVE, Validators.required],
+            causeOfDeath: [''],
+            readmissionRequested: [false],
+            readmissionReason: ['', [Validators.maxLength(500), Validators.pattern(RegexConstants.NAME_SPECIAL_REGEX)]],
+            readmissionDate: [null],
+            notes: ['', [Validators.maxLength(500), Validators.pattern(RegexConstants.NAME_SPECIAL_REGEX)]]
+        });
+
+        this.followupForm.get('patientStatus')?.valueChanges.subscribe(status => {
+            const causeCtrl = this.followupForm.get('causeOfDeath');
+            const readmissionCtrl = this.followupForm.get('readmissionRequested');
+
+            if (status === PATIENT_STATUS.DECEASED) {
+                causeCtrl?.setValidators([Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern(RegexConstants.NAME_SPECIAL_REGEX)]);
+                readmissionCtrl?.setValue(false);
+                readmissionCtrl?.disable();
+            } else {
+                causeCtrl?.clearValidators();
+                readmissionCtrl?.enable();
+            }
+            causeCtrl?.updateValueAndValidity();
+        });
+        this.followupForm.get('readmissionRequested')?.valueChanges.subscribe(value => {
+            const readmissionCntrl = this.followupForm.get('readmissionDate');
+            if (value) {
+                readmissionCntrl?.setValidators(Validators.required);
+            } else {
+                readmissionCntrl?.clearValidators();
+                readmissionCntrl?.setValue(null);
+            }
+            readmissionCntrl?.updateValueAndValidity();
+        });
     }
 
     onSearchChange() {
@@ -70,7 +129,7 @@ export class CasesComponent implements OnInit {
         this.requestService.getRequest(CASES_API_URL, filters).subscribe({
             next: (response: HttpResponse<any>) => {
                 if (response.status === 200 && response.body.data) {
-                    this.cases = response.body.data ?? [];
+                    this.cases = CaseListDTO.fromArray(response.body.data);
                     this.pagination.set(response.body.meta?.pagination || null);
                 } else {
                     this.cases = [];
@@ -90,7 +149,7 @@ export class CasesComponent implements OnInit {
             .subscribe({
                 next: (res: HttpResponse<any>) => {
                     if (res.status === 200) {
-                        this.selectedCase.set(res.body.data);
+                        this.selectedCase.set(CaseDetailDTO.fromDetail(res.body.data))
                         this.showViewModal.set(true);
                     } else {
                         const msg = res.body.message || 'Something went wrong'
@@ -104,12 +163,9 @@ export class CasesComponent implements OnInit {
             });
     }
 
-    openDelete(doc: Doctor): void {
-        this.selectedCase.set(doc);
-        this.showDeleteModal.set(true);
-    }
 
-    getCaseStatusClass(status: string): string {
+    getCaseStatusClass(status: string | null | undefined): string {
+        if (!status) return '';
         const map: Record<string, string> = {
             'Salvage': 'status-salvage',
             'Completed': 'status-completed',
@@ -121,73 +177,19 @@ export class CasesComponent implements OnInit {
         return map[status] ?? 'status-pending';
     }
 
-    getDischargeClass(status: string): string {
+    getDischargeClass(status: string | null | undefined): string {
         if (!status) return 'cd-discharge-row--deceased';
-        const lower = status.toLowerCase();
-        if (lower.includes('alive') || lower.includes('home') || lower.includes('discharged')) {
-            return 'cd-discharge-row--alive';
+        switch (status){
+            case PATIENT_STATUS.ALIVE:
+                return 'cd-discharge-row--alive'
+            case PATIENT_STATUS.DECEASED:
+                return 'cd-discharge-row--deceased'
+            case PATIENT_STATUS.UNKNOWN:
+                return 'cd-discharge-row--unknown'
         }
-        return 'cd-discharge-row--deceased';
+        return '';
     }
 
-    getStatusClass(status: string): string {
-        const map: Record<string, string> = {Alive: 'badge-green', deceased: 'badge-rose'};
-        return map[status] ?? 'badge-gray';
-    }
-
-    getSurgeonInitials(name: string): string {
-        if (!name) return '?';
-        const parts = name.trim().replace(/^Dr\.?\s*/i, '').split(' ').filter(Boolean);
-        if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-        if (parts.length === 1) return parts[0][0].toUpperCase();
-        return '?';
-    }
-
-    getObjectKeys(obj: Record<string, any> | null | undefined): string[] {
-        if (!obj) return [];
-        return Object.keys(obj).filter(k => obj[k] === true || obj[k] === 1);
-    }
-
-    onEditProfile() {
-        const record = this.selectedCase();
-
-        if (!record) return;
-
-        this.isEditMode = true;
-        this.doctorForm.patchValue(this.mapDoctorToForm(this.selectedCase()));
-        this.showViewModal.set(false);
-        this.showAddModal.set(true);
-    }
-
-    mapDoctorToForm(doc: any) {
-        return {
-            name: `${doc.firstName} ${doc.lastName}`,
-            email: doc.email,
-            phone: doc.phone,
-            pmdc: doc.profile?.licenseNumber,
-            specialities: doc.specialities || [],
-            hospitals: doc.hospitalAffiliations || []
-        };
-    }
-
-    confirmDelete(): void {
-        if (!this.selectedCase()) return;
-        this.requestService.deleteRequest(DELETE_USER_API_URL + this.selectedCase()?._id).subscribe({
-            next: (response) => {
-                this.toastService.show('Case deleted successfully', 'error');
-                this.showDeleteModal.set(false);
-                this.loadCases();
-            },
-            error: (err) => {
-                this.toastService.show('Failed to delete case.', 'error');
-            }
-        });
-
-    }
-
-    resetForm(): void {
-        this.doctorForm.reset();
-    }
 
     goToPage(page: number) {
         const p = this.pagination();
@@ -207,5 +209,83 @@ export class CasesComponent implements OnInit {
         return `data:${doc.profileImage.contentType};base64,${doc.profileImage.data}`;
     }
 
+    openFollowupModal(caseItem: CaseDetailDTO) {
+        this.selectedCaseForFollowup.set(caseItem);
+        this.followupForm.reset({
+            followupDate: new Date().toISOString().split('T')[0],
+            patientStatus: 'Alive',
+            readmissionRequested: false
+        });
+
+        this.showFollowupModal.set(true);
+    }
+
+    saveFollowup() {
+        if (this.followupForm.invalid) {
+            this.followupForm.markAllAsTouched();
+            return;
+        }
+
+        const formValue = this.followupForm.getRawValue();
+        const selectedCase = this.selectedCaseForFollowup();
+
+        let payload: any = {
+            caseId: selectedCase._id,
+            patientId: selectedCase.patientId?._id || selectedCase.patientId,
+            doctorId: selectedCase.ownerDoctorId?._id || selectedCase.ownerDoctorId,
+            followupDate: formValue.followupDate,
+            patientStatus: formValue.patientStatus,
+            notes: formValue.notes || ''
+        };
+
+        if (formValue.patientStatus === PATIENT_STATUS.DECEASED) {
+            payload.causeOfDeath = formValue.causeOfDeath;
+        }
+
+        if (formValue.patientStatus === PATIENT_STATUS.ALIVE && formValue.readmissionRequested) {
+            payload.readmissionRequested = true;
+            payload.readmissionReason = formValue.readmissionReason;
+            if (formValue.readmissionRequested) {
+                payload.readmissionDate = formValue.readmissionDate;
+            }
+        } else {
+            payload.readmissionRequested = false;
+        }
+
+        this.requestService.postRequest(ADD_FOLLOW_UP_API_URL, payload).subscribe({
+            next: (resp: HttpResponse<any>) => {
+                if(resp.status == 200) {
+                    this.toastService.show('Follow-up saved successfully', 'success');
+                    this.selectedCase().followups.push(resp.body.data);
+                    this.showFollowupModal.set(false);
+                    this.loadCases();
+                }
+            },
+            error: (err: HttpErrorResponse) => {
+                const errMsg = err.error.message || err.message || 'Failed to create followup';
+                this.toastService.show(errMsg, 'error');
+            }
+        });
+    }
+
+    canAddFollowup(caseItem: CaseDetailDTO): boolean {
+        if (!caseItem?.step14Discharge?.dischargeDate) return false;
+
+        const discharge = new Date(caseItem.step14Discharge.dischargeDate);
+        const today = new Date();
+        const diffDays = Math.ceil((today.getTime() - discharge.getTime()) / (1000 * 3600 * 24));
+
+        return diffDays >= 30 && caseItem.followups.length == 0;
+    }
+
+    getErrorMsg(controlName: string, index?: number, field?: string) {
+        return getError(this.followupForm, controlName, {
+            index,
+            field,
+            customMessages: this.errorMessages
+        });
+    }
+
     protected readonly getUserInitials = getUserInitials;
+    protected readonly PATIENT_STATUS = PATIENT_STATUS;
 }

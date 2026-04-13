@@ -105,7 +105,7 @@ export class LovComponent implements OnInit, OnDestroy {
         },
         name: {
             required: 'Name is required',
-            pattern: 'Only letters and , - _ * & + . are allowed.',
+            pattern: 'Only letters, numbers and , - _ * & + .() are allowed.',
             maxLength: 'Max 50 characters'
         },
         description: {

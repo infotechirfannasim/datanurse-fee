@@ -10,6 +10,8 @@ import {MultiSelectModule} from 'primeng/multiselect';
 import {SelectModule} from 'primeng/select';
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from 'rxjs';
 import {getUserInitials} from '../../utils/global.utils';
+import {PatientDTO} from "../../core/models/patient.model";
+import {CaseDetailDTO} from "../../core/models/case.model";
 
 @Component({
     selector: 'app-cases',
@@ -30,12 +32,12 @@ export class PatientComponent implements OnInit {
     showViewModal = signal(false);
     showDeleteModal = signal(false);
     activeTab = signal<'overview' | 'cases' | 'case-detail'>('overview');
-    selectedPatient = signal<any | null>(null);
-    selectedCase = signal<any | null>(null);
+    selectedCase = signal<CaseDetailDTO | null>(new CaseDetailDTO());
+    selectedIndex: number | null = null
+    selectedPatient = signal<PatientDTO | null>(null);
     isEditMode = false;
     doctorForm!: FormGroup;
-    patients: any[] = [];
-
+    patients: PatientDTO[] = [];
     private searchSubject = new Subject<string>();
     private destroy$ = new Subject<void>();
 
@@ -115,7 +117,9 @@ export class PatientComponent implements OnInit {
         this.requestService.getRequest(`${PATIENTS_API_URL}/${patient._id}`).subscribe({
             next: (res: HttpResponse<any>) => {
                 if (res.status === 200) {
-                    this.selectedPatient.set(res.body.data);
+                    const patientDTO = new PatientDTO();
+                    patientDTO.fromData(res.body.data);
+                    this.selectedPatient.set(patientDTO);
                     this.selectedCase.set(null);
                     this.activeTab.set('overview');
                     this.showViewModal.set(true);
@@ -133,8 +137,9 @@ export class PatientComponent implements OnInit {
      * Called when user clicks a case row inside the Cases tab.
      * Sets the selected case and switches to Case Detail tab.
      */
-    selectCaseFromTab(caseItem: any): void {
+    selectCaseFromTab(caseItem: any, index: number): void {
         this.selectedCase.set(caseItem);
+        this.selectedIndex = index;
         this.activeTab.set('case-detail');
     }
 
@@ -201,7 +206,8 @@ export class PatientComponent implements OnInit {
     // CSS Class Helpers
     // ────────────────────────────────────────────
 
-    getCaseStatusClass(status: string): string {
+    getCaseStatusClass(status: string | null | undefined): string {
+        if (!status) return '';
         const map: Record<string, string> = {
             'Salvage': 'status-salvage',
             'Completed': 'status-completed',
@@ -213,7 +219,7 @@ export class PatientComponent implements OnInit {
         return map[status] ?? 'status-pending';
     }
 
-    getDischargeClass(status: string): string {
+    getDischargeClass(status: string | null | undefined): string {
         if (!status) return 'cd-discharge-row--deceased';
         const lower = status.toLowerCase();
         if (lower.includes('alive') || lower.includes('home') || lower.includes('discharged')) {
@@ -254,22 +260,12 @@ export class PatientComponent implements OnInit {
     // Misc / Legacy
     // ────────────────────────────────────────────
 
-    mapDoctorToForm(doc: any): any {
-        return {
-            name: `${doc.firstName} ${doc.lastName}`,
-            email: doc.email,
-            phone: doc.phone,
-            pmdc: doc.profile?.licenseNumber,
-            specialities: doc.specialities || [],
-            hospitals: doc.hospitalAffiliations || []
-        };
+    hasObjectKeys(obj: any): boolean {
+        return obj && typeof obj === 'object' && Object.keys(obj).length > 0;
     }
 
-    resetForm(): void {
-        this.doctorForm.reset();
-    }
-
-    getPillClass(status: string): string {
+    getPillClass(status: string | null | undefined): string {
+        if (!status) return '';
         const map: Record<string, string> = {
             'Completed': 'pill-completed',
             'Recovered': 'pill-completed',
@@ -279,5 +275,17 @@ export class PatientComponent implements OnInit {
             'Pending': 'pill-pending',
         };
         return map[status] ?? 'pill-pending';
+    }
+
+    getCasePercentage(stage: 'draft' | 'assistant_done' | 'kpo_done' | 'doctor_review_done' | 'final' | undefined ): number {
+        if (!stage) return 0;
+        const map: Record<string, number> = {
+            'draft': 25,
+            'assistant_done': 50,
+            'kpo_done': 75,
+            'doctor_review_done': 100,
+            'final': 100,
+        };
+        return map[stage] ?? 0;
     }
 }

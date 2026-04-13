@@ -7,6 +7,12 @@ export const ROLES = {
   PATIENT: 'patient',
 };
 
+export const PATIENT_STATUS = {
+  DECEASED: 'Deceased',
+  ALIVE: 'Alive',
+  UNKNOWN: 'Unknown',
+};
+
 interface ChildMeta {
   parentLovKey: string;
   optionValue?: string;

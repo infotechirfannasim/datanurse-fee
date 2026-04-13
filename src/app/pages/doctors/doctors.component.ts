@@ -108,7 +108,6 @@ export class DoctorsComponent implements OnInit {
         this.loadRoles();
         this.buildForm();
         this.loadLovs();
-        this.addHospitalRow();
         this.setupSearchDebounce();
     }
 
@@ -147,7 +146,7 @@ export class DoctorsComponent implements OnInit {
                 Validators.required,
                 Validators.minLength(1)
             ]],
-            hospitals: this.fb.array([]),
+            hospitalAffiliations: [null, Validators.required],
             profileImage: [null]
         });
     }
@@ -254,12 +253,6 @@ export class DoctorsComponent implements OnInit {
         this.selectedDoctor.set(doc);
         this.isEditMode = true;
         this.doctorForm.patchValue(this.mapDoctorToForm(doc));
-        this.hospitals.clear();
-        if (doc.hospitalAffiliations?.length) {
-            doc.hospitalAffiliations.forEach(h => this.addHospitalRow(h));
-        } else {
-            this.addHospitalRow();
-        }
 
         this.showViewModal.set(false);
         this.showAddModal.set(true);
@@ -276,7 +269,7 @@ export class DoctorsComponent implements OnInit {
             npiNumber: doc?.npiNumber,
             specialities: doc?.specialities || [],
             role: this.doctorForm.value?.role,
-            hospitals: doc?.hospitalAffiliations || []
+            hospitalAffiliations: doc?.hospitalAffiliations || []
         };
     }
 
@@ -332,97 +325,6 @@ export class DoctorsComponent implements OnInit {
         reader.readAsDataURL(file);
     }
 
-    addHospitalRow(prefill?: any): void {
-        const i = this.hospitals.length;
-
-        const hospitalGroup = this.fb.group({
-            name: [prefill?.name || null, Validators.required],
-            country: [prefill?.country || null, Validators.required],
-            province: [prefill?.province || null, Validators.required],
-            district: [prefill?.district || null, Validators.required],
-            city: [prefill?.city || null, Validators.required],
-        });
-
-        this.hospitals.push(hospitalGroup);
-
-        if (prefill?.country) {
-            this.onCountryChange(prefill.country, i);
-        }
-        if (prefill?.province) {
-            this.onProvinceChange(prefill.province, i);
-        }
-        if (prefill?.district) {
-            this.onDistrictChange(prefill.district, i);
-        }
-        this.subscribeRowChanges(i, hospitalGroup);
-    }
-
-    subscribeRowChanges(i: number, group: FormGroup): void {
-        group.get('country')!.valueChanges.subscribe(val => {
-            group.get('province')!.reset();
-            group.get('district')!.reset();
-            group.get('city')!.reset();
-            this.onCountryChange(val, i);
-        });
-
-        group.get('province')!.valueChanges.subscribe(val => {
-            group.get('district')!.reset();
-            group.get('city')!.reset();
-            this.onProvinceChange(val, i);
-        });
-
-        group.get('district')!.valueChanges.subscribe(val => {
-            group.get('city')!.reset();
-            this.onDistrictChange(val, i);
-        });
-    }
-
-    onCountryChange(countryCode: string, i: number): void {
-        const filtered = this.allProvinces.filter(p =>
-            p.parents?.some((par: any) => par.type === 'country' && par.code === countryCode)
-        );
-        this.rowProvinceOptions.set(i, filtered);
-        this.rowDistrictOptions.set(i, []);
-        this.rowCityOptions.set(i, []);
-    }
-
-    onProvinceChange(provinceCode: string, i: number): void {
-        const filtered = this.allDistricts.filter(d =>
-            d.parents?.some((par: any) => par.type === 'province' && par.code === provinceCode)
-        );
-        this.rowDistrictOptions.set(i, filtered);
-        this.rowCityOptions.set(i, []);
-    }
-
-    onDistrictChange(districtCode: string, i: number): void {
-        const filtered = this.cityOptions.filter(c =>
-            c.parents?.some((par: any) => par.type === 'district' && par.code === districtCode)
-        );
-        this.rowCityOptions.set(i, filtered);
-    }
-
-    removeHospitalRow(i: number): void {
-        this.hospitals.removeAt(i);
-        const newProvinces = new Map<number, any[]>();
-        const newDistricts = new Map<number, any[]>();
-        const newCities = new Map<number, any[]>();
-        this.hospitals.controls.forEach((_, idx) => {
-            newProvinces.set(idx, this.rowProvinceOptions.get(idx > i ? idx + 1 : idx) || []);
-            newDistricts.set(idx, this.rowDistrictOptions.get(idx > i ? idx + 1 : idx) || []);
-            newCities.set(idx, this.rowCityOptions.get(idx > i ? idx + 1 : idx) || []);
-        });
-        this.rowProvinceOptions = newProvinces;
-        this.rowDistrictOptions = newDistricts;
-        this.rowCityOptions = newCities;
-    }
-
-    getAvailableHospitals(currentIndex: number): any[] {
-        const selectedCodes = this.hospitals.controls
-            .map((ctrl, idx) => idx !== currentIndex ? ctrl.get('name')?.value : null)
-            .filter(Boolean);
-        return this.hospitalOptions.filter(h => !selectedCodes.includes(h.code));
-    }
-
     submitAddDoctor(): void {
         if (this.doctorForm.invalid) {
             markAllTouched(this.doctorForm);
@@ -449,22 +351,10 @@ export class DoctorsComponent implements OnInit {
             }
         });
 
-        const hospitals = this.doctorForm.value.hospitals || [];
-        hospitals.forEach((hospital: any, index: number) => {
-            if (hospital?.country) {
-                formData.append(`hospitalAffiliations[${index}][country]`, hospital.country);
-            }
-            if (hospital?.province) {
-                formData.append(`hospitalAffiliations[${index}][province]`, hospital.province);
-            }
-            if (hospital?.district) {
-                formData.append(`hospitalAffiliations[${index}][district]`, hospital.district);
-            }
-            if (hospital?.city) {
-                formData.append(`hospitalAffiliations[${index}][city]`, hospital.city);
-            }
-            if (hospital?.name) {
-                formData.append(`hospitalAffiliations[${index}][name]`, hospital.name);
+        const hospitals = this.doctorForm.value.hospitalAffiliations || [];
+        hospitals.forEach((hospital: any) => {
+            if (hospital && hospital.trim() !== '') {
+                formData.append(`hospitalAffiliations[]`, hospital);
             }
         });
 
@@ -496,8 +386,6 @@ export class DoctorsComponent implements OnInit {
         this.imagePreview = null;
         this.selectedFile = null;
         this.isEditMode = false;
-        this.hospitals.clear();
-        this.addHospitalRow();
         this.selectedDoctor.set(null);
     }
 

@@ -47,3 +47,6 @@ export const FOLLOWUP_OUTCOMES_API_URL = 'dashboard/follow-up-outcomes';
 
 // Cases
 export const CASES_API_URL = 'cases';
+
+// Follow-Up
+export const ADD_FOLLOW_UP_API_URL = 'followups'
