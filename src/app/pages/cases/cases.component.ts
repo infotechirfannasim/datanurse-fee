@@ -43,17 +43,17 @@ export class CasesComponent implements OnInit {
     errorMessages = {
         causeOfDeath: {
             required: 'Cause of death is required',
-            pattern: 'Only letters and , - _ * & + . are allowed.',
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
             maxLength: 'Max 50 characters',
             minLength: 'Max 3 characters'
         },
         notes: {
             maxlength: 'Max 500 characters',
-            pattern: 'Only letters and , - _ * & + . are allowed.',
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
         },
         readmissionReason: {
             maxlength: 'Max 500 characters',
-            pattern: 'Only letters and , - _ * & + . are allowed.',
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
         }
     };
 

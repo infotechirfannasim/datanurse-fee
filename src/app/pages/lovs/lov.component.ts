@@ -99,14 +99,15 @@ export class LovComponent implements OnInit, OnDestroy {
     form!: FormGroup;
     errorMessages = {
         code: {
-            required: 'Code is required', pattern: 'Only letters, numbers and , - _ * & + . are allowed.',
+            required: 'Code is required',
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
             minlength: 'Min 1 characters',
             maxlength: 'Max 15 characters',
         },
         name: {
             required: 'Name is required',
-            pattern: 'Only letters, numbers and , - _ * & + .() are allowed.',
-            maxLength: 'Max 50 characters'
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
+            maxLength: 'Max 100 characters'
         },
         description: {
             maxlength: 'Max 500 characters',
@@ -285,7 +286,7 @@ export class LovComponent implements OnInit, OnDestroy {
                 value: lov?.code || '',
                 disabled: this.isEditMode
             }, [Validators.required, Validators.minLength(1), Validators.maxLength(15), Validators.pattern(RegexConstants.LOV_CODE_REGEX)]],
-            name: [lov?.name || '', [Validators.required, Validators.minLength(1), Validators.maxLength(50), Validators.pattern(RegexConstants.NAME_SPECIAL_REGEX)]],
+            name: [lov?.name || '', [Validators.required, Validators.minLength(1), Validators.maxLength(100), Validators.pattern(RegexConstants.NAME_SPECIAL_REGEX)]],
             description: [lov?.description ?? '', [Validators.maxLength(500)]],
             status: lov?.status === 'active'
         };
@@ -293,7 +294,7 @@ export class LovComponent implements OnInit, OnDestroy {
             const parent = lov?.parents?.find((item: any) => item.type === col.parentLovKey);
             group[col.formKey] = [{
                 value: parent ? (col.multiple ? parent.codes : parent.code) : '',
-                disabled: index == 0
+                disabled: index == 0 && this.currentLovType() != 'hospitals'
             }, col.required || index == 0 ? Validators.required : null
             ];
         });

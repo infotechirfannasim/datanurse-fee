@@ -51,12 +51,12 @@ export class UsersComponent implements OnInit {
     errorMessages = {
         firstName: {
             required: 'First name is required',
-            pattern: 'Only letters and , - _ * & + . are allowed.',
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
             maxLength: 'Max 50 characters'
         },
         lastName: {
             required: 'Last name is required',
-            pattern: 'Only letters and , - _ * & + . are allowed.',
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
             maxLength: 'Max 50 characters'
         },
         role: {required: 'Role is required'},

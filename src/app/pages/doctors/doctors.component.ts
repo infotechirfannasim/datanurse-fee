@@ -55,12 +55,12 @@ export class DoctorsComponent implements OnInit {
         },
         firstName: {
             required: 'First name is required',
-            pattern: 'Only letters and , - _ * & + . are allowed.',
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
             maxLength: 'Max 50 characters'
         },
         lastName: {
             required: 'Last name is required',
-            pattern: 'Only letters and , - _ * & + . are allowed.',
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
             maxLength: 'Max 50 characters'
         },
     };
