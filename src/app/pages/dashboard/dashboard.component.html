@@ -181,35 +181,48 @@
         </div>
         <div class="ring-wrap">
             <div class="ring-chart-area">
+
                 <div class="ring-center">
                     <svg class="ring-svg" viewBox="0 0 120 120">
                         <!-- Background track -->
-                        <circle cx="60" cy="60" fill="none" r="48"
-                                stroke="var(--bg)" stroke-width="16"/>
-                        <!-- Dynamic segments -->
+                        <circle cx="60" cy="60" r="44"
+                                fill="none"
+                                stroke="var(--color-border-tertiary)"
+                                stroke-width="12"/>
+
+                        <!-- Segments — round linecap + gap = pill shape without bleed -->
                         @for (seg of ringSegments; track seg.label) {
-                            <circle cx="60" cy="60" r="48" fill="none"
+                            <circle cx="60" cy="60" r="44"
+                                    fill="none"
                                     [attr.stroke]="seg.color"
-                                    stroke-width="16"
-                                    [attr.stroke-dasharray]="seg.dasharray"
+                                    stroke-width="12"
                                     stroke-linecap="round"
+                                    [attr.stroke-dasharray]="seg.dasharray"
                                     [attr.transform]="seg.rotation"/>
                         }
                     </svg>
+
+                    <!-- Center — totalCases from API, not summed from procedures -->
                     <div class="ring-label-wrap">
                         <span class="ring-big">{{ totalCases }}</span>
                         <span class="ring-small">Cases</span>
                     </div>
                 </div>
+
+                <!-- Legend — iterate ringSegments (has color) not procedures separately -->
                 <div class="ring-legend">
-                    @for (p of procedures; track p.label) {
+                    @for (seg of ringSegments; track seg.label) {
                         <div class="ring-legend-item">
-                            <div class="ring-legend-dot" [style.background]="ringSegments[$index]?.color"></div>
-                            <span class="ring-legend-label">{{ p.label }}</span>
-                            <span class="ring-legend-val">{{ p.count }}</span>
+                            <div class="ring-legend-dot" [style.background]="seg.color"></div>
+                            <span class="ring-legend-label">{{ seg.label }}</span>
+                            <span class="ring-legend-val">{{ seg.count }}</span>
                         </div>
                     }
+                    @if (!ringSegments.length) {
+                        <div class="ring-empty">No procedure data</div>
+                    }
                 </div>
+
             </div>
         </div>
     </div>

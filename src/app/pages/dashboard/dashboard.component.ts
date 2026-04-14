@@ -99,6 +99,10 @@ export class DashboardComponent implements OnInit {
     caseDistFilter: 'all' | 'month' | 'year' = 'year';
     followupFilter: 'all' | 'month' | 'year' = 'year';
     demoFilter: 'all' | 'month' | 'year' = 'year';
+    readonly RING_COLORS = ['#2251CC','#E8344A','#0EA5A0','#F59E0B','#5B4FCF','#10B981'];
+    readonly RING_R = 44;
+    readonly RING_C = 2 * Math.PI * 44;
+    readonly RING_GAP_DEG = 4; //
 
     constructor() {
         this.authService.currentUser$.subscribe((user: any) => {
@@ -217,6 +221,7 @@ export class DashboardComponent implements OnInit {
         this.requestService.getRequest(STATS_API_URL).subscribe({
             next: (res: HttpResponse<any>) => {
                 this.mapStatCards(res.body.data.stats);
+                this.totalCases = res.body.data.stats.totalCases.value ?? 0;
                 this.isLoadingStats = false;
             },
             error: () => this.isLoadingStats = false
@@ -242,9 +247,11 @@ export class DashboardComponent implements OnInit {
         this.requestService.getRequest(`${CASE_DISTRIBUTION_API_URL}?filter=${this.caseDistFilter}`)
             .subscribe({
                 next: (res: HttpResponse<any>) => {
-                    this.procedures = res.body.data.caseDistribution || [];
-                    this.totalCases = this.procedures.reduce((a, b) => a + b.count, 0);
-                    this.ringSegments = this.buildRingSegments(this.procedures);
+                    const data        = res.body.data;
+                    this.procedures   = data.caseDistribution ?? [];
+                    this.ringSegments = this.buildRingSegments(
+                        this.procedures.filter((p: any) => (p.count ?? 0) > 0)
+                    );
                     this.isLoadingCaseDist = false;
                 },
                 error: () => this.isLoadingCaseDist = false
@@ -321,26 +328,30 @@ export class DashboardComponent implements OnInit {
          });
      }*/
 
-    // Converts procedure distribution % into SVG stroke-dasharray values
-    // circumference of r=48 circle = 2 * π * 48 ≈ 301.6
-    buildRingSegments(procedures: any[]): any[] {
-        const CIRCUMFERENCE = 301.6;
-        const COLORS = ['#2251CC', '#E8344A', '#0EA5A0', '#F59E0B', '#5B4FCF', '#10B981'];
-        let offset = -90; // start at top
 
-        return procedures.map((p, i) => {
-            const arc = (p.percentage / 100) * CIRCUMFERENCE;
-            const gap = CIRCUMFERENCE - arc;
-            const rotation = offset;
-            offset += (p.percentage / 100) * 360;
+    buildRingSegments(procedures: any[]): any[] {
+        const items = (procedures ?? []).filter(p => (p.count ?? 0) > 0);
+        if (!items.length) return [];
+
+        const C       = this.RING_C;
+        const gapArc  = (this.RING_GAP_DEG / 360) * C;
+        const total   = items.reduce((s, p) => s + p.count, 0) || 1;
+        let offset    = -90;
+
+        return items.map((p, i) => {
+            const pct    = p.count / total;
+            const arcLen = Math.max(0, pct * C - gapArc);
+            const gap    = C - arcLen;
+            const rot    = offset;
+            offset      += pct * 360;
 
             return {
-                label: p.label,
-                percentage: p.percentage,
-                count: p.count,
-                color: COLORS[i % COLORS.length],
-                dasharray: `${arc.toFixed(1)} ${gap.toFixed(1)}`,
-                rotation: `rotate(${rotation} 60 60)`,
+                label:      p.label,
+                count:      p.count,
+                percentage: Math.round(pct * 1000) / 10,
+                color:      this.RING_COLORS[i % this.RING_COLORS.length],
+                dasharray:  `${arcLen.toFixed(3)} ${gap.toFixed(3)}`,
+                rotation:   `rotate(${rot.toFixed(3)} 60 60)`,
             };
         });
     }
