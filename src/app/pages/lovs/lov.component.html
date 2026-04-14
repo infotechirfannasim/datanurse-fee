@@ -6,11 +6,11 @@
                     <span class="breadcrumb-item"
                           [class.active]="isLast"
                           (click)="isLast ? null : goToLevel(item.targetLevel)">
-        {{ item.name }}
+                             {{ item.name }}
                         @if (!isLast) {
                             <span class="separator">&gt;</span>
                         }
-      </span>
+                    </span>
                 }
             </div>
         }

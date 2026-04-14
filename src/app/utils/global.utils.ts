@@ -180,7 +180,7 @@ export const SIDEBAR_MENU: MenuItem[] = [
     },
     {
         id: 5,
-        title: 'Doctor Registry',
+        title: 'Surgeon Registry',
         route: '/doctors',
         icon: 'doctors',
         permission: 'DOCTOR_VIEW',

@@ -19,28 +19,19 @@
         <table class="registry-table">
             <thead>
             <tr>
-                <th>PT. No.</th>
-                <th>Name</th>
-                <th>Gender</th>
-                <th>Cases</th>
-                <th>Doctor</th>
                 <th></th>
+                <th>Patient Name</th>
+                <th>Citizen No.</th>
+                <th>Gender</th>
+                <th>Date of Birth</th>
+                <th>City</th>
+                <th>Patient ID</th>
+                <th>Cases</th>
             </tr>
             </thead>
             <tbody>
                 @for (p of patients; track p._id) {
                     <tr>
-                        <td>{{ p.mrn }}</td>
-                        <td>
-                            <div class="doc-cell">
-                                <div>
-                                    <span class="doc-nm">{{ p.name }}</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td>{{ p.gender || '—' }}</td>
-                        <td class="td-bold">{{ p.casesCount || 0 }}</td>
-                        <td>{{ p?.doctor?.firstName  + ' ' + p?.doctor?.lastName }}</td>
                         <td>
                             <button class="action-btn" (click)="openView(p)" title="View">
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
@@ -50,6 +41,15 @@
                                 </svg>
                             </button>
                         </td>
+                        <td>{{ p.name }}</td>
+                        <td>
+                            {{ p.citizenNumber }}
+                        </td>
+                        <td>{{ p.gender}}</td>
+                        <td>{{ p.dob | date: 'MMM d, y'}}</td>
+                        <td>{{ p.city }}</td>
+                        <td>{{ p.mrn }}</td>
+                        <td>{{ p.casesCount || 0 }}</td>
                     </tr>
                 } @empty {
                     <tr>
@@ -484,7 +484,8 @@
                                 <div class="cd-section-label">Pre-operative Factors</div>
                                 <div class="cd-tags">
                                     @for (f of selectedCase().step6PreOpMeds.selectedPreOpFactors; track f) {
-                                        <span class="cd-tag cd-tag--preop">{{ f }}</span>
+                                        <span class="cd-tag cd-tag--preop">{{ f }
+                                        }</span>
                                     }
                                 </div>
                             </div>
@@ -520,7 +521,8 @@
                                     @for (p of selectedCase().step8Procedures.selectedProcedures; track p.id) {
                                         <span class="cd-tag cd-tag--proc">
                   {{ p.name }}
-                                            <span class="cd-tag-code">{{ p.displayCode }}</span>
+                                            <span
+                                                class="cd-tag-code">{{ p.displayCode }}</span>
                 </span>
                                     }
                                 </div>
@@ -537,7 +539,8 @@
                                     @if (selectedCase().step10OperativeData.operationStatus) {
                                         <div class="cd-cell">
                                             <div class="cd-key">Operation Status</div>
-                                            <span class="cd-status-badge" [ngClass]="getCaseStatusClass(selectedCase().step10OperativeData.operationStatus)">
+                                            <span class="cd-status-badge"
+                                                              [ngClass]="getCaseStatusClass(selectedCase().step10OperativeData.operationStatus)">
                     <span class="csb-dot"></span>{{ selectedCase().step10OperativeData.operationStatus }}
                   </span>
                                         </div>
@@ -1167,7 +1170,8 @@
                         @if (selectedCase().step15Discharge?.dischargeStatus) {
                             <div class="cd-section">
                                 <div class="cd-section-label">Discharge Information</div>
-                                <div class="cd-discharge-row" [ngClass]="getDischargeClass(selectedCase().step15Discharge.dischargeStatus)">
+                                <div class="cd-discharge-row"
+                                     [ngClass]="getDischargeClass(selectedCase().step15Discharge.dischargeStatus)">
                                     <span class="cd-discharge-label">Discharge Status</span>
                                     <span class="cd-discharge-val">{{ selectedCase().step15Discharge.dischargeStatus }}</span>
                                 </div>

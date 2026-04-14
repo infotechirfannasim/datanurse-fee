@@ -45,11 +45,11 @@ export class RolesComponent implements OnInit {
         name: {
             required: 'Code is required', pattern: 'No spaces allowed',
             minlength: 'Min 3 characters',
-            maxlength: 'Max 15 characters',
+            maxlength: 'Max 50 characters',
         },
         label: {
             required: 'Name is required',
-            minlength: 'Min 8 characters',
+            minlength: 'Min 3 characters',
             maxlength: 'Max 50 characters',
             pattern: 'Only alphabets allowed'
         },
@@ -66,8 +66,8 @@ export class RolesComponent implements OnInit {
 
     buildForm() {
         this.form = this.fb.group({
-            name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15), Validators.pattern(RegexConstants.NO_SPACE_REGEX)]],
-            label: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50), Validators.pattern(RegexConstants.ALPHABET_REGEX)]],
+            name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern(RegexConstants.NO_SPACE_REGEX)]],
+            label: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern(RegexConstants.ALPHABET_REGEX)]],
             description: ['', [Validators.maxLength(500)]],
             permissions: [[]]
         });

@@ -88,7 +88,7 @@ export class SidebarComponent {
       ]
     },
     {
-      label: 'Doctor Registry',
+      label: 'Surgoen Registry',
       route: '/doctors',
       permission: 'DOCTOR_VIEW',
       icon: `<svg width="17" height="17" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">

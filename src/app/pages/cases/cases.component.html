@@ -1,125 +1,109 @@
 <div class="-row">
-  <div class="filter-bar">
-    <div class="filter-search">
-      <svg fill="none" height="15" viewBox="0 0 24 24" width="15">
-        <circle cx="11" cy="11" r="8" stroke="#7A8BB0" stroke-width="2"/>
-        <path d="M21 21l-4.35-4.35" stroke="#7A8BB0" stroke-linecap="round" stroke-width="2"/>
-      </svg>
-      <input (input)="searchQuery.set($any($event.target).value); onSearchChange()" [value]="searchQuery()"
-             placeholder="Search Cases"/>
+    <div class="filter-bar">
+        <div class="filter-search">
+            <svg fill="none" height="15" viewBox="0 0 24 24" width="15">
+                <circle cx="11" cy="11" r="8" stroke="#7A8BB0" stroke-width="2"/>
+                <path d="M21 21l-4.35-4.35" stroke="#7A8BB0" stroke-linecap="round" stroke-width="2"/>
+            </svg>
+            <input (input)="searchQuery.set($any($event.target).value); onSearchChange()" [value]="searchQuery()"
+                   placeholder="Search Cases"/>
+        </div>
     </div>
-  </div>
 </div>
 <div class="registry-card">
-  <div class="registry-table-wrap">
-    <table class="registry-table">
-      <thead>
-      <tr>
-        <th>PT-No</th>
-        <th>Patient Name</th>
-        <th>Diagnosis</th>
-        <th>Procedure</th>
-          <!--<th>Surgery Date</th>
-          <th>Status</th>-->
-        <th>Doctor</th>
-        <th></th>
-      </tr>
-      </thead>
-      <tbody>
-        @for (c of cases; track c._id) {
-          <tr>
-            <td>{{ c?.patientMrn || '—' }}</td>
-            <td>
-              <div class="doc-cell">
-                <div>
-                    <span class="doc-nm">{{ c?.patientId?.name }} </span>
-                </div>
-              </div>
-            </td>
-            <td style="font-size:12.5px; color: var(--muted);">
-                @for (diagnosis of c?.step7Diagnosis.selectedDiagnoses || []; track diagnosis.code; let last = $last) {
-                {{ diagnosis.name }}
-                @if (!last) {
-                  ,
+    <div class="registry-table-wrap">
+        <table class="registry-table">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Patient Name</th>
+                <th>Citizen No.</th>
+                <th>Diagnosis</th>
+                <th>Procedure(s)</th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (c of cases; track c._id) {
+                    <tr>
+                        <td>
+                            <button class="action-btn" (click)="openView(c)" title="View">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                                          stroke="var(--muted)" stroke-width="2"/>
+                                    <circle cx="12" cy="12" r="3" stroke="var(--muted)" stroke-width="2"/>
+                                </svg>
+                            </button>
+                        </td>
+                        <td>
+                            {{ c.patientSnapshot.citizenNumber }}
+                        </td>
+                        <td>
+                            {{ c.patientSnapshot.citizenNumber }}
+                        </td>
+                        <td style="font-size:12.5px; color: var(--muted);">
+                            @for (diagnosis of c.step7Diagnosis.selectedDiagnoses || []; track diagnosis.code; let last = $last) {
+                                {{ diagnosis.name }}
+                                @if (!last) {
+                                    ,
+                                }
+                            } @empty {
+                                '—'
+                            }
+                        </td>
+                        <td style="font-size:12.5px; color: var(--muted);">
+                            @for (procedure of c.step8Procedures.selectedProcedures || []; track procedure.code; let last = $last) {
+                                {{ procedure.name }}
+                                @if (!last) {
+                                    ,
+                                }
+                            } @empty {
+                                '—'
+                            }
+                        </td>
+                    </tr>
+                } @empty {
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <h3>No cases found</h3>
+                                <p>Try adjusting your search.</p>
+                            </div>
+                        </td>
+                    </tr>
                 }
-              } @empty {
-                '—'
-              }
-            </td>
-            <td style="font-size:12.5px; color: var(--muted);">
-                @for (procedure of c?.step8Procedures.selectedProcedures || []; track procedure.code; let last = $last) {
-                {{ procedure.name }}
-                @if (!last) {
-                  ,
-                }
-              } @empty {
-                '—'
-              }
-            </td>
-              <!--<td style="font-size:12.5px; color: var(&#45;&#45;muted);">
-                {{ c?.surgeryDate | date: 'MMM d, y' }}
-              </td>
-              <td>
-                              <span class="badge" [ngClass]="getStatusClass(c?.otherDetails?.dischargeStatus)">
-                                  {{ c?.otherDetails?.dischargeStatus || '—' }}
-                              </span>
-              </td>-->
-            <td style="font-size:12.5px;">
-                {{ c?.ownerDoctorId?.firstName }} {{ c?.ownerDoctorId?.lastName }}
-            </td>
-            <td>
-              <button class="action-btn" (click)="openView(c)" title="View">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
-                        stroke="var(--muted)" stroke-width="2"/>
-                  <circle cx="12" cy="12" r="3" stroke="var(--muted)" stroke-width="2"/>
-                </svg>
-              </button>
-            </td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="7">
-              <div class="empty-state">
-                <h3>No cases found</h3>
-                <p>Try adjusting your search.</p>
-              </div>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  <div class="table-footer">
+            </tbody>
+        </table>
+    </div>
+    <div class="table-footer">
         <span class="table-footer-info">
             Showing {{ cases.length }} of {{ pagination()?.total || 0 }} Cases
         </span>
-    
-    @if (pagination() && pagination()?.totalPages > 1) {
-      <div class="pagination">
-        
-        <button class="page-btn"
-                [disabled]="!pagination()?.hasPrevPage"
-                (click)="goToPage(pageQuery() - 1)">
-          &#8249;
-        </button>
-        
-        @for (page of getPages(); track page) {
-          <button class="page-btn"
-                  [class.active]="page === pageQuery()"
-                  (click)="goToPage(page)">
-            {{ page }}
-          </button>
+
+        @if (pagination() && pagination()?.totalPages > 1) {
+            <div class="pagination">
+
+                <button class="page-btn"
+                        [disabled]="!pagination()?.hasPrevPage"
+                        (click)="goToPage(pageQuery() - 1)">
+                    &#8249;
+                </button>
+
+                @for (page of getPages(); track page) {
+                    <button class="page-btn"
+                            [class.active]="page === pageQuery()"
+                            (click)="goToPage(page)">
+                        {{ page }}
+                    </button>
+                }
+                <button class="page-btn"
+                        [disabled]="!pagination()?.hasNextPage"
+                        (click)="goToPage(pageQuery() + 1)">
+                    &#8250;
+                </button>
+
+            </div>
         }
-        <button class="page-btn"
-                [disabled]="!pagination()?.hasNextPage"
-                (click)="goToPage(pageQuery() + 1)">
-          &#8250;
-        </button>
-      
-      </div>
-    }
-  </div>
+    </div>
 </div>
 
 <!-- Updated Modal View with DTO Structure -->

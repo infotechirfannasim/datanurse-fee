@@ -99,6 +99,7 @@ export class DashboardComponent implements OnInit {
     caseDistFilter: 'all' | 'month' | 'year' = 'year';
     followupFilter: 'all' | 'month' | 'year' = 'year';
     demoFilter: 'all' | 'month' | 'year' = 'year';
+
     constructor() {
         this.authService.currentUser$.subscribe((user: any) => {
             this.userInfo.set(user);
@@ -168,20 +169,15 @@ export class DashboardComponent implements OnInit {
     outcomes: any = {};
     followupOverallRate: number = 0;
 
-    procedures: ProcedureItem[] = [
-    ];
+    procedures: ProcedureItem[] = [];
 
-    topSurgeons: any[] = [
-    ];
+    topSurgeons: any[] = [];
 
-    ageGroups: AgeGroupItem[] = [
-    ];
+    ageGroups: AgeGroupItem[] = [];
 
-    provinces: ProvinceItem[] = [
-    ];
+    provinces: ProvinceItem[] = [];
 
-    followups: FollowupItem[] = [
-    ];
+    followups: FollowupItem[] = [];
     chartPeriod = 'month';
     genderMale = 0;
     genderFemale = 0;
@@ -455,5 +451,25 @@ export class DashboardComponent implements OnInit {
         } else {
             return 'Good Night';
         }
+    }
+
+    setFilter(value: any) {
+        this.followupFilter = value;
+        this.loadFollowUpAndOutcomes();
+    }
+
+    setFilterCaseDistribution(value: any) {
+        this.caseDistFilter = value;
+        this.loadCaseDistribution();
+    }
+
+    setFilterPatientDemographics(value: any) {
+        this.demoFilter = value;
+        this.loadDemographics();
+    }
+
+    setFilterTopSurgeons(value: any) {
+        this.topSurgeonFilter = value;
+        this.loadTopSurgeons();
     }
 }
