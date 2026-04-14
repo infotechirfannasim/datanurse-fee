@@ -144,66 +144,146 @@
 
                 <div class="modal-body">
 
+                    <!-- ═══════════════════════════════════════════════════════════ -->
+                    <!-- TAB: Overview — Patient demographics                        -->
+                    <!-- ═══════════════════════════════════════════════════════════ -->
                     @if (activeTab() === 'overview') {
-                        <!-- Patient Information -->
                         <div class="cd-section">
                             <div class="cd-section-label">Patient Information</div>
                             <div class="cd-grid cd-grid--3">
                                 <div class="cd-cell">
                                     <div class="cd-key">Citizen Number</div>
-                                    <div class="cd-val">{{ selectedPatient()?.citizenNumber || '—' }}</div>
+                                    <div class="cd-val">{{ selectedPatient().citizenNumber || '—' }}</div>
                                 </div>
                                 <div class="cd-cell">
-                                    <div class="cd-key">Name</div>
-                                    <div class="cd-val">{{ selectedPatient()?.name || '—' }}</div>
+                                    <div class="cd-key">Full Name</div>
+                                    <div class="cd-val">{{ selectedPatient().name || '—' }}</div>
                                 </div>
                                 <div class="cd-cell">
                                     <div class="cd-key">Gender</div>
-                                    <div class="cd-val">{{ selectedPatient()?.gender || '—' }}</div>
-                                </div>
-                                <div class="cd-cell">
-                                    <div class="cd-key">Father Name</div>
-                                    <div class="cd-val">{{ selectedPatient()?.fatherName || '—' }}</div>
-                                </div>
-                                <div class="cd-cell">
-                                    <div class="cd-key">Mother Name</div>
-                                    <div class="cd-val">{{ selectedPatient()?.motherName || '—' }}</div>
+                                    <div class="cd-val">{{ selectedPatient().gender || '—' }}</div>
                                 </div>
                                 <div class="cd-cell">
                                     <div class="cd-key">Date of Birth</div>
-                                    <div class="cd-val">{{ (selectedPatient()?.dob | date:'MMM d, y') || '—' }}</div>
+                                    <div class="cd-val">{{ (selectedPatient().dob | date:'MMM d, y') || '—' }}</div>
                                 </div>
-                                <div class="cd-cell">
-                                    <div class="cd-key">Country</div>
-                                    <div class="cd-val">{{ selectedPatient()?.country || '—' }}</div>
-                                </div>
-                                <div class="cd-cell">
-                                    <div class="cd-key">City</div>
-                                    <div class="cd-val">{{ selectedPatient()?.city || '—' }}</div>
-                                </div>
-                                <div class="cd-cell">
-                                    <div class="cd-key">Joined</div>
-                                    <div class="cd-val">{{ (selectedPatient()?.createdAt | date:'MMM d, y') || '—' }}</div>
-                                </div>
+                                @if (selectedPatient().bloodGroup) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Blood Group</div>
+                                        <div class="cd-val">{{ selectedPatient().bloodGroup }}</div>
+                                    </div>
+                                }
+                                @if (selectedPatient().phone) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Phone</div>
+                                        <div class="cd-val">{{ selectedPatient().phone }}</div>
+                                    </div>
+                                }
+                                @if (selectedPatient().fatherName) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Father Name</div>
+                                        <div class="cd-val">{{ selectedPatient().fatherName }}</div>
+                                    </div>
+                                }
+                                @if (selectedPatient().motherName) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Mother Name</div>
+                                        <div class="cd-val">{{ selectedPatient().motherName }}</div>
+                                    </div>
+                                }
+                                @if (selectedPatient().weight) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Weight</div>
+                                        <div class="cd-val">{{ selectedPatient().weight }} kg</div>
+                                    </div>
+                                }
+                                @if (selectedPatient().primaryPayor) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Primary Payor</div>
+                                        <div class="cd-val">{{ selectedPatient().primaryPayor }}</div>
+                                    </div>
+                                }
+                                @if (selectedPatient().secondaryPayor) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Secondary Payor</div>
+                                        <div class="cd-val">{{ selectedPatient().secondaryPayor }}</div>
+                                    </div>
+                                }
+                                @if (selectedPatient().country || selectedPatient().city) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Location</div>
+                                        <div class="cd-val">
+                                            {{ [selectedPatient().city, selectedPatient().province, selectedPatient().country].filter(Boolean).join(', ') || '—' }}
+                                        </div>
+                                    </div>
+                                }
+                                @if (selectedPatient().createdAt) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Registered</div>
+                                        <div class="cd-val">{{ selectedPatient().createdAt | date:'MMM d, y' }}</div>
+                                    </div>
+                                }
                             </div>
                         </div>
+
+                        <!-- Doctor -->
+                        @if (selectedPatient().doctor) {
+                            <div class="cd-section">
+                                <div class="cd-section-label">Assigned Doctor</div>
+                                <div class="cd-surgeon-row">
+                                    <div class="cd-sr-av">
+                                        {{ getSurgeonInitials(selectedPatient().doctor.firstName + ' ' + selectedPatient().doctor.lastName) }}
+                                    </div>
+                                    <div>
+                                        <div class="cd-sr-name">{{ selectedPatient().doctor.firstName }} {{ selectedPatient().doctor.lastName }}</div>
+                                        @if (selectedPatient().doctor.email) {
+                                            <div class="cd-sr-role">{{ selectedPatient().doctor.email }}</div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Cases summary -->
+                        @if (selectedPatient().casesCount > 0) {
+                            <div class="cd-section">
+                                <div class="cd-section-label">Cases Summary</div>
+                                <div class="cd-grid cd-grid--3">
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Total Cases</div>
+                                        <div class="cd-val">{{ selectedPatient().casesCount }}</div>
+                                    </div>
+                                    @if (selectedPatient().mrn) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">MRN</div>
+                                            <div class="cd-val">{{ selectedPatient().mrn }}</div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
                     }
 
+                    <!-- ═══════════════════════════════════════════════════════════ -->
+                    <!-- TAB: Cases — list of cases for this patient                 -->
+                    <!-- ═══════════════════════════════════════════════════════════ -->
                     @if (activeTab() === 'cases') {
-                        @for (c of selectedPatient()?.cases; track c._id; let i = $index) {
+                        @for (c of selectedPatient().cases; track c._id; let i = $index) {
                             <div class="case-list-card" (click)="selectCaseFromTab(c, i)">
                                 <div class="case-list-top">
                                     <div class="case-title-wrap">
                                         <div class="case-num">{{ i + 1 }}</div>
                                         <div>
-                                            <div class="case-title">{{ c?.step9OperativeData?.operationType || 'Case' }}</div>
-                                            <div class="case-id">{{ c?.patientMrn }}</div>
+                                            <div class="case-title">
+                                                {{ c.step10OperativeData?.operationType || c.step7Diagnosis?.selectedDiagnoses?.[0]?.name || 'Case' }}
+                                            </div>
+                                            <div class="case-id">{{ c.patientMrn || c.caseId }}</div>
                                         </div>
                                     </div>
-                                    <div style="display:flex; align-items:center; gap:8px; margin-left: auto;">
-        <span class="status-pill" [ngClass]="getPillClass(c?.step9OperativeData?.operationStatus)">
-          <span class="dot"></span>{{ c?.step9OperativeData?.operationStatus || '—' }}
-        </span>
+                                    <div style="display:flex; align-items:center; gap:8px; margin-left:auto">
+            <span class="status-pill" [ngClass]="getPillClass(c.step10OperativeData?.operationStatus)">
+              <span class="dot"></span>{{ c.step10OperativeData?.operationStatus || '—' }}
+            </span>
                                         <button class="case-arrow-btn">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                  stroke-linecap="round" stroke-linejoin="round">
@@ -222,7 +302,9 @@
                                             <line x1="3" y1="10" x2="21" y2="10"/>
                                         </svg>
                                         <span class="meta-label">Surgery</span>
-                                        <span class="meta-val">{{ c?.step5HospitalAdmission?.surgeryDate | date:'MMM d, y' }}</span>
+                                        <span class="meta-val">
+              {{ (c.step5HospitalAdmission?.surgeryDate | date:'MMM d, y') || '—' }}
+            </span>
                                     </div>
                                     <div class="meta-item">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -230,7 +312,9 @@
                                             <circle cx="12" cy="7" r="4"/>
                                         </svg>
                                         <span class="meta-label">Doctor</span>
-                                        <div class="cd-sr-name">{{ selectedPatient()?.doctor?.firstName }} {{ selectedPatient()?.doctor?.lastName }}</div>
+                                        <span class="meta-val">
+              {{ c.ownerDoctorId.name || (selectedPatient().doctor?.firstName + ' ' + selectedPatient().doctor?.lastName) || '—' }}
+            </span>
                                     </div>
                                     <div class="meta-item">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -238,188 +322,979 @@
                                             <circle cx="12" cy="10" r="3"/>
                                         </svg>
                                         <span class="meta-label">Location</span>
-                                        <span class="meta-val">{{ c?.step9OperativeData?.procedureLocation || '—' }}</span>
+                                        <span class="meta-val">{{ c.step10OperativeData?.procedureLocation || '—' }}</span>
                                     </div>
+                                    @if (c.step15Discharge?.dischargeStatus) {
+                                        <div class="meta-item">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                                <polyline points="22 4 12 14.01 9 11.01"/>
+                                            </svg>
+                                            <span class="meta-label">Discharge</span>
+                                            <span class="meta-val">{{ c.step15Discharge.dischargeStatus }}</span>
+                                        </div>
+                                    }
                                     <div class="meta-item meta-completion">
                                         <span class="meta-label">Completion</span>
                                         <div class="progress-wrap">
                                             <div class="progress-track">
                                                 <div class="progress-fill"
-                                                     [class.mid]="getCasePercentage(c?.stage)"
-                                                     [class.low]="getCasePercentage(c?.stage)"
-                                                     [style.width.%]="getCasePercentage(c?.stage)">
+                                                     [style.width.%]="getCasePercentage(c.stage)">
                                                 </div>
                                             </div>
-                                            <span class="meta-val">{{ getCasePercentage(c?.stage) || 0 }}%</span>
+                                            <span class="meta-val">{{ getCasePercentage(c.stage) || 0 }}%</span>
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Diagnoses preview -->
+                                @if (c.step7Diagnosis?.selectedDiagnoses?.length) {
+                                    <div class="case-list-tags">
+                                        @for (d of c.step7Diagnosis.selectedDiagnoses.slice(0, 3); track d.id) {
+                                            <span class="cd-tag cd-tag--diag cd-tag--sm">
+                {{ d.name }}
+                                                @if (d.isPrimary) { <span class="cd-tag-primary">Primary</span> }
+              </span>
+                                        }
+                                        @if (c.step7Diagnosis.selectedDiagnoses.length > 3) {
+                                            <span class="cd-tag cd-tag--sm">+{{ c.step7Diagnosis.selectedDiagnoses.length - 3 }} more</span>
+                                        }
+                                    </div>
+                                }
                             </div>
                         } @empty {
                             <div class="empty-state"><p>No cases found for this patient.</p></div>
                         }
                     }
 
-
-
+                    <!-- ═══════════════════════════════════════════════════════════ -->
+                    <!-- TAB: Case Detail — full case view (same as case modal)      -->
+                    <!-- ═══════════════════════════════════════════════════════════ -->
                     @if (activeTab() === 'case-detail' && selectedCase()) {
-                        <div class="cd-top">
-                        <span class="cd-status-badge" [ngClass]="getCaseStatusClass(selectedCase()?.step9OperativeData?.operationStatus)">
-                            {{ selectedCase()?.step9OperativeData?.operationStatus || '—' }}
-                        </span>
-                            <div class="cd-meta">
-                                <div class="cd-meta-item"><b>Surgery Date:</b> {{ (selectedCase()?.step5HospitalAdmission?.surgeryDate | date:'MMM d, y') || '—' }}</div>
-                            </div>
-                        </div>
-                        <!-- 2. Hospital & Admission -->
-                        <div class="cd-section">
-                            <div class="cd-section-label">Hospital & Admission</div>
-                            <div class="cd-hosp-row">
-                                <div class="cd-hosp-icon">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#92400E" stroke-width="2" stroke-linecap="round">
-                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                                        <polyline points="9 22 9 12 15 12 15 22"/>
-                                    </svg>
-                                </div>
-                                <div class="cd-hosp-name">{{ selectedCase()?.step5HospitalAdmission?.hospitalName || selectedCase()?.hospitalId?.name }}</div>
-                            </div>
-                            <div class="cd-grid">
-                                <div class="cd-cell"><div class="cd-key">Admission Date</div><div class="cd-val">{{ (selectedCase()?.step5HospitalAdmission?.admissionDate | date:'MMM d, y') || '—' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Surgery Date</div><div class="cd-val">{{ (selectedCase()?.step5HospitalAdmission?.surgeryDate | date:'MMM d, y') || '—' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Admitted From</div><div class="cd-val">{{ selectedCase()?.step5HospitalAdmission?.admittedFrom || '—' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Height</div><div class="cd-val">{{ selectedCase()?.step5HospitalAdmission?.heightCm }} cm</div></div>
-                                <div class="cd-cell"><div class="cd-key">Weight</div><div class="cd-val">{{ selectedCase()?.step5HospitalAdmission?.weightKg }} kg</div></div>
-                            </div>
-                        </div>
 
-                        <!-- 3. Abnormalities -->
-                        @if (selectedCase()?.step3Abnormalities?.selectedAbnormalities?.length) {
+                        <!-- ═══════════════════════════════════════════════════════════════ -->
+                                <!-- 2. Hospital & Admission (step5)                                 -->
+                                <!-- ═══════════════════════════════════════════════════════════════ -->
+                        @if (selectedCase().step5HospitalAdmission) {
                             <div class="cd-section">
-                                <div class="cd-section-label">Abnormalities</div>
-                                <div class="cd-tags">
-                                    @for (a of selectedCase()?.step3Abnormalities?.selectedAbnormalities; track a.abnormality) {
-                                        <span class="cd-tag">{{ a.name }}</span>
+                                <div class="cd-section-label">Hospital & Admission</div>
+                                <div class="cd-hosp-row">
+                                    <div class="cd-hosp-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#92400E" stroke-width="2" stroke-linecap="round">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                            <polyline points="9 22 9 12 15 12 15 22"/>
+                                        </svg>
+                                    </div>
+                                    <div class="cd-hosp-name">
+                                        {{ selectedCase().step5HospitalAdmission.hospitalName || selectedCase().hospitalId.name || '—' }}
+                                    </div>
+                                </div>
+                                <div class="cd-grid">
+                                    @if (selectedCase().step5HospitalAdmission.admissionDate) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Admission Date</div>
+                                            <div class="cd-val">{{ selectedCase().step5HospitalAdmission.admissionDate | date:'MMM d, y' }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step5HospitalAdmission.surgeryDate) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Surgery Date</div>
+                                            <div class="cd-val">{{ selectedCase().step5HospitalAdmission.surgeryDate | date:'MMM d, y' }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step5HospitalAdmission.admittedFrom) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Admitted From</div>
+                                            <div class="cd-val">{{ selectedCase().step5HospitalAdmission.admittedFrom }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step5HospitalAdmission.heightCm) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Height</div>
+                                            <div class="cd-val">{{ selectedCase().step5HospitalAdmission.heightCm }} cm</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step5HospitalAdmission.weightKg) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Weight</div>
+                                            <div class="cd-val">{{ selectedCase().step5HospitalAdmission.weightKg }} kg</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step5HospitalAdmission.primaryPayor) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Primary Payor</div>
+                                            <div class="cd-val">{{ selectedCase().step5HospitalAdmission.primaryPayor }}</div>
+                                        </div>
                                     }
                                 </div>
                             </div>
                         }
 
-                        <!-- 4. Chromosomal & Syndromes -->
-                        @if (selectedCase()?.step4ChromosomalSyndromes) {
+                        <!-- ═══════════════════════════════════════════════════════════════ -->
+                                <!-- 3. Congenital Abnormalities (step3)                            -->
+                                <!-- ═══════════════════════════════════════════════════════════════ -->
+                        @if (selectedCase().step3Abnormalities?.selectedAbnormalities?.length) {
                             <div class="cd-section">
-                                <div class="cd-section-label">Chromosomal & Syndromes</div>
+                                <div class="cd-section-label">Congenital Abnormalities</div>
+                                <div class="cd-tags">
+                                    @for (a of selectedCase().step3Abnormalities.selectedAbnormalities; track a.abnormality) {
+                                        <span class="cd-tag cd-tag--abnormality">{{ a.name }}</span>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <!-- ═══════════════════════════════════════════════════════════════ -->
+                                <!-- 4. Chromosomal & Syndromes (step4)                             -->
+                                <!-- ═══════════════════════════════════════════════════════════════ -->
+                        @if (selectedCase().step4ChromosomalSyndromes?.selectedChromosomal?.length
+                        || selectedCase().step4ChromosomalSyndromes?.selectedSyndromes?.length) {
+                            <div class="cd-section">
+                                <div class="cd-section-label">Chromosomal Abnormalities & Syndromes</div>
                                 <div class="cd-grid">
-                                    @if (selectedCase()?.step4ChromosomalSyndromes?.selectedChromosomal?.length) {
+                                    @if (selectedCase().step4ChromosomalSyndromes.selectedChromosomal?.length) {
                                         <div class="cd-cell cd-cell--full">
-                                            <div class="cd-key">Chromosomal</div>
-                                            <div class="cd-val">{{ selectedCase()?.step4ChromosomalSyndromes?.selectedChromosomal?.join(', ') }}</div>
+                                            <div class="cd-key">Chromosomal Abnormalities</div>
+                                            <div class="cd-tags cd-tags--sm">
+                                                @for (c of selectedCase().step4ChromosomalSyndromes.selectedChromosomal; track c) {
+                                                    <span class="cd-tag cd-tag--crom">{{ c }}</span>
+                                                }
+                                            </div>
                                         </div>
                                     }
-                                    @if (selectedCase()?.step4ChromosomalSyndromes?.selectedSyndromes?.length) {
+                                    @if (selectedCase().step4ChromosomalSyndromes.selectedSyndromes?.length) {
                                         <div class="cd-cell cd-cell--full">
                                             <div class="cd-key">Syndromes</div>
-                                            <div class="cd-val">{{ selectedCase()?.step4ChromosomalSyndromes?.selectedSyndromes?.join(', ') }}</div>
+                                            <div class="cd-tags cd-tags--sm">
+                                                @for (s of selectedCase().step4ChromosomalSyndromes.selectedSyndromes; track s) {
+                                                    <span class="cd-tag cd-tag--syndromes">{{ s }}</span>
+                                                }
+                                            </div>
                                         </div>
                                     }
                                 </div>
                             </div>
                         }
 
-                        <!-- 5. Diagnosis -->
-                        @if (selectedCase()?.step7Diagnosis?.selectedDiagnoses?.length) {
+                        <!-- ═══════════════════════════════════════════════════════════════ -->
+                                <!-- 5. Pre-operative Factors (step6)                               -->
+                                <!-- ═══════════════════════════════════════════════════════════════ -->
+                        @if (selectedCase().step6PreOpMeds?.selectedPreOpFactors?.length) {
                             <div class="cd-section">
-                                <div class="cd-section-label">Diagnosis</div>
+                                <div class="cd-section-label">Pre-operative Factors</div>
                                 <div class="cd-tags">
-                                    @for (d of selectedCase()?.step7Diagnosis?.selectedDiagnoses; track d.id) {
-                                        <span class="cd-tag cd-tag--diag">{{ d.name }} @if(d.isPrimary){<span class="cd-tag-primary">Primary</span>}</span>
+                                    @for (f of selectedCase().step6PreOpMeds.selectedPreOpFactors; track f) {
+                                        <span class="cd-tag cd-tag--preop">{{ f }}</span>
                                     }
                                 </div>
                             </div>
                         }
 
-                        <!-- 6. Procedures -->
-                        @if (selectedCase()?.step8Procedures?.selectedProcedures?.length) {
+                        <!-- ═══════════════════════════════════════════════════════════════ -->
+                                <!-- 6. Diagnoses (step7)                                           -->
+                                <!-- ═══════════════════════════════════════════════════════════════ -->
+                        @if (selectedCase().step7Diagnosis?.selectedDiagnoses?.length) {
+                            <div class="cd-section">
+                                <div class="cd-section-label">Diagnoses</div>
+                                <div class="cd-tags">
+                                    @for (d of selectedCase().step7Diagnosis.selectedDiagnoses; track d.id) {
+                                        <span class="cd-tag cd-tag--diag">
+                  {{ d.name }}
+                                            <span class="cd-tag-code">{{ d.displayCode }}</span>
+                                            @if (d.isPrimary) {
+                                                <span class="cd-tag-primary">Primary</span>
+                                            }
+                </span>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <!-- ═══════════════════════════════════════════════════════════════ -->
+                                <!-- 7. Procedures (step8)                                          -->
+                                <!-- ═══════════════════════════════════════════════════════════════ -->
+                        @if (selectedCase().step8Procedures?.selectedProcedures?.length) {
                             <div class="cd-section">
                                 <div class="cd-section-label">Procedures</div>
                                 <div class="cd-tags">
-                                    @for (p of selectedCase()?.step8Procedures?.selectedProcedures; track p.id) {
-                                        <span class="cd-tag cd-tag--proc">{{ p.name }} <span class="cd-tag-code">{{ p.displayCode }}</span></span>
+                                    @for (p of selectedCase().step8Procedures.selectedProcedures; track p.id) {
+                                        <span class="cd-tag cd-tag--proc">
+                  {{ p.name }}
+                                            <span class="cd-tag-code">{{ p.displayCode }}</span>
+                </span>
                                     }
                                 </div>
                             </div>
                         }
 
-                        <!-- 7. Operative Data -->
-                        <div class="cd-section">
-                            <div class="cd-section-label">Operative Data</div>
-                            <div class="cd-grid">
-                                <div class="cd-cell"><div class="cd-key">Operation Status</div><div class="cd-val"><span class="cd-status-badge" [ngClass]="getCaseStatusClass(selectedCase()?.step9OperativeData?.operationStatus)">
-                                {{ selectedCase()?.step9OperativeData?.operationStatus || '—' }}
-                            </span></div></div>
-                                <div class="cd-cell"><div class="cd-key">Operation Type</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.operationType }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Location</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.procedureLocation }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Primary Surgeon</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.primarySurgeon }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Prior CT Ops</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.priorCtOps }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Prior CPB Ops</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.priorCpbOps }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Cerebral NIRS</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.cerebralNirs ? 'Yes' : 'No' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Somatic NIRS</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.somaticNirs ? 'Yes' : 'No' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Autologous Transfusion</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.autologousTransfusion ? 'Yes' : 'No' }}</div></div>
-                            </div>
-                        </div>
+                        <!-- ═══════════════════════════════════════════════════════════════ -->
+                                <!-- 8. Operative Data (step10)                                     -->
+                                <!-- ═══════════════════════════════════════════════════════════════ -->
+                        @if (selectedCase().step10OperativeData) {
+                            <div class="cd-section">
+                                <div class="cd-section-label">Operative Data</div>
+                                <div class="cd-grid">
+                                    @if (selectedCase().step10OperativeData.operationStatus) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Operation Status</div>
+                                            <span class="cd-status-badge" [ngClass]="getCaseStatusClass(selectedCase().step10OperativeData.operationStatus)">
+                    <span class="csb-dot"></span>{{ selectedCase().step10OperativeData.operationStatus }}
+                  </span>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step10OperativeData.operationType) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Operation Type</div>
+                                            <div class="cd-val">{{ selectedCase().step10OperativeData.operationType }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step10OperativeData.procedureLocation) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Procedure Location</div>
+                                            <div class="cd-val">{{ selectedCase().step10OperativeData.procedureLocation }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step10OperativeData.primarySurgeon) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Primary Surgeon</div>
+                                            <div class="cd-val">{{ selectedCase().step10OperativeData.primarySurgeon }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step10OperativeData.secondarySurgeon) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Secondary Surgeon</div>
+                                            <div class="cd-val">{{ selectedCase().step10OperativeData.secondarySurgeon }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step10OperativeData.priorCtOps) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Prior CT Operations</div>
+                                            <div class="cd-val">{{ selectedCase().step10OperativeData.priorCtOps }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step10OperativeData.priorCpbOps) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Prior CPB Operations</div>
+                                            <div class="cd-val">{{ selectedCase().step10OperativeData.priorCpbOps }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step10OperativeData.cpbTime) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">CPB Time</div>
+                                            <div class="cd-val">{{ selectedCase().step10OperativeData.cpbTime }} min</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step10OperativeData.crossClampTimeCpb) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Cross-Clamp Time</div>
+                                            <div class="cd-val">{{ selectedCase().step10OperativeData.crossClampTimeCpb }} min</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step10OperativeData.circulatoryArrestTime) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Circulatory Arrest Time</div>
+                                            <div class="cd-val">{{ selectedCase().step10OperativeData.circulatoryArrestTime }} min</div>
+                                        </div>
+                                    }
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Cerebral NIRS</div>
+                                        <div class="cd-val">{{ selectedCase().step10OperativeData.cerebralNirs ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Somatic NIRS</div>
+                                        <div class="cd-val">{{ selectedCase().step10OperativeData.somaticNirs ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">PVR Measured</div>
+                                        <div class="cd-val">{{ selectedCase().step10OperativeData.pvrMeasured ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Autologous Transfusion</div>
+                                        <div class="cd-val">{{ selectedCase().step10OperativeData.autologousTransfusion ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Extended Through Midnight</div>
+                                        <div class="cd-val">{{ selectedCase().step10OperativeData.extendedThroughMidnight ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Endotracheal Intubation</div>
+                                        <div class="cd-val">{{ selectedCase().step10OperativeData.endotrachealIntubation ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Extubated in OR</div>
+                                        <div class="cd-val">{{ selectedCase().step10OperativeData.extubatedInOP ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Re-Intubated</div>
+                                        <div class="cd-val">{{ selectedCase().step10OperativeData.reIntubated ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                </div>
 
-                        <!-- 8. Anesthesia (Full Fields) -->
-                        <div class="cd-section">
-                            <div class="cd-section-label">Anesthesia</div>
-                            <div class="cd-grid">
-                                <div class="cd-cell"><div class="cd-key">Primary Anesthesiologist</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.primAnesName }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Preop Sedation</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.preopSed ? 'Yes' : 'No' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Airway Site</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.airwaySite || '—' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">TEE Used</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.tee ? 'Yes' : 'No' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Neuro Monitor</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.neuroMonitor ? 'Yes' : 'No' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Ultra Guide</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.ultraGuide || '—' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">PACU Mech Support</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.pacuMechSupport || '—' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">PACU Demise</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.pacuDemise ? 'Yes' : 'No' }}</div></div>
+                                <!-- OR Timeline -->
+                                @if (selectedCase().step10OperativeData.orEntryTime
+                                || selectedCase().step10OperativeData.skinIncisionStart
+                                || selectedCase().step10OperativeData.skinClosure
+                                || selectedCase().step10OperativeData.orExitTime) {
+                                    <div class="cd-cell">OR Timeline</div>
+                                    <div class="cd-timeline">
+                                        @if (selectedCase().step10OperativeData.orEntryTime) {
+                                            <div class="cd-tl-item">
+                                                <div class="cd-tl-dot"></div>
+                                                <div class="cd-tl-line"></div>
+                                                <div class="cd-tl-time">{{ selectedCase().step10OperativeData.orEntryTime }}</div>
+                                                <div class="cd-tl-lbl">OR Entry</div>
+                                            </div>
+                                        }
+                                        @if (selectedCase().step10OperativeData.skinIncisionStart) {
+                                            <div class="cd-tl-item">
+                                                <div class="cd-tl-dot"></div>
+                                                <div class="cd-tl-line"></div>
+                                                <div class="cd-tl-time">{{ selectedCase().step10OperativeData.skinIncisionStart }}</div>
+                                                <div class="cd-tl-lbl">Skin Incision</div>
+                                            </div>
+                                        }
+                                        @if (selectedCase().step10OperativeData.skinClosure) {
+                                            <div class="cd-tl-item">
+                                                <div class="cd-tl-dot"></div>
+                                                <div class="cd-tl-line"></div>
+                                                <div class="cd-tl-time">{{ selectedCase().step10OperativeData.skinClosure }}</div>
+                                                <div class="cd-tl-lbl">Skin Closure</div>
+                                            </div>
+                                        }
+                                        @if (selectedCase().step10OperativeData.orExitTime) {
+                                            <div class="cd-tl-item">
+                                                <div class="cd-tl-dot cd-tl-dot--exit"></div>
+                                                <div class="cd-tl-time">{{ selectedCase().step10OperativeData.orExitTime }}</div>
+                                                <div class="cd-tl-lbl">OR Exit</div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
                             </div>
-                        </div>
+                        }
 
-                        <!-- 9. Blood Products -->
-                        <div class="cd-section">
-                            <div class="cd-section-label">Blood Products</div>
-                            <div class="cd-grid">
-                                <div class="cd-cell"><div class="cd-key">Hematocrit First</div><div class="cd-val">{{ selectedCase()?.step10BloodProducts?.hematocritFirst }}%</div></div>
-                                <div class="cd-cell"><div class="cd-key">Hematocrit Last</div><div class="cd-val">{{ selectedCase()?.step10BloodProducts?.hematocritLast }}%</div></div>
-                                <div class="cd-cell"><div class="cd-key">Transfusion Usage</div><div class="cd-val">{{ selectedCase()?.step10BloodProducts?.transfusionUsage }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Transfusion During Proc</div><div class="cd-val">{{ selectedCase()?.step10BloodProducts?.transfusionDuringProc ? 'Yes' : 'No' }}</div></div>
+                        @if (selectedCase().step11BloodProducts) {
+                            <div class="cd-section">
+                                <div class="cd-section-label">Blood Products</div>
+                                <div class="cd-grid">
+                                    @if (selectedCase().step11BloodProducts.transfusionUsage) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Transfusion Usage</div>
+                                            <div class="cd-val">{{ selectedCase().step11BloodProducts.transfusionUsage }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step11BloodProducts.hematocritFirst) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Hematocrit (First)</div>
+                                            <div class="cd-val">{{ selectedCase().step11BloodProducts.hematocritFirst }}%</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step11BloodProducts.hematocritLast) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Hematocrit (Last)</div>
+                                            <div class="cd-val">{{ selectedCase().step11BloodProducts.hematocritLast }}%</div>
+                                        </div>
+                                    }
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Transfusion During Procedure</div>
+                                        <div class="cd-val">{{ selectedCase().step11BloodProducts.transfusionDuringProc ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Transfusion Within 24h</div>
+                                        <div class="cd-val">{{ selectedCase().step11BloodProducts.transfusionWithin24h ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Transfusion After 24h</div>
+                                        <div class="cd-val">{{ selectedCase().step11BloodProducts.transfusionAfter24h ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Autologous Transfusion</div>
+                                        <div class="cd-val">{{ selectedCase().step11BloodProducts.autologousTransfusion ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Cell Saver Reinfused</div>
+                                        <div class="cd-val">{{ selectedCase().step11BloodProducts.cellSaverReinfused ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                </div>
+
+                                <!-- Blood Product Volumes — only show rows that have any non-zero values -->
+                                @if (selectedCase().step11BloodProducts) {
+                                    <div class="cd-section">
+                                        <div class="cd-section-label">Blood Product Volumes (units)</div>
+
+                                        <div class="cd-grid">
+
+                                            <!-- Packed RBC -->
+                                            @if (
+                                                selectedCase().step11BloodProducts.bpDuringPackedRbc ||
+                                                selectedCase().step11BloodProducts.bpWithinPackedRbc ||
+                                                selectedCase().step11BloodProducts.bpAfterPackedRbc
+                                                    ) {
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">Packed RBC (During)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpDuringPackedRbc || 0 }}</div>
+                                                </div>
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">Packed RBC (Within 24h)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpWithinPackedRbc || 0 }}</div>
+                                                </div>
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">Packed RBC (After 24h)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpAfterPackedRbc || 0 }}</div>
+                                                </div>
+                                            }
+
+                                            <!-- FFP -->
+                                            @if (
+                                                selectedCase().step11BloodProducts.bpDuringFfp ||
+                                                selectedCase().step11BloodProducts.bpWithinFfp ||
+                                                selectedCase().step11BloodProducts.bpAfterFfp
+                                                    ) {
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">FFP (During)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpDuringFfp || 0 }}</div>
+                                                </div>
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">FFP (Within 24h)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpWithinFfp || 0 }}</div>
+                                                </div>
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">FFP (After 24h)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpAfterFfp || 0 }}</div>
+                                                </div>
+                                            }
+
+                                            <!-- SDP -->
+                                            @if (
+                                                selectedCase().step11BloodProducts.bpDuringSdp ||
+                                                selectedCase().step11BloodProducts.bpWithinSdp ||
+                                                selectedCase().step11BloodProducts.bpAfterSdp
+                                                    ) {
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">SDP (During)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpDuringSdp || 0 }}</div>
+                                                </div>
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">SDP (Within 24h)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpWithinSdp || 0 }}</div>
+                                                </div>
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">SDP (After 24h)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpAfterSdp || 0 }}</div>
+                                                </div>
+                                            }
+
+                                            <!-- Cryo -->
+                                            @if (
+                                                selectedCase().step11BloodProducts.bpDuringCryo ||
+                                                selectedCase().step11BloodProducts.bpWithinCryo ||
+                                                selectedCase().step11BloodProducts.bpAfterCryo
+                                                    ) {
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">Cryo (During)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpDuringCryo || 0 }}</div>
+                                                </div>
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">Cryo (Within 24h)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpWithinCryo || 0 }}</div>
+                                                </div>
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">Cryo (After 24h)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpAfterCryo || 0 }}</div>
+                                                </div>
+                                            }
+
+                                            <!-- Fresh Whole Blood -->
+                                            @if (
+                                                selectedCase().step11BloodProducts.bpDuringFwb ||
+                                                selectedCase().step11BloodProducts.bpWithinFwb ||
+                                                selectedCase().step11BloodProducts.bpAfterFwb
+                                                    ) {
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">Fresh Whole Blood (During)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpDuringFwb || 0 }}</div>
+                                                </div>
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">Fresh Whole Blood (Within 24h)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpWithinFwb || 0 }}</div>
+                                                </div>
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">Fresh Whole Blood (After 24h)</div>
+                                                    <div class="cd-val">{{ selectedCase().step11BloodProducts.bpAfterFwb || 0 }}</div>
+                                                </div>
+                                            }
+
+                                            <!-- Repeat same pattern for remaining types... -->
+
+                                        </div>
+                                    </div>
+                                }
                             </div>
-                        </div>
+                        }
 
-                        <!-- 10. Complications -->
-                        @if (selectedCase()?.step13Complications?.selectedComplications?.length) {
+                        <!-- ═══════════════════════════════════════════════════════════════ -->
+                                <!-- 10. Anesthesia (step13)                                        -->
+                                <!-- ═══════════════════════════════════════════════════════════════ -->
+                        @if (selectedCase().step13Anesthesia) {
+                            <div class="cd-section">
+                                <div class="cd-section-label">Anesthesia</div>
+
+                                <!-- General -->
+                                <div class="cd-grid">
+                                    @if (selectedCase().step13Anesthesia.primAnesName) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Primary Anesthesiologist</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.primAnesName }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step13Anesthesia.preopMedCat?.length) {
+                                        <div class="cd-cell cd-cell--full">
+                                            <div class="cd-key">Pre-op Medication Categories</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.preopMedCat.join(', ') }}</div>
+                                        </div>
+                                    }
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Pre-op Sedation</div>
+                                        <div class="cd-val">{{ selectedCase().step13Anesthesia.preopSed ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    @if (selectedCase().step13Anesthesia.preopSed && hasObjectKeys(selectedCase().step13Anesthesia.preopSedRoute)) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Sedation Route</div>
+                                            <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.preopSedRoute).join(', ') }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step13Anesthesia.preopSed && hasObjectKeys(selectedCase().step13Anesthesia.preopSedDrugs)) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Sedation Drugs</div>
+                                            <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.preopSedDrugs).join(', ') }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step13Anesthesia.inductionDt) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Induction Date / Time</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.inductionDt | date:'MMM d, y h:mm a' }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step13Anesthesia.pLocTransDt) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Patient Location Transfer</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.pLocTransDt | date:'MMM d, y h:mm a' }}</div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- Induction Agents -->
+                                @if (selectedCase().step13Anesthesia.indTypeInh
+                                || selectedCase().step13Anesthesia.indTypeIv
+                                || selectedCase().step13Anesthesia.indTypeIm) {
+                                    <div class="cd-cell">Induction Agents</div>
+                                    <div class="cd-grid">
+                                        @if (selectedCase().step13Anesthesia.indTypeInh && hasObjectKeys(selectedCase().step13Anesthesia.indTypeInhAgents)) {
+                                            <div class="cd-cell">
+                                                <div class="cd-key">Inhalational</div>
+                                                <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.indTypeInhAgents).join(', ') || '—' }}</div>
+                                            </div>
+                                        }
+                                        @if (selectedCase().step13Anesthesia.indTypeIv && hasObjectKeys(selectedCase().step13Anesthesia.indTypeIvAgents)) {
+                                            <div class="cd-cell">
+                                                <div class="cd-key">Intravenous</div>
+                                                <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.indTypeIvAgents).join(', ') || '—' }}</div>
+                                            </div>
+                                        }
+                                        @if (selectedCase().step13Anesthesia.indTypeIm && hasObjectKeys(selectedCase().step13Anesthesia.indTypeImAgents)) {
+                                            <div class="cd-cell">
+                                                <div class="cd-key">Intramuscular</div>
+                                                <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.indTypeImAgents).join(', ') || '—' }}</div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+
+                                <!-- Regional Anesthesia -->
+                                @if (hasObjectKeys(selectedCase().step13Anesthesia.regAnesSite)
+                                || hasObjectKeys(selectedCase().step13Anesthesia.regAnesDrug)) {
+                                    <div class="cd-cell">Regional Anesthesia</div>
+                                    <div class="cd-grid">
+                                        @if (hasObjectKeys(selectedCase().step13Anesthesia.regAnesSite)) {
+                                            <div class="cd-cell">
+                                                <div class="cd-key">Site</div>
+                                                <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.regAnesSite).join(', ') }}</div>
+                                            </div>
+                                        }
+                                        @if (hasObjectKeys(selectedCase().step13Anesthesia.regAnesDrug)) {
+                                            <div class="cd-cell">
+                                                <div class="cd-key">Drug</div>
+                                                <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.regAnesDrug).join(', ') }}</div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+
+                                <!-- Intraop & PACU Medications -->
+                                @if (hasObjectKeys(selectedCase().step13Anesthesia.intraopPharm)
+                                || hasObjectKeys(selectedCase().step13Anesthesia.pacuPharm)) {
+                                    <div class="cd-grid">
+                                        @if (hasObjectKeys(selectedCase().step13Anesthesia.intraopPharm)) {
+                                            <div class="cd-cell cd-cell--full">
+                                                <div class="cd-key">Intraoperative Pharmaceuticals</div>
+                                                <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.intraopPharm).join(', ') || 'None' }}</div>
+                                            </div>
+                                        }
+                                        @if (hasObjectKeys(selectedCase().step13Anesthesia.pacuPharm)) {
+                                            <div class="cd-cell cd-cell--full">
+                                                <div class="cd-key">PACU Pharmaceuticals</div>
+                                                <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.pacuPharm).join(', ') || 'None' }}</div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+
+                                <!-- Monitoring & Lines -->
+                                <div class="cd-cell">Monitoring & Lines</div>
+                                <div class="cd-grid">
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Arterial Line</div>
+                                        <div class="cd-val">{{ selectedCase().step13Anesthesia.artLine ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    @if (selectedCase().step13Anesthesia.artLine && hasObjectKeys(selectedCase().step13Anesthesia.artLineType)) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Art Line Type</div>
+                                            <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.artLineType).join(', ') || '—' }}</div>
+                                        </div>
+                                    }
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Central Pressure Line</div>
+                                        <div class="cd-val">{{ selectedCase().step13Anesthesia.percCentPress ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    @if (selectedCase().step13Anesthesia.percCentPress && hasObjectKeys(selectedCase().step13Anesthesia.percCentPressLoc)) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Central Line Location</div>
+                                            <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.percCentPressLoc).join(', ') }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step13Anesthesia.ultraGuide && selectedCase().step13Anesthesia.ultraGuide !== 'None') {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Ultrasound Guidance</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.ultraGuide }}</div>
+                                        </div>
+                                    }
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Neuro Monitor</div>
+                                        <div class="cd-val">{{ selectedCase().step13Anesthesia.neuroMonitor ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    @if (selectedCase().step13Anesthesia.neuroMonitor && hasObjectKeys(selectedCase().step13Anesthesia.neuroMonitorType)) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Neuro Monitor Type</div>
+                                            <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.neuroMonitorType).join(', ') }}</div>
+                                        </div>
+                                    }
+                                    <div class="cd-cell">
+                                        <div class="cd-key">TEE</div>
+                                        <div class="cd-val">{{ selectedCase().step13Anesthesia.tee ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    @if (hasObjectKeys(selectedCase().step13Anesthesia.intraopTempSite)) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Intraop Temp Site</div>
+                                            <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.intraopTempSite).join(', ') }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step13Anesthesia.lowIntraopTemp) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Lowest Intraop Temp</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.lowIntraopTemp }}°C</div>
+                                        </div>
+                                    }
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Cutdown</div>
+                                        <div class="cd-val">{{ selectedCase().step13Anesthesia.cutdown ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    @if (selectedCase().step13Anesthesia.cutdown && hasObjectKeys(selectedCase().step13Anesthesia.cutdownType)) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Cutdown Type</div>
+                                            <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.cutdownType).join(', ') }}</div>
+                                        </div>
+                                    }
+                                    <div class="cd-cell">
+                                        <div class="cd-key">CVP / PICC Placed</div>
+                                        <div class="cd-val">{{ selectedCase().step13Anesthesia.cvpPlaced ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">ICU Type Ventilator</div>
+                                        <div class="cd-val">{{ selectedCase().step13Anesthesia.icuTypeVent ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                </div>
+
+                                <!-- Airway -->
+                                <div class="cd-cell">Airway</div>
+                                <div class="cd-grid">
+                                    @if (selectedCase().step13Anesthesia.airwaySite) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Airway Site</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.airwaySite }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step13Anesthesia.airwaySizeLma) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Airway Size (LMA)</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.airwaySizeLma }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step13Anesthesia.airwaySizeIntub) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Airway Size (Intub)</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.airwaySizeIntub }}</div>
+                                        </div>
+                                    }
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Cuffed</div>
+                                        <div class="cd-val">{{ selectedCase().step13Anesthesia.cuffed ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                </div>
+
+                                <!-- PACU -->
+                                <div class="cd-cell">Post-Anesthesia Care Unit (PACU)</div>
+                                <div class="cd-grid">
+                                    @if (selectedCase().step13Anesthesia.pacuArrivalDt) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">PACU Arrival</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.pacuArrivalDt | date:'MMM d, y h:mm a' }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step13Anesthesia.pacuFiO2) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">FiO2</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.pacuFiO2 }}%</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step13Anesthesia.pacuMechSupport) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Mechanical Support</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.pacuMechSupport }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step13Anesthesia.pacuPulseOx) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Pulse Ox</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.pacuPulseOx }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step13Anesthesia.pacuTempSite) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Temp Site</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.pacuTempSite }}</div>
+                                        </div>
+                                    }
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Pacemaker</div>
+                                        <div class="cd-val">{{ selectedCase().step13Anesthesia.pacuPacemaker ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    @if (selectedCase().step13Anesthesia.pacuPacemaker) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Pacemaker Site</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.pacuPacemakerSite || '—' }}</div>
+                                        </div>
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Pacemaker Type</div>
+                                            <div class="cd-val">{{ selectedCase().step13Anesthesia.pacuPacemakerType || '—' }}</div>
+                                        </div>
+                                    }
+                                    @if (hasObjectKeys(selectedCase().step13Anesthesia.pacuDisposition)) {
+                                        <div class="cd-cell cd-cell--full">
+                                            <div class="cd-key">Disposition</div>
+                                            <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.pacuDisposition).join(', ') }}</div>
+                                        </div>
+                                    }
+                                    <div class="cd-cell">
+                                        <div class="cd-key">PACU Demise</div>
+                                        <div class="cd-val">{{ selectedCase().step13Anesthesia.pacuDemise ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                </div>
+
+                                <!-- Adverse Events -->
+                                @if (hasObjectKeys(selectedCase().step13Anesthesia.anesAdverseEvents)) {
+                                    <div class="cd-cell">Anesthesia Adverse Events</div>
+                                    <div class="cd-tags">
+                                        @for (ev of getObjectKeys(selectedCase().step13Anesthesia.anesAdverseEvents); track ev) {
+                                            <span class="cd-tag cd-tag--complication">{{ ev }}</span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        <!-- ═══════════════════════════════════════════════════════════════ -->
+                                <!-- 11. Complications (step14)                                     -->
+                                <!-- ═══════════════════════════════════════════════════════════════ -->
+                        @if (selectedCase().step14Complications) {
                             <div class="cd-section">
                                 <div class="cd-section-label">Complications</div>
-                                <div class="cd-tags">
-                                    @for (c of selectedCase()?.step13Complications?.selectedComplications; track c.complication) {
-                                        <span class="cd-tag cd-tag--complication">{{ c.name }}</span>
+                                @if (selectedCase().step14Complications.noComplications) {
+                                    <div class="cd-empty-note">No complications reported</div>
+                                }
+                                @if (selectedCase().step14Complications.selectedComplications?.length) {
+                                    <div class="cd-tags">
+                                        @for (c of selectedCase().step14Complications.selectedComplications; track c.complication) {
+                                            <span class="cd-tag cd-tag--complication">{{ c.name }}</span>
+                                        }
+                                    </div>
+                                    @if (selectedCase().step14Complications.complicationDetails) {
+                                        <div class="cd-grid cd-grid--mt">
+                                            @for (c of selectedCase().step14Complications.selectedComplications; track c.complication) {
+                                                @if (selectedCase().step14Complications.complicationDetails[c.complication]?.date
+                                                || selectedCase().step14Complications.complicationDetails[c.complication]?.notes) {
+                                                    <div class="cd-cell cd-cell--full">
+                                                        <div class="cd-key">{{ c.name }}</div>
+                                                        <div class="cd-val">
+                                                            @if (selectedCase().step14Complications.complicationDetails[c.complication]?.date) {
+                                                                {{ selectedCase().step14Complications.complicationDetails[c.complication].date | date:'MMM d, y' }}
+                                                            }
+                                                            @if (selectedCase().step14Complications.complicationDetails[c.complication]?.notes) {
+                                                                &mdash; {{ selectedCase().step14Complications.complicationDetails[c.complication].notes }}
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        }
+
+                        <!-- ═══════════════════════════════════════════════════════════════ -->
+                                <!-- 12. Discharge Information (step15)                             -->
+                                <!-- ═══════════════════════════════════════════════════════════════ -->
+                        @if (selectedCase().step15Discharge?.dischargeStatus) {
+                            <div class="cd-section">
+                                <div class="cd-section-label">Discharge Information</div>
+                                <div class="cd-discharge-row" [ngClass]="getDischargeClass(selectedCase().step15Discharge.dischargeStatus)">
+                                    <span class="cd-discharge-label">Discharge Status</span>
+                                    <span class="cd-discharge-val">{{ selectedCase().step15Discharge.dischargeStatus }}</span>
+                                </div>
+                                <div class="cd-grid cd-grid--mt">
+                                    @if (selectedCase().step15Discharge.dischargeDate) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Discharge Date</div>
+                                            <div class="cd-val">{{ selectedCase().step15Discharge.dischargeDate | date:'MMM d, y' }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step15Discharge.dischargeLocation) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Discharge Location</div>
+                                            <div class="cd-val">{{ selectedCase().step15Discharge.dischargeLocation }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step15Discharge.databaseDischargeStatus) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Database Status</div>
+                                            <div class="cd-val">{{ selectedCase().step15Discharge.databaseDischargeStatus }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step15Discharge.databaseDischargeDate) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Database Discharge Date</div>
+                                            <div class="cd-val">{{ selectedCase().step15Discharge.databaseDischargeDate | date:'MMM d, y' }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step15Discharge.readmission30Day) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">30-Day Readmission</div>
+                                            <div class="cd-val">{{ selectedCase().step15Discharge.readmission30Day }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step15Discharge.readmissionDate) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Readmission Date</div>
+                                            <div class="cd-val">{{ selectedCase().step15Discharge.readmissionDate | date:'MMM d, y' }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step15Discharge.readmissionReason) {
+                                        <div class="cd-cell cd-cell--full">
+                                            <div class="cd-key">Readmission Reason</div>
+                                            <div class="cd-val">{{ selectedCase().step15Discharge.readmissionReason }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step15Discharge.status30Days) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">30-Day Status</div>
+                                            <div class="cd-val">{{ selectedCase().step15Discharge.status30Days }}</div>
+                                        </div>
+                                    }
+                                    @if (selectedCase().step15Discharge.verificationMethod) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Verification Method</div>
+                                            <div class="cd-val">{{ selectedCase().step15Discharge.verificationMethod }}</div>
+                                        </div>
                                     }
                                 </div>
                             </div>
                         }
 
-                        <!-- 11. Discharge -->
-                        @if (selectedCase()?.step14Discharge?.dischargeStatus) {
+                        <!-- ═══════════════════════════════════════════════════════════════ -->
+                                <!-- 13. Follow-ups                                                  -->
+                                <!-- ═══════════════════════════════════════════════════════════════ -->
+                        @if (selectedCase().followups?.length > 0) {
                             <div class="cd-section">
-                                <div class="cd-section-label">Discharge Information</div>
-                                <div class="cd-discharge-row" [ngClass]="getDischargeClass(selectedCase()?.step14Discharge?.dischargeStatus)">
-                                    <span class="cd-discharge-label">Discharge Status</span>
-                                    <span class="cd-discharge-val">{{ selectedCase()?.step14Discharge?.dischargeStatus }}</span>
-                                </div>
-                                <div class="cd-grid cd-grid--mt">
-                                    <div class="cd-cell"><div class="cd-key">Discharge Date</div><div class="cd-val">{{ (selectedCase()?.step14Discharge?.dischargeDate | date:'MMM d, y') || '—' }}</div></div>
-                                    <div class="cd-cell"><div class="cd-key">Readmission 30 Day</div><div class="cd-val">{{ selectedCase()?.step14Discharge?.readmission30Day || '—' }}</div></div>
-                                    <div class="cd-cell"><div class="cd-key">Database Status</div><div class="cd-val">{{ selectedCase()?.step14Discharge?.databaseDischargeStatus || '—' }}</div></div>
-                                </div>
+                                <div class="cd-section-label">Follow-up Information</div>
+                                @for (f of selectedCase().followups; track f._id; let i = $index) {
+                                    <div class="cd-sub-section">
+                                        @if (selectedCase().followups.length > 1) {
+                                            <div class="cd-cell">Follow-up {{ i + 1 }}</div>
+                                        }
+                                        @if (f.patientStatus) {
+                                            <div class="cd-discharge-row" [ngClass]="getDischargeClass(f.patientStatus)">
+                                                <span class="cd-discharge-label">Patient Status</span>
+                                                <span class="cd-discharge-val">{{ f.patientStatus }}</span>
+                                            </div>
+                                        }
+                                        <div class="cd-grid cd-grid--mt">
+                                            @if (f.followupDate) {
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">Follow-up Date</div>
+                                                    <div class="cd-val">{{ f.followupDate | date:'MMM d, y' }}</div>
+                                                </div>
+                                            }
+                                            @if (f.conductedByName) {
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">Conducted By</div>
+                                                    <div class="cd-val">{{ f.conductedByName }}</div>
+                                                </div>
+                                            }
+                                            <div class="cd-cell">
+                                                <div class="cd-key">Readmission Requested</div>
+                                                <div class="cd-val">{{ f.readmissionRequested ? 'Yes' : 'No' }}</div>
+                                            </div>
+                                            @if (f.readmissionDate) {
+                                                <div class="cd-cell">
+                                                    <div class="cd-key">Readmission Date</div>
+                                                    <div class="cd-val">{{ f.readmissionDate | date:'MMM d, y' }}</div>
+                                                </div>
+                                            }
+                                            @if (f.readmissionReason) {
+                                                <div class="cd-cell cd-cell--full">
+                                                    <div class="cd-key">Readmission Reason</div>
+                                                    <div class="cd-val">{{ f.readmissionReason }}</div>
+                                                </div>
+                                            }
+                                            @if (f.causeOfDeath) {
+                                                <div class="cd-cell cd-cell--full">
+                                                    <div class="cd-key">Cause of Death</div>
+                                                    <div class="cd-val">{{ f.causeOfDeath }}</div>
+                                                </div>
+                                            }
+                                            @if (f.notes) {
+                                                <div class="cd-cell cd-cell--full">
+                                                    <div class="cd-key">Notes</div>
+                                                    <div class="cd-val">{{ f.notes }}</div>
+                                                </div>
+                                            }
+                                        </div>
+                                        @if (!$last) { <hr class="cd-divider"/> }
+                                    </div>
+                                }
                             </div>
                         }
+
                     }
                     <!-- end case-detail tab -->
 

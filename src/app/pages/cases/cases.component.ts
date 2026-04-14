@@ -149,7 +149,8 @@ export class CasesComponent implements OnInit {
             .subscribe({
                 next: (res: HttpResponse<any>) => {
                     if (res.status === 200) {
-                        this.selectedCase.set(CaseDetailDTO.fromDetail(res.body.data))
+                        const data: any = res.body.data;
+                        this.selectedCase.set(data)
                         this.showViewModal.set(true);
                     } else {
                         const msg = res.body.message || 'Something went wrong'
@@ -269,9 +270,9 @@ export class CasesComponent implements OnInit {
     }
 
     canAddFollowup(caseItem: CaseDetailDTO): boolean {
-        if (!caseItem?.step14Discharge?.dischargeDate) return false;
+        if (!caseItem?.step15Discharge?.dischargeDate) return false;
 
-        const discharge = new Date(caseItem.step14Discharge.dischargeDate);
+        const discharge = new Date(caseItem.step15Discharge.dischargeDate);
         const today = new Date();
         const diffDays = Math.ceil((today.getTime() - discharge.getTime()) / (1000 * 3600 * 24));
 
@@ -286,6 +287,16 @@ export class CasesComponent implements OnInit {
         });
     }
 
+    getObjectKeys(obj: any): string[] {
+        if (!obj || typeof obj !== 'object') return [];
+        return Object.keys(obj).filter(k => obj[k] === true);
+    }
+
+    hasObjectKeys(obj: any): boolean {
+        return this.getObjectKeys(obj).length > 0;
+    }
+
     protected readonly getUserInitials = getUserInitials;
     protected readonly PATIENT_STATUS = PATIENT_STATUS;
+    protected readonly Boolean = Boolean;
 }

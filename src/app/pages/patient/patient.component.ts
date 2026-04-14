@@ -32,9 +32,9 @@ export class PatientComponent implements OnInit {
     showViewModal = signal(false);
     showDeleteModal = signal(false);
     activeTab = signal<'overview' | 'cases' | 'case-detail'>('overview');
-    selectedCase = signal<CaseDetailDTO | null>(new CaseDetailDTO());
+    selectedCase = signal<any | null>(null);
     selectedIndex: number | null = null
-    selectedPatient = signal<PatientDTO | null>(null);
+    selectedPatient = signal<any | null>(null);
     isEditMode = false;
     doctorForm!: FormGroup;
     patients: PatientDTO[] = [];
@@ -118,8 +118,8 @@ export class PatientComponent implements OnInit {
             next: (res: HttpResponse<any>) => {
                 if (res.status === 200) {
                     const patientDTO = new PatientDTO();
-                    patientDTO.fromData(res.body.data);
-                    this.selectedPatient.set(patientDTO);
+                    const data : any = res.body.data;
+                    this.selectedPatient.set(data);
                     this.selectedCase.set(null);
                     this.activeTab.set('overview');
                     this.showViewModal.set(true);
@@ -288,4 +288,6 @@ export class PatientComponent implements OnInit {
         };
         return map[stage] ?? 0;
     }
+
+    protected readonly Boolean = Boolean;
 }

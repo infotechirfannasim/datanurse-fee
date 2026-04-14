@@ -175,12 +175,14 @@ export class CaseDetailDTO extends CaseListDTO {
   step4ChromosomalSyndromes: any = {};
   step5HospitalAdmission: any = {};
   step6PreOpMeds: any = {};
-  step9OperativeData: any = {};
-  step10BloodProducts: any = {};
-  step11ProcedureDetails: any = {};
-  step12Anesthesia: any = {};
-  step13Complications: any = {};
-  step14Discharge: any = {};
+  step9ProcedureSpecificFactors: any = {};
+  step10OperativeData: any = {};
+  step11BloodProducts: any = {};
+  step12ProcedureDetails: any = {};
+  step13Anesthesia: any = {};
+  step14Complications: any = {};
+  step15Discharge: any = {};
+
 
   override fromData(data: any): void {
     super.fromData(data);
@@ -192,12 +194,13 @@ export class CaseDetailDTO extends CaseListDTO {
     this.step4ChromosomalSyndromes = data?.step4ChromosomalSyndromes ?? {};
     this.step5HospitalAdmission = data?.step5HospitalAdmission ?? {};
     this.step6PreOpMeds = data?.step6PreOpMeds ?? {};
-    this.step9OperativeData = data?.step9OperativeData ?? {};
-    this.step10BloodProducts = data?.step10BloodProducts ?? {};
-    this.step11ProcedureDetails = data?.step11ProcedureDetails ?? {};
-    this.step12Anesthesia = data?.step12Anesthesia ?? {};
-    this.step13Complications = data?.step13Complications ?? {};
-    this.step14Discharge = data?.step14Discharge ?? {};
+    this.step9ProcedureSpecificFactors = data?.step9ProcedureSpecificFactors ?? {};
+    this.step10OperativeData = data?.step10OperativeData ?? {};
+    this.step11BloodProducts = data?.step11BloodProducts ?? {};
+    this.step12ProcedureDetails = data?.step12ProcedureDetails ?? {};
+    this.step13Anesthesia = data?.step13Anesthesia ?? {};
+    this.step14Complications = data?.step14Complications ?? {};
+    this.step15Discharge = data?.step15Discharge ?? {};
     this.followups = data.followups ?? []
   }
 

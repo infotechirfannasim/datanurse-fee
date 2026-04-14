@@ -2075,6 +2075,36 @@ input.has-icon {
     background: #F0FDF4;
     color: #15803D;
   }
+
+  &--abnormality {
+    background: rgba(6, 86, 197, 0.08);
+    color: var(--blue);
+  }
+
+  &--complication {
+    background: rgba(6, 86, 197, 0.08);
+    color: var(--muted);
+  }
+
+  &--proc {
+    background: rgba(6, 86, 197, 0.08);
+    color: var(--blue);
+  }
+
+  &--syndromes {
+    background: rgba(6, 86, 197, 0.08);
+    color: var(--blue);
+  }
+
+  &--preop {
+    background: rgba(6, 86, 197, 0.08);
+    color: var(--muted);
+  }
+
+  &--crom {
+    background: rgba(6, 86, 197, 0.08);
+    color: #15803D;
+  }
 }
 
 .cd-tag-primary {
