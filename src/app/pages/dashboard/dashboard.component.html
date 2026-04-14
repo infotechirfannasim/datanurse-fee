@@ -72,6 +72,13 @@
         <div class="section-title">Follow-up & Outcomes</div>
         <div class="section-sub">Post-discharge completion rate</div>
       </div>
+        <div class="section-filter">
+            <select [(ngModel)]="followupFilter" (ngModelChange)="loadFollowUpAndOutcomes()">
+                <option value="all">All Time</option>
+                <option value="month">This Month</option>
+                <option value="year">This Year</option>
+            </select>
+        </div>
     </div>
     <div class="demo-body">
       
@@ -116,6 +123,12 @@
                 </span>
           <span class="outcome-mini-lbl">Total Deceased</span>
         </div>
+          <div class="outcome-mini-card">
+                <span class="outcome-mini-val" style="color:#E8344A">
+                    {{ outcomes.totalUnknown ?? 0 }}
+                </span>
+              <span class="outcome-mini-lbl">Total Unknown</span>
+          </div>
       </div>
     
     </div>
@@ -128,6 +141,13 @@
         <div class="section-title">Case Distribution</div>
         <div class="section-sub">By procedure type</div>
       </div>
+        <div class="section-filter">
+            <select [(ngModel)]="caseDistFilter" (ngModelChange)="loadCaseDistribution()">
+                <option value="all">All Time</option>
+                <option value="month" selected>This Month</option>
+                <option value="year">This Year</option>
+            </select>
+        </div>
     </div>
     <div class="ring-wrap">
       <div class="ring-chart-area">
@@ -148,7 +168,7 @@
           </svg>
           <div class="ring-label-wrap">
             <span class="ring-big">{{ totalCases }}</span>
-            <span class="ring-small">Total</span>
+            <span class="ring-small">Cases</span>
           </div>
         </div>
         <div class="ring-legend">
@@ -156,7 +176,7 @@
             <div class="ring-legend-item">
               <div class="ring-legend-dot" [style.background]="ringSegments[$index]?.color"></div>
               <span class="ring-legend-label">{{ p.label }}</span>
-              <span class="ring-legend-val">{{ p.percentage }}%</span>
+              <span class="ring-legend-val">{{ p.count }}</span>
             </div>
           }
         </div>
@@ -174,6 +194,13 @@
         <div class="section-title">Patient Demographics</div>
         <div class="section-sub">Age at time of surgery</div>
       </div>
+        <div class="section-filter">
+            <select [(ngModel)]="demoFilter" (ngModelChange)="loadDemographics()">
+                <option value="all">All Time</option>
+                <option value="month" selected>This Month</option>
+                <option value="year">This Year</option>
+            </select>
+        </div>
     </div>
     <div class="demo-body">
       @for (ag of ageGroups; track ag.label) {
@@ -218,6 +245,13 @@
   <div class="section-card">
     <div class="section-header">
       <div class="section-title">Top Surgeons</div>
+        <div class="section-filter">
+            <select [(ngModel)]="topSurgeonFilter" (ngModelChange)="loadTopSurgeons()">
+                <option value="all">All Time</option>
+                <option value="month" selected>This Month</option>
+                <option value="year">This Year</option>
+            </select>
+        </div>
     </div>
     <div class="doctor-list">
       @for (s of topSurgeons; track s.name) {

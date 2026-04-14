@@ -1,7 +1,6 @@
-import {User} from "../core/models/user.model";
 import {AbstractControl, FormArray, FormGroup, ValidationErrors, ValidatorFn} from "@angular/forms";
 
-export function getUserInitials(user: User | null): string {
+export function getUserInitials(user: any): string {
 
     if (!user) return 'NA';
     if (user.firstName || user.lastName) {

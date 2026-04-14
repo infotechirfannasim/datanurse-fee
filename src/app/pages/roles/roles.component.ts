@@ -26,6 +26,7 @@ export class RolesComponent implements OnInit {
     showAddModal = signal(false);
     showViewModal = signal(false);
     showDeleteModal = signal(false);
+    showConfirmClose = signal(false);
     selectedRole = signal<Role | null>(null);
     selectedRoleId = signal<string | null>(null);
     isEditMode: boolean = false;
@@ -314,5 +315,24 @@ export class RolesComponent implements OnInit {
             field,
             customMessages: this.errorMessages
         });
+    }
+
+    cancelClose() {
+        this.showConfirmClose.set(false);
+    }
+
+    closeModal() {
+        if (this.form.dirty) {
+            this.showConfirmClose.set(true);
+        } else {
+            this.showAddModal.set(false);
+            this.resetForm();
+        }
+    }
+
+    discardChanges() {
+        this.resetForm();
+        this.cancelClose();
+        this.closeModal();
     }
 }

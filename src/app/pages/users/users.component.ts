@@ -34,6 +34,7 @@ export class UsersComponent implements OnInit {
     showAddModal = signal(false);
     showViewModal = signal(false);
     showDeleteModal = signal(false);
+    showConfirmClose = signal(false);
     selectedUser = signal<User | null>(null);
     selectedUserId = signal<number | null>(null);
     isEditMode: boolean = false;
@@ -48,8 +49,16 @@ export class UsersComponent implements OnInit {
     showPassword = false;
     showConfirmPassword = false;
     errorMessages = {
-        firstName: {required: 'First name is required', pattern: 'Only alphabets allowed'},
-        lastName: {required: 'Last name is required', pattern: 'Only alphabets allowed'},
+        firstName: {
+            required: 'First name is required',
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
+            maxLength: 'Max 50 characters'
+        },
+        lastName: {
+            required: 'Last name is required',
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
+            maxLength: 'Max 50 characters'
+        },
         role: {required: 'Role is required'},
         email: {
             required: 'Email is required',
@@ -84,13 +93,13 @@ export class UsersComponent implements OnInit {
     buildForm() {
         this.form = this.fb.group({
             firstName: ['', [Validators.required,
-                Validators.minLength(5),
+                Validators.minLength(1),
                 Validators.maxLength(50),
-                Validators.pattern(RegexConstants.ALPHABET_REGEX)]],
+                Validators.pattern(RegexConstants.NAME_SPECIAL_REGEX)]],
             lastName: ['', [Validators.required,
-                Validators.minLength(5),
+                Validators.minLength(1),
                 Validators.maxLength(50),
-                Validators.pattern(RegexConstants.ALPHABET_REGEX)]],
+                Validators.pattern(RegexConstants.NAME_SPECIAL_REGEX)]],
             email: ['', [Validators.required, Validators.pattern(RegexConstants.VALID_EMAIL_REGEX), Validators.maxLength(50), Validators.email]],
             role: ['', Validators.required],
             password: [''],
@@ -388,6 +397,25 @@ export class UsersComponent implements OnInit {
             field,
             customMessages: this.errorMessages
         });
+    }
+
+    cancelClose() {
+        this.showConfirmClose.set(false);
+    }
+
+    closeModal() {
+        if (this.form.dirty) {
+            this.showConfirmClose.set(true);
+        } else {
+            this.showAddModal.set(false);
+            this.resetForm();
+        }
+    }
+
+    discardChanges() {
+        this.resetForm();
+        this.cancelClose();
+        this.closeModal();
     }
 
     protected readonly getUserInitials = getUserInitials;

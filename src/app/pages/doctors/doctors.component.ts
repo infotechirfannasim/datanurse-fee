@@ -38,19 +38,31 @@ export class DoctorsComponent implements OnInit {
     showAddModal = signal(false);
     showViewModal = signal(false);
     showDeleteModal = signal(false);
+    showConfirmClose = signal(false);
     selectedDoctor = signal<Doctor | null>(null);
     errorMessages = {
         phone: {required: 'Phone is required', pattern: 'Invalid Pakistani phone number'},
-        pmdcNumber: {required: 'PMDC number is required', pattern: 'Format: PMDC-12345'},
-        npiNumber: {required: 'NPI  number is required', pattern: 'Must be exactly 10 digits'},
-        tinNumber: {required: 'TIN number is required', pattern: 'Must be 7–12 digits'},
+        pmdcNumber: {
+            required: 'PMDC number is required',
+            minLength: 'Min 1 characters',
+            maxLength: 'Max 10 characters',
+            pattern: 'Only numbers are allowed'
+        },
         email: {
             required: 'Email is required',
             maxlength: 'Max 50 characters',
             email: 'Provide valid email', pattern: 'Provide valid email'
         },
-        firstName: {required: 'First name is required', pattern: 'Only alphabets allowed'},
-        lastName: {required: 'Last name is required', pattern: 'Only alphabets allowed'},
+        firstName: {
+            required: 'First name is required',
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
+            maxLength: 'Max 50 characters'
+        },
+        lastName: {
+            required: 'Last name is required',
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
+            maxLength: 'Max 50 characters'
+        },
     };
     isEditMode: boolean = false;
     doctorForm!: FormGroup;
@@ -96,7 +108,6 @@ export class DoctorsComponent implements OnInit {
         this.loadRoles();
         this.buildForm();
         this.loadLovs();
-        this.addHospitalRow();
         this.setupSearchDebounce();
     }
 
@@ -104,15 +115,15 @@ export class DoctorsComponent implements OnInit {
         this.doctorForm = this.fb.group({
             firstName: ['', [
                 Validators.required,
-                Validators.minLength(5),
+                Validators.minLength(1),
                 Validators.maxLength(50),
-                Validators.pattern(RegexConstants.ALPHABET_REGEX)
+                Validators.pattern(RegexConstants.NAME_SPECIAL_REGEX)
             ]],
             lastName: ['', [
                 Validators.required,
-                Validators.minLength(5),
+                Validators.minLength(1),
                 Validators.maxLength(50),
-                Validators.pattern(RegexConstants.ALPHABET_REGEX)
+                Validators.pattern(RegexConstants.NAME_SPECIAL_REGEX)
             ]],
             email: ['', [
                 Validators.required,
@@ -127,21 +138,15 @@ export class DoctorsComponent implements OnInit {
             role: [this.roles.find((r: Role) => r.name === ROLES.DOCTOR)?._id, Validators.required],
             pmdcNumber: ['', [
                 Validators.required,
-                Validators.pattern(RegexConstants.PMDC_REGEX)
-            ]],
-            npiNumber: ['', [
-                Validators.required,
-                Validators.pattern(RegexConstants.NPI_REGEX)
-            ]],
-            tinNumber: ['', [
-                Validators.required,
-                Validators.pattern(RegexConstants.TIN_REGEX)
+                Validators.minLength(1),
+                Validators.maxLength(10),
+                Validators.pattern(RegexConstants.NUMERIC_REGEX)
             ]],
             specialities: [null, [
                 Validators.required,
                 Validators.minLength(1)
             ]],
-            hospitals: this.fb.array([]),
+            hospitalAffiliations: [null, Validators.required],
             profileImage: [null]
         });
     }
@@ -248,12 +253,6 @@ export class DoctorsComponent implements OnInit {
         this.selectedDoctor.set(doc);
         this.isEditMode = true;
         this.doctorForm.patchValue(this.mapDoctorToForm(doc));
-        this.hospitals.clear();
-        if (doc.hospitalAffiliations?.length) {
-            doc.hospitalAffiliations.forEach(h => this.addHospitalRow(h));
-        } else {
-            this.addHospitalRow();
-        }
 
         this.showViewModal.set(false);
         this.showAddModal.set(true);
@@ -270,7 +269,7 @@ export class DoctorsComponent implements OnInit {
             npiNumber: doc?.npiNumber,
             specialities: doc?.specialities || [],
             role: this.doctorForm.value?.role,
-            hospitals: doc?.hospitalAffiliations || []
+            hospitalAffiliations: doc?.hospitalAffiliations || []
         };
     }
 
@@ -326,97 +325,6 @@ export class DoctorsComponent implements OnInit {
         reader.readAsDataURL(file);
     }
 
-    addHospitalRow(prefill?: any): void {
-        const i = this.hospitals.length;
-
-        const hospitalGroup = this.fb.group({
-            name: [prefill?.name || null, Validators.required],
-            country: [prefill?.country || null, Validators.required],
-            province: [prefill?.province || null, Validators.required],
-            district: [prefill?.district || null, Validators.required],
-            city: [prefill?.city || null, Validators.required],
-        });
-
-        this.hospitals.push(hospitalGroup);
-
-        if (prefill?.country) {
-            this.onCountryChange(prefill.country, i);
-        }
-        if (prefill?.province) {
-            this.onProvinceChange(prefill.province, i);
-        }
-        if (prefill?.district) {
-            this.onDistrictChange(prefill.district, i);
-        }
-        this.subscribeRowChanges(i, hospitalGroup);
-    }
-
-    subscribeRowChanges(i: number, group: FormGroup): void {
-        group.get('country')!.valueChanges.subscribe(val => {
-            group.get('province')!.reset();
-            group.get('district')!.reset();
-            group.get('city')!.reset();
-            this.onCountryChange(val, i);
-        });
-
-        group.get('province')!.valueChanges.subscribe(val => {
-            group.get('district')!.reset();
-            group.get('city')!.reset();
-            this.onProvinceChange(val, i);
-        });
-
-        group.get('district')!.valueChanges.subscribe(val => {
-            group.get('city')!.reset();
-            this.onDistrictChange(val, i);
-        });
-    }
-
-    onCountryChange(countryCode: string, i: number): void {
-        const filtered = this.allProvinces.filter(p =>
-            p.parents?.some((par: any) => par.type === 'country' && par.code === countryCode)
-        );
-        this.rowProvinceOptions.set(i, filtered);
-        this.rowDistrictOptions.set(i, []);
-        this.rowCityOptions.set(i, []);
-    }
-
-    onProvinceChange(provinceCode: string, i: number): void {
-        const filtered = this.allDistricts.filter(d =>
-            d.parents?.some((par: any) => par.type === 'province' && par.code === provinceCode)
-        );
-        this.rowDistrictOptions.set(i, filtered);
-        this.rowCityOptions.set(i, []);
-    }
-
-    onDistrictChange(districtCode: string, i: number): void {
-        const filtered = this.cityOptions.filter(c =>
-            c.parents?.some((par: any) => par.type === 'district' && par.code === districtCode)
-        );
-        this.rowCityOptions.set(i, filtered);
-    }
-
-    removeHospitalRow(i: number): void {
-        this.hospitals.removeAt(i);
-        const newProvinces = new Map<number, any[]>();
-        const newDistricts = new Map<number, any[]>();
-        const newCities = new Map<number, any[]>();
-        this.hospitals.controls.forEach((_, idx) => {
-            newProvinces.set(idx, this.rowProvinceOptions.get(idx > i ? idx + 1 : idx) || []);
-            newDistricts.set(idx, this.rowDistrictOptions.get(idx > i ? idx + 1 : idx) || []);
-            newCities.set(idx, this.rowCityOptions.get(idx > i ? idx + 1 : idx) || []);
-        });
-        this.rowProvinceOptions = newProvinces;
-        this.rowDistrictOptions = newDistricts;
-        this.rowCityOptions = newCities;
-    }
-
-    getAvailableHospitals(currentIndex: number): any[] {
-        const selectedCodes = this.hospitals.controls
-            .map((ctrl, idx) => idx !== currentIndex ? ctrl.get('name')?.value : null)
-            .filter(Boolean);
-        return this.hospitalOptions.filter(h => !selectedCodes.includes(h.code));
-    }
-
     submitAddDoctor(): void {
         if (this.doctorForm.invalid) {
             markAllTouched(this.doctorForm);
@@ -443,22 +351,10 @@ export class DoctorsComponent implements OnInit {
             }
         });
 
-        const hospitals = this.doctorForm.value.hospitals || [];
-        hospitals.forEach((hospital: any, index: number) => {
-            if (hospital?.country) {
-                formData.append(`hospitalAffiliations[${index}][country]`, hospital.country);
-            }
-            if (hospital?.province) {
-                formData.append(`hospitalAffiliations[${index}][province]`, hospital.province);
-            }
-            if (hospital?.district) {
-                formData.append(`hospitalAffiliations[${index}][district]`, hospital.district);
-            }
-            if (hospital?.city) {
-                formData.append(`hospitalAffiliations[${index}][city]`, hospital.city);
-            }
-            if (hospital?.name) {
-                formData.append(`hospitalAffiliations[${index}][name]`, hospital.name);
+        const hospitals = this.doctorForm.value.hospitalAffiliations || [];
+        hospitals.forEach((hospital: any) => {
+            if (hospital && hospital.trim() !== '') {
+                formData.append(`hospitalAffiliations[]`, hospital);
             }
         });
 
@@ -473,9 +369,9 @@ export class DoctorsComponent implements OnInit {
             next: (response: HttpResponse<any>) => {
                 if (response.status == 200 || response.status == 201) {
                 }
-                this.resetForm();
                 this.showAddModal.set(false);
-                this.toastService.show(this.isEditMode ? 'Doctor updated successfully.' : 'Doctor added successfully.', 'success')
+                this.toastService.show(this.isEditMode ? 'Doctor updated successfully.' : 'Doctor added successfully. Email has been sent.', 'success')
+                this.resetForm();
                 this.loadDoctors();
             },
             error: (err: HttpErrorResponse) => {
@@ -490,8 +386,7 @@ export class DoctorsComponent implements OnInit {
         this.imagePreview = null;
         this.selectedFile = null;
         this.isEditMode = false;
-        this.hospitals.clear();
-        this.addHospitalRow();
+        this.selectedDoctor.set(null);
     }
 
     goToPage(page: number) {
@@ -512,17 +407,30 @@ export class DoctorsComponent implements OnInit {
         return `data:${doc?.profileImage.contentType};base64,${doc?.profileImage.data}`;
     }
 
-    closeModal() {
-        this.resetForm();
-        this.showAddModal.set(false);
-        this.selectedDoctor.set(null);
-    }
-
     getErrorMsg(controlName: string, index?: number, field?: string) {
         return getError(this.doctorForm, controlName, {
             index,
             field,
             customMessages: this.errorMessages
         });
+    }
+
+    cancelClose() {
+        this.showConfirmClose.set(false);
+    }
+
+    closeModal() {
+        if (this.doctorForm.dirty) {
+            this.showConfirmClose.set(true);
+        } else {
+            this.resetForm();
+            this.showAddModal.set(false);
+        }
+    }
+
+    discardChanges() {
+        this.resetForm();
+        this.cancelClose();
+        this.closeModal();
     }
 }
