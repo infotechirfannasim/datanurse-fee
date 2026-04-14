@@ -1,7 +1,7 @@
 // ─── Dashboard Component ─────────────────────────────────────────────────────
 
 .welcome-banner {
-  background: linear-gradient(135deg, var(--navy) 0%, #0A2A7A 50%, var(--blue) 100%);  /* Deep Indigo → Royal Blue */
+  background: linear-gradient(135deg, var(--navy) 0%, #0A2A7A 50%, var(--blue) 100%); /* Deep Indigo → Royal Blue */
   border-radius: 18px;
   padding: 28px 32px;
   display: flex;
@@ -30,7 +30,7 @@
     position: absolute;
     width: 180px;
     height: 180px;
-    background: radial-gradient(circle, rgba(201, 25, 254, 0.15) 0%, transparent 65%);  /* --pink/indigo */
+    background: radial-gradient(circle, rgba(201, 25, 254, 0.15) 0%, transparent 65%); /* --pink/indigo */
     bottom: -60px;
     right: -30px;
   }
@@ -137,7 +137,7 @@
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(10, 0, 97, 0.10);  /* --navy */
+    box-shadow: 0 8px 28px rgba(10, 0, 97, 0.10); /* --navy */
   }
 }
 
@@ -183,12 +183,12 @@
 }
 
 .trend-up {
-  background: rgba(16, 185, 129, 0.12);  /* --green */
+  background: rgba(16, 185, 129, 0.12); /* --green */
   color: #065F46;
 }
 
 .trend-down {
-  background: rgba(239, 68, 68, 0.10);   /* --rose */
+  background: rgba(239, 68, 68, 0.10); /* --rose */
   color: var(--rose);
 }
 
@@ -328,7 +328,7 @@
 }
 
 .bar-blue {
-  background: var(--blue-lt);  /* Bright Cyan */
+  background: var(--blue-lt); /* Bright Cyan */
   opacity: 0.5;
 }
 
@@ -377,7 +377,7 @@
   cursor: pointer;
 
   &:hover {
-    background: rgba(6, 86, 197, 0.03);  /* --blue subtle hover */
+    background: rgba(6, 86, 197, 0.03); /* --blue subtle hover */
   }
 }
 
@@ -432,6 +432,7 @@
 .ring-center {
   position: relative;
 }
+
 .ring-center svg {
   width: 240px;
   height: 240px;
@@ -527,7 +528,7 @@
   }
 
   &:hover {
-    background: rgba(6, 86, 197, 0.03);  /* --blue subtle */
+    background: rgba(6, 86, 197, 0.03); /* --blue subtle */
   }
 }
 
@@ -636,7 +637,7 @@
   transition: background 0.15s;
 
   &:hover {
-    background: rgba(6, 86, 197, 0.03);  /* --blue subtle */
+    background: rgba(6, 86, 197, 0.03); /* --blue subtle */
   }
 }
 
@@ -697,6 +698,28 @@
   gap: 6px;
 }
 
+.section-filter {
+  display: flex;
+  background: #f1f3f5;
+  padding: 3px;
+  border-radius: 8px;
+}
+
+.filter-btn {
+  border: none;
+  background: transparent;
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 6px;
+  color: var(--navy);
+}
+
+.filter-btn.active {
+  background: white;
+  color: var(--navy);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
 .pill-btn {
   padding: 5px 12px;
   font-size: 12px;
@@ -733,22 +756,22 @@
 }
 
 .badge-blue {
-  background: rgba(6, 86, 197, 0.10);    /* --blue */
+  background: rgba(6, 86, 197, 0.10); /* --blue */
   color: var(--blue);
 }
 
 .badge-green {
-  background: rgba(16, 185, 129, 0.12);  /* --green */
+  background: rgba(16, 185, 129, 0.12); /* --green */
   color: #065F46;
 }
 
 .badge-amber {
-  background: rgba(245, 158, 11, 0.12);  /* --amber */
+  background: rgba(245, 158, 11, 0.12); /* --amber */
   color: #B45309;
 }
 
 .badge-rose {
-  background: rgba(239, 68, 68, 0.12);   /* --rose */
+  background: rgba(239, 68, 68, 0.12); /* --rose */
   color: var(--rose);
 }
 
@@ -884,7 +907,7 @@
 }
 
 .gender-male {
-  background: var(--blue);   /* Royal Blue */
+  background: var(--blue); /* Royal Blue */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -894,7 +917,7 @@
 }
 
 .gender-female {
-  background: var(--pink);   /* Vivid Purple */
+  background: var(--pink); /* Vivid Purple */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -952,7 +975,7 @@
 // Outcome mini cards
 .outcome-mini-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin-top: 20px;
 }
@@ -1023,8 +1046,12 @@
 }
 
 @keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 

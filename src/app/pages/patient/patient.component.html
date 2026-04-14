@@ -19,28 +19,19 @@
         <table class="registry-table">
             <thead>
             <tr>
-                <th>PT. No.</th>
-                <th>Name</th>
-                <th>Gender</th>
-                <th>Cases</th>
-                <th>Doctor</th>
                 <th></th>
+                <th>Patient Name</th>
+                <th>Citizen No.</th>
+                <th>Gender</th>
+                <th>Date of Birth</th>
+                <th>City</th>
+                <th>Patient ID</th>
+                <th>Cases</th>
             </tr>
             </thead>
             <tbody>
                 @for (p of patients; track p._id) {
                     <tr>
-                        <td>{{ p.mrn }}</td>
-                        <td>
-                            <div class="doc-cell">
-                                <div>
-                                    <span class="doc-nm">{{ p.name }}</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td>{{ p.gender || '—' }}</td>
-                        <td class="td-bold">{{ p.casesCount || 0 }}</td>
-                        <td>{{ p?.doctor?.firstName  + ' ' + p?.doctor?.lastName }}</td>
                         <td>
                             <button class="action-btn" (click)="openView(p)" title="View">
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
@@ -50,6 +41,15 @@
                                 </svg>
                             </button>
                         </td>
+                        <td>{{ p.name }}</td>
+                        <td>
+                            {{ p.citizenNumber }}
+                        </td>
+                        <td>{{ p.gender}}</td>
+                        <td>{{ p.dob | date: 'MMM d, y'}}</td>
+                        <td>{{ p.city }}</td>
+                        <td>{{ p.mrn }}</td>
+                        <td>{{ p.casesCount || 0 }}</td>
                     </tr>
                 } @empty {
                     <tr>
@@ -261,14 +261,16 @@
                     }
 
 
-
                     @if (activeTab() === 'case-detail' && selectedCase()) {
                         <div class="cd-top">
-                        <span class="cd-status-badge" [ngClass]="getCaseStatusClass(selectedCase()?.step9OperativeData?.operationStatus)">
+                        <span class="cd-status-badge"
+                              [ngClass]="getCaseStatusClass(selectedCase()?.step9OperativeData?.operationStatus)">
                             {{ selectedCase()?.step9OperativeData?.operationStatus || '—' }}
                         </span>
                             <div class="cd-meta">
-                                <div class="cd-meta-item"><b>Surgery Date:</b> {{ (selectedCase()?.step5HospitalAdmission?.surgeryDate | date:'MMM d, y') || '—' }}</div>
+                                <div class="cd-meta-item"><b>Surgery
+                                    Date:</b> {{ (selectedCase()?.step5HospitalAdmission?.surgeryDate | date:'MMM d, y') || '—' }}
+                                </div>
                             </div>
                         </div>
                         <!-- 2. Hospital & Admission -->
@@ -276,7 +278,8 @@
                             <div class="cd-section-label">Hospital & Admission</div>
                             <div class="cd-hosp-row">
                                 <div class="cd-hosp-icon">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#92400E" stroke-width="2" stroke-linecap="round">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#92400E"
+                                         stroke-width="2" stroke-linecap="round">
                                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                                         <polyline points="9 22 9 12 15 12 15 22"/>
                                     </svg>
@@ -284,11 +287,26 @@
                                 <div class="cd-hosp-name">{{ selectedCase()?.step5HospitalAdmission?.hospitalName || selectedCase()?.hospitalId?.name }}</div>
                             </div>
                             <div class="cd-grid">
-                                <div class="cd-cell"><div class="cd-key">Admission Date</div><div class="cd-val">{{ (selectedCase()?.step5HospitalAdmission?.admissionDate | date:'MMM d, y') || '—' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Surgery Date</div><div class="cd-val">{{ (selectedCase()?.step5HospitalAdmission?.surgeryDate | date:'MMM d, y') || '—' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Admitted From</div><div class="cd-val">{{ selectedCase()?.step5HospitalAdmission?.admittedFrom || '—' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Height</div><div class="cd-val">{{ selectedCase()?.step5HospitalAdmission?.heightCm }} cm</div></div>
-                                <div class="cd-cell"><div class="cd-key">Weight</div><div class="cd-val">{{ selectedCase()?.step5HospitalAdmission?.weightKg }} kg</div></div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Admission Date</div>
+                                    <div class="cd-val">{{ (selectedCase()?.step5HospitalAdmission?.admissionDate | date:'MMM d, y') || '—' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Surgery Date</div>
+                                    <div class="cd-val">{{ (selectedCase()?.step5HospitalAdmission?.surgeryDate | date:'MMM d, y') || '—' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Admitted From</div>
+                                    <div class="cd-val">{{ selectedCase()?.step5HospitalAdmission?.admittedFrom || '—' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Height</div>
+                                    <div class="cd-val">{{ selectedCase()?.step5HospitalAdmission?.heightCm }} cm</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Weight</div>
+                                    <div class="cd-val">{{ selectedCase()?.step5HospitalAdmission?.weightKg }} kg</div>
+                                </div>
                             </div>
                         </div>
 
@@ -331,7 +349,9 @@
                                 <div class="cd-section-label">Diagnosis</div>
                                 <div class="cd-tags">
                                     @for (d of selectedCase()?.step7Diagnosis?.selectedDiagnoses; track d.id) {
-                                        <span class="cd-tag cd-tag--diag">{{ d.name }} @if(d.isPrimary){<span class="cd-tag-primary">Primary</span>}</span>
+                                        <span class="cd-tag cd-tag--diag">{{ d.name }} @if (d.isPrimary) {
+                                            <span class="cd-tag-primary">Primary</span>
+                                        }</span>
                                     }
                                 </div>
                             </div>
@@ -343,7 +363,8 @@
                                 <div class="cd-section-label">Procedures</div>
                                 <div class="cd-tags">
                                     @for (p of selectedCase()?.step8Procedures?.selectedProcedures; track p.id) {
-                                        <span class="cd-tag cd-tag--proc">{{ p.name }} <span class="cd-tag-code">{{ p.displayCode }}</span></span>
+                                        <span class="cd-tag cd-tag--proc">{{ p.name }} <span
+                                                class="cd-tag-code">{{ p.displayCode }}</span></span>
                                     }
                                 </div>
                             </div>
@@ -353,17 +374,45 @@
                         <div class="cd-section">
                             <div class="cd-section-label">Operative Data</div>
                             <div class="cd-grid">
-                                <div class="cd-cell"><div class="cd-key">Operation Status</div><div class="cd-val"><span class="cd-status-badge" [ngClass]="getCaseStatusClass(selectedCase()?.step9OperativeData?.operationStatus)">
+                                <div class="cd-cell">
+                                    <div class="cd-key">Operation Status</div>
+                                    <div class="cd-val"><span class="cd-status-badge"
+                                                              [ngClass]="getCaseStatusClass(selectedCase()?.step9OperativeData?.operationStatus)">
                                 {{ selectedCase()?.step9OperativeData?.operationStatus || '—' }}
-                            </span></div></div>
-                                <div class="cd-cell"><div class="cd-key">Operation Type</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.operationType }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Location</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.procedureLocation }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Primary Surgeon</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.primarySurgeon }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Prior CT Ops</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.priorCtOps }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Prior CPB Ops</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.priorCpbOps }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Cerebral NIRS</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.cerebralNirs ? 'Yes' : 'No' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Somatic NIRS</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.somaticNirs ? 'Yes' : 'No' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Autologous Transfusion</div><div class="cd-val">{{ selectedCase()?.step9OperativeData?.autologousTransfusion ? 'Yes' : 'No' }}</div></div>
+                            </span></div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Operation Type</div>
+                                    <div class="cd-val">{{ selectedCase()?.step9OperativeData?.operationType }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Location</div>
+                                    <div class="cd-val">{{ selectedCase()?.step9OperativeData?.procedureLocation }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Primary Surgeon</div>
+                                    <div class="cd-val">{{ selectedCase()?.step9OperativeData?.primarySurgeon }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Prior CT Ops</div>
+                                    <div class="cd-val">{{ selectedCase()?.step9OperativeData?.priorCtOps }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Prior CPB Ops</div>
+                                    <div class="cd-val">{{ selectedCase()?.step9OperativeData?.priorCpbOps }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Cerebral NIRS</div>
+                                    <div class="cd-val">{{ selectedCase()?.step9OperativeData?.cerebralNirs ? 'Yes' : 'No' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Somatic NIRS</div>
+                                    <div class="cd-val">{{ selectedCase()?.step9OperativeData?.somaticNirs ? 'Yes' : 'No' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Autologous Transfusion</div>
+                                    <div class="cd-val">{{ selectedCase()?.step9OperativeData?.autologousTransfusion ? 'Yes' : 'No' }}</div>
+                                </div>
                             </div>
                         </div>
 
@@ -371,14 +420,38 @@
                         <div class="cd-section">
                             <div class="cd-section-label">Anesthesia</div>
                             <div class="cd-grid">
-                                <div class="cd-cell"><div class="cd-key">Primary Anesthesiologist</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.primAnesName }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Preop Sedation</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.preopSed ? 'Yes' : 'No' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Airway Site</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.airwaySite || '—' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">TEE Used</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.tee ? 'Yes' : 'No' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Neuro Monitor</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.neuroMonitor ? 'Yes' : 'No' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Ultra Guide</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.ultraGuide || '—' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">PACU Mech Support</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.pacuMechSupport || '—' }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">PACU Demise</div><div class="cd-val">{{ selectedCase()?.step12Anesthesia?.pacuDemise ? 'Yes' : 'No' }}</div></div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Primary Anesthesiologist</div>
+                                    <div class="cd-val">{{ selectedCase()?.step12Anesthesia?.primAnesName }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Preop Sedation</div>
+                                    <div class="cd-val">{{ selectedCase()?.step12Anesthesia?.preopSed ? 'Yes' : 'No' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Airway Site</div>
+                                    <div class="cd-val">{{ selectedCase()?.step12Anesthesia?.airwaySite || '—' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">TEE Used</div>
+                                    <div class="cd-val">{{ selectedCase()?.step12Anesthesia?.tee ? 'Yes' : 'No' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Neuro Monitor</div>
+                                    <div class="cd-val">{{ selectedCase()?.step12Anesthesia?.neuroMonitor ? 'Yes' : 'No' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Ultra Guide</div>
+                                    <div class="cd-val">{{ selectedCase()?.step12Anesthesia?.ultraGuide || '—' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">PACU Mech Support</div>
+                                    <div class="cd-val">{{ selectedCase()?.step12Anesthesia?.pacuMechSupport || '—' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">PACU Demise</div>
+                                    <div class="cd-val">{{ selectedCase()?.step12Anesthesia?.pacuDemise ? 'Yes' : 'No' }}</div>
+                                </div>
                             </div>
                         </div>
 
@@ -386,10 +459,23 @@
                         <div class="cd-section">
                             <div class="cd-section-label">Blood Products</div>
                             <div class="cd-grid">
-                                <div class="cd-cell"><div class="cd-key">Hematocrit First</div><div class="cd-val">{{ selectedCase()?.step10BloodProducts?.hematocritFirst }}%</div></div>
-                                <div class="cd-cell"><div class="cd-key">Hematocrit Last</div><div class="cd-val">{{ selectedCase()?.step10BloodProducts?.hematocritLast }}%</div></div>
-                                <div class="cd-cell"><div class="cd-key">Transfusion Usage</div><div class="cd-val">{{ selectedCase()?.step10BloodProducts?.transfusionUsage }}</div></div>
-                                <div class="cd-cell"><div class="cd-key">Transfusion During Proc</div><div class="cd-val">{{ selectedCase()?.step10BloodProducts?.transfusionDuringProc ? 'Yes' : 'No' }}</div></div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Hematocrit First</div>
+                                    <div class="cd-val">{{ selectedCase()?.step10BloodProducts?.hematocritFirst }}%
+                                    </div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Hematocrit Last</div>
+                                    <div class="cd-val">{{ selectedCase()?.step10BloodProducts?.hematocritLast }}%</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Transfusion Usage</div>
+                                    <div class="cd-val">{{ selectedCase()?.step10BloodProducts?.transfusionUsage }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Transfusion During Proc</div>
+                                    <div class="cd-val">{{ selectedCase()?.step10BloodProducts?.transfusionDuringProc ? 'Yes' : 'No' }}</div>
+                                </div>
                             </div>
                         </div>
 
@@ -409,14 +495,24 @@
                         @if (selectedCase()?.step14Discharge?.dischargeStatus) {
                             <div class="cd-section">
                                 <div class="cd-section-label">Discharge Information</div>
-                                <div class="cd-discharge-row" [ngClass]="getDischargeClass(selectedCase()?.step14Discharge?.dischargeStatus)">
+                                <div class="cd-discharge-row"
+                                     [ngClass]="getDischargeClass(selectedCase()?.step14Discharge?.dischargeStatus)">
                                     <span class="cd-discharge-label">Discharge Status</span>
                                     <span class="cd-discharge-val">{{ selectedCase()?.step14Discharge?.dischargeStatus }}</span>
                                 </div>
                                 <div class="cd-grid cd-grid--mt">
-                                    <div class="cd-cell"><div class="cd-key">Discharge Date</div><div class="cd-val">{{ (selectedCase()?.step14Discharge?.dischargeDate | date:'MMM d, y') || '—' }}</div></div>
-                                    <div class="cd-cell"><div class="cd-key">Readmission 30 Day</div><div class="cd-val">{{ selectedCase()?.step14Discharge?.readmission30Day || '—' }}</div></div>
-                                    <div class="cd-cell"><div class="cd-key">Database Status</div><div class="cd-val">{{ selectedCase()?.step14Discharge?.databaseDischargeStatus || '—' }}</div></div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Discharge Date</div>
+                                        <div class="cd-val">{{ (selectedCase()?.step14Discharge?.dischargeDate | date:'MMM d, y') || '—' }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Readmission 30 Day</div>
+                                        <div class="cd-val">{{ selectedCase()?.step14Discharge?.readmission30Day || '—' }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Database Status</div>
+                                        <div class="cd-val">{{ selectedCase()?.step14Discharge?.databaseDischargeStatus || '—' }}</div>
+                                    </div>
                                 </div>
                             </div>
                         }

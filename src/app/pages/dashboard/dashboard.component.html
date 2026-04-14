@@ -1,281 +1,343 @@
 <!-- WELCOME BANNER -->
 <div class="welcome-banner">
-  <div class="welcome-text">
-    <span class="welcome-greeting">{{ getGreeting() }}</span>
-    <span class="welcome-name">{{ userInfo()?.firstName }} {{ userInfo()?.lastName }}</span>
-    <span class="welcome-sub">Here's what's happening across DataNurse today</span>
-  </div>
-  <div class="image-docter">
-    <img class="header-icon" src="./assets/images/doctor.png" alt="">
-  </div>
+    <div class="welcome-text">
+        <span class="welcome-greeting">{{ getGreeting() }}</span>
+        <span class="welcome-name">{{ userInfo()?.firstName }} {{ userInfo()?.lastName }}</span>
+        <span class="welcome-sub">Here's what's happening across DataNurse today</span>
+    </div>
+    <div class="image-docter">
+        <img class="header-icon" src="./assets/images/doctor.png" alt="">
+    </div>
 </div>
 
 <!-- STATS GRID -->
 <div class="stats-grid">
-  @if (isLoading) {
-    @for (item of [1, 2, 3, 4]; track $index) {
-      <div class="stat-card skeleton-card">
-        <div class="stat-card-accent skeleton-accent"></div>
-        <div class="stat-card-top">
-          <div class="stat-ico skeleton-box" style="width:44px;height:44px;border-radius:12px;"></div>
-          <div class="skeleton-box" style="width:48px;height:20px;border-radius:6px;"></div>
-        </div>
-        <div class="skeleton-box" style="width:80px;height:32px;border-radius:6px;margin:12px 0 6px;"></div>
-        <div class="skeleton-box" style="width:100px;height:14px;border-radius:4px;"></div>
-        <div class="stat-bar-wrap" style="margin-top:16px;">
-          <div class="skeleton-box" style="width:100%;height:6px;border-radius:3px;"></div>
-        </div>
-      </div>
-    }
-  } @else {
-    @for (card of statCards; track $index) {
-      <div class="stat-card" [class.hover-able]="card.route" [routerLink]="card.route">
-        <div class="stat-card-accent" [style.background]="card.accentColor"></div>
-        <div class="stat-card-top">
-          <div class="stat-ico" [style.background]="card.bgColor">
-            <img src="{{ card.icon }}" alt="">
-          </div>
-          <div class="stat-trend"
-               [class.trend-up]="card.trendType==='up'"
-               [class.trend-down]="card.trendType==='down'"
-               [class.trend-neu]="card.trendType==='neu'"
-               [matTooltip]="card.trendTooltip"
-               matTooltipPosition="above">
+    @if (isLoading) {
+        @for (item of [1, 2, 3, 4]; track $index) {
+            <div class="stat-card skeleton-card">
+                <div class="stat-card-accent skeleton-accent"></div>
+                <div class="stat-card-top">
+                    <div class="stat-ico skeleton-box" style="width:44px;height:44px;border-radius:12px;"></div>
+                    <div class="skeleton-box" style="width:48px;height:20px;border-radius:6px;"></div>
+                </div>
+                <div class="skeleton-box" style="width:80px;height:32px;border-radius:6px;margin:12px 0 6px;"></div>
+                <div class="skeleton-box" style="width:100px;height:14px;border-radius:4px;"></div>
+                <div class="stat-bar-wrap" style="margin-top:16px;">
+                    <div class="skeleton-box" style="width:100%;height:6px;border-radius:3px;"></div>
+                </div>
+            </div>
+        }
+    } @else {
+        @for (card of statCards; track $index) {
+            <div class="stat-card" [class.hover-able]="card.route" [routerLink]="card.route">
+                <div class="stat-card-accent" [style.background]="card.accentColor"></div>
+                <div class="stat-card-top">
+                    <div class="stat-ico" [style.background]="card.bgColor">
+                        <img src="{{ card.icon }}" alt="">
+                    </div>
+                    <div class="stat-trend"
+                         [class.trend-up]="card.trendType==='up'"
+                         [class.trend-down]="card.trendType==='down'"
+                         [class.trend-neu]="card.trendType==='neu'"
+                         [matTooltip]="card.trendTooltip"
+                         matTooltipPosition="above">
           <span class="trend-arrow">
             @if (card.trendType === 'up') {
-              ↑
+                ↑
             } @else if (card.trendType === 'down') {
-              ↓
+                ↓
             }
           </span>
-            {{ card.trend }}
-          </div>
-        </div>
-        <span class="stat-val">
+                        {{ card.trend }}
+                    </div>
+                </div>
+                <span class="stat-val">
         {{ card.value.toLocaleString() }}{{ card.suffix ?? '' }}
       </span>
-        <span class="stat-lbl">{{ card.label }}</span>
-        <div class="stat-bar-wrap">
-          <div class="stat-bar" [style.width]="card.barWidth" [style.background]="card.barColor"></div>
-        </div>
-      </div>
+                <span class="stat-lbl">{{ card.label }}</span>
+                <div class="stat-bar-wrap">
+                    <div class="stat-bar" [style.width]="card.barWidth" [style.background]="card.barColor"></div>
+                </div>
+            </div>
+        }
     }
-  }
 </div>
 
 <div class="bottom-grid">
-  
-  <!-- Follow-up Completion -->
-  <div class="section-card">
-    <div class="section-header">
-      <div>
-        <div class="section-title">Follow-up & Outcomes</div>
-        <div class="section-sub">Post-discharge completion rate</div>
-      </div>
-        <div class="section-filter">
-            <select [(ngModel)]="followupFilter" (ngModelChange)="loadFollowUpAndOutcomes()">
-                <option value="all">All Time</option>
-                <option value="month">This Month</option>
-                <option value="year">This Year</option>
-            </select>
+
+    <!-- Follow-up Completion -->
+    <div class="section-card">
+        <div class="section-header">
+            <div>
+                <div class="section-title">Follow-up & Outcomes</div>
+                <div class="section-sub">Post-discharge completion rate</div>
+            </div>
+            <div class="section-filter">
+                <button
+                        class="filter-btn"
+                        [class.active]="followupFilter === 'month'"
+                        (click)="setFilter('month')">
+                    Month
+                </button>
+
+                <button
+                        class="filter-btn"
+                        [class.active]="followupFilter === 'year'"
+                        (click)="setFilter('year')">
+                    Year
+                </button>
+                <button
+                        class="filter-btn"
+                        [class.active]="followupFilter === 'all'"
+                        (click)="setFilter('all')">
+                    All
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="demo-body">
-      
-      <!-- Overall rate — dynamic -->
-      <div class="followup-hero">
-        <span class="followup-pct">{{ followupOverallRate }}%</span>
-        <span class="followup-lbl">Overall follow-up rate</span>
-      </div>
-      
-      <!-- Breakdown bars — dynamic -->
-      @for (fu of followups; track fu.label) {
-        <div class="followup-row">
-          <div class="followup-meta">
-            <span class="followup-item-lbl">{{ fu.label }}</span>
-            <span class="followup-item-val">{{ fu.rate }}%</span>
-          </div>
-          <div class="age-track">
-            <div class="age-fill"
-                 [style.width]="fu.rate + '%'"
-                 [style.background]="fu.color"></div>
-          </div>
-        </div>
-      }
-      
-      <!-- Outcome mini cards — dynamic -->
-      <div class="outcome-mini-grid">
-        <div class="outcome-mini-card">
+        <div class="demo-body">
+
+            <!-- Overall rate — dynamic -->
+            <div class="followup-hero">
+                <span class="followup-pct">{{ followupOverallRate }}%</span>
+                <span class="followup-lbl">Overall follow-up rate</span>
+            </div>
+
+            <!-- Breakdown bars — dynamic -->
+            @for (fu of followups; track fu.label) {
+                <div class="followup-row">
+                    <div class="followup-meta">
+                        <span class="followup-item-lbl">{{ fu.label }}</span>
+                        <span class="followup-item-val">{{ fu.rate }}%</span>
+                    </div>
+                    <div class="age-track">
+                        <div class="age-fill"
+                             [style.width]="fu.rate + '%'"
+                             [style.background]="fu.color"></div>
+                    </div>
+                </div>
+            }
+
+            <!-- Outcome mini cards — dynamic -->
+            <div class="outcome-mini-grid">
+                <div class="outcome-mini-card">
                 <span class="outcome-mini-val" style="color:#2251CC">
                     {{ outcomes.totalAdmission ?? 0 }}
                 </span>
-          <span class="outcome-mini-lbl">Total Admission</span>
-        </div>
-        <div class="outcome-mini-card">
+                    <span class="outcome-mini-lbl">Total Admission</span>
+                </div>
+                <div class="outcome-mini-card">
                 <span class="outcome-mini-val" style="color:#0EA5A0">
                     {{ outcomes.totalAlive ?? 0 }}
                 </span>
-          <span class="outcome-mini-lbl">Total Alive</span>
-        </div>
-        <div class="outcome-mini-card">
+                    <span class="outcome-mini-lbl">Total Alive</span>
+                </div>
+                <div class="outcome-mini-card">
                 <span class="outcome-mini-val" style="color:#E8344A">
                     {{ outcomes.totalDeceased ?? 0 }}
                 </span>
-          <span class="outcome-mini-lbl">Total Deceased</span>
-        </div>
-          <div class="outcome-mini-card">
+                    <span class="outcome-mini-lbl">Total Deceased</span>
+                </div>
+                <div class="outcome-mini-card">
                 <span class="outcome-mini-val" style="color:#E8344A">
                     {{ outcomes.totalUnknown ?? 0 }}
                 </span>
-              <span class="outcome-mini-lbl">Total Unknown</span>
-          </div>
-      </div>
-    
-    </div>
-  </div>
-  <!-- Procedure Distribution Ring -->
-  <!-- Procedure Distribution Ring — fully dynamic -->
-  <div class="section-card">
-    <div class="section-header">
-      <div>
-        <div class="section-title">Case Distribution</div>
-        <div class="section-sub">By procedure type</div>
-      </div>
-        <div class="section-filter">
-            <select [(ngModel)]="caseDistFilter" (ngModelChange)="loadCaseDistribution()">
-                <option value="all">All Time</option>
-                <option value="month" selected>This Month</option>
-                <option value="year">This Year</option>
-            </select>
-        </div>
-    </div>
-    <div class="ring-wrap">
-      <div class="ring-chart-area">
-        <div class="ring-center">
-          <svg class="ring-svg" viewBox="0 0 120 120">
-            <!-- Background track -->
-            <circle cx="60" cy="60" fill="none" r="48"
-                    stroke="var(--bg)" stroke-width="16"/>
-            <!-- Dynamic segments -->
-            @for (seg of ringSegments; track seg.label) {
-              <circle cx="60" cy="60" r="48" fill="none"
-                      [attr.stroke]="seg.color"
-                      stroke-width="16"
-                      [attr.stroke-dasharray]="seg.dasharray"
-                      stroke-linecap="round"
-                      [attr.transform]="seg.rotation"/>
-            }
-          </svg>
-          <div class="ring-label-wrap">
-            <span class="ring-big">{{ totalCases }}</span>
-            <span class="ring-small">Cases</span>
-          </div>
-        </div>
-        <div class="ring-legend">
-          @for (p of procedures; track p.label) {
-            <div class="ring-legend-item">
-              <div class="ring-legend-dot" [style.background]="ringSegments[$index]?.color"></div>
-              <span class="ring-legend-label">{{ p.label }}</span>
-              <span class="ring-legend-val">{{ p.count }}</span>
+                    <span class="outcome-mini-lbl">Total Unknown</span>
+                </div>
             </div>
-          }
+
         </div>
-      </div>
     </div>
-  </div>
+    <!-- Procedure Distribution Ring -->
+    <!-- Procedure Distribution Ring — fully dynamic -->
+    <div class="section-card">
+        <div class="section-header">
+            <div>
+                <div class="section-title">Case Distribution</div>
+                <div class="section-sub">By procedure type</div>
+            </div>
+            <div class="section-filter">
+                <div class="section-filter">
+                    <button
+                            class="filter-btn"
+                            [class.active]="caseDistFilter === 'month'"
+                            (click)="setFilterCaseDistribution('month')">
+                        Month
+                    </button>
+
+                    <button
+                            class="filter-btn"
+                            [class.active]="caseDistFilter === 'year'"
+                            (click)="setFilterCaseDistribution('year')">
+                        Year
+                    </button>
+                    <button
+                            class="filter-btn"
+                            [class.active]="caseDistFilter === 'all'"
+                            (click)="setFilterCaseDistribution('all')">
+                        All
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="ring-wrap">
+            <div class="ring-chart-area">
+                <div class="ring-center">
+                    <svg class="ring-svg" viewBox="0 0 120 120">
+                        <!-- Background track -->
+                        <circle cx="60" cy="60" fill="none" r="48"
+                                stroke="var(--bg)" stroke-width="16"/>
+                        <!-- Dynamic segments -->
+                        @for (seg of ringSegments; track seg.label) {
+                            <circle cx="60" cy="60" r="48" fill="none"
+                                    [attr.stroke]="seg.color"
+                                    stroke-width="16"
+                                    [attr.stroke-dasharray]="seg.dasharray"
+                                    stroke-linecap="round"
+                                    [attr.transform]="seg.rotation"/>
+                        }
+                    </svg>
+                    <div class="ring-label-wrap">
+                        <span class="ring-big">{{ totalCases }}</span>
+                        <span class="ring-small">Cases</span>
+                    </div>
+                </div>
+                <div class="ring-legend">
+                    @for (p of procedures; track p.label) {
+                        <div class="ring-legend-item">
+                            <div class="ring-legend-dot" [style.background]="ringSegments[$index]?.color"></div>
+                            <span class="ring-legend-label">{{ p.label }}</span>
+                            <span class="ring-legend-val">{{ p.count }}</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- DEMOGRAPHICS & FOLLOW-UP ROW -->
 <div class="demo-followup-grid">
-  <!-- Age Distribution -->
-  <div class="section-card">
-    <div class="section-header">
-      <div>
-        <div class="section-title">Patient Demographics</div>
-        <div class="section-sub">Age at time of surgery</div>
-      </div>
-        <div class="section-filter">
-            <select [(ngModel)]="demoFilter" (ngModelChange)="loadDemographics()">
-                <option value="all">All Time</option>
-                <option value="month" selected>This Month</option>
-                <option value="year">This Year</option>
-            </select>
-        </div>
-    </div>
-    <div class="demo-body">
-      @for (ag of ageGroups; track ag.label) {
-        <div class="age-row">
-          <span class="age-label">{{ ag.label }}</span>
-          <div class="age-track">
-            <div class="age-fill" [style.width]="ag.percentage + '%'" [style.background]="ag.color"></div>
-          </div>
-          <span class="age-val">{{ ag.percentage }}%</span>
-        </div>
-      }
-      <!-- Gender -->
-      <div class="gender-row">
-        <span class="gender-label">Gender</span>
-        <div class="gender-bar">
-          @if (genderMale) {
-            <div class="gender-male" [style.width]="genderMale + '%'">Male {{ genderMale }}%</div>
-          }
-          @if (genderFemale) {
-            <div class="gender-female" [style.width]="genderFemale + '%'">Female {{ genderFemale }}%</div>
-          }
-        </div>
-      </div>
-      <!-- Province -->
-      <div class="section-sub" style="margin:16px 0 10px;font-weight:600;color:var(--navy);font-size:13px;">Province
-                                                                                                            Breakdown
-      </div>
-      @for (pv of provinces; track pv.label) {
-        <div class="age-row">
-          <span class="age-label">{{ pv.label }}</span>
-          <div class="age-track">
-            <div class="age-fill" [style.width]="pv.percentage + '%'" [style.background]="pv.color"></div>
-          </div>
-          <span class="age-val">{{ pv.percentage }}%</span>
-        </div>
-      }
-    </div>
-  </div>
-  
-  
-  <!-- Top Surgeons -->
-  <div class="section-card">
-    <div class="section-header">
-      <div class="section-title">Top Surgeons</div>
-        <div class="section-filter">
-            <select [(ngModel)]="topSurgeonFilter" (ngModelChange)="loadTopSurgeons()">
-                <option value="all">All Time</option>
-                <option value="month" selected>This Month</option>
-                <option value="year">This Year</option>
-            </select>
-        </div>
-    </div>
-    <div class="doctor-list">
-      @for (s of topSurgeons; track s.name) {
-        <div class="doctor-item">
-          <div class="d-avatar" [style.background]="'#2251CC'">{{ getUserInitials(s) }}</div>
-          <div style="flex:1; min-width:0;">
-            <span class="d-name">{{ s.name }}</span>
-            <span class="d-spec">{{ s.specialty | findObjByKey : 'code' : specialtyOptions : 'label' }}</span>
-            <div class="surgeon-bar-wrap">
-              <div class="surgeon-bar" [style.width]="s.casePercentage + '%'" [style.background]="'#2251CC'"></div>
+    <!-- Age Distribution -->
+    <div class="section-card">
+        <div class="section-header">
+            <div>
+                <div class="section-title">Patient Demographics</div>
+                <div class="section-sub">Age at time of surgery</div>
             </div>
-          </div>
-          <div class="d-cases">
-            <span class="d-cases-val">{{ s.cases }}</span>
-            <span class="d-cases-lbl">cases</span>
-            <span class="surgeon-rate">{{ s.casePercentage }}%</span>
-          </div>
+            <div class="section-filter">
+                <div class="section-filter">
+                    <button
+                            class="filter-btn"
+                            [class.active]="demoFilter === 'month'"
+                            (click)="setFilterPatientDemographics('month')">
+                        Month
+                    </button>
+
+                    <button
+                            class="filter-btn"
+                            [class.active]="demoFilter === 'year'"
+                            (click)="setFilterPatientDemographics('year')">
+                        Year
+                    </button>
+                    <button
+                            class="filter-btn"
+                            [class.active]="demoFilter === 'all'"
+                            (click)="setFilterPatientDemographics('all')">
+                        All
+                    </button>
+                </div>
+            </div>
         </div>
-      } @empty {
-        <div class="no-data-text">
-          New Data Found
+        <div class="demo-body">
+            @for (ag of ageGroups; track ag.label) {
+                <div class="age-row">
+                    <span class="age-label">{{ ag.label }}</span>
+                    <div class="age-track">
+                        <div class="age-fill" [style.width]="ag.percentage + '%'" [style.background]="ag.color"></div>
+                    </div>
+                    <span class="age-val">{{ ag.percentage }}%</span>
+                </div>
+            }
+            <!-- Gender -->
+            <div class="gender-row">
+                <span class="gender-label">Gender</span>
+                <div class="gender-bar">
+                    @if (genderMale) {
+                        <div class="gender-male" [style.width]="genderMale + '%'">Male {{ genderMale }}%</div>
+                    }
+                    @if (genderFemale) {
+                        <div class="gender-female" [style.width]="genderFemale + '%'">Female {{ genderFemale }}%</div>
+                    }
+                </div>
+            </div>
+            <!-- Province -->
+            <div class="section-sub" style="margin:16px 0 10px;font-weight:600;color:var(--navy);font-size:13px;">
+                Province
+                Breakdown
+            </div>
+            @for (pv of provinces; track pv.label) {
+                <div class="age-row">
+                    <span class="age-label">{{ pv.label }}</span>
+                    <div class="age-track">
+                        <div class="age-fill" [style.width]="pv.percentage + '%'" [style.background]="pv.color"></div>
+                    </div>
+                    <span class="age-val">{{ pv.percentage }}%</span>
+                </div>
+            }
         </div>
-      }
     </div>
-  </div>
+
+
+    <!-- Top Surgeons -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-title">Top Surgeons</div>
+            <div class="section-filter">
+                <button
+                        class="filter-btn"
+                        [class.active]="topSurgeonFilter === 'month'"
+                        (click)="setFilterTopSurgeons('month')">
+                    Month
+                </button>
+
+                <button
+                        class="filter-btn"
+                        [class.active]="topSurgeonFilter === 'year'"
+                        (click)="setFilterTopSurgeons('year')">
+                    Year
+                </button>
+                <button
+                        class="filter-btn"
+                        [class.active]="topSurgeonFilter === 'all'"
+                        (click)="setFilterTopSurgeons('all')">
+                    All
+                </button>
+            </div>
+        </div>
+        <div class="doctor-list">
+            @for (s of topSurgeons; track s.name) {
+                <div class="doctor-item">
+                    <div class="d-avatar" [style.background]="'#2251CC'">{{ getUserInitials(s) }}</div>
+                    <div style="flex:1; min-width:0;">
+                        <span class="d-name">{{ s.name }}</span>
+                        <span class="d-spec">{{ s.specialty | findObjByKey : 'code' : specialtyOptions : 'label' }}</span>
+                        <div class="surgeon-bar-wrap">
+                            <div class="surgeon-bar" [style.width]="s.casePercentage + '%'"
+                                 [style.background]="'#2251CC'"></div>
+                        </div>
+                    </div>
+                    <div class="d-cases">
+                        <span class="d-cases-val">{{ s.cases }}</span>
+                        <span class="d-cases-lbl">cases</span>
+                        <span class="surgeon-rate">{{ s.casePercentage }}%</span>
+                    </div>
+                </div>
+            } @empty {
+                <div class="no-data-text">
+                    New Data Found
+                </div>
+            }
+        </div>
+    </div>
 </div>
 

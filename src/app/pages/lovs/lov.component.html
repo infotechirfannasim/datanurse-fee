@@ -6,11 +6,11 @@
                     <span class="breadcrumb-item"
                           [class.active]="isLast"
                           (click)="isLast ? null : goToLevel(item.targetLevel)">
-        {{ item.name }}
+                             {{ item.name }}
                         @if (!isLast) {
                             <span class="separator">&gt;</span>
                         }
-      </span>
+                    </span>
                 }
             </div>
         }
@@ -35,7 +35,7 @@
                     </svg>
                     <input (input)="searchQuery.set($any($event.target).value); onSearchChange()"
                            [value]="searchQuery()"
-                           placeholder="Search Reference Data by code or label"/>
+                           placeholder="Search Reference Data by code or name"/>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Status</label>

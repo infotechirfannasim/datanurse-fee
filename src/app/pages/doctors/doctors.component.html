@@ -7,7 +7,7 @@
                 <path d="M21 21l-4.35-4.35" stroke="#7A8BB0" stroke-linecap="round" stroke-width="2"/>
             </svg>
             <input (input)="searchQuery.set($any($event.target).value); onSearchChange()" [value]="searchQuery()"
-                   placeholder="Search doctors by name"/>
+                   placeholder="Search surgeon by name"/>
         </div>
         <button (click)="showAddModal.set(true)" class="btn btn-primary">
             <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
@@ -27,10 +27,10 @@
         <table class="registry-table">
             <thead>
             <tr>
-                <th>Name</th>
+                <th>Surgeon Name</th>
                 <th>Specialities</th>
+                <th>Affiliations</th>
                 <th>Status</th>
-                <th>Joined</th>
                 <th></th>
             </tr>
             </thead>
@@ -68,9 +68,21 @@
                                 <span style="color: #9ca3af;">—</span>
                             }
                         </td>
+                        <td style="font-size:12.5px; color: var(--muted);">
+                            @if (doc.hospitalAffiliations?.length) {
+                                @for (hospital of doc.hospitalAffiliations; track hospital.name; let last = $last) {
+                                    {{ hospital | findObjByKey : 'code' : hospitalOptions : 'name' }}
+
+                                    @if (!last) {
+                                        ,
+                                    }
+                                }
+                            } @else {
+                                <span style="color: #9ca3af;">—</span>
+                            }
+                        </td>
                         <td><span class="badge"
                                   [ngClass]="getStatusClass(doc.status)">{{ doc.status | titlecase }}</span></td>
-                        <td style="font-size:12.5px;color:var(--muted);">{{ doc.createdAt | date: 'MMM d, y' }}</td>
                         <td>
                             <button class="action-btn" (click)="openView(doc)" title="View">
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
@@ -254,95 +266,6 @@
                             </p-multiSelect>
                             <small class="error">{{ getErrorMsg('hospitalAffiliations') }}</small>
                         </div>
-                        <!-- Hospitals -->
-                        <!--<div class="form-group">
-                            <label class="form-label">Affiliated Hospitals</label>
-                            <div class="hospital-list-modal" formArrayName="hospitals">
-                                @for (hospital of hospitals.controls; track $index; let i = $index) {
-                                    <div class="hospital-row" [formGroupName]="i">
-                                        <div>
-                                            <label class="form-label">Country *</label>
-                                            <p-select
-                                                    [filter]="true"
-                                                    formControlName="country"
-                                                    optionLabel="name"
-                                                    optionValue="code"
-                                                    [options]="countryOptions"
-                                                    placeholder="Select country"
-                                                    appendTo="body"
-                                                    class="form-input"
-                                            />
-                                            <small class="error">{{ getErrorMsg('', i, 'country') }}</small>
-                                        </div>
-                                        <div>
-                                            <label class="form-label">Province / Region *</label>
-                                            <p-select
-                                                    [filter]="true"
-                                                    formControlName="province"
-                                                    optionLabel="name"
-                                                    optionValue="code"
-                                                    [options]="rowProvinceOptions.get(i) || []"
-                                                    placeholder="Select province"
-                                                    appendTo="body"
-                                                    class="form-input"
-                                            />
-                                            <small class="error">{{ getErrorMsg('', i, 'province') }}</small>
-                                        </div>
-                                        <div>
-                                            <label class="form-label">District / County *</label>
-                                            <p-select
-                                                    [filter]="true"
-                                                    formControlName="district"
-                                                    optionLabel="name"
-                                                    optionValue="code"
-                                                    [options]="rowDistrictOptions.get(i) || []"
-                                                    placeholder="Select district"
-                                                    appendTo="body"
-                                                    class="form-input"
-                                            />
-                                            <small class="error">{{ getErrorMsg('', i, 'district') }}</small>
-                                        </div>
-                                        <div>
-                                            <label class="form-label">City *</label>
-                                            <p-select
-                                                    [filter]="true"
-                                                    formControlName="city"
-                                                    optionLabel="name"
-                                                    optionValue="code"
-                                                    [options]="rowCityOptions.get(i) || []"
-                                                    placeholder="Select city"
-                                                    appendTo="body"
-                                                    class="form-input"
-                                            />
-                                            <small class="error">{{ getErrorMsg('', i, 'city') }}</small>
-                                        </div>
-                                        <div class="hospital-name">
-                                            <label class="form-label">Hospital name *</label>
-                                            <p-select
-                                                    [filter]="true"
-                                                    formControlName="name"
-                                                    optionLabel="name"
-                                                    optionValue="code"
-                                                    [options]="getAvailableHospitals(i)"
-                                                    placeholder="Select hospital"
-                                                    appendTo="body"
-                                                    class="form-input"
-                                            />
-                                            <small class="error">{{ getErrorMsg('', i, 'name') }}</small>
-                                        </div>
-
-                                        <button type="button" class="btn-remove-row"
-                                                (click)="removeHospitalRow(i)"
-                                                *ngIf="hospitals.length > 1">✕
-                                        </button>
-
-                                    </div>
-                                }
-                            </div>
-                            <button type="button" class="btn-add-row" (click)="addHospitalRow()">
-                                + Add another hospital
-                            </button>
-                        </div>-->
                     </form>
                 </div>
 
@@ -426,7 +349,7 @@
                         <div style="margin-top:8px;font-size:13px;color:var(--text);">
                             @if (selectedDoctor()?.hospitalAffiliations?.length) {
                                 @for (hospital of selectedDoctor()?.hospitalAffiliations; track hospital.name; let last = $last) {
-                                    {{ hospital.name | findObjByKey : 'code' : hospitalOptions : 'name' }} ({{ hospital.city | findObjByKey : 'code' : cityOptions : 'name' }})
+                                    {{ hospital | findObjByKey : 'code' : hospitalOptions : 'name' }}
 
                                     @if (!last) {
                                         ,
