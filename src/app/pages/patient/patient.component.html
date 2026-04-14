@@ -108,7 +108,7 @@
                         }
                         <div>
                             <div class="modal-title">{{ selectedPatient()?.firstName }} {{ selectedPatient()?.lastName }}</div>
-                            <div class="modal-sub">{{ selectedPatient()!.email }} &nbsp;·&nbsp;
+                            <div class="modal-sub">{{ selectedPatient()!.citizenNumber }} &nbsp;·&nbsp;
                                 MRN: {{ selectedPatient()?.mrn }}
                             </div>
                         </div>
@@ -177,7 +177,7 @@
                                 </div>
                                 <div class="cd-cell">
                                     <div class="cd-key">Phone</div>
-                                    <div class="cd-val">{{ selectedPatient()?.phone || '—' }}</div>
+                                    <div class="cd-val">{{ selectedPatient()?.cases[0]?.otherDetails?.phoneNumber || '—' }}</div>
                                 </div>
                                 <div class="cd-cell">
                                     <div class="cd-key">Date of Birth</div>
