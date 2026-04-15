@@ -290,4 +290,5 @@ export class PatientComponent implements OnInit {
     }
 
     protected readonly Boolean = Boolean;
+    protected readonly Object = Object;
 }

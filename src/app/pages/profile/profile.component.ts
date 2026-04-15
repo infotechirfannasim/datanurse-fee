@@ -174,7 +174,7 @@ export class ProfileComponent implements OnInit {
             formData.append('profileImage', this.selectedFile);
         }
 
-        this.requestService.patchReqWithFormData(UPDATE_PROFILE_API_URL, formData).subscribe({
+        this.requestService.putReqWithFormData(UPDATE_PROFILE_API_URL, formData).subscribe({
             next: (response: HttpResponse<any>) => {
                 this.personalForm.markAsPristine();
                 this.personalForm.markAsUntouched();

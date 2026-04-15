@@ -299,4 +299,5 @@ export class CasesComponent implements OnInit {
     protected readonly getUserInitials = getUserInitials;
     protected readonly PATIENT_STATUS = PATIENT_STATUS;
     protected readonly Boolean = Boolean;
+    protected readonly Object = Object;
 }

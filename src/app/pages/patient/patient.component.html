@@ -1128,41 +1128,56 @@
                         <!-- ═══════════════════════════════════════════════════════════════ -->
                                 <!-- 11. Complications (step14)                                     -->
                                 <!-- ═══════════════════════════════════════════════════════════════ -->
-                        @if (selectedCase().step14Complications) {
-                            <div class="cd-section">
-                                <div class="cd-section-label">Complications</div>
-                                @if (selectedCase().step14Complications.noComplications) {
-                                    <div class="cd-empty-note">No complications reported</div>
-                                }
-                                @if (selectedCase().step14Complications.selectedComplications?.length) {
-                                    <div class="cd-tags">
-                                        @for (c of selectedCase().step14Complications.selectedComplications; track c.complication) {
-                                            <span class="cd-tag cd-tag--complication">{{ c.name }}</span>
-                                        }
-                                    </div>
-                                    @if (selectedCase().step14Complications.complicationDetails) {
-                                        <div class="cd-grid cd-grid--mt">
-                                            @for (c of selectedCase().step14Complications.selectedComplications; track c.complication) {
-                                                @if (selectedCase().step14Complications.complicationDetails[c.complication]?.date
-                                                || selectedCase().step14Complications.complicationDetails[c.complication]?.notes) {
-                                                    <div class="cd-cell cd-cell--full">
-                                                        <div class="cd-key">{{ c.name }}</div>
-                                                        <div class="cd-val">
-                                                            @if (selectedCase().step14Complications.complicationDetails[c.complication]?.date) {
-                                                                {{ selectedCase().step14Complications.complicationDetails[c.complication].date | date:'MMM d, y' }}
-                                                            }
-                                                            @if (selectedCase().step14Complications.complicationDetails[c.complication]?.notes) {
-                                                                &mdash; {{ selectedCase().step14Complications.complicationDetails[c.complication].notes }}
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                }
-                                            }
-                                        </div>
+                        <div class="cd-section">
+                            <div class="cd-section-label">Complications</div>
+
+                            @if (!selectedCase().step14Complications
+                            || (
+                                !selectedCase().step14Complications.noComplications &&
+                                !selectedCase().step14Complications.complicationDetails
+                            )
+                            || selectedCase().step14Complications.noComplications === true
+                            || (selectedCase().step14Complications.complicationDetails
+                                && Object.keys(selectedCase().step14Complications.complicationDetails).length === 0)
+                                    ) {
+                                <div class="cd-empty-note">No complications reported</div>
+                            } @else {
+
+                                <!-- Tags -->
+                                <div class="cd-tags">
+                                    @for (key of Object.keys(selectedCase().step14Complications.complicationDetails); track key) {
+                                        <span class="cd-tag cd-tag--complication">
+                    {{ key | titlecase }}
+                </span>
                                     }
-                                }
-                            </div>
-                        }
+                                </div>
+
+                                <!-- Details -->
+                                <div class="cd-grid cd-grid--mt">
+                                    @for (key of Object.keys(selectedCase().step14Complications.complicationDetails); track key) {
+                                        @if (
+                                            selectedCase().step14Complications.complicationDetails[key]?.date ||
+                                            selectedCase().step14Complications.complicationDetails[key]?.notes
+                                                ) {
+                                            <div class="cd-cell cd-cell--full">
+                                                <div class="cd-key">
+                                                    {{ key | titlecase }}
+                                                </div>
+                                                <div class="cd-val">
+                                                    @if (selectedCase().step14Complications.complicationDetails[key]?.date) {
+                                                        {{ selectedCase().step14Complications.complicationDetails[key].date | date:'MMM d, y' }}
+                                                    }
+                                                    @if (selectedCase().step14Complications.complicationDetails[key]?.notes) {
+                                                        &mdash; {{ selectedCase().step14Complications.complicationDetails[key].notes }}
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+
+                            }
+                        </div>
 
                         <!-- ═══════════════════════════════════════════════════════════════ -->
                                 <!-- 12. Discharge Information (step15)                             -->
