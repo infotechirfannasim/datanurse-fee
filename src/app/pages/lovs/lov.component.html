@@ -2,16 +2,31 @@
     <div class="filter-bar">
         @if (breadcrumbItems().length > 0) {
             <div class="breadcrumb">
+
                 @for (item of breadcrumbItems(); track $index; let isLast = $last) {
-                    <span class="breadcrumb-item"
-                          [class.active]="isLast"
-                          (click)="isLast ? null : goToLevel(item.targetLevel)">
-                             {{ item.name }}
+
+                    <span class="breadcrumb-item">
+
+                        <span class="breadcrumb-link"
+                              [class.active]="isLast"
+                              (click)="!isLast && goToLevel(item.index)">
+                            {{ item.levelLabel }}
+                        </span>
+
+                        @if (item.value) {
+                            <span class="breadcrumb-value">
+                                {{ item.value }}
+                            </span>
+                        }
+
                         @if (!isLast) {
                             <span class="separator">&gt;</span>
                         }
+
                     </span>
+
                 }
+
             </div>
         }
         <div class="filters-lovs">
@@ -23,6 +38,7 @@
                     filterPlaceholder="Search..."
                     placeholder="Select Type"
                     appendTo="body"
+                    [ngModel]="null"
                     class="filter-search"
                     (onChange)="onTopLevelTypeChange($event.value)"
             >
@@ -35,7 +51,8 @@
                     </svg>
                     <input (input)="searchQuery.set($any($event.target).value); onSearchChange()"
                            [value]="searchQuery()"
-                           placeholder="Search Reference Data by code or name"/>
+                           maxlength="50"
+                           placeholder="Search reference data by code or name"/>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Status</label>
@@ -107,7 +124,7 @@
                                 <span class="lov-name">{{ lov.name }}</span>
                             </td>
                             <td>
-                                <span class="lov-desc">{{ lov.description || '—' }}</span>
+                                <span class="lov-desc truncate">{{ lov.description || '—' }}</span>
                             </td>
                             <td>
                                 <span class="badge"
@@ -169,7 +186,7 @@
         </div>
         <div class="table-footer">
             <span class="table-footer-info">
-                Showing {{ lovOptions()[selectedLovType()]?.length }} of {{ pagination()?.total || 0 }} Data references
+                Showing {{ lovOptions()[currentLovType()]?.length }} of {{ pagination()?.total || 0 }} Data References
             </span>
 
             @if (pagination() && pagination().totalPages > 1) {
@@ -214,13 +231,13 @@
                         <div class="form-section">
                             <div class="form-grid-2">
                                 <div class="form-group">
-                                    <label class="form-label">Code *</label>
+                                    <label class="form-label">Code <small class="required">*</small></label>
                                     <input class="form-input" formControlName="code" placeholder="Code">
                                     <small class="error">{{ getErrorMsg('code') }}</small>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-label">Name *</label>
+                                    <label class="form-label">Name <small class="required">*</small></label>
                                     <input class="form-input" type="text" formControlName="name"
                                            placeholder="Name">
                                     <small class="error">{{ getErrorMsg('name') }}</small>
@@ -228,7 +245,8 @@
                                 @for (column of selectedLovRelations; track column; let i = $index) {
                                     @if (column.multiple) {
                                         <div class="form-group">
-                                            <label class="form-label">{{ column.name }} *</label>
+                                            <label class="form-label">{{ column.name }} <small
+                                                    class="required">*</small></label>
                                             <p-multiSelect
                                                     [options]="lovOptions()[column.parentLovKey]"
                                                     [formControlName]="column.formKey"
@@ -236,6 +254,7 @@
                                                     optionValue="code"
                                                     placeholder="Select Specializations"
                                                     display="chip"
+                                                    [ngModel]="null"
                                                     appendTo="body"
                                                     [showToggleAll]="true"
                                                     class="w-full">
@@ -244,14 +263,16 @@
                                         </div>
                                     } @else {
                                         <div class="form-group">
-                                            <label class="form-label">{{ column.name }} *</label>
+                                            <label class="form-label">{{ column.name }} <small
+                                                    class="required">*</small></label>
                                             <p-select
                                                     [filter]="true"
                                                     [formControlName]="column.formKey"
-                                                    optionLabel="name"
                                                     optionValue="code"
+                                                    optionLabel="name"
                                                     [options]="lovOptions()[column.parentLovKey]"
                                                     [placeholder]="column.name"
+                                                    [ngModel]="null"
                                                     appendTo="body"
                                                     class="form-input"
                                             />

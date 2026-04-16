@@ -116,12 +116,12 @@ export class CasesComponent implements OnInit {
     }
 
     onSearchChange() {
-        this.searchSubject.next(this.searchQuery().toLowerCase());
+        this.searchSubject.next(this.searchQuery());
     }
 
     loadCases() {
         const filters: FilterParams = {
-            search: this.searchQuery().toLowerCase() || '',
+            search: this.searchQuery() || '',
             page: this.pageQuery(),
             limit: 10
         };

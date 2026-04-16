@@ -158,24 +158,22 @@
   color: #64748b;
 }
 
-.breadcrumb-item {
+.breadcrumb-link {
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: all 0.2s;
-
-  &.active {
-    font-weight: 600;
-    color: #0b1e45;
-    cursor: default;
-  }
-
-  &:hover:not(.active) {
-    background: #f1f5f9;
-  }
+  color: var(--navy);
 }
 
-.separator {
-  color: #94a3b8;
-  margin: 0 4px;
+.breadcrumb-link:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-link.active {
+  color: #111827;
+  font-weight: 600;
+  cursor: default;
+}
+
+.breadcrumb-value {
+  margin-left: 6px;
+  color: #6b7280;
 }

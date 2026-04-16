@@ -44,8 +44,16 @@ export class ProfileComponent implements OnInit {
     confirmPassword: boolean = false
 
     errorMessages = {
-        firstName: {required: 'First name is required', pattern: 'Only alphabets allowed'},
-        lastName: {required: 'Last name is required', pattern: 'Only alphabets allowed'},
+        firstName: {
+            required: 'First name is required',
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
+            maxLength: 'Max 50 characters'
+        },
+        lastName: {
+            required: 'Last name is required',
+            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
+            maxLength: 'Max 50 characters'
+        },
         currentPassword: {required: 'Current password is required'},
         newPassword: {
             required: 'Password is required',
@@ -66,13 +74,13 @@ export class ProfileComponent implements OnInit {
         this.personalForm = this.fb.group({
             firstName: ['', [
                 Validators.required,
-                Validators.minLength(5),
+                Validators.minLength(1),
                 Validators.maxLength(50),
                 Validators.pattern(RegexConstants.ALPHABET_REGEX)
             ]],
             lastName: ['',
                 [Validators.required,
-                    Validators.minLength(5),
+                    Validators.minLength(1),
                     Validators.maxLength(50),
                     Validators.pattern(RegexConstants.ALPHABET_REGEX)]],
             email: [{value: '', disabled: true}],

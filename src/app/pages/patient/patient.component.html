@@ -8,6 +8,7 @@
             </svg>
             <input (input)="searchQuery.set($any($event.target).value); onSearchChange()"
                    [value]="searchQuery()"
+                   maxlength="50"
                    placeholder="Search patient by name and PT. No."/>
         </div>
     </div>

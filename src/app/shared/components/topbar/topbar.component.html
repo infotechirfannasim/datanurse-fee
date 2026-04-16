@@ -46,7 +46,7 @@
                     <div class="notif-header">
                         <span class="notif-title">{{ userInfo()?.role?.label }}</span>
                     </div>
-                    <a class="notif-item unread" routerLink="/profile">
+                    <a class="notif-item unread" (click)="navigate()">
                         <div class="notif-ico">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#2251CC" stroke-width="2"/>

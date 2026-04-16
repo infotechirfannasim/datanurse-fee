@@ -14,7 +14,7 @@
       <div class="section-body">
         
         <div class="avatar-upload-wrap">
-          <div class="avatar-upload">
+          <div class="avatar-upload" (click)="fileInput.click()">
             @if (imagePreview || getProfileImageUrl()) {
               <img [src]="imagePreview || getProfileImageUrl()" class="preview-image" alt="Preview">
             } @else {
@@ -40,12 +40,12 @@
         <form [formGroup]="personalForm">
           <div class="form-grid-2">
             <div class="form-group">
-              <label class="form-label">First Name</label>
+              <label class="form-label">First Name <small class="required"><small class="required">*</small></small></label>
               <input class="form-input" formControlName="firstName" placeholder="First Name">
                 <small class="error">{{ getErrorMsg('firstName') }}</small>
             </div>
             <div class="form-group">
-              <label class="form-label">Last Name</label>
+              <label class="form-label">Last Name <small class="required">*</small></label>
               <input class="form-input" formControlName="lastName" placeholder="Last Name">
                 <small class="error">{{ getErrorMsg('lastName') }}</small>
             </div>

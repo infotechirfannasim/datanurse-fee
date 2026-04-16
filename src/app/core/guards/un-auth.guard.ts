@@ -8,6 +8,7 @@ export const UnAuthGuard = () => {
   const router = inject(Router);
 
   if (authService.isAuthenticated()) {
+    router.navigate(['/dashboard']);
     return false;
   }
   return true;

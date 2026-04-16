@@ -1358,6 +1358,10 @@ small.error {
   margin-top: 2px;
 }
 
+small.required {
+  color: $danger;
+}
+
 // ── View Doctor Modal ──
 .doc-av {
   width: 44px;
@@ -2210,6 +2214,20 @@ input.has-icon {
 
 button {
   &:disabled {
-    cursor: default !important;
+    cursor: not-allowed !important;
+    background-color: var(--border) !important;
+    opacity: 0.6;
   }
+}
+
+.p-multiselect-panel {
+  pointer-events: auto;
+}
+
+.truncate {
+  display: block;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

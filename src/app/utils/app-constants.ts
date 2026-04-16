@@ -4,7 +4,8 @@ export const lovLabel = 'label';
 export const ROLES = {
   SUPER_ADMIN: 'superadmin',
   DOCTOR: 'doctor',
-  PATIENT: 'patient',
+  ASSISTANT_DOCTOR: 'assignmentdoctor',
+  KPO: 'kpo',
 };
 
 export const PATIENT_STATUS = {

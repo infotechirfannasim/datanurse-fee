@@ -200,7 +200,6 @@ export class RolesComponent implements OnInit {
                 this.loadRoles();
             },
             error: (err) => {
-                console.error(err);
                 this.toastService.show(err.error?.message || 'Failed to remove role', 'error');
             }
         });
@@ -268,11 +267,18 @@ export class RolesComponent implements OnInit {
             this.toastService.show('Please fill all required fields correctly', 'error');
             return;
         }
+
+        const permissions = Array.from(this.selectedPermissions || []);
+        if (!permissions.length) {
+            this.toastService.show('At least one permission must be selected', 'error');
+            return;
+        }
+
         const {description} = this.form.value;
         const payload = {
             ...this.form.value,
             description: description ? description : '',
-            permissions: Array.from(this.selectedPermissions)
+            permissions: permissions
         };
 
         const request$ = this.isEditMode

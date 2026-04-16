@@ -5,8 +5,8 @@
                 <circle cx="11" cy="11" r="8" stroke="#7A8BB0" stroke-width="2"/>
                 <path d="M21 21l-4.35-4.35" stroke="#7A8BB0" stroke-linecap="round" stroke-width="2"/>
             </svg>
-            <input (input)="searchQuery.set($any($event.target).value); onSearchChange()" [value]="searchQuery()"
-                   placeholder="Search Cases"/>
+            <input (input)="searchQuery.set($any($event.target).value); onSearchChange()" maxlength="50" [value]="searchQuery()"
+                   placeholder="Search cases"/>
         </div>
     </div>
 </div>
@@ -1203,14 +1203,14 @@
                     <form [formGroup]="followupForm" class="followup-form">
 
                         <div class="form-group">
-                            <label class="form-label">Follow-up Date <span class="required">*</span></label>
+                            <label class="form-label">Follow-up Date <span class="required"><small class="required">*</small></span></label>
                             <input type="date" class="form-input" formControlName="followupDate">
                             <small class="error">{{ getErrorMsg('followupDate') }}</small>
                         </div>
 
                         <!-- Patient Status -->
                         <div class="form-group">
-                            <label class="form-label">Patient Status <span class="required">*</span></label>
+                            <label class="form-label">Patient Status <span class="required"><small class="required">*</small></span></label>
                             <div class="radio-group">
                                 <label class="radio">
                                     <input type="radio" formControlName="patientStatus" [value]="PATIENT_STATUS.ALIVE">
@@ -1233,7 +1233,7 @@
                         <!-- Cause of Death -->
                         @if (followupForm.get('patientStatus')?.value === PATIENT_STATUS.DECEASED) {
                             <div class="form-group">
-                                <label class="form-label">Cause of Death <span class="required">*</span></label>
+                                <label class="form-label">Cause of Death <span class="required"><small class="required">*</small></span></label>
                                 <input type="text" class="form-input" formControlName="causeOfDeath"
                                        placeholder="Enter cause of death">
                                 <small class="error">{{ getErrorMsg('causeOfDeath') }}</small>
@@ -1253,7 +1253,7 @@
 
                         @if (followupForm.get('readmissionRequested')?.value && followupForm.get('patientStatus')?.value === 'Alive') {
                             <div class="form-group">
-                                <label class="form-label">Readmission Reason <span class="required">*</span></label>
+                                <label class="form-label">Readmission Reason <span class="required"><small class="required">*</small></span></label>
                                 <textarea class="form-input" formControlName="readmissionReason" rows="3"></textarea>
                                 <small class="error">{{ getErrorMsg('readmissionReason') }}</small>
                             </div>

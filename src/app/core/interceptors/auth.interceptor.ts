@@ -11,14 +11,12 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
 
     const token = authService.getToken();
 
-    let authReq = req;
-    if (token) {
-        authReq = req.clone({
-            setHeaders: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-    }
+    let authReq = req.clone({
+        setHeaders: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            'x-client-type': 'web'
+        }
+    });
 
     return next(authReq).pipe(
         catchError((error: HttpErrorResponse) => {

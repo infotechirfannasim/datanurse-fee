@@ -11,7 +11,7 @@ import {
 } from "../../utils/api.url.constants";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {FilterParams, Role, User} from "../../core/models/user.model";
-import {ROLES} from "../../utils/app-constants";
+import {AppConstants, ROLES} from "../../utils/app-constants";
 import {MultiSelectModule} from "primeng/multiselect";
 import {SelectModule} from "primeng/select";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
@@ -217,6 +217,7 @@ export class UsersComponent implements OnInit {
 
     onEditProfile(user: User): void {
         if (!user) return;
+        if(user.role.name != ROLES.SUPER_ADMIN) return;
         this.selectedUser.set(user);
         this.form.patchValue(this.mapDoctorToForm(user));
         this.isEditMode = true;
@@ -419,4 +420,6 @@ export class UsersComponent implements OnInit {
     }
 
     protected readonly getUserInitials = getUserInitials;
+    protected readonly AppConstants = AppConstants;
+    protected readonly ROLES = ROLES;
 }

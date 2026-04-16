@@ -119,13 +119,13 @@ export class AuthService {
     }
 
     logout(): void {
-        /*localStorage.removeItem(AppConstants.AUTH_ACCESS_TOKEN);
-        localStorage.removeItem(AppConstants.AUTH_ACCESS_TOKEN);
-        localStorage.removeItem(AppConstants.USER_INFO);*/
+        this.clearAuth();
+        this.router.navigate(['/auth/login']);
+    }
+
+    clearAuth(): void {
         localStorage.clear();
         this.currentUserSubject.next(null);
-        this.router.navigate(['/auth/login']);
-        // this.toastr.info('You have been logged out');
     }
 
     refreshToken(): Observable<{ token: string }> {
@@ -150,7 +150,29 @@ export class AuthService {
 
     isAuthenticated(): boolean {
         const token = this.getToken();
-        return token ? !this.jwtHelper.isTokenExpired(token) : false;
+        const userStr = localStorage.getItem(window.btoa(AppConstants.USER_INFO));
+
+        if (!token || !userStr) {
+            this.clearAuth();
+            return false;
+        }
+
+        if (this.jwtHelper.isTokenExpired(token)) {
+            this.clearAuth();
+            return false;
+        }
+
+        try {
+            const user = JSON.parse(userStr);
+            if (!user || !user.id) {
+                this.clearAuth();
+                return false;
+            }
+            return true;
+        } catch (e) {
+            this.clearAuth();
+            return false;
+        }
     }
 
     hasPermission(permission: string): boolean {
@@ -212,7 +234,7 @@ export class AuthService {
                 const user = JSON.parse(userStr);
                 this.currentUserSubject.next(user);
             } catch (e) {
-                this.logout();
+                this.clearAuth();
             }
         }
     }

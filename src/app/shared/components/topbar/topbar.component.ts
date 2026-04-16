@@ -42,6 +42,12 @@ export class TopbarComponent {
   logout(): void {
     this.authService.logout();
     this.menuOpen = false;
+    this.toggleNotif();
+  }
+
+  navigate(){
+    this.router.navigate(['/profile'])
+    this.toggleNotif();
   }
 
   @HostListener('document:click', ['$event'])

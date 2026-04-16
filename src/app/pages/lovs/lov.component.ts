@@ -24,14 +24,10 @@ interface NavigationState {
     parentContext: { type: string; code: string; name: string } | null;
 }
 
-export interface FilterParams {
-    search?: string;
-    page?: number;
-    limit?: number;
-    parentType?: string;
-    parentCode?: string;
-
-    [key: string]: any;
+interface BreadcrumbItem {
+    levelLabel: string;
+    value?: string | null;
+    index: number;
 }
 
 @Component({
@@ -71,20 +67,32 @@ export class LovComponent implements OnInit, OnDestroy {
         const type = this.currentLovType();
         return type ? (this.lovOptions()[type] || []) : [];
     });
-    breadcrumbItems = computed(() => {
+    breadcrumbItems = computed<BreadcrumbItem[]>(() => {
         const stack = this.navigationStack();
-        const items: { name: string; targetLevel: number }[] = [];
-        if (stack.length === 0) return items;
+        const items: BreadcrumbItem[] = [];
 
-        const rootLabel = this.lovTypes().find((t: any) => t.key === stack[0].type)?.name || stack[0].type;
-        items.push({name: rootLabel, targetLevel: 1});
+        if (!stack.length) return items;
+
+        const getLabel = (type: string) =>
+            this.lovTypes().find((t: any) => t.key === type)?.name || type;
+        items.push({
+            levelLabel: getLabel(stack[0].type),
+            value: null,
+            index: 1
+        });
 
         for (let i = 1; i < stack.length; i++) {
-            const ctx = stack[i].parentContext;
-            if (ctx) items.push({name: ctx.name, targetLevel: i + 1});
+            const current = stack[i];
 
-            const typeLabel = this.lovTypes().find((t: any) => t.key === stack[i].type)?.name || stack[i].type;
-            items.push({name: typeLabel, targetLevel: i + 1});
+            const levelLabel = getLabel(current.type);
+
+            const value = current.parentContext?.name || null;
+
+            items.push({
+                levelLabel,
+                value,
+                index: i + 1
+            });
         }
         return items;
     });
@@ -269,9 +277,12 @@ export class LovComponent implements OnInit, OnDestroy {
         this.getLovValueOptions();
     }
 
-    goToLevel(targetLevel: number): void {
-        if (targetLevel < 1 || targetLevel > this.navigationStack().length) return;
-        this.navigationStack.update(stack => stack.slice(0, targetLevel));
+    goToLevel(index: number): void {
+        const stack = this.navigationStack();
+
+        if (index < 1 || index > stack.length) return;
+
+        this.navigationStack.update(() => stack.slice(0, index));
         this.updateLovName();
         this.setTableColumns();
         this.getLovValueOptions();
@@ -410,7 +421,7 @@ export class LovComponent implements OnInit, OnDestroy {
     }
 
     updateLovName(): void {
-        this.lovName = this.breadcrumbItems().at(-1)?.name as string || '';
+        this.lovName = this.breadcrumbItems().at(-1)?.levelLabel as string || '';
     }
 
     setTableColumns(): void {
@@ -418,10 +429,18 @@ export class LovComponent implements OnInit, OnDestroy {
         this.selectedLovRelations = selectedType?.childMeta || [];
     }
 
-    getParentLOVs(): void {
+    getParentLOVs(forceRefresh = false): void {
         if (!this.selectedLovRelations.length) return;
 
         const types = this.selectedLovRelations.map((meta: any) => meta.parentLovKey);
+
+        const missingTypes = forceRefresh
+            ? types
+            : types.filter(type => !this.lovOptions()[type]?.length);
+
+        if (missingTypes.length === 0) {
+            return;
+        }
 
         this.requestService.postRequest(GET_LOV_BULK_API_URL, {types}).subscribe({
             next: (res: HttpResponse<any>) => {

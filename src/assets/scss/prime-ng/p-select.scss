@@ -27,7 +27,7 @@ p-select {
     font-weight: 500;
     position: relative;
     width: calc(100% - 10px);
-    color: var(--navy);
+    color: var(--muted);
 
     &::before {
       content: "&nbsp;";
@@ -65,8 +65,7 @@ p-select {
     }
 
     &.p-placeholder {
-      visibility: hidden;
-      opacity: 0;
+      color: var(--muted);
     }
 
     .item-container {

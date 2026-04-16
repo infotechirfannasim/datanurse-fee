@@ -4,8 +4,11 @@
       <circle cx="11" cy="11" r="8" stroke="#7A8BB0" stroke-width="2"/>
       <path d="M21 21l-4.35-4.35" stroke="#7A8BB0" stroke-linecap="round" stroke-width="2"/>
     </svg>
-    <input (input)="searchQuery.set($any($event.target).value); onSearchChange()" [value]="searchQuery()"
-           placeholder="Search users by name" maxlength="50">
+      <input
+              (input)="searchQuery.set($any($event.target).value); onSearchChange()"
+              [value]="searchQuery()"
+              placeholder="Search users by name"
+              maxlength="50">
   </div>
   <button (click)="onAddUer()" class="btn btn-primary">
     <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
@@ -49,31 +52,31 @@
                 </div>
               </div>
             </td>
-            <td>
-                            <span>
-                                {{ user.phone }}
-                            </span>
-            </td>
-            <td>
-                            <span class="badge" [ngClass]="getStatusClass(user.status)">
-                                {{ user.status | titlecase }}
-                            </span>
-            </td>
-            <td>
-                            <span>
-                                {{ user?.role?.label }}
-                            </span>
-            </td>
-            <td>
-              <button class="action-btn" (click)="openView(user)" title="View">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="var(--muted)"
-                        stroke-width="2"/>
-                  <circle cx="12" cy="12" r="3" stroke="var(--muted)" stroke-width="2"/>
-                </svg>
-              </button>
-              <button class="action-btn" (click)="onEditProfile(user)" title="Edit">
-                <svg width="13" height="13" xmlns="http://www.w3.org/2000/svg" fill="none"
+              <td>
+                  <span>
+                      {{ user.phone }}
+                  </span>
+              </td>
+              <td>
+                  <span class="badge" [ngClass]="getStatusClass(user.status)">
+                      {{ user.status | titlecase }}
+                  </span>
+              </td>
+              <td>
+                  <span>
+                      {{ user?.role?.label }}
+                  </span>
+              </td>
+              <td>
+                  <button class="action-btn" (click)="openView(user)" title="View">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="var(--muted)"
+                                stroke-width="2"/>
+                          <circle cx="12" cy="12" r="3" stroke="var(--muted)" stroke-width="2"/>
+                      </svg>
+                  </button>
+                  <button class="action-btn" [disabled]="user.role.name != ROLES.SUPER_ADMIN" (click)="onEditProfile(user)" title="Edit">
+                      <svg width="13" height="13" xmlns="http://www.w3.org/2000/svg" fill="none"
                      viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                   <path stroke="var(--blue-lt)" stroke-linecap="round" stroke-linejoin="round"
                         d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
@@ -182,26 +185,26 @@
           <form [formGroup]="form">
             <div class="form-grid-2">
               <div class="form-group">
-                <label class="form-label">First Name *</label>
+                <label class="form-label">First Name <small class="required">*</small></label>
                 <input class="form-input" formControlName="firstName" placeholder="First name">
                   <small class="error">{{ getErrorMsg('firstName') }}</small>
               </div>
               
               <div class="form-group">
-                <label class="form-label">Last Name *</label>
+                <label class="form-label">Last Name <small class="required">*</small></label>
                 <input class="form-input" formControlName="lastName" placeholder="Last name">
                   <small class="error">{{ getErrorMsg('lastName') }}</small>
               </div>
               
               <div class="form-group">
-                <label class="form-label">Email Address *</label>
+                <label class="form-label">Email Address <small class="required">*</small></label>
                 <input class="form-input" type="email" formControlName="email"
                        placeholder="user@example.com">
                   <small class="error">{{ getErrorMsg('email') }}</small>
               </div>
               
               <div class="form-group">
-                <label class="form-label">Role *</label>
+                <label class="form-label">Role <small class="required">*</small></label>
                 <p-select
                   #dropdown
                   [disabled]="false"
@@ -220,7 +223,7 @@
               </div>
               @if (!isEditMode) {
                 <div class="form-group">
-                  <label class="form-label">Password *</label>
+                  <label class="form-label">Password <small class="required">*</small></label>
                   <div class="dark-input-wrap">
                     <input
                             [type]="showPassword ? 'text' : 'password'"
@@ -254,7 +257,7 @@
                     <small class="error">{{ getErrorMsg('password') }}</small>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Confirm Password *</label>
+                  <label class="form-label">Confirm Password <small class="required">*</small></label>
                   <div class="dark-input-wrap">
                     <input
                             [type]="showConfirmPassword ? 'text' : 'password'"

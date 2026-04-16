@@ -50,7 +50,7 @@
                                 <span class="role-label">{{ role.name }}</span>
                             </td>
                             <td>
-                                <span class="role-desc">{{ role.description || '—' }}</span>
+                                <span class="role-desc truncate">{{ role.description || '—' }}</span>
                             </td>
                             <td>
                                 <span class="badge"
@@ -102,7 +102,7 @@
         </div>
         <div class="table-footer">
             <span class="table-footer-info">
-                Showing {{ roles.length }} of {{ pagination()?.total || 0 }} roles
+                Showing {{ roles.length }} of {{ pagination()?.total || 0 }} Roles
             </span>
 
             @if (pagination() && pagination().totalPages > 1) {
@@ -158,14 +158,14 @@
                                 </div>
                                 <div class="form-grid-2 view-details">
                                     <div class="form-group view-field">
-                                        <label class="view-label">Code *</label>
+                                        <label class="view-label">Code <small class="required">*</small></label>
                                         <input class="form-input" formControlName="name"
                                                placeholder="admin_editor">
                                         <small class="error">{{ getErrorMsg('name') }}</small>
                                     </div>
 
                                     <div class="form-group view-field">
-                                        <label class="view-label">Name *</label>
+                                        <label class="view-label">Name <small class="required">*</small></label>
                                         <input class="form-input" type="text" formControlName="label"
                                                placeholder="Admin Editor">
                                         <small class="error">{{ getErrorMsg('label') }}</small>
