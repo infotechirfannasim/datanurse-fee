@@ -180,7 +180,7 @@ export class CasesComponent implements OnInit {
 
     getDischargeClass(status: string | null | undefined): string {
         if (!status) return 'cd-discharge-row--deceased';
-        switch (status){
+        switch (status) {
             case PATIENT_STATUS.ALIVE:
                 return 'cd-discharge-row--alive'
             case PATIENT_STATUS.DECEASED:
@@ -255,7 +255,7 @@ export class CasesComponent implements OnInit {
 
         this.requestService.postRequest(ADD_FOLLOW_UP_API_URL, payload).subscribe({
             next: (resp: HttpResponse<any>) => {
-                if(resp.status == 200) {
+                if (resp.status == 200) {
                     this.toastService.show('Follow-up saved successfully', 'success');
                     this.selectedCase().followups.push(resp.body.data);
                     this.showFollowupModal.set(false);
