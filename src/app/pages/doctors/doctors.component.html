@@ -219,7 +219,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Phone Number</label>
+                                <label class="form-label">Phone Number <small class="required">*</small></label>
                                 <input class="form-input"
                                        formControlName="phone"
                                        mask="000-0000000"
@@ -233,7 +233,6 @@
                                 <label class="form-label">PMDC Registration No. <small class="required">*</small></label>
                                 <input class="form-input"
                                        formControlName="pmdcNumber"
-                                       mask="0*"
                                        placeholder="PMDC Registration No">
                                 <small class="error">{{ getErrorMsg('pmdcNumber') }}</small>
                             </div>

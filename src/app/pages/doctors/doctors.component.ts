@@ -45,22 +45,22 @@ export class DoctorsComponent implements OnInit {
         pmdcNumber: {
             required: 'PMDC number is required',
             minLength: 'Min 1 characters',
-            maxLength: 'Max 10 characters',
-            pattern: 'Only numbers are allowed'
+            maxLength: 'Max 12 characters',
+            pattern: 'Only alphanumeric characters are allowed (no spaces allowed).'
         },
         email: {
             required: 'Email is required',
-            maxlength: 'Max 50 characters',
+            maxlength: 'Max 32 characters',
             email: 'Provide valid email', pattern: 'Provide valid email'
         },
         firstName: {
             required: 'First name is required',
-            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
+            pattern: "Only alphanumeric characters are allowed.",
             maxLength: 'Max 50 characters'
         },
         lastName: {
             required: 'Last name is required',
-            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
+            pattern: "Only alphanumeric characters are allowed.",
             maxLength: 'Max 50 characters'
         },
     };
@@ -117,19 +117,19 @@ export class DoctorsComponent implements OnInit {
                 Validators.required,
                 Validators.minLength(1),
                 Validators.maxLength(50),
-                Validators.pattern(RegexConstants.NAME_SPECIAL_REGEX)
+                Validators.pattern(RegexConstants.ALPHANUMERIC_REGEX)
             ]],
             lastName: ['', [
                 Validators.required,
                 Validators.minLength(1),
                 Validators.maxLength(50),
-                Validators.pattern(RegexConstants.NAME_SPECIAL_REGEX)
+                Validators.pattern(RegexConstants.ALPHANUMERIC_REGEX)
             ]],
             email: ['', [
                 Validators.required,
                 Validators.email,
                 Validators.pattern(RegexConstants.VALID_EMAIL_REGEX),
-                Validators.maxLength(50)
+                Validators.maxLength(32)
             ]],
             phone: ['', [
                 Validators.required,
@@ -139,8 +139,8 @@ export class DoctorsComponent implements OnInit {
             pmdcNumber: ['', [
                 Validators.required,
                 Validators.minLength(1),
-                Validators.maxLength(10),
-                Validators.pattern(RegexConstants.NUMERIC_REGEX)
+                Validators.maxLength(12),
+                Validators.pattern(RegexConstants.ALPHANUMERIC_WITHOUT_SPACES_REGEX)
             ]],
             specialities: [null, [
                 Validators.required,

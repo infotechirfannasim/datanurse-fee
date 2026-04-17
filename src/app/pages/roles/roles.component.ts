@@ -225,25 +225,30 @@ export class RolesComponent implements OnInit {
     }
 
     selectAllModulePermissions(module: any, checked: boolean) {
-        if (module.actions) {
+        // Main module actions
+        if (module.actions?.length) {
             module.actions.forEach((action: any) => {
-                if (checked) {
-                    this.selectedPermissions.add(action.slug);
-                } else {
-                    this.selectedPermissions.delete(action.slug);
+                if (action?.slug) {
+                    if (checked) {
+                        this.selectedPermissions.add(action.slug);
+                    } else {
+                        this.selectedPermissions.delete(action.slug);
+                    }
                 }
             });
         }
 
-
-        if (module.children) {
+        // Children modules actions
+        if (module.children?.length) {
             module.children.forEach((child: any) => {
-                if (child.actions) {
+                if (child.actions?.length) {
                     child.actions.forEach((action: any) => {
-                        if (checked) {
-                            this.selectedPermissions.add(action.slug);
-                        } else {
-                            this.selectedPermissions.delete(action.slug);
+                        if (action?.slug) {
+                            if (checked) {
+                                this.selectedPermissions.add(action.slug);
+                            } else {
+                                this.selectedPermissions.delete(action.slug);
+                            }
                         }
                     });
                 }
@@ -254,11 +259,33 @@ export class RolesComponent implements OnInit {
     }
 
     isModuleFullySelected(module: any): boolean {
-        if (!module?.actions) return false;
+        if (!module) return false;
 
-        return module.actions.every((action: any) =>
-            action?.slug && this.selectedPermissions.has(action.slug)
-        );
+        const allSlugs: string[] = [];
+
+        // Collect all actions from main module
+        if (module.actions?.length) {
+            module.actions.forEach((action: any) => {
+                if (action?.slug) allSlugs.push(action.slug);
+            });
+        }
+
+        // Collect all actions from children
+        if (module.children?.length) {
+            module.children.forEach((child: any) => {
+                if (child.actions?.length) {
+                    child.actions.forEach((action: any) => {
+                        if (action?.slug) allSlugs.push(action.slug);
+                    });
+                }
+            });
+        }
+
+        // If no permissions at all, return false
+        if (allSlugs.length === 0) return false;
+
+        // Return true only if ALL permissions are selected
+        return allSlugs.every(slug => this.selectedPermissions.has(slug));
     }
 
     submitRole(): void {

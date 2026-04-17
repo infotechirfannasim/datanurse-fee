@@ -93,8 +93,11 @@ export class ResetPasswordComponent {
                 ? 'Password set successfully'
                 : 'Password reset successful';
         this.isLoading = false;
-
-        setTimeout(() => this.router.navigate(['/auth/login']), 1000);
+        this.toastService.show(
+            'Password reset successful! You can now login with your new password.',
+            'success'
+        );
+        setTimeout(() => this.router.navigate(['/auth/login']), 500);
       },
       error: (err) => {
         this.error = err.error?.message || 'Something went wrong';

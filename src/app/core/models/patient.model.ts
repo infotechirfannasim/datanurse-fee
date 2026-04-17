@@ -1,8 +1,9 @@
-import {CaseDetailDTO, CasePatientDTO} from "./case.model";
+/*
+import {CaseDetailDto} from "./case.model";
 
 export class PatientDTO extends CasePatientDTO {
     doctor: any | null = null;
-    cases: CaseDetailDTO[] = [];
+    cases: CaseDetailDto[] = [];
     casesCount: number = 0;
 
     override fromData(data: any): void {
@@ -11,7 +12,7 @@ export class PatientDTO extends CasePatientDTO {
 
         if (data?.cases && Array.isArray(data.cases)) {
             this.cases = data.cases.map((caseData: any) => {
-                const caseDTO = new CaseDetailDTO();
+                const caseDTO = new CaseDetailDto();
                 caseDTO.fromData(caseData);
                 return caseDTO;
             });
@@ -35,3 +36,4 @@ export class PatientDTO extends CasePatientDTO {
     }
 }
 
+*/

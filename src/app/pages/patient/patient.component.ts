@@ -1,55 +1,82 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
-import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {Component, computed, inject, OnDestroy, OnInit, signal} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule, NgClass} from '@angular/common';
-import {ToastService} from '../../core/services/toast.service';
-import {RequestService} from '../../core/services/request.service';
-import {DELETE_USER_API_URL, PATIENTS_API_URL} from '../../utils/api.url.constants';
 import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
-import {FilterParams} from '../../core/models/user.model';
+import {debounceTime, distinctUntilChanged, Subject, takeUntil} from 'rxjs';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {SelectModule} from 'primeng/select';
-import {debounceTime, distinctUntilChanged, Subject, takeUntil} from 'rxjs';
+
+import {ToastService} from '../../core/services/toast.service';
+import {RequestService} from '../../core/services/request.service';
+import {DELETE_USER_API_URL, GET_LOV_BULK_API_URL, PATIENTS_API_URL} from '../../utils/api.url.constants';
+import {FilterParams} from '../../core/models/user.model';
 import {getUserInitials} from '../../utils/global.utils';
-import {PatientDTO} from "../../core/models/patient.model";
-import {CaseDetailDTO} from "../../core/models/case.model";
+
+import {RawCase, RawPatientListItem, RawPatientWithCases} from '../../core/models/case-raw-type.model';
+import {LovStore} from '../../core/models/lov.types.model';
+import {CaseDetailDto, PatientDetailDto, PatientListItemDto} from '../../core/models/case.model';
+import {mapToCaseDetailDto, mapToPatientDetailDto, mapToPatientList} from '../../core/mapper/case-detail.mapper';
+import {AppConstants, CASE_STAUSES} from "../../utils/app-constants";
+
+// LOV types needed for patient pages
+const PATIENT_LOV_TYPES = ['gender', 'bloodGroup', 'country', 'province', 'city', 'funding'];
 
 @Component({
-    selector: 'app-cases',
+    selector: 'app-patients',
     standalone: true,
     imports: [FormsModule, ReactiveFormsModule, CommonModule, NgClass, MultiSelectModule, SelectModule],
     templateUrl: './patient.component.html',
-    styleUrl: './patient.component.scss'
+    styleUrl: './patient.component.scss',
 })
-export class PatientComponent implements OnInit {
+export class PatientComponent implements OnInit, OnDestroy {
 
-    private toastService = inject(ToastService);
-    private requestService = inject(RequestService);
+    private readonly toastService = inject(ToastService);
+    private readonly requestService = inject(RequestService);
 
+    // ── UI state ────────────────────────────────────────────────
     searchQuery = signal('');
     pageQuery = signal(1);
     pagination = signal<any>(null);
-    showAddModal = signal(false);
     showViewModal = signal(false);
-    showDeleteModal = signal(false);
     activeTab = signal<'overview' | 'cases' | 'case-detail'>('overview');
-    selectedCase = signal<any | null>(null);
-    selectedIndex: number | null = null
-    selectedPatient = signal<any | null>(null);
-    isEditMode = false;
-    doctorForm!: FormGroup;
-    patients: PatientDTO[] = [];
-    private searchSubject = new Subject<string>();
-    private destroy$ = new Subject<void>();
+    loading = signal(false);
+
+    // ── LOV store ───────────────────────────────────────────────
+    private readonly _lovStore = signal<LovStore>({});
+
+    // ── List: PatientListItemDto[] ──────────────────────────────
+    patients = signal<PatientListItemDto[]>([]);
+
+    // ── Detail: raw → mapped ────────────────────────────────────
+    private readonly _rawDetail = signal<RawPatientWithCases | null>(null);
+
+    // Computed DTO — re-runs when raw data or LOVs change
+    readonly patientDto = signal<PatientDetailDto | null>(null);
+
+    // ── Selected case (raw) inside the detail modal ─────────────
+    // Kept as raw so we can access every field in the template
+    // without needing a second detail API call.
+    private readonly _rawCase = signal<RawCase | null>(null);
+    readonly caseDto = computed<CaseDetailDto | null>(() => {
+        const raw = this._rawCase();
+        if (!raw) return null;
+        return mapToCaseDetailDto(raw, this._lovStore());
+    });
+    selectedIndex: number | null = null;
+
+    private readonly searchSubject = new Subject<string>();
+    private readonly destroy$ = new Subject<void>();
 
     protected readonly getUserInitials = getUserInitials;
 
-    // ────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────
     // Lifecycle
-    // ────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────
 
     ngOnInit(): void {
-        this.loadPatients();
+        this.loadLovs();
         this.setupSearchDebounce();
+        this.loadPatients();
     }
 
     ngOnDestroy(): void {
@@ -57,137 +84,169 @@ export class PatientComponent implements OnInit {
         this.destroy$.complete();
     }
 
-    // ────────────────────────────────────────────
-    // Search
-    // ────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────
+    // LOVs
+    // ────────────────────────────────────────────────────────────
 
-    setupSearchDebounce(): void {
-        this.searchSubject.pipe(
-            debounceTime(500),
-            distinctUntilChanged(),
-            takeUntil(this.destroy$)
-        ).subscribe(() => {
-            this.pageQuery.set(1);
-            this.loadPatients();
-        });
+    private loadLovs(): void {
+        this.requestService
+            .postRequest(GET_LOV_BULK_API_URL, {types: PATIENT_LOV_TYPES})
+            .subscribe({
+                next: (res: HttpResponse<any>) => {
+                    if (res.status === 200 && res.body?.data) {
+                        this._lovStore.update((s) => ({...s, ...res.body.data}));
+                    }
+                },
+                error: (err: HttpErrorResponse) => console.warn('LOV load failed', err.message),
+            });
+    }
+
+    // ────────────────────────────────────────────────────────────
+    // Search
+    // ────────────────────────────────────────────────────────────
+
+    private setupSearchDebounce(): void {
+        this.searchSubject
+            .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
+            .subscribe(() => {
+                this.pageQuery.set(1);
+                this.loadPatients();
+            });
     }
 
     onSearchChange(): void {
-        this.searchSubject.next(this.searchQuery().toLowerCase());
+        this.searchSubject.next(this.searchQuery());
     }
 
-    // ────────────────────────────────────────────
-    // Data Loading
-    // ────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────
+    // List
+    // ────────────────────────────────────────────────────────────
 
     loadPatients(): void {
+        this.loading.set(true);
         const filters: FilterParams = {
-            search: this.searchQuery().toLowerCase() || '',
+            search: this.searchQuery() || '',
             page: this.pageQuery(),
-            limit: 10
+            limit: 10,
         };
 
         this.requestService.getRequest(PATIENTS_API_URL, filters).subscribe({
-            next: (response: HttpResponse<any>) => {
-                if (response.status === 200 && response.body.data) {
-                    this.patients = response.body.data ?? [];
-                    this.pagination.set(response.body.meta?.pagination || null);
+            next: (res: HttpResponse<any>) => {
+                this.loading.set(false);
+                if (res.status === 200 && res.body?.data) {
+                    this.patients.set(
+                        mapToPatientList(res.body.data as RawPatientListItem[], this._lovStore())
+                    );
+                    this.pagination.set(res.body.meta?.pagination ?? null);
                 } else {
-                    this.patients = [];
+                    this.patients.set([]);
                     this.pagination.set(null);
                 }
             },
             error: () => {
-                this.patients = [];
+                this.loading.set(false);
+                this.patients.set([]);
                 this.pagination.set(null);
-            }
-        });
-    }
-
-    // ────────────────────────────────────────────
-    // Modal Actions
-    // ────────────────────────────────────────────
-
-    /**
-     * Opens the patient view modal.
-     * Fetches full patient data (including all cases) from API.
-     * Resets tab to 'overview' and clears any previously selected case.
-     */
-    openView(patient: any): void {
-        this.requestService.getRequest(`${PATIENTS_API_URL}/${patient._id}`).subscribe({
-            next: (res: HttpResponse<any>) => {
-                if (res.status === 200) {
-                    const patientDTO = new PatientDTO();
-                    const data : any = res.body.data;
-                    this.selectedPatient.set(data);
-                    this.selectedCase.set(null);
-                    this.activeTab.set('overview');
-                    this.showViewModal.set(true);
-                } else {
-                    this.toastService.show(res.body.message || 'Something went wrong', 'info');
-                }
             },
-            error: (err: HttpErrorResponse) => {
-                this.toastService.show(err.error?.message || err.message || 'Something went wrong', 'error');
-            }
         });
     }
 
-    /**
-     * Called when user clicks a case row inside the Cases tab.
-     * Sets the selected case and switches to Case Detail tab.
-     */
-    selectCaseFromTab(caseItem: any, index: number): void {
-        this.selectedCase.set(caseItem);
+    // ────────────────────────────────────────────────────────────
+    // Detail modal
+    // ────────────────────────────────────────────────────────────
+
+    openView(patient: PatientListItemDto): void {
+        this.loadDetailLovs();
+        this.requestService
+            .getRequest(`${PATIENTS_API_URL}/${patient.id}`)
+            .subscribe({
+                next: (res: HttpResponse<any>) => {
+                    if (res.status === 200 && res.body?.data) {
+                        const raw = res.body.data as RawPatientWithCases;
+                        this._rawDetail.set(raw);
+                        this.patientDto.set(mapToPatientDetailDto(raw, this._lovStore()));
+                        this._rawCase.set(null);
+                        this.activeTab.set('overview');
+                        this.showViewModal.set(true);
+                    } else {
+                        this.toastService.show(res.body?.message ?? 'Something went wrong', 'info');
+                    }
+                },
+                error: (err: HttpErrorResponse) => {
+                    this.toastService.show(err.error?.message ?? err.message ?? 'Something went wrong', 'error');
+                },
+            });
+    }
+
+    closeViewModal(): void {
+        this.showViewModal.set(false);
+        this.patientDto.set(null);
+        this._rawDetail.set(null);
+        this._rawCase.set(null);
+        this.activeTab.set('overview');
+    }
+
+    // ────────────────────────────────────────────────────────────
+    // Case tab — uses raw cases from _rawDetail so all fields
+    // are available in the case-detail tab without a second call
+    // ────────────────────────────────────────────────────────────
+
+    selectCaseFromTab(caseId: string, index: number): void {
+        const raw = this._rawDetail();
+        if (!raw?.cases) return;
+        const rawCase = raw.cases.find((c) => c._id === caseId || c.caseId === caseId)
+            ?? raw.cases[index];
+        this._rawCase.set(rawCase as RawCase);
         this.selectedIndex = index;
         this.activeTab.set('case-detail');
     }
 
-    /**
-     * Called from anywhere to open a specific case detail.
-     * Also ensures the view modal is open.
-     */
-    openCaseDetail(caseItem: any): void {
-        this.selectedCase.set(caseItem);
-        this.activeTab.set('case-detail');
-        if (!this.showViewModal()) {
-            this.showViewModal.set(true);
-        }
+    private loadDetailLovs(): void {
+        const current = this._lovStore();
+        const missing = AppConstants.LOV_KEYS.filter((t) => !current[t]?.length);
+        if (!missing.length) return; // all already loaded
+
+        this.requestService
+            .postRequest(GET_LOV_BULK_API_URL, {types: missing})
+            .subscribe({
+                next: (response: HttpResponse<any>) => {
+                    if (response.status === 200 && response.body?.data) {
+                        this._lovStore.update((current) => ({
+                            ...current,
+                            ...response.body.data,
+                        }));
+                        // caseDto computed() re-runs automatically because _lovStore changed
+                    }
+                },
+                error: (err: HttpErrorResponse) => {
+                    console.warn('Detail LOV load failed:', err.message);
+                },
+            });
     }
 
-    /**
-     * Closes the view modal and resets all related state.
-     */
-    closeViewModal(): void {
-        this.showViewModal.set(false);
-        this.selectedPatient.set(null);
-        this.selectedCase.set(null);
-        this.activeTab.set('overview');
-    }
-
-    // ────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────
     // Delete
-    // ────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────
 
     confirmDelete(): void {
-        if (!this.selectedPatient()) return;
+        const dto = this.patientDto();
+        if (!dto) return;
 
-        this.requestService.deleteRequest(DELETE_USER_API_URL + this.selectedPatient()?._id).subscribe({
+        this.requestService.deleteRequest(`${DELETE_USER_API_URL}${dto.id}`).subscribe({
             next: () => {
-                this.toastService.show('Patient deleted successfully', 'error');
-                this.showDeleteModal.set(false);
-                this.selectedPatient.set(null);
+                this.toastService.show('Patient deleted successfully', 'success');
+                this.closeViewModal();
                 this.loadPatients();
             },
             error: (err) => {
-                this.toastService.show(err.error?.message || 'Failed to remove patient', 'error');
-            }
+                this.toastService.show(err.error?.message ?? 'Failed to remove patient', 'error');
+            },
         });
     }
 
-    // ────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────
     // Pagination
-    // ────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────
 
     goToPage(page: number): void {
         const p = this.pagination();
@@ -202,35 +261,53 @@ export class PatientComponent implements OnInit {
         return Array.from({length: p.totalPages}, (_, i) => i + 1);
     }
 
-    // ────────────────────────────────────────────
-    // CSS Class Helpers
-    // ────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────
+    // CSS class helpers
+    // ────────────────────────────────────────────────────────────
 
     getCaseStatusClass(status: string | null | undefined): string {
         if (!status) return '';
         const map: Record<string, string> = {
-            'Salvage': 'status-salvage',
-            'Completed': 'status-completed',
-            'Active': 'status-active',
-            'Pending': 'status-pending',
-            'Critical': 'status-critical',
-            'Recovered': 'status-completed',
+            ELECTIVE: 'status-elective',
+            EMERGENCY: 'status-emergency',
+            URGENT: 'status-urgent',
+            SALVAGE: 'status-salvage',
         };
-        return map[status] ?? 'status-pending';
+        return map[status.toUpperCase()] ?? 'status-pending';
     }
 
     getDischargeClass(status: string | null | undefined): string {
-        if (!status) return 'cd-discharge-row--deceased';
+        if (!status) return 'cd-discharge-row--unknown';
         const lower = status.toLowerCase();
-        if (lower.includes('alive') || lower.includes('home') || lower.includes('discharged')) {
+        if (lower === 'alive' || lower.includes('home') || lower.includes('discharged')) {
             return 'cd-discharge-row--alive';
         }
-        return 'cd-discharge-row--deceased';
+        if (lower === 'deceased' || lower === 'dead') {
+            return 'cd-discharge-row--deceased';
+        }
+        return 'cd-discharge-row--unknown';
     }
 
-    // ────────────────────────────────────────────
-    // Display Helpers
-    // ────────────────────────────────────────────
+    getPillClass(code: string): string {
+        const map: Record<string, string> = {
+            ELECTIVE: 'pill-elective',
+            EMERGENCY: 'pill-emergency',
+            URGENT: 'pill-urgent',
+            SALVAGE: 'pill-salvage',
+        };
+        return map[(code ?? '').toUpperCase()] ?? 'pill-pending';
+    }
+
+    getCasePercentage(stage: string): number {
+        const map: Record<string, number> = {
+            draft: 25,
+            assistant_done: 50,
+            kpo_done: 75,
+            doctor_review_done: 100,
+            final: 100,
+        };
+        return map[stage] ?? 0;
+    }
 
     getSurgeonInitials(name: string): string {
         if (!name) return '?';
@@ -240,55 +317,16 @@ export class PatientComponent implements OnInit {
         return '?';
     }
 
-    getProfileImageUrl(doc: any): string | null {
+    getProfileImageUrl(dto: PatientDetailDto | null): string | null {
+        // Profile image lives on the raw doctor object inside cases[].ownerDoctorId
+        const raw = this._rawDetail();
+        const doc = raw?.cases?.[0]?.ownerDoctorId as any;
         if (!doc?.profileImage?.data || !doc?.profileImage?.contentType) return null;
         return `data:${doc.profileImage.contentType};base64,${doc.profileImage.data}`;
     }
 
-    /**
-     * Returns keys of an object where value is truthy (true / 1).
-     * Used for object-style boolean fields:
-     *   e.g. RegAnesSite: { "Thoracic Epidural Catheter": true }
-     *     => ["Thoracic Epidural Catheter"]
-     */
-    getObjectKeys(obj: Record<string, any> | null | undefined): string[] {
-        if (!obj) return [];
-        return Object.keys(obj).filter(k => obj[k] === true || obj[k] === 1);
+    getStatusLabel(code: string): string {
+        const status = Object.values(CASE_STAUSES).find((s:any) => s.key === code || s.value === code);
+        return status?.label || code;
     }
-
-    // ────────────────────────────────────────────
-    // Misc / Legacy
-    // ────────────────────────────────────────────
-
-    hasObjectKeys(obj: any): boolean {
-        return obj && typeof obj === 'object' && Object.keys(obj).length > 0;
-    }
-
-    getPillClass(status: string | null | undefined): string {
-        if (!status) return '';
-        const map: Record<string, string> = {
-            'Completed': 'pill-completed',
-            'Recovered': 'pill-completed',
-            'Active': 'pill-active',
-            'Salvage': 'pill-salvage',
-            'Critical': 'pill-critical',
-            'Pending': 'pill-pending',
-        };
-        return map[status] ?? 'pill-pending';
-    }
-
-    getCasePercentage(stage: 'draft' | 'assistant_done' | 'kpo_done' | 'doctor_review_done' | 'final' | undefined ): number {
-        if (!stage) return 0;
-        const map: Record<string, number> = {
-            'draft': 25,
-            'assistant_done': 50,
-            'kpo_done': 75,
-            'doctor_review_done': 100,
-            'final': 100,
-        };
-        return map[stage] ?? 0;
-    }
-
-    protected readonly Boolean = Boolean;
-    protected readonly Object = Object;
 }

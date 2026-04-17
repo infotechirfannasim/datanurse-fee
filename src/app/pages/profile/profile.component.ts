@@ -46,12 +46,12 @@ export class ProfileComponent implements OnInit {
     errorMessages = {
         firstName: {
             required: 'First name is required',
-            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
+            pattern: "Only alphanumeric characters are allowed.",
             maxLength: 'Max 50 characters'
         },
         lastName: {
             required: 'Last name is required',
-            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
+            pattern: "Only alphanumeric characters are allowed.",
             maxLength: 'Max 50 characters'
         },
         currentPassword: {required: 'Current password is required'},
@@ -76,7 +76,7 @@ export class ProfileComponent implements OnInit {
                 Validators.required,
                 Validators.minLength(1),
                 Validators.maxLength(50),
-                Validators.pattern(RegexConstants.ALPHABET_REGEX)
+                Validators.pattern(RegexConstants.ALPHANUMERIC_REGEX)
             ]],
             lastName: ['',
                 [Validators.required,

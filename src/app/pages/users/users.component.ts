@@ -51,18 +51,18 @@ export class UsersComponent implements OnInit {
     errorMessages = {
         firstName: {
             required: 'First name is required',
-            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
+            pattern: "Only alphanumeric characters are allowed.",
             maxLength: 'Max 50 characters'
         },
         lastName: {
             required: 'Last name is required',
-            pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
+            pattern: "Only alphanumeric characters are allowed.",
             maxLength: 'Max 50 characters'
         },
         role: {required: 'Role is required'},
         email: {
             required: 'Email is required',
-            maxlength: 'Max 50 characters',
+            maxlength: 'Max 32 characters',
             email: 'Provide valid email',
             pattern: 'Provide valid email'
         },
@@ -95,12 +95,12 @@ export class UsersComponent implements OnInit {
             firstName: ['', [Validators.required,
                 Validators.minLength(1),
                 Validators.maxLength(50),
-                Validators.pattern(RegexConstants.NAME_SPECIAL_REGEX)]],
+                Validators.pattern(RegexConstants.ALPHANUMERIC_REGEX)]],
             lastName: ['', [Validators.required,
                 Validators.minLength(1),
                 Validators.maxLength(50),
-                Validators.pattern(RegexConstants.NAME_SPECIAL_REGEX)]],
-            email: ['', [Validators.required, Validators.pattern(RegexConstants.VALID_EMAIL_REGEX), Validators.maxLength(50), Validators.email]],
+                Validators.pattern(RegexConstants.ALPHANUMERIC_REGEX)]],
+            email: ['', [Validators.required, Validators.pattern(RegexConstants.VALID_EMAIL_REGEX), Validators.maxLength(32), Validators.email]],
             role: ['', Validators.required],
             password: [''],
             confirmPassword: [''],

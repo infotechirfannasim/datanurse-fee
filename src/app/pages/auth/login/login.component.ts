@@ -5,7 +5,7 @@ import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../../core/services/auth.service';
 import {ToastService} from '../../../core/services/toast.service';
 import {environment} from '../../../../environments/environment';
-import {getError} from "../../../utils/global.utils";
+import {getError, markAllTouched} from "../../../utils/global.utils";
 import {RegexConstants} from "../../../utils/regex-constants";
 
 declare global {
@@ -141,7 +141,8 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
+      markAllTouched(this.loginForm);
+      this.toastService.show('Please fill all required fields correctly', 'error');
       return;
     }
 

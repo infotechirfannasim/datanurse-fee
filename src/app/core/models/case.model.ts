@@ -1,234 +1,418 @@
-// case.model.ts
+// ─────────────────────────────────────────────────────────────
+// CaseDetailDto — display-ready, template-safe DTO.
+//
+// Rules:
+//   • Every string field is either a resolved value or '—' (never null/undefined)
+//   • Every boolean flag is a real boolean (never undefined)
+//   • Every array is always an array (never null/undefined)
+//   • LOV codes are resolved to their display names
+//   • Dates remain as ISO strings so Angular's date pipe can format them;
+//     undefined dates are null (date pipe handles null gracefully)
+//   • Each major step gets a `filled: boolean` flag so templates can show
+//     "Section not filled" without checking multiple nested fields
+// ─────────────────────────────────────────────────────────────
 
-export class CasePatientDTO {
-  _id: string = '';
-  mrn: string = '';
-  citizenNumber: string = '';
-  name: string = '';
-  dob: string | null = null;
-  gender: string = '';
-  fatherName: string = '';
-  motherName: string = '';
-  birthCountry: string = '';
-  birthCity: string = '';
-  country: string = '';
-  province: string = '';
-  city: string = '';
-  primaryPayor: string = '';
-  secondaryPayor: string = '';
-  bloodGroup: string = '';
-  phone: string = '';
-  createdAt: string | null = null;
+// ── Shared primitives ─────────────────────────────────────────
 
-  fromData(data: any): void {
-    const p = data?.patientId || data?.patient || data || {};
-    this._id = p._id ?? '';
-    this.mrn = p.mrn ?? data?.patientMrn ?? '';
-    this.citizenNumber = p.citizenNumber ?? data?.patientCitizenNo ?? '';
-    this.name = `${p.firstName || p.name || ''} ${p.lastName || ''}`.trim();
-    this.dob = p.dob ?? null;
-    this.gender = p.gender ?? '';
-    this.fatherName = p.fatherName ?? '';
-    this.motherName = p.motherName ?? '';
-    this.birthCountry = p.birthCountry ?? '';
-    this.birthCity = p.birthCity ?? '';
-    this.country = p.country ?? '';
-    this.province = p.province ?? '';
-    this.city = p.city ?? '';
-    this.primaryPayor = p.primaryPayor ?? '';
-    this.secondaryPayor = p.secondaryPayor ?? '';
-    this.bloodGroup = p.bloodGroup ?? '';
-    this.phone = p.phone ?? '';
-    this.createdAt = p.createdAt ?? null;
-  }
+export type DisplayDate = string | null; // ISO string or null
+
+export interface DisplayTag {
+  code: string;
+  name: string;   // LOV-resolved
 }
 
-export class CaseDoctorDTO {
-  _id: string = '';
-  firstName: string = '';
-  lastName: string = '';
-  email: string = '';
-
-  fromData(data: any): void {
-    this._id = data?._id ?? data ?? '';
-    this.firstName = data?.firstName ?? '';
-    this.lastName = data?.lastName ?? '';
-    this.email = data?.email ?? '';
-  }
+export interface DisplayDiagnosis {
+  id: number;
+  code: string;
+  displayCode: string;
+  name: string;
+  isPrimary: boolean;
+  category: string;
+  subsection: string;
 }
 
-export class CaseHospitalDTO {
-  _id: string = '';
-  code: string = '';
-  name: string = '';
-
-  fromData(data: any): void {
-    this._id = data?._id ?? data ?? '';
-    this.code = data?.code ?? '';
-    this.name = data?.name ?? '';
-  }
+export interface DisplayProcedure {
+  id: number;
+  code: string;
+  displayCode: string;
+  name: string;
+  isCompatible: boolean;
+  category: string;
+  subsection: string;
 }
 
-export class CaseDiagnosisDTO {
-  id: number = 0;
-  name: string = '';
-  code: string = '';
-  displayCode: string = '';
-  isPrimary: boolean = false;
-  category: string = '';
-  subsection: string = '';
-
-  fromData(data: any): void {
-    this.id = data?.id ?? 0;
-    this.name = data?.name ?? '';
-    this.code = data?.code ?? '';
-    this.displayCode = data?.displayCode ?? '';
-    this.isPrimary = data?.isPrimary ?? false;
-    this.category = data?.category ?? '';
-    this.subsection = data?.subsection ?? '';
-  }
+export interface DisplayBloodProductRow {
+  label: string;
+  during: number;
+  within24h: number;
+  after24h: number;
 }
 
-export class CaseProcedureDTO {
-  id: number = 0;
-  name: string = '';
-  code: string = '';
-  displayCode: string = '';
-  isCompatible: boolean = false;
-
-  fromData(data: any): void {
-    this.id = data?.id ?? 0;
-    this.name = data?.name ?? '';
-    this.code = data?.code ?? '';
-    this.displayCode = data?.displayCode ?? '';
-    this.isCompatible = data?.isCompatible ?? false;
-  }
+export interface DisplayComplication {
+  key: string;
+  label: string;
+  date: DisplayDate;
+  notes: string;
 }
 
-// ====================== LIST DTO ======================
-export class CaseListDTO {
-  _id: string = '';
-  localId: string = '';
-  caseId: string = '';
-  patientMrn: string = '';
-  patientCitizenNo: string = '';
-  hospitalCode: string = '';
-  stage: 'draft' | 'assistant_done' | 'kpo_done' | 'doctor_review_done' | 'final' = 'draft';
-  isSoloSubmission: boolean = false;
-  lastModifiedAt: string | null = null;
-  createdAt: string | null = null;
-  updatedAt: string | null = null;
-
-  ownerDoctorId: CaseDoctorDTO = new CaseDoctorDTO();
-  hospitalId: CaseHospitalDTO = new CaseHospitalDTO();
-  patientId: CasePatientDTO = new CasePatientDTO();
-
-  patientSnapshot: any = {firstName: '', lastName: '', dob: null, gender: '', citizenNumber: ''};
-  step7Diagnosis: any = {selectedDiagnoses: []};
-  step8Procedures: any = {selectedProcedures: []};
-  followups: any [] = []
-
-  fromData(data: any): void {
-    this._id = data?._id ?? '';
-    this.localId = data?.localId ?? '';
-    this.caseId = data?.caseId ?? '';
-    this.patientMrn = data?.patientMrn ?? '';
-    this.patientCitizenNo = data?.patientCitizenNo ?? '';
-    this.hospitalCode = data?.hospitalCode ?? '';
-    this.stage = data?.stage ?? 'draft';
-    this.isSoloSubmission = !!data?.isSoloSubmission;
-    this.lastModifiedAt = data?.lastModifiedAt ?? null;
-    this.createdAt = data?.createdAt ?? null;
-    this.updatedAt = data?.updatedAt ?? null;
-
-    this.ownerDoctorId.fromData(data?.ownerDoctorId);
-    this.hospitalId.fromData(data?.hospitalId);
-    this.patientId.fromData(data);
-
-    this.patientSnapshot = data?.patientSnapshot ?? {
-      firstName: '',
-      lastName: '',
-      dob: null,
-      gender: '',
-      citizenNumber: ''
-    };
-
-    this.step7Diagnosis = data?.step7Diagnosis ?? {selectedDiagnoses: []};
-    this.step8Procedures = data?.step8Procedures ?? {selectedProcedures: []};
-  }
-
-  static fromArray(items: any[]): CaseListDTO[] {
-    return (items ?? []).map(item => {
-      const dto = new CaseListDTO();
-      dto.fromData(item);
-      return dto;
-    });
-  }
+export interface DisplayFollowup {
+  id: string;
+  followupDate: DisplayDate;
+  patientStatus: string;         // LOV-resolved
+  causeOfDeath: string;
+  readmissionRequested: boolean;
+  readmissionDate: DisplayDate;
+  readmissionReason: string;
+  conductedByName: string;
+  notes: string;
 }
 
-// ====================== DETAIL DTO ======================
-export class CaseDetailDTO extends CaseListDTO {
-  createdByUserId: CaseDoctorDTO = new CaseDoctorDTO();
-  patientLocalId: string = '';
+// ── OR Timeline ───────────────────────────────────────────────
 
-  step3Abnormalities: any = {};
-  step4ChromosomalSyndromes: any = {};
-  step5HospitalAdmission: any = {};
-  step6PreOpMeds: any = {};
-  step9ProcedureSpecificFactors: any = {};
-  step10OperativeData: any = {};
-  step11BloodProducts: any = {};
-  step12ProcedureDetails: any = {};
-  step13Anesthesia: any = {};
-  step14Complications: any = {};
-  step15Discharge: any = {};
-
-
-  override fromData(data: any): void {
-    super.fromData(data);
-
-    this.patientLocalId = data?.patientLocalId ?? '';
-    this.createdByUserId.fromData(data?.createdByUserId);
-
-    this.step3Abnormalities = data?.step3Abnormalities ?? {};
-    this.step4ChromosomalSyndromes = data?.step4ChromosomalSyndromes ?? {};
-    this.step5HospitalAdmission = data?.step5HospitalAdmission ?? {};
-    this.step6PreOpMeds = data?.step6PreOpMeds ?? {};
-    this.step9ProcedureSpecificFactors = data?.step9ProcedureSpecificFactors ?? {};
-    this.step10OperativeData = data?.step10OperativeData ?? {};
-    this.step11BloodProducts = data?.step11BloodProducts ?? {};
-    this.step12ProcedureDetails = data?.step12ProcedureDetails ?? {};
-    this.step13Anesthesia = data?.step13Anesthesia ?? {};
-    this.step14Complications = data?.step14Complications ?? {};
-    this.step15Discharge = data?.step15Discharge ?? {};
-    this.followups = data.followups ?? []
-  }
-
-  static fromDetail(data: any): CaseDetailDTO {
-    const dto = new CaseDetailDTO();
-    dto.fromData(data);
-    return dto;
-  }
+export interface OrTimelineItem {
+  time: string;
+  label: string;
+  isExit: boolean;
 }
 
-// ====================== PATIENT DTO ======================
-export class PatientDTO extends CasePatientDTO {
-  doctor: any | null = null;
-  cases: CaseDetailDTO[] = [];
-  casesCount: number = 0;
+// ── Section DTOs ──────────────────────────────────────────────
 
-  override fromData(data: any): void {
-    super.fromData(data);
+export interface PatientInfoDto {
+  filled: boolean;
+  mrn: string;
+  citizenNumber: string;
+  name: string;
+  gender: string;          // LOV-resolved
+  dob: DisplayDate;
+  bloodGroup: string;      // LOV-resolved
+  phone: string;
+  primaryPayor: string;    // LOV-resolved
+  secondaryPayor: string;
+  country: string;         // LOV-resolved
+  province: string;        // LOV-resolved
+  city: string;            // LOV-resolved
+  location: string;        // pre-built "City, Province, Country"
+}
 
-    this.doctor = data?.doctor ?? null;
-    this.casesCount = Array.isArray(data?.cases) ? data.cases.length : 0;
+export interface HospitalAdmissionDto {
+  filled: boolean;
+  hospitalName: string;
+  admissionDate: DisplayDate;
+  surgeryDate: DisplayDate;
+  admittedFrom: string;    // LOV-resolved
+  heightCm: string;
+  weightKg: string;
+  primaryPayor: string;    // LOV-resolved
+  secondaryPayor: string;
+}
 
-    this.cases = Array.isArray(data?.cases)
-        ? data.cases.map((c: any) => {
-          const caseDto = new CaseDetailDTO();
-          caseDto.fromData(c);
-          return caseDto;
-        })
-        : [];
-  }
+export interface AbnormalitiesDto {
+  filled: boolean;
+  noAbnormality: boolean;
+  items: DisplayTag[];
+}
+
+export interface ChromosomalDto {
+  filled: boolean;
+  noChromosomal: boolean;
+  noSyndromic: boolean;
+  chromosomal: DisplayTag[];
+  syndromes: DisplayTag[];
+}
+
+export interface PreOpFactorsDto {
+  filled: boolean;
+  items: DisplayTag[];
+}
+
+export interface DiagnosesDto {
+  filled: boolean;
+  items: DisplayDiagnosis[];
+}
+
+export interface ProceduresDto {
+  filled: boolean;
+  items: DisplayProcedure[];
+}
+
+export interface OperativeDataDto {
+  filled: boolean;
+  operationStatus: string;    // LOV-resolved
+  operationStatusCode: string;
+  operationType: string;      // LOV-resolved
+  procedureLocation: string;  // LOV-resolved
+  primarySurgeon: string;
+  secondarySurgeon: string;
+  priorCtOps: string;
+  priorCpbOps: string;
+  cpbTime: string;
+  crossClampTime: string;
+  circulatoryArrestTime: string;
+  cerebralNirs: boolean;
+  somaticNirs: boolean;
+  pvrMeasured: boolean;
+  autologousTransfusion: boolean;
+  extendedThroughMidnight: boolean;
+  endotrachealIntubation: boolean;
+  extubatedInOR: boolean;
+  reIntubated: boolean;
+  timeline: OrTimelineItem[];
+}
+
+export interface BloodProductsDto {
+  filled: boolean;
+  transfusionUsage: string;
+  hematocritFirst: string;
+  hematocritLast: string;
+  transfusionDuringProc: boolean;
+  transfusionWithin24h: boolean;
+  transfusionAfter24h: boolean;
+  autologousTransfusion: boolean;
+  cellSaverReinfused: boolean;
+  productRows: DisplayBloodProductRow[];  // only non-zero rows
+}
+
+export interface AnesthesiaDto {
+  filled: boolean;
+  primaryAnesthesiologist: string;
+  preopMedCategories: string;
+  preopSedation: boolean;
+  inductionDateTime: DisplayDate;
+  patientLocationTransfer: DisplayDate;
+  artLine: boolean;
+  centralPressureLine: boolean;
+  ultrasoundGuidance: string;
+  neuroMonitor: boolean;
+  tee: boolean;
+  cutdown: boolean;
+  cvpPlaced: boolean;
+  icuTypeVent: boolean;
+  lowIntraopTemp: string;
+  airwaySite: string;
+  airwaySizeLma: string;
+  airwaySizeIntub: string;
+  cuffed: boolean;
+  intraopPharm: string[];
+  pacuPharm: string[];
+  adverseEvents: string[];
+  pacuArrivalDateTime: DisplayDate;
+  pacuFiO2: string;
+  pacuMechSupport: string;
+  pacuPulseOx: string;
+  pacuTempSite: string;
+  pacuPacemaker: boolean;
+  pacuPacemakerSite: string;
+  pacuPacemakerType: string;
+  pacuDemise: boolean;
+}
+
+export interface ComplicationsDto {
+  filled: boolean;
+  noComplications: boolean;
+  items: DisplayComplication[];
+}
+
+export interface DischargeDto {
+  filled: boolean;
+  dischargeStatus: string;    // LOV-resolved
+  dischargeStatusCode: string;
+  dischargeDate: DisplayDate;
+  dischargeLocation: string;  // LOV-resolved
+  databaseDischargeStatus: string;
+  databaseDischargeDate: DisplayDate;
+  readmission30Day: string;
+  readmissionDate: DisplayDate;
+  readmissionReason: string;
+  status30Days: string;
+  verificationMethod: string;
+}
+
+// ── Top-level CaseDetailDto ───────────────────────────────────
+
+export interface CaseMetaDto {
+  id: string;
+  localId: string;
+  status: string;
+  stage: string;
+  isSoloSubmission: boolean;
+  hospitalName: string;
+  hospitalCode: string;
+  ownerDoctor: string;
+  ownerDoctorId: string;   // raw _id — needed for followup payload
+  createdBy: string;
+  createdAt: DisplayDate;
+}
+
+export interface CaseDetailDto {
+  meta: CaseMetaDto;
+  patient: PatientInfoDto;
+  hospitalAdmission: HospitalAdmissionDto;
+  abnormalities: AbnormalitiesDto;
+  chromosomal: ChromosomalDto;
+  preOpFactors: PreOpFactorsDto;
+  diagnoses: DiagnosesDto;
+  procedures: ProceduresDto;
+  operativeData: OperativeDataDto;
+  bloodProducts: BloodProductsDto;
+  anesthesia: AnesthesiaDto;
+  complications: ComplicationsDto;
+  discharge: DischargeDto;
+  followups: DisplayFollowup[];
+}
+
+// ─────────────────────────────────────────────────────────────
+// CaseListItemDto — lean shape for table rows.
+//
+// Matches the actual list API response which only includes:
+// identity, ownerDoctorId, hospitalId, patientId (partial),
+// stage, status, step7Diagnosis, step8Procedures, timestamps.
+//
+// Rule: { code, label } chips for every status so the template
+// binds [ngClass]="chip.code" and renders {{ chip.label }}
+// without any helper calls.
+// ─────────────────────────────────────────────────────────────
+
+export interface StatusChip {
+  code: string;   // raw value  — for [ngClass]
+  label: string;  // resolved   — for display text
+}
+
+export interface OperationStatusChip {
+  code: string;   // raw value  — for [ngClass]
+  label: string;  // resolved   — for display text
+}
+
+export interface ListDiagnosisSummary {
+  primaryName: string;       // name of isPrimary=true diagnosis, else first, else '—'
+  primaryCode: string;       // its displayCode
+  additionalCount: number;   // remaining diagnoses beyond the first shown
+}
+
+export interface ListProcedureSummary {
+  primaryName: string;
+  primaryCode: string;
+  additionalCount: number;
+}
+
+export interface CaseListItemDto {
+  // ── identity ────────────────────────────────────────────────
+  id: string;
+  localId: string;
+
+  // ── patient (partial — only what list API returns) ──────────
+  patientName: string;
+  patientMrn: string;
+  patientCitizenNumber: string;
+  patientGender: string;       // LOV-resolved
+  patientGenderCode: string;   // raw  — for icon/class binding
+  patientDob: DisplayDate;
+  patientAgeLabel: string;     // e.g. "3y 2m" | "5 months" | "0 days" | "—"
+  patientBloodGroup: string;   // LOV-resolved
+  operationStatus: OperationStatusChip;
+
+  // ── hospital ─────────────────────────────────────────────────
+  hospitalName: string;
+  hospitalCode: string;
+
+  // ── workflow ─────────────────────────────────────────────────
+  stage: string;               // raw stage code
+  stageLabel: string;          // capitalised for display
+  status: StatusChip;          // case.status
+  isSoloSubmission: boolean;
+  teamId: string | null;       // null = solo; string = team case
+
+  // ── people ───────────────────────────────────────────────────
+  ownerDoctor: string;         // "Dr. Affan Qaiser"
+
+  // ── clinical summary ─────────────────────────────────────────
+  diagnosis: ListDiagnosisSummary;
+  procedure: ListProcedureSummary;
+
+  // ── timestamps ───────────────────────────────────────────────
+  createdAt: DisplayDate;
+  lastModifiedAt: DisplayDate;
+
+  // ── pre-built search string ──────────────────────────────────
+  // Concatenation of all text fields lowercased.
+  // Use: items.filter(i => i._search.includes(term))
+  _search: string;
+}
+
+// ─────────────────────────────────────────────────────────────
+// Patient DTOs
+//
+// PatientListItemDto  — one row in the patients table
+// PatientDetailDto    — patient profile page with cases array
+//
+// Reuses CaseListItemDto for each embedded case so the patient
+// detail page renders case rows with zero extra mapping logic.
+// ─────────────────────────────────────────────────────────────
+
+export interface PatientListItemDto {
+  // ── identity ─────────────────────────────────────────────
+  id: string;
+  mrn: string;
+  citizenNumber: string;
+
+  // ── demographics ─────────────────────────────────────────
+  name: string;
+  gender: string;        // LOV-resolved
+  genderCode: string;    // raw — for icon / class binding
+  dob: DisplayDate;
+  ageLabel: string;      // "7 years" | "3m 5d" | "—"
+  bloodGroup: string;    // LOV-resolved
+
+  // ── location (LOV-resolved) ───────────────────────────────
+  country: string;
+  province: string;
+  city: string;
+  location: string;      // "Raiwind, Punjab, Pakistan"
+
+  // ── assigned doctor ───────────────────────────────────────
+  doctorName: string;    // "Zaka Ul Hassan"
+  doctorId: string;      // raw _id
+
+  // ── summary ──────────────────────────────────────────────
+  casesCount: number;
+
+  // ── timestamps ───────────────────────────────────────────
+  createdAt: DisplayDate;
+  lastModifiedAt: DisplayDate;
+
+  // ── client-side search string ─────────────────────────────
+  _search: string;
+}
+
+export interface PatientDetailDto {
+  // ── all patient fields (same as list item, fully resolved) ─
+  id: string;
+  mrn: string;
+  citizenNumber: string;
+  name: string;
+  gender: string;
+  genderCode: string;
+  dob: DisplayDate;
+  ageLabel: string;
+  bloodGroup: string;
+  phone: string;
+  weight: string;
+  primaryPayor: string;   // LOV-resolved
+  secondaryPayor: string; // LOV-resolved
+  country: string;
+  province: string;
+  city: string;
+  location: string;
+
+  // ── assigned doctor ───────────────────────────────────────
+  doctorName: string;
+  doctorId: string;
+
+  // ── embedded cases — ready to render in a case list table ─
+  // Each item is a full CaseListItemDto so the patient detail
+  // page reuses the exact same case-row template/component.
+  cases: CaseListItemDto[];
+
+  // ── timestamps ───────────────────────────────────────────
+  createdAt: DisplayDate;
+  lastModifiedAt: DisplayDate;
 }

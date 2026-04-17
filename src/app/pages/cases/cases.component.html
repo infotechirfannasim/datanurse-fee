@@ -23,7 +23,7 @@
             </tr>
             </thead>
             <tbody>
-                @for (c of cases; track c._id) {
+                @for (c of cases(); track c.id) {
                     <tr>
                         <td>
                             <button class="action-btn" (click)="openView(c)" title="View">
@@ -35,30 +35,16 @@
                             </button>
                         </td>
                         <td>
-                            {{ c.patientId.name }}
+                            {{ c.patientName }}
                         </td>
                         <td>
-                            {{ c.patientSnapshot.citizenNumber }}
+                            {{ c.patientCitizenNumber }}
                         </td>
                         <td style="font-size:12.5px; color: var(--muted);">
-                            @for (diagnosis of c.step7Diagnosis.selectedDiagnoses || []; track diagnosis.code; let last = $last) {
-                                {{ diagnosis.name }}
-                                @if (!last) {
-                                    ,
-                                }
-                            } @empty {
-                                '—'
-                            }
+                            {{ c.diagnosis.primaryName }}
                         </td>
                         <td style="font-size:12.5px; color: var(--muted);">
-                            @for (procedure of c.step8Procedures.selectedProcedures || []; track procedure.code; let last = $last) {
-                                {{ procedure.name }}
-                                @if (!last) {
-                                    ,
-                                }
-                            } @empty {
-                                '—'
-                            }
+                            {{ c.procedure.primaryName }}
                         </td>
                     </tr>
                 } @empty {
@@ -76,7 +62,7 @@
     </div>
     <div class="table-footer">
         <span class="table-footer-info">
-            Showing {{ cases.length }} of {{ pagination()?.total || 0 }} Cases
+            Showing {{ cases().length }} of {{ pagination()?.total || 0 }} Cases
         </span>
 
         @if (pagination() && pagination()?.totalPages > 1) {
@@ -107,12 +93,743 @@
 </div>
 
 <!-- Updated Modal View with DTO Structure -->
-@if (showViewModal() && selectedCase()) {
+@if (showViewModal() && caseDto()) {
     <div class="new-modals">
         <div class="modal-overlay open" (click)="showViewModal.set(false)">
             <div class="modal modal-xl" (click)="$event.stopPropagation()">
 
-                <!-- Header -->
+                <!-- ── Header ──────────────────────────────────────────── -->
+                <div class="modal-header">
+                    <div>
+                        <div class="modal-title">Case Detail</div>
+                        <div class="modal-sub">
+                            {{ caseDto()!.patient.name }} &mdash; MRN: {{ caseDto()!.patient.mrn }}
+                        </div>
+                    </div>
+                    <button class="modal-close" (click)="showViewModal.set(false)">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#64748B"
+                             stroke-width="2.5" stroke-linecap="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <!-- ── Status Bar ─────────────────────────────────── -->
+                    <div class="cd-top">
+                        @if (caseDto()!.operativeData.operationStatusCode) {
+                            <span class="cd-status-badge"
+                                  [ngClass]="getCaseStatusClass(caseDto()!.operativeData.operationStatusCode)">
+                <span class="csb-dot"></span>
+                                {{ caseDto()!.operativeData.operationStatus }}
+              </span>
+                        }
+                        <div class="cd-meta">
+                            @if (caseDto()!.hospitalAdmission.surgeryDate) {
+                                <div class="cd-meta-item">
+                                    <b>Surgery:</b>
+                                    {{ caseDto()!.hospitalAdmission.surgeryDate | date:'MMM d, y' }}
+                                </div>
+                            }
+                            <div class="cd-meta-item">
+                                <b>Status:</b> {{ getStatusLabel(caseDto()!.meta.status) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- 1. Patient Information                             -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <div class="cd-section">
+                        <div class="cd-section-label">Patient Information</div>
+
+                        @if (!caseDto()!.patient.filled) {
+                            <div class="cd-empty-note">Patient information not available</div>
+                        } @else {
+                            <div class="cd-grid cd-grid--3">
+                                <div class="cd-cell">
+                                    <div class="cd-key">Citizen Number</div>
+                                    <div class="cd-val">{{ caseDto()!.patient.citizenNumber }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Full Name</div>
+                                    <div class="cd-val">{{ caseDto()!.patient.name }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Gender</div>
+                                    <div class="cd-val">{{ caseDto()!.patient.gender }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Date of Birth</div>
+                                    <div class="cd-val">{{ caseDto()!.patient.dob | date:'MMM d, y' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Blood Group</div>
+                                    <div class="cd-val">{{ caseDto()!.patient.bloodGroup }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Phone</div>
+                                    <div class="cd-val">{{ caseDto()!.patient.phone }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Primary Payor</div>
+                                    <div class="cd-val">{{ caseDto()!.patient.primaryPayor }}</div>
+                                </div>
+                                @if (caseDto()!.patient.secondaryPayor !== '—') {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Secondary Payor</div>
+                                        <div class="cd-val">{{ caseDto()!.patient.secondaryPayor }}</div>
+                                    </div>
+                                }
+                                <div class="cd-cell">
+                                    <div class="cd-key">Location</div>
+                                    <div class="cd-val">{{ caseDto()!.patient.location }}</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- 2. Hospital & Admission                           -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <div class="cd-section">
+                        <div class="cd-section-label">Hospital &amp; Admission</div>
+
+                        @if (!caseDto()!.hospitalAdmission.filled) {
+                            <div class="cd-empty-note">Admission information not filled</div>
+                        } @else {
+                            <div class="cd-hosp-row">
+                                <div class="cd-hosp-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#92400E"
+                                         stroke-width="2" stroke-linecap="round">
+                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                        <polyline points="9 22 9 12 15 12 15 22"/>
+                                    </svg>
+                                </div>
+                                <div class="cd-hosp-name">{{ caseDto()!.hospitalAdmission.hospitalName }}</div>
+                            </div>
+                            <div class="cd-grid">
+                                <div class="cd-cell">
+                                    <div class="cd-key">Admission Date</div>
+                                    <div class="cd-val">
+                                        {{ (caseDto()!.hospitalAdmission.admissionDate | date:'MMM d, y') ?? '—' }}
+                                    </div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Surgery Date</div>
+                                    <div class="cd-val">
+                                        {{ (caseDto()!.hospitalAdmission.surgeryDate | date:'MMM d, y') ?? '—' }}
+                                    </div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Admitted From</div>
+                                    <div class="cd-val">{{ caseDto()!.hospitalAdmission.admittedFrom }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Height</div>
+                                    <div class="cd-val">{{ caseDto()!.hospitalAdmission.heightCm }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Weight</div>
+                                    <div class="cd-val">{{ caseDto()!.hospitalAdmission.weightKg }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Primary Payor</div>
+                                    <div class="cd-val">{{ caseDto()!.hospitalAdmission.primaryPayor }}</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- 3. Congenital Abnormalities                        -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <div class="cd-section">
+                        <div class="cd-section-label">Congenital Abnormalities</div>
+                        @if (!caseDto()!.abnormalities.filled) {
+                            <div class="cd-empty-note">Abnormalities section not filled</div>
+                        } @else if (caseDto()!.abnormalities.noAbnormality) {
+                            <div class="cd-empty-note">No abnormality reported</div>
+                        } @else if (!caseDto()!.abnormalities.items.length) {
+                            <div class="cd-empty-note">No abnormalities recorded</div>
+                        } @else {
+                            <div class="cd-tags">
+                                @for (a of caseDto()!.abnormalities.items; track a.code) {
+                                    <span class="cd-tag cd-tag--abnormality">{{ a.name }}</span>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- 4. Chromosomal & Syndromes                        -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <div class="cd-section">
+                        <div class="cd-section-label">Chromosomal Abnormalities &amp; Syndromes</div>
+                        @if (!caseDto()!.chromosomal.filled) {
+                            <div class="cd-empty-note">Chromosomal section not filled</div>
+                        } @else {
+                            @if (caseDto()!.chromosomal.chromosomal.length) {
+                                <div class="cd-cell cd-cell--full">
+                                    <div class="cd-key">Chromosomal Abnormalities</div>
+                                    <div class="cd-tags cd-tags--sm">
+                                        @for (c of caseDto()!.chromosomal.chromosomal; track c.code) {
+                                            <span class="cd-tag cd-tag--crom">{{ c.name }}</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            @if (caseDto()!.chromosomal.syndromes.length) {
+                                <div class="cd-cell cd-cell--full">
+                                    <div class="cd-key">Syndromes</div>
+                                    <div class="cd-tags cd-tags--sm">
+                                        @for (s of caseDto()!.chromosomal.syndromes; track s.code) {
+                                            <span class="cd-tag cd-tag--syndromes">{{ s.name }}</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            @if (caseDto()!.chromosomal.noChromosomal && caseDto()!.chromosomal.noSyndromic) {
+                                <div class="cd-empty-note">No chromosomal or syndromic abnormalities reported</div>
+                            }
+                        }
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- 5. Pre-operative Factors                          -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <div class="cd-section">
+                        <div class="cd-section-label">Pre-operative Factors</div>
+                        @if (!caseDto()!.preOpFactors.filled) {
+                            <div class="cd-empty-note">Pre-operative factors not recorded</div>
+                        } @else {
+                            <div class="cd-tags">
+                                @for (f of caseDto()!.preOpFactors.items; track f.code) {
+                                    <span class="cd-tag cd-tag--preop">{{ f.name }}</span>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- 6. Diagnoses                                       -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <div class="cd-section">
+                        <div class="cd-section-label">Diagnoses</div>
+                        @if (!caseDto()!.diagnoses.filled) {
+                            <div class="cd-empty-note">Diagnoses not recorded</div>
+                        } @else {
+                            <div class="cd-tags">
+                                @for (d of caseDto()!.diagnoses.items; track d.id) {
+                                    <span class="cd-tag cd-tag--diag">
+                    {{ d.name }}
+                                        <span class="cd-tag-code">{{ d.displayCode }}</span>
+                                        @if (d.isPrimary) {
+                                            <span class="cd-tag-primary">Primary</span>
+                                        }
+                  </span>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- 7. Procedures                                      -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <div class="cd-section">
+                        <div class="cd-section-label">Procedures</div>
+                        @if (!caseDto()!.procedures.filled) {
+                            <div class="cd-empty-note">Procedures not recorded</div>
+                        } @else {
+                            <div class="cd-tags">
+                                @for (p of caseDto()!.procedures.items; track p.id) {
+                                    <span class="cd-tag cd-tag--proc">
+                    {{ p.name }}
+                                        <span class="cd-tag-code">{{ p.displayCode }}</span>
+                  </span>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- 8. Operative Data                                  -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <div class="cd-section">
+                        <div class="cd-section-label">Operative Data</div>
+                        @if (!caseDto()!.operativeData.filled) {
+                            <div class="cd-empty-note">Operative data not filled</div>
+                        } @else {
+                            <div class="cd-grid">
+                                <div class="cd-cell">
+                                    <div class="cd-key">Operation Status</div>
+                                    <span class="cd-status-badge"
+                                          [ngClass]="getCaseStatusClass(caseDto()!.operativeData.operationStatusCode)">
+                    <span class="csb-dot"></span>
+                                        {{ caseDto()!.operativeData.operationStatus }}
+                  </span>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Operation Type</div>
+                                    <div class="cd-val">{{ caseDto()!.operativeData.operationType }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Procedure Location</div>
+                                    <div class="cd-val">{{ caseDto()!.operativeData.procedureLocation }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Primary Surgeon</div>
+                                    <div class="cd-val">{{ caseDto()!.operativeData.primarySurgeon }}</div>
+                                </div>
+                                @if (caseDto()!.operativeData.secondarySurgeon !== '—') {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Secondary Surgeon</div>
+                                        <div class="cd-val">{{ caseDto()!.operativeData.secondarySurgeon }}</div>
+                                    </div>
+                                }
+                                <div class="cd-cell">
+                                    <div class="cd-key">Prior CT Operations</div>
+                                    <div class="cd-val">{{ caseDto()!.operativeData.priorCtOps }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Prior CPB Operations</div>
+                                    <div class="cd-val">{{ caseDto()!.operativeData.priorCpbOps }}</div>
+                                </div>
+                                @if (caseDto()!.operativeData.cpbTime !== '—') {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">CPB Time</div>
+                                        <div class="cd-val">{{ caseDto()!.operativeData.cpbTime }}</div>
+                                    </div>
+                                }
+                                @if (caseDto()!.operativeData.crossClampTime !== '—') {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Cross-Clamp Time</div>
+                                        <div class="cd-val">{{ caseDto()!.operativeData.crossClampTime }}</div>
+                                    </div>
+                                }
+                                @if (caseDto()!.operativeData.circulatoryArrestTime !== '—') {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Circulatory Arrest Time</div>
+                                        <div class="cd-val">{{ caseDto()!.operativeData.circulatoryArrestTime }}</div>
+                                    </div>
+                                }
+                                <div class="cd-cell">
+                                    <div class="cd-key">Cerebral NIRS</div>
+                                    <div class="cd-val">{{ caseDto()!.operativeData.cerebralNirs ? 'Yes' : 'No' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Somatic NIRS</div>
+                                    <div class="cd-val">{{ caseDto()!.operativeData.somaticNirs ? 'Yes' : 'No' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">PVR Measured</div>
+                                    <div class="cd-val">{{ caseDto()!.operativeData.pvrMeasured ? 'Yes' : 'No' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Endotracheal Intubation</div>
+                                    <div class="cd-val">{{ caseDto()!.operativeData.endotrachealIntubation ? 'Yes' : 'No' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Extubated in OR</div>
+                                    <div class="cd-val">{{ caseDto()!.operativeData.extubatedInOR ? 'Yes' : 'No' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Re-Intubated</div>
+                                    <div class="cd-val">{{ caseDto()!.operativeData.reIntubated ? 'Yes' : 'No' }}</div>
+                                </div>
+                            </div>
+
+                            <!-- OR Timeline -->
+                            @if (caseDto()!.operativeData.timeline.length) {
+                                <div class="cd-cell">OR Timeline</div>
+                                <div class="cd-timeline">
+                                    @for (item of caseDto()!.operativeData.timeline; track item.label) {
+                                        <div class="cd-tl-item">
+                                            <div class="cd-tl-dot" [class.cd-tl-dot--exit]="item.isExit"></div>
+                                            @if (!item.isExit) {
+                                                <div class="cd-tl-line"></div>
+                                            }
+                                            <div class="cd-tl-time">{{ item.time }}</div>
+                                            <div class="cd-tl-lbl">{{ item.label }}</div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- 9. Blood Products                                  -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <div class="cd-section">
+                        <div class="cd-section-label">Blood Products</div>
+                        @if (!caseDto()!.bloodProducts.filled) {
+                            <div class="cd-empty-note">Blood products section not filled</div>
+                        } @else {
+                            <div class="cd-grid">
+                                <div class="cd-cell">
+                                    <div class="cd-key">Transfusion Usage</div>
+                                    <div class="cd-val">{{ caseDto()!.bloodProducts.transfusionUsage }}</div>
+                                </div>
+                                @if (caseDto()!.bloodProducts.hematocritFirst !== '—') {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Hematocrit (First)</div>
+                                        <div class="cd-val">{{ caseDto()!.bloodProducts.hematocritFirst }}</div>
+                                    </div>
+                                }
+                                @if (caseDto()!.bloodProducts.hematocritLast !== '—') {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Hematocrit (Last)</div>
+                                        <div class="cd-val">{{ caseDto()!.bloodProducts.hematocritLast }}</div>
+                                    </div>
+                                }
+                                <div class="cd-cell">
+                                    <div class="cd-key">Transfusion During Procedure</div>
+                                    <div class="cd-val">{{ caseDto()!.bloodProducts.transfusionDuringProc ? 'Yes' : 'No' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Transfusion Within 24h</div>
+                                    <div class="cd-val">{{ caseDto()!.bloodProducts.transfusionWithin24h ? 'Yes' : 'No' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Transfusion After 24h</div>
+                                    <div class="cd-val">{{ caseDto()!.bloodProducts.transfusionAfter24h ? 'Yes' : 'No' }}</div>
+                                </div>
+                            </div>
+
+                            @if (caseDto()!.bloodProducts.productRows.length) {
+                                <div class="cd-section-label" style="margin-top:12px">Blood Product Volumes (units)
+                                </div>
+                                <table class="cd-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>During</th>
+                                        <th>Within 24h</th>
+                                        <th>After 24h</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (row of caseDto()!.bloodProducts.productRows; track row.label) {
+                                            <tr>
+                                                <td>{{ row.label }}</td>
+                                                <td>{{ row.during }}</td>
+                                                <td>{{ row.within24h }}</td>
+                                                <td>{{ row.after24h }}</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        }
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- 10. Anesthesia                                     -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <div class="cd-section">
+                        <div class="cd-section-label">Anesthesia</div>
+                        @if (!caseDto()!.anesthesia.filled) {
+                            <div class="cd-empty-note">Anesthesia section not filled</div>
+                        } @else {
+                            <div class="cd-grid">
+                                @if (caseDto()!.anesthesia.primaryAnesthesiologist !== '—') {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Primary Anesthesiologist</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.primaryAnesthesiologist }}</div>
+                                    </div>
+                                }
+                                <div class="cd-cell cd-cell--full">
+                                    <div class="cd-key">Pre-op Medication Categories</div>
+                                    <div class="cd-val">{{ caseDto()!.anesthesia.preopMedCategories }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Pre-op Sedation</div>
+                                    <div class="cd-val">{{ caseDto()!.anesthesia.preopSedation ? 'Yes' : 'No' }}</div>
+                                </div>
+                                @if (caseDto()!.anesthesia.inductionDateTime) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Induction Date / Time</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.inductionDateTime | date:'MMM d, y h:mm a' }}</div>
+                                    </div>
+                                }
+                                @if (caseDto()!.anesthesia.patientLocationTransfer) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Patient Location Transfer</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.patientLocationTransfer | date:'MMM d, y h:mm a' }}</div>
+                                    </div>
+                                }
+                                <div class="cd-cell">
+                                    <div class="cd-key">Arterial Line</div>
+                                    <div class="cd-val">{{ caseDto()!.anesthesia.artLine ? 'Yes' : 'No' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Central Pressure Line</div>
+                                    <div class="cd-val">{{ caseDto()!.anesthesia.centralPressureLine ? 'Yes' : 'No' }}</div>
+                                </div>
+                                @if (caseDto()!.anesthesia.ultrasoundGuidance !== '—') {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Ultrasound Guidance</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.ultrasoundGuidance }}</div>
+                                    </div>
+                                }
+                                <div class="cd-cell">
+                                    <div class="cd-key">Neuro Monitor</div>
+                                    <div class="cd-val">{{ caseDto()!.anesthesia.neuroMonitor ? 'Yes' : 'No' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">TEE</div>
+                                    <div class="cd-val">{{ caseDto()!.anesthesia.tee ? 'Yes' : 'No' }}</div>
+                                </div>
+                                @if (caseDto()!.anesthesia.lowIntraopTemp !== '—') {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Lowest Intraop Temp</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.lowIntraopTemp }}</div>
+                                    </div>
+                                }
+                            </div>
+
+                            @if (caseDto()!.anesthesia.intraopPharm.length || caseDto()!.anesthesia.pacuPharm.length) {
+                                <div class="cd-grid">
+                                    @if (caseDto()!.anesthesia.intraopPharm.length) {
+                                        <div class="cd-cell cd-cell--full">
+                                            <div class="cd-key">Intraoperative Pharmaceuticals</div>
+                                            <div class="cd-val">{{ caseDto()!.anesthesia.intraopPharm.join(', ') }}</div>
+                                        </div>
+                                    }
+                                    @if (caseDto()!.anesthesia.pacuPharm.length) {
+                                        <div class="cd-cell cd-cell--full">
+                                            <div class="cd-key">PACU Pharmaceuticals</div>
+                                            <div class="cd-val">{{ caseDto()!.anesthesia.pacuPharm.join(', ') }}</div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+
+                            <!-- Airway -->
+                            <div class="cd-grid">
+                                <div class="cd-cell">
+                                    <div class="cd-key">Airway Site</div>
+                                    <div class="cd-val">{{ caseDto()!.anesthesia.airwaySite }}</div>
+                                </div>
+                                @if (caseDto()!.anesthesia.airwaySizeLma !== '—') {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Airway Size (LMA)</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.airwaySizeLma }}</div>
+                                    </div>
+                                }
+                                @if (caseDto()!.anesthesia.airwaySizeIntub !== '—') {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Airway Size (Intub)</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.airwaySizeIntub }}</div>
+                                    </div>
+                                }
+                                <div class="cd-cell">
+                                    <div class="cd-key">Cuffed</div>
+                                    <div class="cd-val">{{ caseDto()!.anesthesia.cuffed ? 'Yes' : 'No' }}</div>
+                                </div>
+                            </div>
+
+                            <!-- PACU -->
+                            <div class="cd-grid">
+                                @if (caseDto()!.anesthesia.pacuArrivalDateTime) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">PACU Arrival</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.pacuArrivalDateTime | date:'MMM d, y h:mm a' }}</div>
+                                    </div>
+                                }
+                                @if (caseDto()!.anesthesia.pacuFiO2 !== '—') {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">FiO2</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.pacuFiO2 }}</div>
+                                    </div>
+                                }
+                                <div class="cd-cell">
+                                    <div class="cd-key">Mechanical Support</div>
+                                    <div class="cd-val">{{ caseDto()!.anesthesia.pacuMechSupport }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Pacemaker</div>
+                                    <div class="cd-val">{{ caseDto()!.anesthesia.pacuPacemaker ? 'Yes' : 'No' }}</div>
+                                </div>
+                                @if (caseDto()!.anesthesia.pacuPacemaker) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Pacemaker Site</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.pacuPacemakerSite }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Pacemaker Type</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.pacuPacemakerType }}</div>
+                                    </div>
+                                }
+                                <div class="cd-cell">
+                                    <div class="cd-key">PACU Demise</div>
+                                    <div class="cd-val">{{ caseDto()!.anesthesia.pacuDemise ? 'Yes' : 'No' }}</div>
+                                </div>
+                            </div>
+
+                            @if (caseDto()!.anesthesia.adverseEvents.length) {
+                                <div class="cd-tags">
+                                    @for (ev of caseDto()!.anesthesia.adverseEvents; track ev) {
+                                        <span class="cd-tag cd-tag--complication">{{ ev }}</span>
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- 11. Complications                                  -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <div class="cd-section">
+                        <div class="cd-section-label">Complications</div>
+                        @if (!caseDto()!.complications.filled || caseDto()!.complications.noComplications) {
+                            <div class="cd-empty-note">No complications reported</div>
+                        } @else if (!caseDto()!.complications.items.length) {
+                            <div class="cd-empty-note">No complications recorded</div>
+                        } @else {
+                            <div class="cd-tags">
+                                @for (c of caseDto()!.complications.items; track c.key) {
+                                    <span class="cd-tag cd-tag--complication">{{ c.label }}</span>
+                                }
+                            </div>
+                            <div class="cd-grid cd-grid--mt">
+                                @for (c of caseDto()!.complications.items; track c.key) {
+                                    @if (c.date || c.notes !== '—') {
+                                        <div class="cd-cell cd-cell--full">
+                                            <div class="cd-key">{{ c.label }}</div>
+                                            <div class="cd-val">
+                                                @if (c.date) {
+                                                    {{ c.date | date:'MMM d, y' }}
+                                                }
+                                                @if (c.notes !== '—') {
+                                                    &mdash; {{ c.notes }}
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- 12. Discharge Information                          -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <div class="cd-section">
+                        <div class="cd-section-label">Discharge Information</div>
+                        @if (!caseDto()!.discharge.filled) {
+                            <div class="cd-empty-note">Discharge information not filled</div>
+                        } @else {
+                            <div class="cd-discharge-row"
+                                 [ngClass]="getDischargeClass(caseDto()!.discharge.dischargeStatusCode)">
+                                <span class="cd-discharge-label">Discharge Status</span>
+                                <span class="cd-discharge-val">{{ caseDto()!.discharge.dischargeStatus }}</span>
+                            </div>
+                            <div class="cd-grid cd-grid--mt">
+                                @if (caseDto()!.discharge.dischargeDate) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Discharge Date</div>
+                                        <div class="cd-val">{{ caseDto()!.discharge.dischargeDate | date:'MMM d, y' }}</div>
+                                    </div>
+                                }
+                                <div class="cd-cell">
+                                    <div class="cd-key">Discharge Location</div>
+                                    <div class="cd-val">{{ caseDto()!.discharge.dischargeLocation }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">30-Day Readmission</div>
+                                    <div class="cd-val">{{ caseDto()!.discharge.readmission30Day }}</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- 13. Follow-ups                                     -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    @if (caseDto()!.followups.length) {
+                        <div class="cd-section">
+                            <div class="cd-section-label">Follow-up Information</div>
+                            @for (f of caseDto()!.followups; track f.id; let i = $index) {
+                                <div class="cd-sub-section">
+                                    @if (caseDto()!.followups.length > 1) {
+                                        <div class="cd-cell">Follow-up {{ i + 1 }}</div>
+                                    }
+                                    <div class="cd-discharge-row" [ngClass]="getDischargeClass(f.patientStatus)">
+                                        <span class="cd-discharge-label">Patient Status</span>
+                                        <span class="cd-discharge-val">{{ f.patientStatus }}</span>
+                                    </div>
+                                    <div class="cd-grid cd-grid--mt">
+                                        @if (f.followupDate) {
+                                            <div class="cd-cell">
+                                                <div class="cd-key">Follow-up Date</div>
+                                                <div class="cd-val">{{ f.followupDate | date:'MMM d, y' }}</div>
+                                            </div>
+                                        }
+                                        @if (f.conductedByName !== '—') {
+                                            <div class="cd-cell">
+                                                <div class="cd-key">Conducted By</div>
+                                                <div class="cd-val">{{ f.conductedByName }}</div>
+                                            </div>
+                                        }
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Readmission Requested</div>
+                                            <div class="cd-val">{{ f.readmissionRequested ? 'Yes' : 'No' }}</div>
+                                        </div>
+                                        @if (f.causeOfDeath !== '—') {
+                                            <div class="cd-cell cd-cell--full">
+                                                <div class="cd-key">Cause of Death</div>
+                                                <div class="cd-val">{{ f.causeOfDeath }}</div>
+                                            </div>
+                                        }
+                                        @if (f.notes !== '—') {
+                                            <div class="cd-cell cd-cell--full">
+                                                <div class="cd-key">Notes</div>
+                                                <div class="cd-val">{{ f.notes }}</div>
+                                            </div>
+                                        }
+                                    </div>
+                                    @if (!$last) {
+                                        <hr class="cd-divider"/>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn" [disabled]="true">Print</button>
+                    @if (canAddFollowup()) {
+                        <button class="btn btn-primary" (click)="openFollowupModal()" title="Record Follow-up">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"
+                                      stroke-linejoin="round"/>
+                                <path d="M16 2V6M8 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M3 10H21" stroke="currentColor" stroke-width="2"/>
+                                <path d="M9 15H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span>Follow-up</span>
+                        </button>
+                    }
+                    <button class="btn btn-ghost" (click)="showViewModal.set(false)">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+<!--@if (showViewModal() && selectedCase()) {
+    <div class="new-modals">
+        <div class="modal-overlay open" (click)="showViewModal.set(false)">
+            <div class="modal modal-xl" (click)="$event.stopPropagation()">
+
+                &lt;!&ndash; Header &ndash;&gt;
                 <div class="modal-header">
                     <div>
                         <div class="modal-title">Case Detail</div>
@@ -132,7 +849,7 @@
 
                 <div class="modal-body">
 
-                    <!-- Status Bar -->
+                    &lt;!&ndash; Status Bar &ndash;&gt;
                     <div class="cd-top">
                         @if (selectedCase()?.step10OperativeData?.operationStatus) {
                             <span class="cd-status-badge"
@@ -152,12 +869,12 @@
                         </div>
                     </div>
 
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
-                    <!-- 1. Patient Information                                          -->
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
+                    &lt;!&ndash; 1. Patient Information                                          &ndash;&gt;
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
                     <div class="cd-section">
                         <div class="cd-section-label">Patient Information</div>
-                        <div class="cd-grid cd-grid--3">
+                        <div class="cd-grid cd-grid&#45;&#45;3">
                             <div class="cd-cell">
                                 <div class="cd-key">Citizen Number</div>
                                 <div class="cd-val">{{ selectedCase()?.patientId?.citizenNumber || '—' }}</div>
@@ -202,16 +919,16 @@
                                 <div class="cd-cell">
                                     <div class="cd-key">Location</div>
                                     <div class="cd-val">
-                                        <!--                                        {{ [selectedCase()?.patientId?.city, selectedCase()?.patientId?.province, selectedCase()?.patientId.country].filter(Boolean)?.join(', ') || '—' }}-->
+                                        &lt;!&ndash;                                        {{ [selectedCase()?.patientId?.city, selectedCase()?.patientId?.province, selectedCase()?.patientId.country].filter(Boolean)?.join(', ') || '—' }}&ndash;&gt;
                                     </div>
                                 </div>
                             }
                         </div>
                     </div>
 
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
-                    <!-- 2. Hospital & Admission (step5)                                 -->
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
+                    &lt;!&ndash; 2. Hospital & Admission (step5)                                 &ndash;&gt;
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
                     @if (selectedCase().step5HospitalAdmission) {
                         <div class="cd-section">
                             <div class="cd-section-label">Hospital & Admission</div>
@@ -270,44 +987,44 @@
                         </div>
                     }
 
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
-                    <!-- 3. Congenital Abnormalities (step3)                            -->
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
+                    &lt;!&ndash; 3. Congenital Abnormalities (step3)                            &ndash;&gt;
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
                     @if (selectedCase().step3Abnormalities?.selectedAbnormalities?.length) {
                         <div class="cd-section">
                             <div class="cd-section-label">Congenital Abnormalities</div>
                             <div class="cd-tags">
                                 @for (a of selectedCase().step3Abnormalities.selectedAbnormalities; track a.abnormality) {
-                                    <span class="cd-tag cd-tag--abnormality">{{ a.name }}</span>
+                                    <span class="cd-tag cd-tag&#45;&#45;abnormality">{{ a.name }}</span>
                                 }
                             </div>
                         </div>
                     }
 
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
-                    <!-- 4. Chromosomal & Syndromes (step4)                             -->
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
+                    &lt;!&ndash; 4. Chromosomal & Syndromes (step4)                             &ndash;&gt;
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
                     @if (selectedCase().step4ChromosomalSyndromes?.selectedChromosomal?.length
                     || selectedCase().step4ChromosomalSyndromes?.selectedSyndromes?.length) {
                         <div class="cd-section">
                             <div class="cd-section-label">Chromosomal Abnormalities & Syndromes</div>
                             <div class="cd-grid">
                                 @if (selectedCase().step4ChromosomalSyndromes.selectedChromosomal?.length) {
-                                    <div class="cd-cell cd-cell--full">
+                                    <div class="cd-cell cd-cell&#45;&#45;full">
                                         <div class="cd-key">Chromosomal Abnormalities</div>
-                                        <div class="cd-tags cd-tags--sm">
+                                        <div class="cd-tags cd-tags&#45;&#45;sm">
                                             @for (c of selectedCase().step4ChromosomalSyndromes.selectedChromosomal; track c) {
-                                                <span class="cd-tag cd-tag--crom">{{ c }}</span>
+                                                <span class="cd-tag cd-tag&#45;&#45;crom">{{ c }}</span>
                                             }
                                         </div>
                                     </div>
                                 }
                                 @if (selectedCase().step4ChromosomalSyndromes.selectedSyndromes?.length) {
-                                    <div class="cd-cell cd-cell--full">
+                                    <div class="cd-cell cd-cell&#45;&#45;full">
                                         <div class="cd-key">Syndromes</div>
-                                        <div class="cd-tags cd-tags--sm">
+                                        <div class="cd-tags cd-tags&#45;&#45;sm">
                                             @for (s of selectedCase().step4ChromosomalSyndromes.selectedSyndromes; track s) {
-                                                <span class="cd-tag cd-tag--syndromes">{{ s }}</span>
+                                                <span class="cd-tag cd-tag&#45;&#45;syndromes">{{ s }}</span>
                                             }
                                         </div>
                                     </div>
@@ -316,29 +1033,29 @@
                         </div>
                     }
 
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
-                    <!-- 5. Pre-operative Factors (step6)                               -->
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
+                    &lt;!&ndash; 5. Pre-operative Factors (step6)                               &ndash;&gt;
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
                     @if (selectedCase().step6PreOpMeds?.selectedPreOpFactors?.length) {
                         <div class="cd-section">
                             <div class="cd-section-label">Pre-operative Factors</div>
                             <div class="cd-tags">
                                 @for (f of selectedCase().step6PreOpMeds.selectedPreOpFactors; track f) {
-                                    <span class="cd-tag cd-tag--preop">{{ f }}</span>
+                                    <span class="cd-tag cd-tag&#45;&#45;preop">{{ f }}</span>
                                 }
                             </div>
                         </div>
                     }
 
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
-                    <!-- 6. Diagnoses (step7)                                           -->
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
+                    &lt;!&ndash; 6. Diagnoses (step7)                                           &ndash;&gt;
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
                     @if (selectedCase().step7Diagnosis?.selectedDiagnoses?.length) {
                         <div class="cd-section">
                             <div class="cd-section-label">Diagnoses</div>
                             <div class="cd-tags">
                                 @for (d of selectedCase().step7Diagnosis.selectedDiagnoses; track d.id) {
-                                    <span class="cd-tag cd-tag--diag">
+                                    <span class="cd-tag cd-tag&#45;&#45;diag">
                   {{ d.name }}
                                         <span class="cd-tag-code">{{ d.displayCode }}</span>
                                         @if (d.isPrimary) {
@@ -350,15 +1067,15 @@
                         </div>
                     }
 
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
-                    <!-- 7. Procedures (step8)                                          -->
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
+                    &lt;!&ndash; 7. Procedures (step8)                                          &ndash;&gt;
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
                     @if (selectedCase().step8Procedures?.selectedProcedures?.length) {
                         <div class="cd-section">
                             <div class="cd-section-label">Procedures</div>
                             <div class="cd-tags">
                                 @for (p of selectedCase().step8Procedures.selectedProcedures; track p.id) {
-                                    <span class="cd-tag cd-tag--proc">
+                                    <span class="cd-tag cd-tag&#45;&#45;proc">
                   {{ p.name }}
                                         <span class="cd-tag-code">{{ p.displayCode }}</span>
                 </span>
@@ -367,9 +1084,9 @@
                         </div>
                     }
 
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
-                    <!-- 8. Operative Data (step10)                                     -->
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
+                    &lt;!&ndash; 8. Operative Data (step10)                                     &ndash;&gt;
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
                     @if (selectedCase().step10OperativeData) {
                         <div class="cd-section">
                             <div class="cd-section-label">Operative Data</div>
@@ -475,7 +1192,7 @@
                                 </div>
                             </div>
 
-                            <!-- OR Timeline -->
+                            &lt;!&ndash; OR Timeline &ndash;&gt;
                             @if (selectedCase().step10OperativeData.orEntryTime
                             || selectedCase().step10OperativeData.skinIncisionStart
                             || selectedCase().step10OperativeData.skinClosure
@@ -508,7 +1225,7 @@
                                     }
                                     @if (selectedCase().step10OperativeData.orExitTime) {
                                         <div class="cd-tl-item">
-                                            <div class="cd-tl-dot cd-tl-dot--exit"></div>
+                                            <div class="cd-tl-dot cd-tl-dot&#45;&#45;exit"></div>
                                             <div class="cd-tl-time">{{ selectedCase().step10OperativeData.orExitTime }}</div>
                                             <div class="cd-tl-lbl">OR Exit</div>
                                         </div>
@@ -564,14 +1281,14 @@
                                 </div>
                             </div>
 
-                            <!-- Blood Product Volumes — only show rows that have any non-zero values -->
+                            &lt;!&ndash; Blood Product Volumes — only show rows that have any non-zero values &ndash;&gt;
                             @if (selectedCase().step11BloodProducts) {
                                 <div class="cd-section">
                                     <div class="cd-section-label">Blood Product Volumes (units)</div>
 
                                     <div class="cd-grid">
 
-                                        <!-- Packed RBC -->
+                                        &lt;!&ndash; Packed RBC &ndash;&gt;
                                         @if (selectedCase().step11BloodProducts.bpDuringPackedRbc ||
                                         selectedCase().step11BloodProducts.bpWithinPackedRbc ||
                                         selectedCase().step11BloodProducts.bpAfterPackedRbc) {
@@ -589,7 +1306,7 @@
                                             </div>
                                         }
 
-                                        <!-- FFP -->
+                                        &lt;!&ndash; FFP &ndash;&gt;
                                         @if (selectedCase().step11BloodProducts.bpDuringFfp ||
                                         selectedCase().step11BloodProducts.bpWithinFfp ||
                                         selectedCase().step11BloodProducts.bpAfterFfp) {
@@ -607,7 +1324,7 @@
                                             </div>
                                         }
 
-                                        <!-- SDP -->
+                                        &lt;!&ndash; SDP &ndash;&gt;
                                         @if (selectedCase().step11BloodProducts.bpDuringSdp ||
                                         selectedCase().step11BloodProducts.bpWithinSdp ||
                                         selectedCase().step11BloodProducts.bpAfterSdp) {
@@ -625,7 +1342,7 @@
                                             </div>
                                         }
 
-                                        <!-- Cryo -->
+                                        &lt;!&ndash; Cryo &ndash;&gt;
                                         @if (selectedCase().step11BloodProducts.bpDuringCryo ||
                                         selectedCase().step11BloodProducts.bpWithinCryo ||
                                         selectedCase().step11BloodProducts.bpAfterCryo) {
@@ -643,7 +1360,7 @@
                                             </div>
                                         }
 
-                                        <!-- Fresh Whole Blood -->
+                                        &lt;!&ndash; Fresh Whole Blood &ndash;&gt;
                                         @if (selectedCase().step11BloodProducts.bpDuringFwb ||
                                         selectedCase().step11BloodProducts.bpWithinFwb ||
                                         selectedCase().step11BloodProducts.bpAfterFwb) {
@@ -661,7 +1378,7 @@
                                             </div>
                                         }
 
-                                        <!-- Repeat same pattern for remaining types... -->
+                                        &lt;!&ndash; Repeat same pattern for remaining types... &ndash;&gt;
 
                                     </div>
                                 </div>
@@ -669,14 +1386,14 @@
                         </div>
                     }
 
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
-                    <!-- 10. Anesthesia (step13)                                        -->
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
+                    &lt;!&ndash; 10. Anesthesia (step13)                                        &ndash;&gt;
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
                     @if (selectedCase().step13Anesthesia) {
                         <div class="cd-section">
                             <div class="cd-section-label">Anesthesia</div>
 
-                            <!-- General -->
+                            &lt;!&ndash; General &ndash;&gt;
                             <div class="cd-grid">
                                 @if (selectedCase().step13Anesthesia.primAnesName) {
                                     <div class="cd-cell">
@@ -685,7 +1402,7 @@
                                     </div>
                                 }
                                 @if (selectedCase().step13Anesthesia.preopMedCat?.length) {
-                                    <div class="cd-cell cd-cell--full">
+                                    <div class="cd-cell cd-cell&#45;&#45;full">
                                         <div class="cd-key">Pre-op Medication Categories</div>
                                         <div class="cd-val">{{ selectedCase().step13Anesthesia.preopMedCat.join(', ') }}</div>
                                     </div>
@@ -720,7 +1437,7 @@
                                 }
                             </div>
 
-                            <!-- Induction Agents -->
+                            &lt;!&ndash; Induction Agents &ndash;&gt;
                             @if (selectedCase().step13Anesthesia.indTypeInh
                             || selectedCase().step13Anesthesia.indTypeIv
                             || selectedCase().step13Anesthesia.indTypeIm) {
@@ -747,7 +1464,7 @@
                                 </div>
                             }
 
-                            <!-- Regional Anesthesia -->
+                            &lt;!&ndash; Regional Anesthesia &ndash;&gt;
                             @if (hasObjectKeys(selectedCase().step13Anesthesia.regAnesSite)
                             || hasObjectKeys(selectedCase().step13Anesthesia.regAnesDrug)) {
                                 <div class="cd-cell">Regional Anesthesia</div>
@@ -767,18 +1484,18 @@
                                 </div>
                             }
 
-                            <!-- Intraop & PACU Medications -->
+                            &lt;!&ndash; Intraop & PACU Medications &ndash;&gt;
                             @if (hasObjectKeys(selectedCase().step13Anesthesia.intraopPharm)
                             || hasObjectKeys(selectedCase().step13Anesthesia.pacuPharm)) {
                                 <div class="cd-grid">
                                     @if (hasObjectKeys(selectedCase().step13Anesthesia.intraopPharm)) {
-                                        <div class="cd-cell cd-cell--full">
+                                        <div class="cd-cell cd-cell&#45;&#45;full">
                                             <div class="cd-key">Intraoperative Pharmaceuticals</div>
                                             <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.intraopPharm).join(', ') || 'None' }}</div>
                                         </div>
                                     }
                                     @if (hasObjectKeys(selectedCase().step13Anesthesia.pacuPharm)) {
-                                        <div class="cd-cell cd-cell--full">
+                                        <div class="cd-cell cd-cell&#45;&#45;full">
                                             <div class="cd-key">PACU Pharmaceuticals</div>
                                             <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.pacuPharm).join(', ') || 'None' }}</div>
                                         </div>
@@ -786,7 +1503,7 @@
                                 </div>
                             }
 
-                            <!-- Monitoring & Lines -->
+                            &lt;!&ndash; Monitoring & Lines &ndash;&gt;
                             <div class="cd-cell">Monitoring & Lines</div>
                             <div class="cd-grid">
                                 <div class="cd-cell">
@@ -861,7 +1578,7 @@
                                 </div>
                             </div>
 
-                            <!-- Airway -->
+                            &lt;!&ndash; Airway &ndash;&gt;
                             <div class="cd-cell">Airway</div>
                             <div class="cd-grid">
                                 @if (selectedCase().step13Anesthesia.airwaySite) {
@@ -888,7 +1605,7 @@
                                 </div>
                             </div>
 
-                            <!-- PACU -->
+                            &lt;!&ndash; PACU &ndash;&gt;
                             <div class="cd-cell">Post-Anesthesia Care Unit (PACU)</div>
                             <div class="cd-grid">
                                 @if (selectedCase().step13Anesthesia.pacuArrivalDt) {
@@ -936,7 +1653,7 @@
                                     </div>
                                 }
                                 @if (hasObjectKeys(selectedCase().step13Anesthesia.pacuDisposition)) {
-                                    <div class="cd-cell cd-cell--full">
+                                    <div class="cd-cell cd-cell&#45;&#45;full">
                                         <div class="cd-key">Disposition</div>
                                         <div class="cd-val">{{ getObjectKeys(selectedCase().step13Anesthesia.pacuDisposition).join(', ') }}</div>
                                     </div>
@@ -947,21 +1664,21 @@
                                 </div>
                             </div>
 
-                            <!-- Adverse Events -->
+                            &lt;!&ndash; Adverse Events &ndash;&gt;
                             @if (hasObjectKeys(selectedCase().step13Anesthesia.anesAdverseEvents)) {
                                 <div class="cd-cell">Anesthesia Adverse Events</div>
                                 <div class="cd-tags">
                                     @for (ev of getObjectKeys(selectedCase().step13Anesthesia.anesAdverseEvents); track ev) {
-                                        <span class="cd-tag cd-tag--complication">{{ ev }}</span>
+                                        <span class="cd-tag cd-tag&#45;&#45;complication">{{ ev }}</span>
                                     }
                                 </div>
                             }
                         </div>
                     }
 
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
-                    <!-- 11. Complications (step14)                                     -->
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
+                    &lt;!&ndash; 11. Complications (step14)                                     &ndash;&gt;
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
                     <div class="cd-section">
                         <div class="cd-section-label">Complications</div>
 
@@ -977,23 +1694,23 @@
                             <div class="cd-empty-note">No complications reported</div>
                         } @else {
 
-                            <!-- Tags -->
+                            &lt;!&ndash; Tags &ndash;&gt;
                             <div class="cd-tags">
                                 @for (key of Object.keys(selectedCase().step14Complications.complicationDetails); track key) {
-                                    <span class="cd-tag cd-tag--complication">
+                                    <span class="cd-tag cd-tag&#45;&#45;complication">
                     {{ key | titlecase }}
                 </span>
                                 }
                             </div>
 
-                            <!-- Details -->
-                            <div class="cd-grid cd-grid--mt">
+                            &lt;!&ndash; Details &ndash;&gt;
+                            <div class="cd-grid cd-grid&#45;&#45;mt">
                                 @for (key of Object.keys(selectedCase().step14Complications.complicationDetails); track key) {
                                     @if (
                                         selectedCase().step14Complications.complicationDetails[key]?.date ||
                                         selectedCase().step14Complications.complicationDetails[key]?.notes
                                             ) {
-                                        <div class="cd-cell cd-cell--full">
+                                        <div class="cd-cell cd-cell&#45;&#45;full">
                                             <div class="cd-key">
                                                 {{ key | titlecase }}
                                             </div>
@@ -1013,9 +1730,9 @@
                         }
                     </div>
 
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
-                    <!-- 12. Discharge Information (step15)                             -->
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
+                    &lt;!&ndash; 12. Discharge Information (step15)                             &ndash;&gt;
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
                     @if (selectedCase().step15Discharge?.dischargeStatus) {
                         <div class="cd-section">
                             <div class="cd-section-label">Discharge Information</div>
@@ -1024,7 +1741,7 @@
                                 <span class="cd-discharge-label">Discharge Status</span>
                                 <span class="cd-discharge-val">{{ selectedCase().step15Discharge.dischargeStatus }}</span>
                             </div>
-                            <div class="cd-grid cd-grid--mt">
+                            <div class="cd-grid cd-grid&#45;&#45;mt">
                                 @if (selectedCase().step15Discharge.dischargeDate) {
                                     <div class="cd-cell">
                                         <div class="cd-key">Discharge Date</div>
@@ -1062,7 +1779,7 @@
                                     </div>
                                 }
                                 @if (selectedCase().step15Discharge.readmissionReason) {
-                                    <div class="cd-cell cd-cell--full">
+                                    <div class="cd-cell cd-cell&#45;&#45;full">
                                         <div class="cd-key">Readmission Reason</div>
                                         <div class="cd-val">{{ selectedCase().step15Discharge.readmissionReason }}</div>
                                     </div>
@@ -1083,9 +1800,9 @@
                         </div>
                     }
 
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
-                    <!-- 13. Follow-ups                                                  -->
-                    <!-- ═══════════════════════════════════════════════════════════════ -->
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
+                    &lt;!&ndash; 13. Follow-ups                                                  &ndash;&gt;
+                    &lt;!&ndash; ═══════════════════════════════════════════════════════════════ &ndash;&gt;
                     @if (selectedCase().followups.length > 0) {
                         <div class="cd-section">
                             <div class="cd-section-label">Follow-up Information</div>
@@ -1100,7 +1817,7 @@
                                             <span class="cd-discharge-val">{{ f.patientStatus }}</span>
                                         </div>
                                     }
-                                    <div class="cd-grid cd-grid--mt">
+                                    <div class="cd-grid cd-grid&#45;&#45;mt">
                                         @if (f.followupDate) {
                                             <div class="cd-cell">
                                                 <div class="cd-key">Follow-up Date</div>
@@ -1124,19 +1841,19 @@
                                             </div>
                                         }
                                         @if (f.readmissionReason) {
-                                            <div class="cd-cell cd-cell--full">
+                                            <div class="cd-cell cd-cell&#45;&#45;full">
                                                 <div class="cd-key">Readmission Reason</div>
                                                 <div class="cd-val">{{ f.readmissionReason }}</div>
                                             </div>
                                         }
                                         @if (f.causeOfDeath) {
-                                            <div class="cd-cell cd-cell--full">
+                                            <div class="cd-cell cd-cell&#45;&#45;full">
                                                 <div class="cd-key">Cause of Death</div>
                                                 <div class="cd-val">{{ f.causeOfDeath }}</div>
                                             </div>
                                         }
                                         @if (f.notes) {
-                                            <div class="cd-cell cd-cell--full">
+                                            <div class="cd-cell cd-cell&#45;&#45;full">
                                                 <div class="cd-key">Notes</div>
                                                 <div class="cd-val">{{ f.notes }}</div>
                                             </div>
@@ -1151,9 +1868,9 @@
                     }
 
 
-                </div><!-- /modal-body -->
+                </div>&lt;!&ndash; /modal-body &ndash;&gt;
 
-                <!-- Footer -->
+                &lt;!&ndash; Footer &ndash;&gt;
                 <div class="modal-footer">
                     <button class="btn" [disabled]="true">Print</button>
                     @if (canAddFollowup(selectedCase())) {
@@ -1177,8 +1894,8 @@
             </div>
         </div>
     </div>
-}
-@if (showFollowupModal() && selectedCaseForFollowup()) {
+}-->
+@if (showFollowupModal() && caseDto()) {
     <div class="new-modals">
         <div class="modal-overlay open" (click)="showFollowupModal.set(false)">
             <div class="modal modal-lg" (click)="$event.stopPropagation()">
@@ -1187,8 +1904,8 @@
                     <div>
                         <div class="modal-title">Record Patient Follow-up</div>
                         <div class="modal-sub">
-                            {{ selectedCaseForFollowup()?.patientId?.name || '—' }}
-                            — {{ selectedCaseForFollowup()?.patientMrn || '—' }}
+                            {{ caseDto()!.patient.name || '—' }}
+                            — {{ caseDto()!.patient.mrn || '—' }}
                         </div>
                     </div>
                     <button class="modal-close" (click)="showFollowupModal.set(false)">
