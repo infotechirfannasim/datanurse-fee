@@ -259,6 +259,12 @@
   flex-shrink: 0;
 }
 
+.s-avatar-img {
+  background: none;
+  border: 1.5px solid #e5e7eb;
+  object-fit: cover;
+}
+
 .s-name {
   font-size: 13px;
   font-weight: 600;

@@ -507,10 +507,49 @@
     }
   }
 
+  &.pill-completed {
+    background: #ECFDF5;
+    color: #065F46;
+    .dot {
+      background: #065F46;
+    }
+  }
+
+  &.pill-active {
+    background: rgba(6, 86, 197, 0.08);
+    color: var(--blue);
+    .dot {
+      background: var(--blue);
+    }
+  }
+
+  &.pill-pending {
+    background: #FFFBEB;
+    color: #92400E;
+    .dot {
+      background: #92400E;
+    }
+  }
+
+  &.pill-critical {
+    background: #FEF2F2;
+    color: #991B1B;
+    .dot {
+      background: #991B1B;
+    }
+  }
+
+  &.pill-elective {
+    background: #FEF2F2;
+    color: #92400E;
+    .dot {
+      background: #92400E;
+    }
+  }
+
   &.pill-critical {
     background: #FCEBEB;
     color: #A32D2D;
-
     .dot {
       background: #A32D2D;
     }

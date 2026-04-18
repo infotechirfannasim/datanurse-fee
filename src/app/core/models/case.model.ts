@@ -318,6 +318,9 @@ export interface CaseListItemDto {
   stage: string;               // raw stage code
   stageLabel: string;          // capitalised for display
   status: StatusChip;          // case.status
+  followups: boolean;
+  surgeryDate: string;
+  operationType: string;
   isSoloSubmission: boolean;
   teamId: string | null;       // null = solo; string = team case
 

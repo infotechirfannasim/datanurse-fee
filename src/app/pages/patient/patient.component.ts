@@ -298,15 +298,15 @@ export class PatientComponent implements OnInit, OnDestroy {
         return map[(code ?? '').toUpperCase()] ?? 'pill-pending';
     }
 
-    getCasePercentage(stage: string): number {
+    getCasePercentage(status: string, followups: boolean): number {
+        if (followups) return 100;
+        if (!status) return 0;
         const map: Record<string, number> = {
-            draft: 25,
-            assistant_done: 50,
-            kpo_done: 75,
-            doctor_review_done: 100,
-            final: 100,
+            [CASE_STAUSES.OPT_DATA_SUBMITTED.value]: 25,
+            [CASE_STAUSES.POST_OPT_SUBMITTED.value]: 50,
+            [CASE_STAUSES.REVIEWED.value]: 75
         };
-        return map[stage] ?? 0;
+        return map[status] ?? 0;
     }
 
     getSurgeonInitials(name: string): string {

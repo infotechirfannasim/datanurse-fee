@@ -250,6 +250,8 @@ export class LovComponent implements OnInit, OnDestroy {
  */
 
     drillDown(lov: LOV): void {
+        if (!lov) return;
+        this.selectedLov.set(lov);
         const currType = this.currentLovType();
         let childrenTypes = this.childTypesMap()[currType] || [];   // ← Now only real hierarchy
 

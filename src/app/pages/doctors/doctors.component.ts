@@ -248,12 +248,18 @@ export class DoctorsComponent implements OnInit {
         return map[status] ?? 'badge-gray';
     }
 
+    onAddDoctor(): void {
+        this.isEditMode = false;
+        this.resetForm();
+        this.showAddModal.set(true);
+    }
+
     onEditProfile(doc: Doctor) {
         if (!doc) return;
         this.selectedDoctor.set(doc);
         this.isEditMode = true;
+        this.resetForm();
         this.doctorForm.patchValue(this.mapDoctorToForm(doc));
-
         this.showViewModal.set(false);
         this.showAddModal.set(true);
     }
@@ -383,6 +389,7 @@ export class DoctorsComponent implements OnInit {
 
     resetForm(): void {
         this.doctorForm.reset({role: this.doctorForm.value.role});
+        this.isEditMode ? this.doctorForm.get('email')?.disable() : this.doctorForm.get('email')?.enable();
         this.imagePreview = null;
         this.selectedFile = null;
         this.isEditMode = false;

@@ -15,7 +15,7 @@ export const PATIENT_STATUS = {
 };
 
 export const CASE_STAUSES = {
-  DRAFT: {key: 'draft', label: 'Draft'},
+  DRAFT: {value: 'draft', label: 'Draft'},
   OPT_DATA_SUBMITTED: {value: 'opt_data_submitted', label: 'OPT Data Submitted'},
   POST_OPT_SUBMITTED: {value: 'post_opt_submitted', label: 'POST Opt Submitted'},
   REVIEWED: {value: 'reviewed', label: 'Reviewed'}

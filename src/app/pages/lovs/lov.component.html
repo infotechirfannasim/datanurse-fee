@@ -81,7 +81,7 @@
                 </div>
             }
 
-            @if (this.rootType()) {
+            @if (rootType() && ( !selectedLov() || selectedLov()?.status !== 'inactive' )) {
                 <button (click)="openAddModal()" class="btn btn-primary">
                     <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
                         <line stroke="white" stroke-linecap="round" stroke-width="2" x1="12" x2="12" y1="5" y2="19"/>

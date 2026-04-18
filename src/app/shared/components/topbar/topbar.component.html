@@ -20,7 +20,7 @@
         <div class="topbar-btn" id="notif-wrap" style="position:relative;">
             <div class="profile-side" (click)="toggleNotif()">
                 @if (getProfileImageUrl()) {
-                    <img [src]="getProfileImageUrl()" alt="Profile Photo" class="s-avatar">
+                    <img [src]="getProfileImageUrl()" alt="Profile Photo" class="s-avatar s-avatar-img">
                 } @else {
                     <div class="s-avatar">{{ getUserInitials(userInfo()) }}</div>
                 }

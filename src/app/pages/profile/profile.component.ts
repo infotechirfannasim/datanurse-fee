@@ -158,6 +158,9 @@ export class ProfileComponent implements OnInit {
             this.imagePreview = reader.result as string;
         };
         reader.readAsDataURL(file);
+        if (!this.personalForm.dirty) {
+            this.personalForm.markAsDirty();
+        }
     }
 
     updateProfile(): void {

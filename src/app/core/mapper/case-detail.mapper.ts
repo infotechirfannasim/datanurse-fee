@@ -351,7 +351,6 @@ function mapAnesthesia(raw: RawCase): AnesthesiaDto {
     const adverseEvents = trueKeys(s.anesAdverseEvents);
 
     const preopMedCategories = (s.preopMedCat ?? [])
-        .filter((c) => c !== 'None')
         .join(', ') || DASH;
 
     return {
@@ -536,6 +535,7 @@ function listProcedure(raw: RawCase): ListProcedureSummary {
 export function mapToCaseListItemDto(raw: RawCase, lovs: LovStore = {}): CaseListItemDto {
     const p     = raw.patientId;
     const operativeData = raw.step10OperativeData;
+    const hospitalAdmission = raw.step5HospitalAdmission;
     const stage = str(raw.stage);
 
     const base = {
@@ -558,6 +558,9 @@ export function mapToCaseListItemDto(raw: RawCase, lovs: LovStore = {}): CaseLis
         isSoloSubmission:     raw.isSoloSubmission === true,
         teamId:               raw.teamId ?? null,
         ownerDoctor:          doctorName(raw.ownerDoctorId),
+        followups:            (raw.followups?.length ?? 0) > 0,
+        surgeryDate:          str(hospitalAdmission?.surgeryDate),
+        operationType:          lovName(lovs,'operationType', operativeData?.operationType),
         diagnosis:            listDiagnosis(raw),
         procedure:            listProcedure(raw),
         createdAt:            date(raw.createdAt),

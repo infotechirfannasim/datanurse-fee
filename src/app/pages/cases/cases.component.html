@@ -324,12 +324,11 @@
                             <div class="cd-tags">
                                 @for (d of caseDto()!.diagnoses.items; track d.id) {
                                     <span class="cd-tag cd-tag--diag">
-                    {{ d.name }}
-                                        <span class="cd-tag-code">{{ d.displayCode }}</span>
+                                        {{ d.name }}
                                         @if (d.isPrimary) {
                                             <span class="cd-tag-primary">Primary</span>
                                         }
-                  </span>
+                                    </span>
                                 }
                             </div>
                         }
@@ -346,9 +345,8 @@
                             <div class="cd-tags">
                                 @for (p of caseDto()!.procedures.items; track p.id) {
                                     <span class="cd-tag cd-tag--proc">
-                    {{ p.name }}
-                                        <span class="cd-tag-code">{{ p.displayCode }}</span>
-                  </span>
+                                        {{ p.name }}
+                                    </span>
                                 }
                             </div>
                         }
@@ -803,7 +801,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn" [disabled]="true">Print</button>
+                    <button class="btn btn-ghost" [disabled]="true">Print</button>
                     @if (canAddFollowup()) {
                         <button class="btn btn-primary" (click)="openFollowupModal()" title="Record Follow-up">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"

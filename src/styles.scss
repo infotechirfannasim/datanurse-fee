@@ -1227,6 +1227,7 @@ $font: 'DM Sans', sans-serif;
   &.btn-primary:disabled {
     background: var(--muted);
     box-shadow: none;
+    color: var(--text-mid);
     cursor: not-allowed;
   }
 
@@ -1788,7 +1789,7 @@ input.has-icon {
 
   &.status-salvage {
     background: #FEF2F2;
-    color: #991B1B;
+    color: #854F0B;
   }
 
   &.status-completed {
@@ -2223,7 +2224,7 @@ input.has-icon {
   }
 }
 
-button {
+button, input, select {
   &:disabled {
     cursor: not-allowed !important;
     background-color: var(--border) !important;

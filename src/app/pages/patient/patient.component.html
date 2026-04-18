@@ -91,11 +91,6 @@
                 <!-- ── Header ── -->
                 <div class="modal-header">
                     <div class="modal-header-left">
-                        @if (getProfileImageUrl(patientDto())) {
-                            <img [src]="getProfileImageUrl(patientDto())" class="doc-av doc-av--photo" alt="Profile Photo">
-                        } @else {
-                            <div class="doc-av doc-av--blue">{{ getUserInitials(patientDto()!.name) }}</div>
-                        }
                         <div>
                             <div class="modal-title">{{ patientDto()!.name }}</div>
                             <div class="modal-sub">MRN: {{ patientDto()!.mrn }}</div>
@@ -248,7 +243,7 @@
                                             <line x1="3" y1="10" x2="21" y2="10"/>
                                         </svg>
                                         <span class="meta-label">Surgery</span>
-<!--                                        <span class="meta-val">{{ (c.surgeryDate | date:'MMM d, y') || '—' }}</span>-->
+                                        <span class="meta-val">{{ (c.surgeryDate | date:'MMM d, y') || '—' }}</span>
                                     </div>
                                     <div class="meta-item">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -258,14 +253,16 @@
                                         <span class="meta-label">Doctor</span>
                                         <span class="meta-val">{{ c.ownerDoctor }}</span>
                                     </div>
+                                    @if (c.operationType){
                                     <div class="meta-item">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                                             <circle cx="12" cy="10" r="3"/>
                                         </svg>
                                         <span class="meta-label">Location</span>
-<!--                                        <span class="meta-val">{{ c.operationType }}</span>-->
+                                        <span class="meta-val">{{ c.operationType }}</span>
                                     </div>
+                                    }
                                     <div class="meta-item">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
@@ -275,12 +272,12 @@
                                         <span class="meta-val">{{ c.hospitalName }}</span>
                                     </div>
                                     <div class="meta-item meta-completion">
-                                        <span class="meta-label">Stage</span>
+                                        <span class="meta-label">Status</span>
                                         <div class="progress-wrap">
                                             <div class="progress-track">
-                                                <div class="progress-fill" [style.width.%]="getCasePercentage(c.stage)"></div>
+                                                <div class="progress-fill" [style.width.%]="getCasePercentage(c.status.code, c.followups)"></div>
                                             </div>
-                                            <span class="meta-val">{{ c.stageLabel }} — {{ getCasePercentage(c.stage) }}%</span>
+                                            <span class="meta-val">{{ getStatusLabel(c.status.code) }} — {{ getCasePercentage(c.status.code, c.followups) }}%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -288,10 +285,9 @@
                                 <!-- Diagnosis preview -->
                                 @if (c.diagnosis.primaryName !== '—') {
                                     <div class="case-list-tags">
-                    <span class="cd-tag cd-tag--diag cd-tag--sm">
-                      {{ c.diagnosis.primaryName }}
-                        <span class="cd-tag-code">{{ c.diagnosis.primaryCode }}</span>
-                    </span>
+                                        <span class="cd-tag cd-tag--diag cd-tag--sm">
+                                            {{ c.diagnosis.primaryName }}
+                                        </span>
                                         @if (c.diagnosis.additionalCount > 0) {
                                             <span class="cd-tag cd-tag--sm">+{{ c.diagnosis.additionalCount }} more</span>
                                         }
@@ -308,9 +304,9 @@
                             @if (caseDto()!.operativeData.operationStatusCode) {
                                 <span class="cd-status-badge"
                                       [ngClass]="getCaseStatusClass(caseDto()!.operativeData.operationStatusCode)">
-                <span class="csb-dot"></span>
+                                    <span class="csb-dot"></span>
                                     {{ caseDto()!.operativeData.operationStatus }}
-              </span>
+                                </span>
                             }
                             <div class="cd-meta">
                                 @if (caseDto()!.hospitalAdmission.surgeryDate) {
@@ -445,12 +441,11 @@
                                 <div class="cd-tags">
                                     @for (d of caseDto()!.diagnoses.items; track d.id) {
                                         <span class="cd-tag cd-tag--diag">
-                    {{ d.name }}
-                                            <span class="cd-tag-code">{{ d.displayCode }}</span>
+                                            {{ d.name }}
                                             @if (d.isPrimary) {
                                                 <span class="cd-tag-primary">Primary</span>
                                             }
-                  </span>
+                                        </span>
                                     }
                                 </div>
                             }
@@ -464,9 +459,8 @@
                                 <div class="cd-tags">
                                     @for (p of caseDto()!.procedures.items; track p.id) {
                                         <span class="cd-tag cd-tag--proc">
-                    {{ p.name }}
-                                            <span class="cd-tag-code">{{ p.displayCode }}</span>
-                  </span>
+                                            {{ p.name }}
+                                        </span>
                                     }
                                 </div>
                             }
@@ -482,9 +476,9 @@
                                         <div class="cd-key">Operation Status</div>
                                         <span class="cd-status-badge"
                                               [ngClass]="getCaseStatusClass(caseDto()!.operativeData.operationStatusCode)">
-                    <span class="csb-dot"></span>
+                                            <span class="csb-dot"></span>
                                             {{ caseDto()!.operativeData.operationStatus }}
-                  </span>
+                                        </span>
                                     </div>
                                     <div class="cd-cell">
                                         <div class="cd-key">Operation Type</div>

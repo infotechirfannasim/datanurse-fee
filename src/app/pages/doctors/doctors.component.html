@@ -9,7 +9,7 @@
             <input (input)="searchQuery.set($any($event.target).value); onSearchChange()" [value]="searchQuery()"
                    placeholder="Search surgeon by name"/>
         </div>
-        <button (click)="showAddModal.set(true)" class="btn btn-primary">
+        <button (click)="onAddDoctor()" class="btn btn-primary">
             <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
                 <line stroke="white" stroke-linecap="round" stroke-width="2" x1="12" x2="12" y1="5" y2="19"/>
                 <line stroke="white" stroke-linecap="round" stroke-width="2" x1="5" x2="19" y1="12" y2="12"/>
