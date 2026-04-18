@@ -249,9 +249,9 @@ export class DashboardComponent implements OnInit {
                 next: (res: HttpResponse<any>) => {
                     const data        = res.body.data;
                     this.procedures   = data.caseDistribution ?? [];
-                    this.ringSegments = this.buildRingSegments(
+                   /* this.ringSegments = this.buildRingSegments(
                         this.procedures.filter((p: any) => (p.count ?? 0) > 0)
-                    );
+                    );*/
                     this.isLoadingCaseDist = false;
                 },
                 error: () => this.isLoadingCaseDist = false

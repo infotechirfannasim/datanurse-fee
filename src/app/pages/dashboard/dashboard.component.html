@@ -181,33 +181,34 @@
         </div>
         <div class="ring-wrap">
             <div class="ring-chart-area">
-
-                <div class="ring-center">
-                    <svg class="ring-svg" viewBox="0 0 120 120">
-                        <!-- Background track -->
-                        <circle cx="60" cy="60" r="44"
-                                fill="none"
-                                stroke="var(--color-border-tertiary)"
-                                stroke-width="12"/>
-
-                        <!-- Segments — round linecap + gap = pill shape without bleed -->
-                        @for (seg of ringSegments; track seg.label) {
+                @if (ringSegments.length){
+                    <div class="ring-center">
+                        <svg class="ring-svg" viewBox="0 0 120 120">
+                            <!-- Background track -->
                             <circle cx="60" cy="60" r="44"
                                     fill="none"
-                                    [attr.stroke]="seg.color"
-                                    stroke-width="12"
-                                    stroke-linecap="round"
-                                    [attr.stroke-dasharray]="seg.dasharray"
-                                    [attr.transform]="seg.rotation"/>
-                        }
-                    </svg>
+                                    stroke="var(--color-border-tertiary)"
+                                    stroke-width="12"/>
 
-                    <!-- Center — totalCases from API, not summed from procedures -->
-                    <div class="ring-label-wrap">
-                        <span class="ring-big">{{ totalCases }}</span>
-                        <span class="ring-small">Cases</span>
+                            <!-- Segments — round linecap + gap = pill shape without bleed -->
+                            @for (seg of ringSegments; track seg.label) {
+                                <circle cx="60" cy="60" r="44"
+                                        fill="none"
+                                        [attr.stroke]="seg.color"
+                                        stroke-width="12"
+                                        stroke-linecap="round"
+                                        [attr.stroke-dasharray]="seg.dasharray"
+                                        [attr.transform]="seg.rotation"/>
+                            }
+                        </svg>
+
+                        <!-- Center — totalCases from API, not summed from procedures -->
+                        <div class="ring-label-wrap">
+                            <span class="ring-big">{{ totalCases }}</span>
+                            <span class="ring-small">Cases</span>
+                        </div>
                     </div>
-                </div>
+                }
 
                 <!-- Legend — iterate ringSegments (has color) not procedures separately -->
                 <div class="ring-legend">

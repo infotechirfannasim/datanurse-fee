@@ -327,7 +327,7 @@ function mapBloodProducts(raw: RawCase): BloodProductsDto {
     };
 }
 
-function mapAnesthesia(raw: RawCase): AnesthesiaDto {
+function mapAnesthesia(raw: RawCase, lovs: LovStore): AnesthesiaDto {
     const s = raw.step13Anesthesia;
     if (!s) {
         return {
@@ -346,12 +346,11 @@ function mapAnesthesia(raw: RawCase): AnesthesiaDto {
         };
     }
 
-    const intraopPharm = trueKeys(s.intraopPharm);
-    const pacuPharm    = trueKeys(s.pacuPharm);
-    const adverseEvents = trueKeys(s.anesAdverseEvents);
+    const intraopPharm = trueKeys(s.intraopPharm).map(value=> lovName(lovs, 'intraopMed',value));
+    const pacuPharm    = trueKeys(s.pacuPharm).map(value=> lovName(lovs, 'pacuMed',value));
+    const adverseEvents = trueKeys(s.anesAdverseEvents).map(value=> lovName(lovs, 'adverseEvent',value));
 
-    const preopMedCategories = (s.preopMedCat ?? [])
-        .join(', ') || DASH;
+    const preopMedCategories = (s.preopMedCat ?? []).map(code => lovName(lovs, 'anesthesiaMed', code)).join(', ') || DASH;
 
     return {
         filled: true,
@@ -362,7 +361,7 @@ function mapAnesthesia(raw: RawCase): AnesthesiaDto {
         patientLocationTransfer: date(s.pLocTransDt),
         artLine:                 bool(s.artLine),
         centralPressureLine:     bool(s.percCentPress),
-        ultrasoundGuidance:      (s.ultraGuide && s.ultraGuide !== 'None') ? s.ultraGuide : DASH,
+        ultrasoundGuidance:      s.ultraGuide ? lovName(lovs,'ultrasoundGuidance',s.ultraGuide) : DASH,
         neuroMonitor:            bool(s.neuroMonitor),
         tee:                     bool(s.tee),
         cutdown:                 bool(s.cutdown),
@@ -388,7 +387,7 @@ function mapAnesthesia(raw: RawCase): AnesthesiaDto {
     };
 }
 
-function mapComplications(raw: RawCase): ComplicationsDto {
+function mapComplications(raw: RawCase, lovs: LovStore): ComplicationsDto {
     const s = raw.step14Complications;
     if (!s) return { filled: false, noComplications: false, items: [] };
     if (bool(s.noComplications)) return { filled: true, noComplications: true, items: [] };
@@ -396,7 +395,7 @@ function mapComplications(raw: RawCase): ComplicationsDto {
     const details = s.complicationDetails ?? {};
     const items: DisplayComplication[] = Object.entries(details).map(([key, val]) => ({
         key,
-        label: key.replace(/([A-Z])/g, ' $1').trim(),
+        label: lovName(lovs, 'complication',key),
         date:  date(val?.date),
         notes: str(val?.notes),
     }));
@@ -473,8 +472,8 @@ export function mapToCaseDetailDto(raw: RawCase, lovs: LovStore = {}): CaseDetai
         procedures:        mapProcedures(raw),
         operativeData:     mapOperativeData(raw, lovs),
         bloodProducts:     mapBloodProducts(raw),
-        anesthesia:        mapAnesthesia(raw),
-        complications:     mapComplications(raw),
+        anesthesia:        mapAnesthesia(raw, lovs),
+        complications:     mapComplications(raw, lovs),
         discharge:         mapDischarge(raw, lovs),
         followups:         mapFollowups(raw, lovs),
     };
