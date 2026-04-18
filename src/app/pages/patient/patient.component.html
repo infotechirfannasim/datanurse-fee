@@ -604,20 +604,25 @@
                                 </div>
 
                                 @if (caseDto()!.bloodProducts.productRows.length) {
-                                    <div class="cd-section-label" style="margin-top:12px">Blood Product Volumes (units)</div>
-                                    <table class="cd-table">
+                                    <div class="cd-section-label" style="margin-top:12px">
+                                        Blood Product Volumes (units)
+                                    </div>
+                                    <table class="cd-table blood-product-table new-table-design">
                                         <thead>
                                         <tr>
-                                            <th>Product</th><th>During</th><th>Within 24h</th><th>After 24h</th>
+                                            <th class="col-product">Product</th>
+                                            <th class="col-num">During</th>
+                                            <th class="col-num">Within 24h</th>
+                                            <th class="col-num">After 24h</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                             @for (row of caseDto()!.bloodProducts.productRows; track row.label) {
                                                 <tr>
-                                                    <td>{{ row.label }}</td>
-                                                    <td>{{ row.during }}</td>
-                                                    <td>{{ row.within24h }}</td>
-                                                    <td>{{ row.after24h }}</td>
+                                                    <td class="col-product">{{ row.label }}</td>
+                                                    <td class="col-num">{{ row.during }}</td>
+                                                    <td class="col-num">{{ row.within24h }}</td>
+                                                    <td class="col-num">{{ row.after24h }}</td>
                                                 </tr>
                                             }
                                         </tbody>

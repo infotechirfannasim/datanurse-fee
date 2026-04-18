@@ -2243,3 +2243,31 @@ button, input, select {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+
+  .blood-product-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .blood-product-table .col-product {
+    width: 45%;
+    text-align: left;
+  }
+
+  .blood-product-table .col-num {
+    width: 18%;
+    text-align: center;
+  }
+
+  .blood-product-table thead th {
+    font-weight: 600;
+    padding: 6px 8px;
+    white-space: nowrap;        /* prevents "Within 24h" from wrapping */
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .blood-product-table tbody td {
+    padding: 4px 8px;
+  }
+
