@@ -65,6 +65,14 @@ interface ProvinceItem {
     color: string;
 }
 
+interface GenderItem {
+    code: string;
+    label: string;
+    percentage: number;
+    count: number;
+    color: string;
+}
+
 interface FollowupItem {
     label: string;
     rate: number;
@@ -180,6 +188,7 @@ export class DashboardComponent implements OnInit {
     ageGroups: AgeGroupItem[] = [];
 
     provinces: ProvinceItem[] = [];
+    genders: GenderItem[] = [];
 
     followups: FollowupItem[] = [];
     chartPeriod = 'month';
@@ -249,9 +258,9 @@ export class DashboardComponent implements OnInit {
                 next: (res: HttpResponse<any>) => {
                     const data        = res.body.data;
                     this.procedures   = data.caseDistribution ?? [];
-                   /* this.ringSegments = this.buildRingSegments(
+                    this.ringSegments = this.buildRingSegments(
                         this.procedures.filter((p: any) => (p.count ?? 0) > 0)
-                    );*/
+                    );
                     this.isLoadingCaseDist = false;
                 },
                 error: () => this.isLoadingCaseDist = false
@@ -282,8 +291,7 @@ export class DashboardComponent implements OnInit {
                 next: (res: HttpResponse<any>) => {
                     const data = res.body.data;
                     this.ageGroups = data.ageGroups || [];
-                    this.genderMale = data.gender?.malePercent ?? 0;
-                    this.genderFemale = data.gender?.femalePercent ?? 0;
+                    this.genders   = data.gender    || [];
                     this.provinces = data.provinces || [];
                     this.isLoadingDemo = false;
                 },

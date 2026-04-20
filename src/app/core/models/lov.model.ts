@@ -5,5 +5,6 @@ export interface LOV {
     description: string;
     status: 'active' | 'inactive';
     parents: any[];
+    sortOrder?: number;
     createdAt: string;
 }

@@ -249,17 +249,18 @@ export class DoctorsComponent implements OnInit {
     }
 
     onAddDoctor(): void {
-        this.isEditMode = false;
         this.resetForm();
+        this.isEditMode ? this.doctorForm.get('email')?.disable() : this.doctorForm.get('email')?.enable();
         this.showAddModal.set(true);
     }
 
     onEditProfile(doc: Doctor) {
         if (!doc) return;
+        this.resetForm();
         this.selectedDoctor.set(doc);
         this.isEditMode = true;
-        this.resetForm();
         this.doctorForm.patchValue(this.mapDoctorToForm(doc));
+        this.isEditMode ? this.doctorForm.get('email')?.disable() : this.doctorForm.get('email')?.enable();
         this.showViewModal.set(false);
         this.showAddModal.set(true);
     }
@@ -389,7 +390,6 @@ export class DoctorsComponent implements OnInit {
 
     resetForm(): void {
         this.doctorForm.reset({role: this.doctorForm.value.role});
-        this.isEditMode ? this.doctorForm.get('email')?.disable() : this.doctorForm.get('email')?.enable();
         this.imagePreview = null;
         this.selectedFile = null;
         this.isEditMode = false;

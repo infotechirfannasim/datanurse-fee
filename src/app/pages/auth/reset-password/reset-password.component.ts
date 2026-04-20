@@ -5,6 +5,7 @@ import {AuthService} from '../../../core/services/auth.service';
 import {ToastService} from "../../../core/services/toast.service";
 import {getError, passwordMatchValidator} from "../../../utils/global.utils";
 import {RegexConstants} from "../../../utils/regex-constants";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-reset-password',
@@ -99,9 +100,10 @@ export class ResetPasswordComponent {
         );
         setTimeout(() => this.router.navigate(['/auth/login']), 500);
       },
-      error: (err) => {
-        this.error = err.error?.message || 'Something went wrong';
+      error: (err: HttpErrorResponse) => {
+        this.error = err.error?.message || err.message || 'Something went wrong';
         this.isLoading = false;
+        this.toastService.show(this.error, 'error');
       }
     });
   }

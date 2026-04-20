@@ -272,15 +272,22 @@
                     <span class="age-val">{{ ag.percentage }}%</span>
                 </div>
             }
-            <!-- Gender -->
             <div class="gender-row">
                 <span class="gender-label">Gender</span>
                 <div class="gender-bar">
-                    @if (genderMale) {
-                        <div class="gender-male" [style.width]="genderMale + '%'">Male {{ genderMale }}%</div>
-                    }
-                    @if (genderFemale) {
-                        <div class="gender-female" [style.width]="genderFemale + '%'">Female {{ genderFemale }}%</div>
+                    @for (g of genders; track g.code) {
+                        @if (g.percentage > 0) {
+                            <div
+                                    class="gender-segment"
+                                    [class.too-narrow]="g.percentage < 15"
+                                    [style.width]="g.percentage + '%'"
+                                    [style.background-color]="g.color"
+                                    [matTooltip]="g.label + ': ' + g.percentage + '%'"
+                                    matTooltipPosition="above"
+                            >
+                                <span class="segment-label">{{ g.label }} {{ g.percentage }}%</span>
+                            </div>
+                        }
                     }
                 </div>
             </div>

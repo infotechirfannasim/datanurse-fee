@@ -17,6 +17,7 @@ import {SelectModule} from "primeng/select";
 import {MultiSelectModule} from "primeng/multiselect";
 import {RegexConstants} from "../../utils/regex-constants";
 import {getError} from "../../utils/global.utils";
+import {NgxMaskDirective} from "ngx-mask";
 
 
 interface NavigationState {
@@ -33,7 +34,7 @@ interface BreadcrumbItem {
 @Component({
     selector: 'app-lov',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, MultiSelectModule, SelectModule,],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, MultiSelectModule, SelectModule, NgxMaskDirective],
     templateUrl: './lov.component.html',
     styleUrl: './lov.component.scss'
 })
@@ -116,6 +117,11 @@ export class LovComponent implements OnInit, OnDestroy {
             required: 'Name is required',
             pattern: "Only letters, numbers and ,' - _ * & + . / ( ) are allowed.",
             maxLength: 'Max 100 characters'
+        },
+        sortOrder: {
+            pattern: 'Only numbers are allowed',
+            min: 'Minimum value is 1',
+            max: 'Maximum value is 1000'
         },
         description: {
             maxlength: 'Max 500 characters',
@@ -295,6 +301,14 @@ export class LovComponent implements OnInit, OnDestroy {
         const lov = this.selectedLov();
         const group: any = {
             type: [this.currentLovType()],
+            sortOrder: [
+                Number(lov?.sortOrder) ?? 1,
+                [
+                    Validators.pattern(RegexConstants.NUMERIC_REGEX),
+                    Validators.min(1),
+                    Validators.max(1000)
+                ]
+            ],
             code: [{
                 value: lov?.code || '',
                 disabled: this.isEditMode
@@ -312,6 +326,7 @@ export class LovComponent implements OnInit, OnDestroy {
             ];
         });
         this.form = this.fb.group(group);
+        this.form.updateValueAndValidity();
     }
 
     prefillParentContext(): void {

@@ -9,7 +9,7 @@ import {User} from "../../core/models/user.model";
 import {AuthService} from "../../core/services/auth.service";
 import {NgxMaskDirective} from "ngx-mask";
 import {getError, markAllTouched, passwordMatchValidator} from "../../utils/global.utils";
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {finalize} from "rxjs";
 import {RegexConstants} from "../../utils/regex-constants";
 
@@ -17,7 +17,7 @@ import {RegexConstants} from "../../utils/regex-constants";
 @Component({
     selector: 'app-profile',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, NgxMaskDirective, RouterLink],
+    imports: [CommonModule, ReactiveFormsModule, NgxMaskDirective],
     templateUrl: './profile.component.html',
     styleUrl: './profile.component.scss'
 })
@@ -26,7 +26,8 @@ export class ProfileComponent implements OnInit {
     private toastService = inject(ToastService);
     private requestService = inject(RequestService);
     private fb = inject(FormBuilder);
-
+    private router =  inject(Router);
+    showConfirmClose = signal(false);
     activeTab = signal<'personal' | 'security' | 'activity'>('personal');
 
     profile = signal<User | null>(null);
@@ -115,6 +116,8 @@ export class ProfileComponent implements OnInit {
                         phone: data.phone || '',
                     });
                 }
+                this.personalForm.markAsPristine();
+                this.personalForm.markAsUntouched();
                 this.isLoading.set(false);
             },
             error: () => {
@@ -266,5 +269,26 @@ export class ProfileComponent implements OnInit {
             year: 'numeric',
             month: 'long'
         });
+    }
+
+    onClose(): void {
+        if (this.personalForm.dirty) {
+            this.showConfirmClose.set(true);
+        } else {
+            this.closeForm();
+        }
+    }
+
+    cancelClose(): void {
+        this.showConfirmClose.set(false);
+    }
+
+    discardChanges(): void {
+        this.showConfirmClose.set(false);
+        this.closeForm();
+    }
+
+    closeForm(): void {
+        this.router.navigate(['/dashboard']);
     }
 }
