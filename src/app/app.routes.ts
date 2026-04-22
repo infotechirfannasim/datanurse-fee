@@ -4,8 +4,19 @@ import {AuthGuard} from "./core/guards/auth.guard";
 import {PermissionGuard} from "./core/guards/permission.guard";
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-
+  {
+    path: '',
+    loadComponent: () =>
+        import('./pages/landing/landing.component').then(
+            (m) => m.LandingComponent
+        ),
+  },
+  {
+    path: 'delete-account',
+    loadComponent: () =>
+        import('./pages/delete-acc/delete-account.component')
+            .then(m => m.DeleteAccountComponent)
+  },
   {
     path: 'auth',
     canActivate: [UnAuthGuard],

@@ -1,10 +1,299 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="dn-wrap">
+
+    <!-- NAVBAR -->
+    <nav class="dn-nav">
+        <div class="dn-nav-inner">
+            <a href="#" class="dn-logo">
+                <div class="dn-logo-icon">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                        <path d="M11 3v16M3 11h16" stroke="white" stroke-width="2.8" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <span class="dn-logo-text">DataNurse</span>
+            </a>
+            <div class="dn-nav-links">
+                <a href="#about">About</a>
+                <a href="#features">Features</a>
+                <a href="#privacy">Privacy</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <button class="dn-nav-cta" (click)="goToLogin()">Admin Login</button>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="dn-hero">
+        <div class="dn-hero-orb dn-hero-orb-1"></div>
+        <div class="dn-hero-orb dn-hero-orb-2"></div>
+        <div class="dn-hero-inner">
+            <div class="dn-hero-content">
+                <div class="dn-badge">
+                    <span class="dn-pulse"></span>
+                    Trusted by Pediatric Cardiac Surgeons in Pakistan
+                </div>
+                <h1 class="dn-h1">
+                    Smart Data Collection
+                    <span>for Children's Heart Care</span>
+                </h1>
+                <p class="dn-hero-sub">
+                    DataNurse empowers cardiologists and pediatric heart surgeons to efficiently record,
+                    manage, and analyze patient surgical data — all from one place.
+                </p>
+                <div class="dn-hero-btns">
+                    <button class="dn-btn-primary" (click)="goToLogin()">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="white" stroke-width="1.8"/><path d="M9 5v4l3 3" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+                        Access Admin Portal
+                    </button>
+                    <a href="#about" class="dn-btn-outline">
+                        Learn More
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M8 4l5 4-5 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </div>
+                <div class="dn-stats">
+                    <div class="dn-stat">
+                        <span class="dn-stat-num">500+</span>
+                        <span class="dn-stat-lbl">Cases Recorded</span>
+                    </div>
+                    <div class="dn-stat-div"></div>
+                    <div class="dn-stat">
+                        <span class="dn-stat-num">50+</span>
+                        <span class="dn-stat-lbl">Doctors</span>
+                    </div>
+                    <div class="dn-stat-div"></div>
+                    <div class="dn-stat">
+                        <span class="dn-stat-num">99%</span>
+                        <span class="dn-stat-lbl">Data Accuracy</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dn-hero-visual">
+                <div class="dn-mock">
+                    <div class="dn-mock-hdr">
+                        <span class="dn-dot dn-dot-r"></span>
+                        <span class="dn-dot dn-dot-y"></span>
+                        <span class="dn-dot dn-dot-g"></span>
+                        <span class="dn-mock-title">Patient Record</span>
+                    </div>
+                    <div class="dn-mock-body">
+                        <div class="dn-mock-row">
+                            <span class="dn-mock-lbl">Patient ID</span>
+                            <span class="dn-mock-val">DN-2024-0892</span>
+                        </div>
+                        <div class="dn-mock-row">
+                            <span class="dn-mock-lbl">Procedure</span>
+                            <span class="dn-mock-val dn-mock-blue">VSD Repair</span>
+                        </div>
+                        <div class="dn-mock-row">
+                            <span class="dn-mock-lbl">Surgeon</span>
+                            <span class="dn-mock-val">Dr. Ahmed</span>
+                        </div>
+                        <div class="dn-mock-row">
+                            <span class="dn-mock-lbl">Status</span>
+                            <span class="dn-chip dn-chip-green">Completed</span>
+                        </div>
+                        <div class="dn-mock-row">
+                            <span class="dn-mock-lbl">Recovery</span>
+                            <span class="dn-chip dn-chip-blue">Stable</span>
+                        </div>
+                        <div class="dn-mock-chart">
+                            <div class="dn-bar" style="height:38%"></div>
+                            <div class="dn-bar" style="height:60%"></div>
+                            <div class="dn-bar" style="height:45%"></div>
+                            <div class="dn-bar" style="height:78%"></div>
+                            <div class="dn-bar" style="height:55%"></div>
+                            <div class="dn-bar" style="height:88%"></div>
+                            <div class="dn-bar dn-bar-hi" style="height:72%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="dn-section" id="about">
+        <div class="dn-container">
+            <div class="dn-label">About DataNurse</div>
+            <h2 class="dn-title">Built for Pakistan's<br/>Pediatric Heart Heroes</h2>
+            <div class="dn-about-grid">
+                <div class="dn-about-text">
+                    <p>DataNurse is a purpose-built mobile and web application designed for cardiologists and pediatric cardiac surgeons across Pakistan. Children with congenital heart defects require specialized, life-saving surgeries — and every detail of their care matters.</p>
+                    <p>Our platform bridges the gap between mobile data collection at the bedside and centralized management through an admin portal. Doctors can record patient information, surgical procedures, pre- and post-operative data, and track recovery — all in real time.</p>
+                    <p>With DataNurse, hospitals and clinics gain the power of structured healthcare data, enabling better decision-making, audit trails, and improved patient outcomes for Pakistan's youngest patients.</p>
+                    <div class="dn-callout">
+                        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" style="flex-shrink:0;margin-top:2px"><path d="M11 2C5.48 2 1 6.48 1 12s4.48 10 10 10 10-4.48 10-10S16.52 2 11 2zm.5 15h-1v-6h1v6zm0-8h-1V7h1v2z" fill="#0EA5E9"/></svg>
+                        <p><strong>Mission:</strong> To digitize and standardize pediatric cardiac surgical records across Pakistan, enabling data-driven improvements in children's heart care.</p>
+                    </div>
+                </div>
+                <div class="dn-about-cards">
+                    <div class="dn-acard">
+                        <div class="dn-acard-icon dn-acard-blue">
+                            <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="5" y="3" width="16" height="20" rx="2" stroke="white" stroke-width="2"/><path d="M9 9h8M9 13h8M9 17h5" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+                        </div>
+                        <h4>Mobile App</h4>
+                        <p>Capture patient data directly at point of care using our intuitive Android application.</p>
+                    </div>
+                    <div class="dn-acard">
+                        <div class="dn-acard-icon dn-acard-teal">
+                            <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="3" width="20" height="20" rx="2" stroke="white" stroke-width="2"/><path d="M13 8v10M8 13h10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+                        </div>
+                        <h4>Admin Portal</h4>
+                        <p>Manage doctors, patients, cases and reports from a powerful web-based control center.</p>
+                    </div>
+                    <div class="dn-acard">
+                        <div class="dn-acard-icon dn-acard-indigo">
+                            <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 2L2 7l11 5 11-5-11-5zM2 17l11 5 11-5M2 12l11 5 11-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <h4>Structured Data</h4>
+                        <p>Standardized forms ensure consistent, high-quality data across all hospitals.</p>
+                    </div>
+                    <div class="dn-acard">
+                        <div class="dn-acard-icon dn-acard-rose">
+                            <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 3.5a5 5 0 00-5 5c0 3.5 5 9 5 9s5-5.5 5-9a5 5 0 00-5-5zm0 6.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" fill="white"/></svg>
+                        </div>
+                        <h4>Pakistan-Focused</h4>
+                        <p>Designed for the specific workflows of Pakistani cardiac surgery teams.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="dn-section dn-section-dark" id="features">
+        <div class="dn-container">
+            <div class="dn-label dn-label-light">App Features</div>
+            <h2 class="dn-title dn-title-light">Everything You Need to<br/>Manage Cardiac Cases</h2>
+            <div class="dn-feat-grid">
+                <div class="dn-feat"><div class="dn-feat-icon"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 2C7.5 2 3 6.5 3 12s4.5 10 10 10 10-4.5 10-10S18.5 2 13 2zm4 11h-3v3h-2v-3H9v-2h3V8h2v3h3v2z" fill="#0EA5E9"/></svg></div><h3>Patient Registration</h3><p>Register pediatric patients with complete demographics, medical history, and diagnosis details quickly and accurately.</p></div>
+                <div class="dn-feat"><div class="dn-feat-icon"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="4" y="3" width="18" height="21" rx="2" stroke="#0EA5E9" stroke-width="1.8"/><path d="M8 9h10M8 13h10M8 17h6" stroke="#0EA5E9" stroke-width="1.8" stroke-linecap="round"/></svg></div><h3>Surgical Case Records</h3><p>Document complete surgical details including procedure type, bypass time, aortic clamp time, and intraoperative findings.</p></div>
+                <div class="dn-feat"><div class="dn-feat-icon"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="10" r="5" stroke="#0EA5E9" stroke-width="1.8"/><path d="M3 23c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="#0EA5E9" stroke-width="1.8" stroke-linecap="round"/></svg></div><h3>Doctor Management</h3><p>Maintain profiles of surgeons and care teams. Track each doctor's surgical history and outcomes.</p></div>
+                <div class="dn-feat"><div class="dn-feat-icon"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="2" y="4" width="22" height="18" rx="2" stroke="#0EA5E9" stroke-width="1.8"/><path d="M4 20l5-7 4 4 3-4 4 5" stroke="#0EA5E9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Dashboard Analytics</h3><p>Visual dashboards show active cases, recovery rates, surgical outcomes, and hospital statistics at a glance.</p></div>
+                <div class="dn-feat"><div class="dn-feat-icon"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="10" stroke="#0EA5E9" stroke-width="1.8"/><path d="M13 8v5l4 2" stroke="#0EA5E9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Pre &amp; Post-op Tracking</h3><p>Record pre-operative assessments and post-operative monitoring including vitals, medications, and recovery milestones.</p></div>
+                <div class="dn-feat"><div class="dn-feat-icon"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="2" y="4" width="22" height="18" rx="2" stroke="#0EA5E9" stroke-width="1.8"/><path d="M4 20l5-6 3 3 5-7 4 6" stroke="#0EA5E9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Reports &amp; Export</h3><p>Generate comprehensive surgical reports and data exports for research and quality improvement.</p></div>
+                <div class="dn-feat"><div class="dn-feat-icon"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 3L3 8v5c0 6 4.5 11.5 10 13 5.5-1.5 10-7 10-13V8L13 3z" stroke="#0EA5E9" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 13l3 3 6-6" stroke="#0EA5E9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Role-Based Access</h3><p>Granular permissions ensure doctors see only what they need. Admins control full access securely.</p></div>
+                <div class="dn-feat"><div class="dn-feat-icon"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="4" y="11" width="18" height="12" rx="2" stroke="#0EA5E9" stroke-width="1.8"/><path d="M9 11V9a4 4 0 018 0v2" stroke="#0EA5E9" stroke-width="1.8" stroke-linecap="round"/><circle cx="13" cy="17" r="1.5" fill="#0EA5E9"/></svg></div><h3>Secure Authentication</h3><p>JWT-based login with forgot password and reset flows. Hospital data protected and accessible only to authorized users.</p></div>
+                <div class="dn-feat"><div class="dn-feat-icon"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="5" y="2" width="16" height="22" rx="3" stroke="#0EA5E9" stroke-width="1.8"/><path d="M10 6h6M13 19v-4" stroke="#0EA5E9" stroke-width="1.8" stroke-linecap="round"/><circle cx="13" cy="14" r="2.5" stroke="#0EA5E9" stroke-width="1.8"/></svg></div><h3>Offline-Ready Mobile App</h3><p>The Android app works in low-connectivity environments — data syncs automatically when connection is restored.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRIVACY -->
+    <section class="dn-section" id="privacy">
+        <div class="dn-container">
+            <div class="dn-label">Privacy Policy</div>
+            <h2 class="dn-title">Your Data is<br/>Safe With Us</h2>
+            <div class="dn-privacy-wrap">
+                <div class="dn-privacy-intro">
+                    <p>At DataNurse, we are committed to protecting the privacy and confidentiality of all patient data collected through our platform. This Privacy Policy explains how we collect, use, store, and safeguard information. By using the DataNurse app or admin portal, you agree to the practices described below.</p>
+                </div>
+                <div class="dn-priv-item">
+                    <div class="dn-priv-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 2L2 6.5v5C2 16.5 6 21 11 22c5-1 9-5.5 9-10.5v-5L11 2z" stroke="#0EA5E9" stroke-width="1.6" stroke-linejoin="round"/><path d="M7 11l3 3 5-5" stroke="#0EA5E9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div><h4>Information We Collect</h4><p>We collect patient demographics, medical history, surgical records, and post-operative data entered by authorized healthcare providers. We also collect doctor and user account information for authentication and access control purposes.</p></div>
+                </div>
+                <div class="dn-priv-item">
+                    <div class="dn-priv-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="10" width="16" height="10" rx="2" stroke="#0EA5E9" stroke-width="1.6"/><path d="M7 10V7a4 4 0 018 0v3" stroke="#0EA5E9" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+                    <div><h4>How We Use Your Data</h4><p>Data is used solely for patient care management, surgical outcome tracking, and healthcare quality improvement within your institution. We do not sell, rent, or share patient data with third parties for commercial purposes.</p></div>
+                </div>
+                <div class="dn-priv-item">
+                    <div class="dn-priv-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9" stroke="#0EA5E9" stroke-width="1.6"/><path d="M11 7v4l3 3" stroke="#0EA5E9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div><h4>Data Storage &amp; Security</h4><p>All data is encrypted in transit using TLS/HTTPS and at rest using industry-standard encryption. Access is strictly controlled through role-based permissions. Only authorized hospital staff can view or modify records.</p></div>
+                </div>
+                <div class="dn-priv-item">
+                    <div class="dn-priv-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="#0EA5E9" stroke-width="1.6" stroke-linecap="round"/><circle cx="8.5" cy="7" r="4" stroke="#0EA5E9" stroke-width="1.6"/><path d="M21 21v-2a4 4 0 00-3-3.87M15 3.13a4 4 0 010 7.75" stroke="#0EA5E9" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+                    <div><h4>Data Access &amp; Sharing</h4><p>Patient information is accessible only to verified healthcare professionals at your institution. Data is never shared without explicit consent from the hospital administrator or as required by Pakistani law.</p></div>
+                </div>
+                <div class="dn-priv-item">
+                    <div class="dn-priv-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 6h16M8 6V4h6v2M18 6l-1 13H5L4 6" stroke="#0EA5E9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div><h4>Data Retention</h4><p>Patient records are retained as required by your institution's policies and applicable Pakistani healthcare regulations. Users may request data deletion in compliance with legal and medical record-keeping requirements.</p></div>
+                </div>
+                <div class="dn-priv-item">
+                    <div class="dn-priv-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M21 15.46v2.77A1.84 1.84 0 0119.16 20a18.18 18.18 0 01-7.92-2.82 17.91 17.91 0 01-5.5-5.5A18.18 18.18 0 013 3.85 1.84 1.84 0 014.75 2h2.77a1.84 1.84 0 011.84 1.58c.12.88.33 1.74.64 2.58a1.84 1.84 0 01-.41 1.94L8.38 9.1a14.73 14.73 0 005.5 5.5l1-.62a1.84 1.84 0 011.94-.41c.84.31 1.7.52 2.58.64A1.84 1.84 0 0121 15.46z" stroke="#0EA5E9" stroke-width="1.6"/></svg></div>
+                    <div><h4>Contact for Privacy Concerns</h4><p>If you have questions or concerns about how your data is handled, please reach out to our privacy team. We are committed to resolving any data-related concerns promptly and transparently.</p></div>
+                </div>
+                <div class="dn-priv-foot">
+                    Last updated: April 2026 &nbsp;·&nbsp; DataNurse by Infotech &nbsp;·&nbsp; Privacy: <a href="mailto:privacy&#64;datanurse.io">privacy&#64;datanurse.io</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="dn-section dn-section-alt" id="contact">
+        <div class="dn-container">
+            <div class="dn-label">Get In Touch</div>
+            <h2 class="dn-title">Contact Us</h2>
+            <div class="dn-contact-grid">
+                <div>
+                    <p class="dn-contact-intro">Have questions about DataNurse? Want to onboard your hospital or clinic? Our team is here to help.</p>
+                    <div class="dn-contact-items">
+                        <div class="dn-ci">
+                            <div class="dn-ci-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M18 4H2a1 1 0 00-1 1v10a1 1 0 001 1h16a1 1 0 001-1V5a1 1 0 00-1-1zm0 3l-8 5-8-5V5l8 5 8-5v2z" fill="#0EA5E9"/></svg></div>
+                            <div><span class="dn-ci-lbl">Email</span><a href="mailto:info&#64;datanurse.io" class="dn-ci-val">info&#64;datanurse.io</a></div>
+                        </div>
+                        <div class="dn-ci">
+                            <div class="dn-ci-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2a6 6 0 00-6 6c0 4.5 6 11 6 11s6-6.5 6-11a6 6 0 00-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z" fill="#0EA5E9"/></svg></div>
+                            <div><span class="dn-ci-lbl">Location</span><span class="dn-ci-val">Lahore, Pakistan</span></div>
+                        </div>
+                        <div class="dn-ci">
+                            <div class="dn-ci-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M19 13.9v2.5a1.67 1.67 0 01-1.82 1.67 16.5 16.5 0 01-7.19-2.56 16.25 16.25 0 01-5-5 16.5 16.5 0 01-2.56-7.23A1.67 1.67 0 013.1 1.5h2.5a1.67 1.67 0 011.67 1.43c.11.8.3 1.58.58 2.34a1.67 1.67 0 01-.38 1.76L6.5 8a13.37 13.37 0 005 5l.97-.97a1.67 1.67 0 011.76-.38c.76.28 1.54.47 2.34.58A1.67 1.67 0 0119 13.9z" stroke="#0EA5E9" stroke-width="1.6"/></svg></div>
+                            <div><span class="dn-ci-lbl">Support</span><span class="dn-ci-val">+92 300 0000000</span></div>
+                        </div>
+                        <div class="dn-ci">
+                            <div class="dn-ci-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#0EA5E9" stroke-width="1.6"/><path d="M10 6v4l3 3" stroke="#0EA5E9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                            <div><span class="dn-ci-lbl">Hours</span><span class="dn-ci-val">Mon – Fri, 9AM – 6PM PKT</span></div>
+                        </div>
+                    </div>
+                    <button class="dn-btn-primary" (click)="goToLogin()">Access Admin Portal →</button>
+                </div>
+                <div class="dn-cform">
+                    <h3>Send Us a Message</h3>
+                    <div class="dn-fg"><label>Your Name</label><input type="text" placeholder="Dr. Ahmed Khan"/></div>
+                    <div class="dn-fg"><label>Email Address</label><input type="email" placeholder="doctor&#64;hospital.pk"/></div>
+                    <div class="dn-fg"><label>Hospital / Organization</label><input type="text" placeholder="Children's Hospital, Lahore"/></div>
+                    <div class="dn-fg"><label>Message</label><textarea placeholder="Tell us how we can help you..." rows="4"></textarea></div>
+                    <div class="dn-form-note">
+                        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.5" stroke="#0EA5E9" stroke-width="1.3"/><path d="M7.5 5v3M7.5 9.5v.5" stroke="#0EA5E9" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        Contact form coming soon. Email: <a href="mailto:info&#64;datanurse.io">info&#64;datanurse.io</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="dn-footer">
+        <div class="dn-footer-inner">
+            <div class="dn-footer-brand">
+                <div class="dn-logo">
+                    <div class="dn-logo-icon"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><path d="M11 3v16M3 11h16" stroke="white" stroke-width="2.8" stroke-linecap="round"/></svg></div>
+                    <span class="dn-logo-text dn-logo-text-white">DataNurse</span>
+                </div>
+                <p>Smart data collection and management for pediatric cardiac surgery teams in Pakistan.</p>
+            </div>
+            <div class="dn-footer-links">
+                <div class="dn-footer-col">
+                    <h5>App</h5>
+                    <a href="#about">About</a>
+                    <a href="#features">Features</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <div class="dn-footer-col">
+                    <h5>Legal</h5>
+                    <a href="#privacy">Privacy Policy</a>
+                    <a href="#contact">Terms of Use</a>
+                </div>
+                <div class="dn-footer-col">
+                    <h5>Access</h5>
+                    <a (click)="goToLogin()" style="cursor:pointer">Admin Login</a>
+                    <a href="mailto:info&#64;datanurse.io">Get Support</a>
+                </div>
+            </div>
+        </div>
+        <div class="dn-footer-bottom">
+            <p>&copy; 2026 DataNurse. All rights reserved. Built by Infotech, Pakistan.</p>
+        </div>
+    </footer>
+
+</div>
