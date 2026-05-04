@@ -81,7 +81,7 @@
                 </div>
             }
 
-            @if (rootType() && ( !selectedLov() || selectedLov()?.status !== 'inactive' )) {
+            @if (rootType() && (!selectedLov() || selectedLov()?.status !== 'inactive')) {
                 <button (click)="openAddModal()" class="btn btn-primary">
                     <svg fill="none" height="14" viewBox="0 0 24 24" width="14">
                         <line stroke="white" stroke-linecap="round" stroke-width="2" x1="12" x2="12" y1="5" y2="19"/>
@@ -296,7 +296,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Sort Order</label>
-                                    <input class="form-input" formControlName="sortOrder" placeholder="Sort Order" mask="9999">
+                                    <input class="form-input" formControlName="sortOrder" placeholder="Sort Order"
+                                           mask="9999">
                                     <small class="error">{{ getErrorMsg('sortOrder') }}</small>
                                 </div>
                                 <div class="form-group full-width">
@@ -355,6 +356,10 @@
                             <span class="view-label">Status</span>
                             <span class="badge"
                                   [ngClass]="getStatusClass(selectedLov()!.status)">{{ selectedLov()!.status | titlecase }}</span>
+                        </div>
+                        <div class="view-field">
+                            <span class="view-label">Sort Order</span>
+                            <span class="view-val">{{ selectedLov()!.sortOrder || '0' }}</span>
                         </div>
                         <div class="view-field">
                             <span class="view-label">Created</span>

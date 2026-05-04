@@ -121,7 +121,7 @@ export class LovComponent implements OnInit, OnDestroy {
         sortOrder: {
             pattern: 'Only numbers are allowed',
             min: 'Minimum value is 1',
-            max: 'Maximum value is 1000'
+            max: 'Maximum value is 9999'
         },
         description: {
             maxlength: 'Max 500 characters',
@@ -306,7 +306,7 @@ export class LovComponent implements OnInit, OnDestroy {
                 [
                     Validators.pattern(RegexConstants.NUMERIC_REGEX),
                     Validators.min(1),
-                    Validators.max(1000)
+                    Validators.max(9999)
                 ]
             ],
             code: [{
