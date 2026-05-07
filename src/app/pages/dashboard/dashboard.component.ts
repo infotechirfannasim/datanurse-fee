@@ -107,7 +107,7 @@ export class DashboardComponent implements OnInit {
     caseDistFilter: 'all' | 'month' | 'year' = 'year';
     followupFilter: 'all' | 'month' | 'year' = 'year';
     demoFilter: 'all' | 'month' | 'year' = 'year';
-    readonly RING_COLORS = ['#2251CC','#E8344A','#0EA5A0','#F59E0B','#5B4FCF','#10B981'];
+    readonly RING_COLORS = ['#2251CC', '#E8344A', '#0EA5A0', '#F59E0B', '#5B4FCF', '#10B981'];
     readonly RING_R = 44;
     readonly RING_C = 2 * Math.PI * 44;
     readonly RING_GAP_DEG = 4; //
@@ -180,20 +180,13 @@ export class DashboardComponent implements OnInit {
     ringSegments: any[] = [];
     outcomes: any = {};
     followupOverallRate: number = 0;
-
     procedures: ProcedureItem[] = [];
-
     topSurgeons: any[] = [];
-
     ageGroups: AgeGroupItem[] = [];
-
     provinces: ProvinceItem[] = [];
     genders: GenderItem[] = [];
-
     followups: FollowupItem[] = [];
     chartPeriod = 'month';
-    genderMale = 0;
-    genderFemale = 0;
 
     ngOnInit(): void {
         this.loadLovs();
@@ -256,8 +249,8 @@ export class DashboardComponent implements OnInit {
         this.requestService.getRequest(`${CASE_DISTRIBUTION_API_URL}?filter=${this.caseDistFilter}`)
             .subscribe({
                 next: (res: HttpResponse<any>) => {
-                    const data        = res.body.data;
-                    this.procedures   = data.caseDistribution ?? [];
+                    const data = res.body.data;
+                    this.procedures = data.caseDistribution ?? [];
                     this.ringSegments = this.buildRingSegments(
                         this.procedures.filter((p: any) => (p.count ?? 0) > 0)
                     );
@@ -291,7 +284,9 @@ export class DashboardComponent implements OnInit {
                 next: (res: HttpResponse<any>) => {
                     const data = res.body.data;
                     this.ageGroups = data.ageGroups || [];
-                    this.genders   = data.gender    || [];
+                    this.genders = Array.isArray(data.gender)
+                        ? data.gender
+                        : Object.values(data.gender || {});
                     this.provinces = data.provinces || [];
                     this.isLoadingDemo = false;
                 },
@@ -299,67 +294,29 @@ export class DashboardComponent implements OnInit {
             });
     }
 
-    /* loadDashboard() {
-         this.isLoading = true;
-         forkJoin({
-             summary: this.requestService.getRequest(SUMMARY_API_URL),
-             analytics: this.requestService.getRequest(ANALYTICS_API_URL),
-             demographics: this.requestService.getRequest(DEMOGRAPHICS_API_URL),
-         }).subscribe({
-             next: ({summary, analytics, demographics}: any) => {
-                 if (summary.status !== 200 || analytics.status !== 200 || demographics.status !== 200) return;
- 
-                 // Summary
-                 this.mapStatCards(summary.body.data.stats);
-                 this.topSurgeons = summary.body.data.topSurgeons ?? [];
- 
-                 // Analytics
-                 const analyticsData = analytics.body.data;
-                 this.totalCases = analyticsData.totalCases ?? 0;
-                 this.procedures = analyticsData.caseDistribution ?? [];
-                 this.outcomes = analyticsData.outcomes ?? {};
-                 this.followupOverallRate = analyticsData.followup?.overallRate ?? 0;
-                 this.followups = analyticsData.followup?.breakdown ?? [];
-                 this.ringSegments = this.buildRingSegments(analyticsData.caseDistribution ?? []);
- 
-                 // Demographics
-                 const demoData = demographics.body.data;
-                 this.ageGroups = demoData.ageGroups ?? [];
-                 this.genderMale = demoData.gender?.malePercent ?? 0;
-                 this.genderFemale = demoData.gender?.femalePercent ?? 0;
-                 this.provinces = demoData.provinces ?? [];
-                 this.isLoading = false;
-             },
-             error: (err) => {
-                 this.isLoading = false;
-             },
-         });
-     }*/
-
-
     buildRingSegments(procedures: any[]): any[] {
         const items = (procedures ?? []).filter(p => (p.count ?? 0) > 0);
         if (!items.length) return [];
 
-        const C       = this.RING_C;
-        const gapArc  = (this.RING_GAP_DEG / 360) * C;
-        const total   = items.reduce((s, p) => s + p.count, 0) || 1;
-        let offset    = -90;
+        const C = this.RING_C;
+        const gapArc = (this.RING_GAP_DEG / 360) * C;
+        const total = items.reduce((s, p) => s + p.count, 0) || 1;
+        let offset = -90;
 
         return items.map((p, i) => {
-            const pct    = p.count / total;
+            const pct = p.count / total;
             const arcLen = Math.max(0, pct * C - gapArc);
-            const gap    = C - arcLen;
-            const rot    = offset;
-            offset      += pct * 360;
+            const gap = C - arcLen;
+            const rot = offset;
+            offset += pct * 360;
 
             return {
-                label:      p.label,
-                count:      p.count,
+                label: p.label,
+                count: p.count,
                 percentage: Math.round(pct * 1000) / 10,
-                color:      this.RING_COLORS[i % this.RING_COLORS.length],
-                dasharray:  `${arcLen.toFixed(3)} ${gap.toFixed(3)}`,
-                rotation:   `rotate(${rot.toFixed(3)} 60 60)`,
+                color: this.RING_COLORS[i % this.RING_COLORS.length],
+                dasharray: `${arcLen.toFixed(3)} ${gap.toFixed(3)}`,
+                rotation: `rotate(${rot.toFixed(3)} 60 60)`,
             };
         });
     }
@@ -421,41 +378,12 @@ export class DashboardComponent implements OnInit {
         ];
     }
 
-    private animateCounters(): void {
-        this.statCards.forEach(card => {
-            const target = card.target;
-            const duration = 1400;
-            const start = performance.now();
-            const update = (now: number) => {
-                const elapsed = now - start;
-                const progress = Math.min(elapsed / duration, 1);
-                const ease = 1 - Math.pow(1 - progress, 3);
-                // card.value = Math.round(ease * target);
-                if (progress < 1) requestAnimationFrame(update);
-            };
-            requestAnimationFrame(update);
-        });
-    }
-
     getStatusClass(status: string): string {
         const map: Record<string, string> = {
             Active: 'badge-blue', Recovered: 'badge-green',
             Pending: 'badge-amber', Critical: 'badge-rose'
         };
         return map[status] ?? 'badge-gray';
-    }
-
-    setPeriod(p: string): void {
-        this.chartPeriod = p;
-    }
-
-    onQuickAction(action: string): void {
-        this.toastService.show(`${action} opened`, 'info');
-    }
-
-    getBarHeightPercent(value: number, data: { cases: number, resolved: number }[]): string {
-        const max = Math.max(...data.map(d => d.cases));
-        return ((value / max) * 90) + '%';
     }
 
     getGreeting(): string {
