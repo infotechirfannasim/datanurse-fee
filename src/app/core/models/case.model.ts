@@ -204,6 +204,10 @@ export interface AnesthesiaDto {
   pacuPacemakerSite: string;
   pacuPacemakerType: string;
   pacuDemise: boolean;
+  felRes: boolean;
+  crna: boolean;
+  felResName: string;
+  crnaName: string;
 }
 
 export interface ComplicationsDto {

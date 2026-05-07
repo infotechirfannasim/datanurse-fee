@@ -4,8 +4,45 @@ import {AuthGuard} from "./core/guards/auth.guard";
 import {PermissionGuard} from "./core/guards/permission.guard";
 
 export const routes: Routes = [
+  {
+    path: '',
+    loadComponent: () =>
+        import('./shared/components/public-layout/public-layout.component')
+            .then(m => m.PublicLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+            import('./pages/landing/landing.component')
+                .then(m => m.LandingComponent),
+      },
+      {
+        path: 'privacy-policy',
+        loadComponent: () =>
+            import('./pages/public/privacy/privacy.component')
+                .then(m => m.PrivacyComponent),
+      },
+      {
+        path: 'terms',
+        loadComponent: () =>
+            import('./pages/public/terms/terms.component')
+                .then(m => m.TermsComponent),
+      },
+      {
+        path: 'contact',
+        loadComponent: () =>
+            import('./pages/public/contact/contact.component')
+                .then(m => m.ContactComponent),
+      },
+      {
+        path: 'account-deletion',
+        loadComponent: () =>
+            import('./pages/public/account-deletion/account-deletion.component')
+                .then(m => m.AccountDeletionComponent),
+      },
+    ],
+  },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-
   {
     path: 'auth',
     canActivate: [UnAuthGuard],

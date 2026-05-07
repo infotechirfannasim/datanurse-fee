@@ -194,6 +194,10 @@ export interface RawStep13 {
     indTypeInh?: boolean;
     indTypeIv?: boolean;
     indTypeIm?: boolean;
+    felRes?: boolean;
+    crna?: boolean;
+    felResName?: string;
+    crnaName?: string;
     intraopPharm?: Record<string, boolean>;
     pacuPharm?: Record<string, boolean>;
     anesAdverseEvents?: Record<string, boolean>;

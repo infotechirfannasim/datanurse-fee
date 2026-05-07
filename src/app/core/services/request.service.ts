@@ -244,6 +244,15 @@ export class RequestService {
     });
   }
 
+  getUnAuthRequest(url: any, params?: any) {
+    let headers = this.getUnAuthBasicHeaders();
+    return this.http.get(this.getBEAPIServer() + url, {
+      headers: headers,
+      params: params,
+      observe: 'response',
+    });
+  }
+
   getSVGRequest(url: any) {
     return this.http.get(url, { responseType: 'text', observe: 'response' });
   }

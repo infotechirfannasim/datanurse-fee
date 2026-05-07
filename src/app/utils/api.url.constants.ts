@@ -1,3 +1,5 @@
+export const CONTACT_API_URL = 'public/contact';
+export const PUBLIC_STATS_API_URL = 'public/stats';
 export const LOGIN_API_URL = 'auth/login';
 export const LOGOUT_API_URL = '/auth/logout';
 export const SIGN_UP_API_URL = '/un-auth/sign-up';

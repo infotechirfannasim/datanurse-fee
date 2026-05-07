@@ -770,6 +770,27 @@
                                         <div class="cd-key">PACU Demise</div>
                                         <div class="cd-val">{{ caseDto()!.anesthesia.pacuDemise ? 'Yes' : 'No' }}</div>
                                     </div>
+
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Fel Res</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.felRes ? 'Yes' : 'No' }}</div>
+                                    </div>
+                                    @if (caseDto()!.anesthesia.felRes) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Fel Res Name</div>
+                                            <div class="cd-val">{{ caseDto()!.anesthesia.felResName }}</div>
+                                        </div>
+                                    }
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Crna</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.crna ? 'Yes' : 'No'  }}</div>
+                                    </div>
+                                    @if (caseDto()!.anesthesia.crna) {
+                                        <div class="cd-cell">
+                                            <div class="cd-key">Crna Name</div>
+                                            <div class="cd-val">{{ caseDto()!.anesthesia.crnaName }}</div>
+                                        </div>
+                                    }
                                 </div>
 
                                 @if (caseDto()!.anesthesia.adverseEvents.length) {
@@ -777,6 +798,17 @@
                                         @for (ev of caseDto()!.anesthesia.adverseEvents; track ev) {
                                             <span class="cd-tag cd-tag--complication">{{ ev }}</span>
                                         }
+                                    </div>
+                                }
+
+                                @if (caseDto()!.anesthesia.pacuPacemaker) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Pacemaker Site</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.pacuPacemakerSite }}</div>
+                                    </div>
+                                    <div class="cd-cell">
+                                        <div class="cd-key">Pacemaker Type</div>
+                                        <div class="cd-val">{{ caseDto()!.anesthesia.pacuPacemakerType }}</div>
                                     </div>
                                 }
                             }

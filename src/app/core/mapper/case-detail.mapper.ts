@@ -343,6 +343,8 @@ function mapAnesthesia(raw: RawCase, lovs: LovStore): AnesthesiaDto {
             pacuPulseOx: DASH, pacuTempSite: DASH,
             pacuPacemaker: false, pacuPacemakerSite: DASH, pacuPacemakerType: DASH,
             pacuDemise: false,
+            crna: false, felRes: false,
+            felResName: DASH, crnaName: DASH
         };
     }
 
@@ -384,6 +386,10 @@ function mapAnesthesia(raw: RawCase, lovs: LovStore): AnesthesiaDto {
         pacuPacemakerSite:    str(s.pacuPacemakerSite),
         pacuPacemakerType:    str(s.pacuPacemakerType),
         pacuDemise:           bool(s.pacuDemise),
+        felRes:             bool(s.felRes),
+        felResName:        str(s.felResName),
+        crna:               bool(s.crna),
+        crnaName:        str(s.crnaName),
     };
 }
 

@@ -1,0 +1,95 @@
+<!-- =============================================
+  PUBLIC LAYOUT — shared navbar + footer
+  All public pages use this as wrapper
+  ============================================= -->
+
+<!-- NAVBAR -->
+<nav class="pub-nav">
+    <div class="pub-nav-inner">
+        <a routerLink="/" class="pub-logo">
+            <div class="pub-logo-icon">
+                <img alt="DataNurse" src="./assets/images/newLogo.svg"/>
+            </div>
+        </a>
+
+        <div class="pub-nav-links">
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a>
+            <a routerLink="/privacy-policy" routerLinkActive="active">Privacy</a>
+            <a routerLink="/terms" routerLinkActive="active">Terms</a>
+            <a routerLink="/contact" routerLinkActive="active">Contact</a>
+        </div>
+
+        <button class="pub-nav-cta" routerLink="/auth">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 1a7 7 0 100 14A7 7 0 008 1zM5 8h6M9 6l2 2-2 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Admin Login
+        </button>
+
+        <!-- Mobile menu toggle -->
+        <button class="pub-hamburger" (click)="menuOpen = !menuOpen">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="pub-mobile-menu" [class.open]="menuOpen">
+        <a routerLink="/" (click)="menuOpen=false">Home</a>
+        <a routerLink="/privacy-policy" (click)="menuOpen=false">Privacy Policy</a>
+        <a routerLink="/terms" (click)="menuOpen=false">Terms & Conditions</a>
+        <a routerLink="/contact" (click)="menuOpen=false">Contact Us</a>
+        <a routerLink="/account-deletion" (click)="menuOpen=false">Account Deletion</a>
+        <button routerLink="/auth" (click)="menuOpen=false">Admin Login</button>
+    </div>
+</nav>
+
+<!-- PAGE CONTENT -->
+<main class="pub-main">
+    <router-outlet></router-outlet>
+</main>
+
+<!-- FOOTER -->
+<footer class="pub-footer">
+    <div class="pub-footer-inner">
+        <div class="pub-footer-brand">
+            <a routerLink="/" class="pub-logo">
+                <div class="pub-logo-icon">
+                    <img alt="DataNurse" src="./assets/images/newLogo.svg"/>
+                </div>
+            </a>
+            <p>Smart data collection and management for pediatric cardiac surgery teams in Pakistan.</p>
+        </div>
+
+        <div class="pub-footer-links">
+            <div class="pub-footer-col">
+                <h5>App</h5>
+                <a routerLink="/">About</a>
+                <a routerLink="/" fragment="features">Features</a>
+                <a routerLink="/contact">Contact Us</a>
+            </div>
+            <div class="pub-footer-col">
+                <h5>Legal</h5>
+                <a routerLink="/privacy-policy">Privacy Policy</a>
+                <a routerLink="/terms">Terms & Conditions</a>
+                <a routerLink="/account-deletion">Account Deletion</a>
+            </div>
+            <div class="pub-footer-col">
+                <h5>Access</h5>
+                <a routerLink="/auth">Admin Login</a>
+                <a routerLink="/contact">Get Support</a>
+                <a href="mailto:info@datanurse.io">Email Us</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="pub-footer-bottom">
+        <p>&copy; {{ currentYear }} DataNurse. All rights reserved. Built by Infotech, Pakistan.</p>
+        <div class="pub-footer-bottom-links">
+            <a routerLink="/privacy-policy">Privacy</a>
+            <span>·</span>
+            <a routerLink="/terms">Terms</a>
+            <span>·</span>
+            <a routerLink="/account-deletion">Account Deletion</a>
+        </div>
+    </div>
+</footer>

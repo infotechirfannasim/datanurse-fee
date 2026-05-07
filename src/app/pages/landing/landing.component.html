@@ -1,0 +1,189 @@
+<!-- =============================================
+   LANDING PAGE — landing.component.html
+   ============================================= -->
+
+<!-- HERO -->
+<section class="lp-hero">
+    <div class="lp-hero-grid"></div>
+    <div class="lp-hero-circles">
+        <div class="lp-circle lp-circle-1"></div>
+        <div class="lp-circle lp-circle-2"></div>
+        <div class="lp-circle lp-circle-3"></div>
+    </div>
+
+    <div class="lp-hero-inner">
+        <div class="lp-hero-content">
+            <div class="lp-badge">
+                <span class="lp-pulse"></span>
+                Trusted by Pediatric Cardiac Surgeons
+            </div>
+            <h1 class="lp-hero-title">
+                Smart Data Collection
+                <span>for Patient's<br/>Heart Care</span>
+            </h1>
+            <p class="lp-hero-sub">
+                DataNurse empowers cardiologists and pediatric heart surgeons to record, manage, and analyze
+                patient surgical data — securely and efficiently, from any device.
+            </p>
+            <div class="lp-hero-actions">
+                <button class="lp-btn-primary" routerLink="/auth">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <path d="M9 1a8 8 0 100 16A8 8 0 009 1zm3 8.5l-4 2.5V6l4 2.5z" fill="currentColor"/>
+                    </svg>
+                    Access Admin Portal
+                </button>
+                <a href="#about" class="lp-btn-ghost">
+                    Learn More
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 8h10M8 4l5 4-5 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+            <div class="lp-stats">
+                <div class="lp-stat">
+                    <span class="lp-stat-num">{{ stats.doctors }}+</span>
+                    <span class="lp-stat-lbl">Doctors</span>
+                </div>
+                <div class="lp-stat-sep"></div>
+                <div class="lp-stat">
+                    <span class="lp-stat-num">{{ stats.cases }}+</span>
+                    <span class="lp-stat-lbl">Cases Recorded</span>
+                </div>
+                <div class="lp-stat-sep"></div>
+                <div class="lp-stat">
+                    <span class="lp-stat-num">{{ stats.patients }}+</span>
+                    <span class="lp-stat-lbl">Patients</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card mockup -->
+        <div class="lp-hero-card">
+            <div class="lp-mock-card">
+                <div class="lp-mock-hdr">
+                    <span class="lp-dot lp-dot-r"></span>
+                    <span class="lp-dot lp-dot-y"></span>
+                    <span class="lp-dot lp-dot-g"></span>
+                    <span class="lp-mock-title">Patient Record</span>
+                </div>
+                <div class="lp-mock-body">
+                    <div class="lp-mock-row">
+                        <span class="lp-mock-lbl">Patient ID</span>
+                        <span class="lp-mock-val">DN-2024-0892</span>
+                    </div>
+                    <div class="lp-mock-row">
+                        <span class="lp-mock-lbl">Procedure</span>
+                        <span class="lp-mock-val lp-mock-accent">VSD Repair</span>
+                    </div>
+                    <div class="lp-mock-row">
+                        <span class="lp-mock-lbl">Surgeon</span>
+                        <span class="lp-mock-val">Dr. Ahmed</span>
+                    </div>
+                    <div class="lp-mock-row">
+                        <span class="lp-mock-lbl">Status</span>
+                        <span class="lp-chip lp-chip-green">Completed</span>
+                    </div>
+                    <div class="lp-mock-row">
+                        <span class="lp-mock-lbl">Recovery</span>
+                        <span class="lp-chip lp-chip-blue">Stable</span>
+                    </div>
+                    <div class="lp-mock-chart">
+                        <div class="lp-bar" style="height:38%"></div>
+                        <div class="lp-bar" style="height:62%"></div>
+                        <div class="lp-bar" style="height:45%"></div>
+                        <div class="lp-bar" style="height:80%"></div>
+                        <div class="lp-bar" style="height:55%"></div>
+                        <div class="lp-bar" style="height:90%"></div>
+                        <div class="lp-bar lp-bar-hi" style="height:72%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section class="lp-section lp-section-light" id="about">
+    <div class="lp-container">
+        <div class="lp-sec-label">About DataNurse</div>
+        <h2 class="lp-sec-title">Built for<br/>Pediatric Heart Heroes</h2>
+        <div class="lp-about-grid">
+            <div class="lp-about-text">
+                <p>DataNurse is a purpose-built mobile and web application designed for cardiologists and pediatric cardiac surgeons. Patient with congenital heart defects require specialized, life-saving surgeries — and every detail of their care matters.</p>
+                <p>Our platform bridges the gap between mobile data collection at the bedside and centralized management through an admin portal. Doctors can record patient information, surgical procedures, pre- and post-operative data, and track recovery — all in real time.</p>
+                <p>With DataNurse, hospitals and clinics gain the power of structured healthcare data, enabling better decision-making, audit trails, and improved patient outcomes</p>
+                <div class="lp-callout">
+                    <div class="lp-callout-icon">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2C5.58 2 2 5.58 2 10s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm.5 12h-1v-5h1v5zm0-6h-1V7h1v1z" fill="#0656C5"/></svg>
+                    </div>
+                    <p><strong>Mission:</strong> To digitize and standardize pediatric cardiac surgical records, enabling data-driven improvements in Patient's heart care.</p>
+                </div>
+            </div>
+            <div class="lp-about-cards">
+                <div class="lp-acard">
+                    <div class="lp-acard-icon lp-acard-blue">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="2" stroke="white" stroke-width="1.8"/><path d="M9 8h6M9 12h6M9 16h4" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    </div>
+                    <h4>Mobile App</h4>
+                    <p>Capture patient data at the point of care using our intuitive Android application.</p>
+                </div>
+                <div class="lp-acard">
+                    <div class="lp-acard-icon lp-acard-teal">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="white" stroke-width="1.8"/><path d="M12 8v8M8 12h8" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    </div>
+                    <h4>Admin Portal</h4>
+                    <p>Manage doctors, patients, cases and reports from a powerful web dashboard.</p>
+                </div>
+                <div class="lp-acard">
+                    <div class="lp-acard-icon lp-acard-indigo">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h4>Structured Data</h4>
+                    <p>Standardized forms ensure consistent, high-quality data across all hospitals.</p>
+                </div>
+                <div class="lp-acard">
+                    <div class="lp-acard-icon lp-acard-rose">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3.5a5 5 0 00-5 5c0 3.5 5 9 5 9s5-5.5 5-9a5 5 0 00-5-5zm0 6.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" fill="white"/></svg>
+                    </div>
+                    <h4>Focused</h4>
+                    <p>Designed for the specific workflows of cardiac surgery teams.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="lp-section lp-section-dark" id="features">
+    <div class="lp-container">
+        <div class="lp-sec-label lp-sec-label-light">App Features</div>
+        <h2 class="lp-sec-title lp-sec-title-light">Everything You Need to<br/>Manage Cardiac Cases</h2>
+        <div class="lp-feat-grid">
+            <div class="lp-feat"><div class="lp-feat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4 11h-3v3h-2v-3H8v-2h3V8h2v3h3v2z" fill="#0656C5"/></svg></div><h3>Patient Registration</h3><p>Register pediatric patients with complete demographics, medical history, and diagnosis information quickly and accurately.</p></div>
+            <div class="lp-feat"><div class="lp-feat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="19" rx="2" stroke="#0656C5" stroke-width="1.8"/><path d="M8 8h8M8 12h8M8 16h5" stroke="#0656C5" stroke-width="1.8" stroke-linecap="round"/></svg></div><h3>Surgical Case Records</h3><p>Document complete surgical details including procedure type, bypass time, aortic clamp time, and intraoperative findings.</p></div>
+            <div class="lp-feat"><div class="lp-feat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="#0656C5" stroke-width="1.8"/><path d="M3 21c0-5 4-9 9-9s9 4 9 9" stroke="#0656C5" stroke-width="1.8" stroke-linecap="round"/></svg></div><h3>Doctor Management</h3><p>Maintain profiles of surgeons and care teams. Track each doctor's surgical history and outcomes.</p></div>
+            <div class="lp-feat"><div class="lp-feat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2" stroke="#0656C5" stroke-width="1.8"/><path d="M4 18l5-6 3 3 3-4 4 5" stroke="#0656C5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Dashboard Analytics</h3><p>Visual dashboards show active cases, recovery rates, surgical outcomes, and hospital statistics at a glance.</p></div>
+            <div class="lp-feat"><div class="lp-feat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#0656C5" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="#0656C5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Pre &amp; Post-op Tracking</h3><p>Record pre-operative assessments and post-operative monitoring including vitals and recovery milestones.</p></div>
+            <div class="lp-feat"><div class="lp-feat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v5c0 5.25 3.75 10.17 9 11.38C17.25 22.17 21 17.25 21 12V7l-9-5z" stroke="#0656C5" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 12l3 3 6-6" stroke="#0656C5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Role-Based Access</h3><p>Granular permissions ensure doctors see only what they need. Admins control full access securely.</p></div>
+            <div class="lp-feat"><div class="lp-feat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="#0656C5" stroke-width="1.8"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="#0656C5" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16" r="1.5" fill="#0656C5"/></svg></div><h3>Secure Authentication</h3><p>JWT-based login with forgot password and reset flows. Hospital data protected and accessible only to authorized users.</p></div>
+            <div class="lp-feat"><div class="lp-feat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2" stroke="#0656C5" stroke-width="1.8"/><path d="M4 18l4-5 3 3 3-4 4 5" stroke="#0656C5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Reports &amp; Export</h3><p>Generate comprehensive surgical reports and data exports for research and quality improvement.</p></div>
+            <div class="lp-feat"><div class="lp-feat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="3" stroke="#0656C5" stroke-width="1.8"/><path d="M9 6h6M12 18v-4" stroke="#0656C5" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="13" r="2.5" stroke="#0656C5" stroke-width="1.8"/></svg></div><h3>Offline-Ready Mobile App</h3><p>The Android app works in low-connectivity environments — data syncs automatically when connection is restored.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA STRIP -->
+<section class="lp-cta-strip">
+    <div class="lp-container">
+        <div class="lp-cta-inner">
+            <div>
+                <h3>Ready to get started?</h3>
+                <p>Join the growing network of cardiac surgeons using DataNurse.</p>
+            </div>
+            <div class="lp-cta-btns">
+                <button class="lp-btn-primary" routerLink="/auth">Access Admin Portal</button>
+                <button class="lp-btn-ghost-white" routerLink="/contact">Contact Us</button>
+            </div>
+        </div>
+    </div>
+</section>
