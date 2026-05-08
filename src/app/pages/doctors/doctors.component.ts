@@ -6,7 +6,8 @@ import {Doctor} from '../../core/models/doctor.model';
 import {RequestService} from "../../core/services/request.service";
 import {
     ACTIVE_ROLES_API_URL,
-    DELETE_USER_API_URL, DOCTOR_TEAM_API_URL,
+    DELETE_USER_API_URL,
+    DOCTOR_TEAM_API_URL,
     DOCTORS_API_URL,
     GET_LOV_BULK_API_URL,
     USERS_API_URL
@@ -21,6 +22,28 @@ import {FindObjByKeyPipe} from "../../core/pipe/find-obj-by-key";
 import {getError, getUserInitials, markAllTouched} from "../../utils/global.utils";
 import {NgxMaskDirective} from "ngx-mask";
 import {RegexConstants} from "../../utils/regex-constants";
+
+interface Team {
+    _id: string;
+    leadDoctorId: string;
+    hospitalId: {
+        _id: string;
+        code: string;
+        name: string;
+    };
+    name: string;
+    teamType: string;
+    members: any[];
+    membersCount: number;
+    hasMembers: boolean;
+    isActive: boolean;
+    status: string;
+    isDeleted: boolean;
+    createdBy: string;
+    updatedBy: string;
+    createdAt: string;
+    updatedAt: string;
+}
 
 @Component({
     selector: 'app-doctors',
@@ -75,7 +98,7 @@ export class DoctorsComponent implements OnInit {
     doctors: Doctor[] = [];
     showTeamsModal  = signal(false);
     teamsLoading    = signal(false);
-    doctorTeams     = signal<any[]>([]);
+    doctorTeams = signal<Team[]>([]);
 
     allProvinces: any[] = [];
     allDistricts: any[] = [];
