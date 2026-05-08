@@ -403,6 +403,7 @@ export interface PatientDetailDto {
   bloodGroup: string;
   phone: string;
   weight: string;
+  weightUnit: string;
   primaryPayor: string;   // LOV-resolved
   secondaryPayor: string; // LOV-resolved
   country: string;

@@ -6,7 +6,7 @@ import {Doctor} from '../../core/models/doctor.model';
 import {RequestService} from "../../core/services/request.service";
 import {
     ACTIVE_ROLES_API_URL,
-    DELETE_USER_API_URL,
+    DELETE_USER_API_URL, DOCTOR_TEAM_API_URL,
     DOCTORS_API_URL,
     GET_LOV_BULK_API_URL,
     USERS_API_URL
@@ -18,7 +18,7 @@ import {MultiSelectModule} from "primeng/multiselect";
 import {SelectModule} from "primeng/select";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
 import {FindObjByKeyPipe} from "../../core/pipe/find-obj-by-key";
-import {getError, markAllTouched} from "../../utils/global.utils";
+import {getError, getUserInitials, markAllTouched} from "../../utils/global.utils";
 import {NgxMaskDirective} from "ngx-mask";
 import {RegexConstants} from "../../utils/regex-constants";
 
@@ -73,9 +73,9 @@ export class DoctorsComponent implements OnInit {
     specialtyOptions: any[] = [];
     hospitalOptions: any[] = [];
     doctors: Doctor[] = [];
-    rowProvinceOptions: Map<number, any[]> = new Map();
-    rowDistrictOptions: Map<number, any[]> = new Map();
-    rowCityOptions: Map<number, any[]> = new Map();
+    showTeamsModal  = signal(false);
+    teamsLoading    = signal(false);
+    doctorTeams     = signal<any[]>([]);
 
     allProvinces: any[] = [];
     allDistricts: any[] = [];
@@ -216,6 +216,26 @@ export class DoctorsComponent implements OnInit {
         this.showViewModal.set(true);
     }
 
+    openTeams(doc: any): void {
+        this.selectedDoctor.set(doc);
+        this.doctorTeams.set([]);
+        this.showTeamsModal.set(true);
+        this.teamsLoading.set(true);
+        this.requestService.getRequest(DOCTOR_TEAM_API_URL.replace('{userId}', doc._id)).subscribe({
+            next: (resp: HttpResponse<any>) => {
+                if(resp.status == 200 && resp.body.data) {
+                    const teams = Array.isArray(resp.body.data) ? resp.body.data : [resp.body.data];
+                    this.doctorTeams.set(teams);
+                    this.teamsLoading.set(false);
+                }
+            },
+            error: (err) => {
+                console.error('Failed to load teams', err);
+                this.teamsLoading.set(false);
+            }
+        });
+    }
+
     loadLovs() {
         const payload = {
             types: ['specialty', 'hospitals', 'country', 'province', 'district', 'city'],
@@ -289,7 +309,7 @@ export class DoctorsComponent implements OnInit {
                 this.loadDoctors();
             },
             error: (err: HttpErrorResponse) => {
-                const errMsg = err.message || err.error.message || 'Failed to delete doctor.';
+                const errMsg = err.error.message || err.message || 'Failed to delete doctor.';
                 this.toastService.show(errMsg, 'error');
             }
         });
@@ -440,4 +460,11 @@ export class DoctorsComponent implements OnInit {
         this.cancelClose();
         this.closeModal();
     }
+
+    getRoleLabel(teamRole: string): string {
+        const match = this.roles.find((r: any) => r.name === teamRole);
+        return match?.label ?? teamRole;
+    }
+
+    protected readonly getUserInitials = getUserInitials;
 }

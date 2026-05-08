@@ -29,6 +29,7 @@ export interface RawPatient {
     bloodGroup?: string;
     gender?: string;
     weight?: string;
+    weightUnit?: string;
     country?: string;
     province?: string;
     city?: string;

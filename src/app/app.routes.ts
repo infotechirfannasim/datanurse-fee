@@ -6,6 +6,7 @@ import {PermissionGuard} from "./core/guards/permission.guard";
 export const routes: Routes = [
   {
     path: '',
+    canActivate: [UnAuthGuard],
     loadComponent: () =>
         import('./shared/components/public-layout/public-layout.component')
             .then(m => m.PublicLayoutComponent),

@@ -15,6 +15,7 @@ export const UPDATE_PROFILE_API_URL = 'users/me';
 // Users
 export const USERS_API_URL = 'users';
 export const DELETE_USER_API_URL = 'users/';
+export const DOCTOR_TEAM_API_URL = 'users/{userId}/teams';
 export const ROLES_API_URL = 'roles';
 export const ACTIVE_ROLES_API_URL = 'roles/active';
 export const DELETE_ROLE_API_URL = 'roles/';

@@ -733,6 +733,7 @@ export function mapToPatientDetailDto(
         ...core,
         phone:          str((raw as any).phone),
         weight:         (raw as any).weight ? `${(raw as any).weight} kg` : DASH,
+        weightUnit:         (raw as any).weightUnit ? `${(raw as any).weightUnit}` : DASH,
         primaryPayor:   lovName(lovs, 'funding', (raw as any).primaryPayor),
         secondaryPayor: lovName(lovs, 'funding', (raw as any).secondaryPayor),
         doctorName,
