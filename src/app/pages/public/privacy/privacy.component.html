@@ -16,16 +16,28 @@
             <aside class="doc-toc">
                 <h4>Contents</h4>
                 <nav>
-                    <a (click)="scrollTo('pp-intro')">Introduction</a>
-                    <a (click)="scrollTo('pp-collect')">Information We Collect</a>
-                    <a (click)="scrollTo('pp-use')">How We Use Your Data</a>
-                    <a (click)="scrollTo('pp-storage')">Data Storage & Security</a>
-                    <a (click)="scrollTo('pp-sharing')">Data Sharing</a>
-                    <a (click)="scrollTo('pp-retention')">Data Retention</a>
-                    <a (click)="scrollTo('pp-rights')">Your Rights</a>
-                    <a (click)="scrollTo('pp-children')">Children's Privacy</a>
-                    <a (click)="scrollTo('pp-changes')">Policy Changes</a>
-                    <a (click)="scrollTo('pp-contact')">Contact Us</a>
+                    <a [class.active]="activeSection() === 'pp-intro'" (click)="scrollTo('pp-intro')">1.
+                        Introduction</a>
+                    <a [class.active]="activeSection() === 'pp-collect'" (click)="scrollTo('pp-collect')">2. Information
+                        We Collect</a>
+                    <a [class.active]="activeSection() === 'pp-use'" (click)="scrollTo('pp-use')">3. How We Use Your
+                        Data</a>
+                    <a [class.active]="activeSection() === 'pp-storage'" (click)="scrollTo('pp-storage')">4. Data
+                        Storage & Security</a>
+                    <a [class.active]="activeSection() === 'pp-sharing'" (click)="scrollTo('pp-sharing')">5. Data
+                        Sharing</a>
+                    <a [class.active]="activeSection() === 'pp-retention'" (click)="scrollTo('pp-retention')">6. Data
+                        Retention</a>
+                    <a [class.active]="activeSection() === 'pp-deletion'" (click)="scrollTo('pp-deletion')">7. Data
+                        Deletion</a>
+                    <a [class.active]="activeSection() === 'pp-rights'" (click)="scrollTo('pp-rights')">8. Your
+                        Rights</a>
+                    <a [class.active]="activeSection() === 'pp-children'" (click)="scrollTo('pp-children')">9.
+                        Children's Privacy</a>
+                    <a [class.active]="activeSection() === 'pp-changes'" (click)="scrollTo('pp-changes')">10. Policy
+                        Changes</a>
+                    <a [class.active]="activeSection() === 'pp-contact'" (click)="scrollTo('pp-contact')">11. Contact
+                        Us</a>
                 </nav>
             </aside>
 
@@ -35,26 +47,29 @@
                 <div class="doc-intro-box">
                     <p>
                         At DataNurse, we are committed to protecting the privacy and confidentiality
-                        of all patient data collected through our platform. This Privacy Policy
-                        explains how we collect, use, store, and safeguard information when you use
-                        the DataNurse mobile application or admin portal.
+                        of all patient data collected through our platform. This Privacy Policy explains
+                        how we collect, use, store, safeguard, retain, and delete information when you
+                        use the DataNurse mobile application or admin portal.
                     </p>
                 </div>
 
                 <section id="pp-intro">
                     <h2>1. Introduction</h2>
-
                     <p>
                         DataNurse ("we", "our", or "the platform") is a healthcare data management
                         application operated by Infotech, Pakistan. We provide digital tools for
-                        heart care surgeons and healthcare professionals to record, manage,
-                        and analyze patient surgical data.
+                        heart care surgeons and healthcare professionals to record, manage, and
+                        analyze patient surgical data for research and quality-improvement purposes.
                     </p>
-
                     <p>
-                        By using DataNurse — whether via our Android mobile application or our
-                        web-based admin portal — you agree to the practices described in this
-                        Privacy Policy. If you do not agree, please discontinue use of the platform.
+                        DataNurse does <strong>not</strong> process payments and does not offer
+                        consumer-facing accounts to patients. All users of the platform are verified,
+                        adult healthcare professionals or administrators.
+                    </p>
+                    <p>
+                        By using DataNurse - whether via our Android mobile application or our
+                        web-based admin portal - you agree to the practices described in this Privacy
+                        Policy. If you do not agree, please discontinue use of the platform.
                     </p>
                 </section>
 
@@ -62,12 +77,7 @@
                     <h2>2. Information We Collect</h2>
 
                     <h3>Patient Data</h3>
-
-                    <p>
-                        Healthcare professionals using DataNurse enter the following types of
-                        patient information:
-                    </p>
-
+                    <p>Healthcare professionals using DataNurse enter the following types of patient information:</p>
                     <ul>
                         <li>Patient demographics (name, age, gender, date of birth, CNIC/MRN)</li>
                         <li>Medical history and diagnosis information</li>
@@ -77,43 +87,39 @@
                     </ul>
 
                     <h3>User Account Data</h3>
-
-                    <p>
-                        For registered healthcare professionals and administrators, we collect:
-                    </p>
-
+                    <p>For registered healthcare professionals and administrators, we collect:</p>
                     <ul>
                         <li>Name, email address, and professional designation</li>
-                        <li>Login credentials (passwords are stored as salted hashes)</li>
+                        <li>Login credentials (passwords are stored as salted hashes - never in plain text)</li>
                         <li>Role and permission assignments</li>
                         <li>Activity logs for audit purposes</li>
                     </ul>
 
                     <h3>Technical Data</h3>
-
                     <p>
                         We automatically collect certain technical information including device type,
                         IP address, browser/app version, and usage patterns to maintain and improve
                         the platform.
                     </p>
+                    <p>
+                        We collect Personal and Sensitive Information (PII) including but not limited to Name, Email,
+                        and Patient Medical Records, solely for the purposes of clinical research and surgical tracking.
+                    </p>
                 </section>
 
                 <section id="pp-use">
                     <h2>3. How We Use Your Data</h2>
-
-                    <p>
-                        Data collected through DataNurse is used exclusively for the following purposes:
-                    </p>
-
+                    <p>Data collected through DataNurse is used exclusively for the following purposes:</p>
                     <ul>
                         <li>Providing and operating the DataNurse platform</li>
                         <li>Patient care management and surgical outcome tracking</li>
-                        <li>Generating reports and analytics for healthcare quality improvement</li>
+                        <li>Generating reports and analytics for healthcare quality improvement and geographic
+                            research
+                        </li>
                         <li>User authentication and access control</li>
                         <li>Platform maintenance, debugging, and security monitoring</li>
                         <li>Compliance with applicable Pakistani healthcare regulations</li>
                     </ul>
-
                     <p>
                         <strong>
                             We do not sell, rent, or share patient or user data with third parties
@@ -124,164 +130,200 @@
 
                 <section id="pp-storage">
                     <h2>4. Data Storage & Security</h2>
-
-                    <p>
-                        We implement industry-standard security measures to protect all data stored
-                        on our platform:
-                    </p>
-
+                    <p>We implement industry-standard security measures to protect all data stored on our platform:</p>
                     <ul>
                         <li>
                             <strong>Encryption in transit:</strong>
-                            All data transmitted between the app/portal and our servers is encrypted
-                            using TLS 1.2+
+                            All data transmitted between the app/portal and our servers is encrypted using TLS 1.2+
                         </li>
-
                         <li>
                             <strong>Encryption at rest:</strong>
                             Sensitive data is encrypted at rest using AES-256 encryption
                         </li>
-
                         <li>
                             <strong>Access controls:</strong>
-                            Role-based access ensures users only access data relevant to their responsibilities
+                            Role-based access ensures users can only access data relevant to their responsibilities
                         </li>
-
                         <li>
                             <strong>Authentication:</strong>
                             JWT-based authentication with token expiry and refresh mechanisms
                         </li>
-
                         <li>
                             <strong>Audit logging:</strong>
                             All data access and modification events are logged for security review
                         </li>
                     </ul>
-
                     <p>
-                        While we implement strong security measures, no system is completely immune
-                        to breaches. We encourage users to maintain strong, unique passwords and
-                        report any suspicious activity immediately.
+                        While we implement strong security measures, no system is completely immune to breaches.
+                        We encourage users to maintain strong, unique passwords and report any suspicious
+                        activity immediately to <a href="mailto:info@datanurse.io">info@datanurse.io</a>.
                     </p>
                 </section>
 
                 <section id="pp-sharing">
                     <h2>5. Data Sharing</h2>
-
                     <p>
-                        Patient information is accessible only to verified healthcare professionals
-                        at the specific institution where the patient is registered. We do not share
-                        data across institutions without explicit consent.
+                        Patient information is accessible only to verified healthcare professionals at the
+                        specific institution where the patient is registered. We do not share data across
+                        institutions without explicit consent.
                     </p>
-
-                    <p>
-                        We may share data in the following limited circumstances:
-                    </p>
-
+                    <p>We may share data in the following limited circumstances:</p>
                     <ul>
-                        <li>
-                            With your hospital's DataNurse administrator as part of normal platform operation
+                        <li>With your hospital's DataNurse administrator as part of normal platform operation</li>
+                        <li>With our technical service providers (servers, hosting) under strict confidentiality
+                            agreements
                         </li>
-
-                        <li>
-                            With our technical service providers (servers, hosting) under strict confidentiality agreements
-                        </li>
-
-                        <li>
-                            When required by Pakistani law, court order, or regulatory authority
-                        </li>
-
-                        <li>
-                            With your explicit written consent for research or quality improvement purposes
-                        </li>
+                        <li>When required by Pakistani law, a court order, or a regulatory authority</li>
+                        <li>With your explicit written consent for research or quality-improvement purposes</li>
                     </ul>
                 </section>
 
                 <section id="pp-retention">
                     <h2>6. Data Retention</h2>
 
+                    <h3>Patient Medical Records</h3>
                     <p>
-                        Patient medical records are retained in accordance with your institution's
-                        data retention policies and applicable Pakistani healthcare regulations.
-                        In the absence of specific institutional policy, we retain patient records
-                        for a minimum of 7 years from the date of last interaction.
+                        Patient medical records are retained in accordance with your institution's data
+                        retention policies and applicable Pakistani healthcare regulations. In the absence
+                        of a specific institutional policy, we retain patient records for a
+                        <strong>minimum of 7 years from the date of last interaction</strong>, as required
+                        by healthcare compliance standards.
                     </p>
 
+                    <h3>User Account Data</h3>
                     <p>
                         User account information is retained while accounts remain active and operational.
-                        Upon verified account closure or deactivation requests, certain personal information
-                        may be anonymized or restricted from active use within a reasonable timeframe,
-                        except where retention is required for legal, medical, security, audit, backup,
-                        fraud prevention, operational continuity, or regulatory compliance purposes.
+                        Upon a verified account closure or deactivation request submitted to
+                        <a href="mailto:privacy@datanurse.io">privacy@datanurse.io</a>, personal information
+                        that is not subject to a legal, medical, audit, or regulatory hold will be
+                        deleted or anonymized within <strong>30 days</strong>.
+                    </p>
+
+                    <h3>Technical & Log Data</h3>
+                    <p>
+                        System logs, access records, and technical data are retained for a maximum of
+                        <strong>12 months</strong> and then permanently deleted, unless a specific security
+                        or legal investigation requires extended retention.
+                    </p>
+
+                    <div class="doc-warn">
+                        <p>
+                            <strong>Note:</strong> Certain medical, audit, security, and operational records may
+                            be retained longer where required by healthcare regulations, institutional policies,
+                            fraud prevention requirements, or applicable Pakistani law - even after a deletion
+                            request is received.
+                        </p>
+                    </div>
+                </section>
+
+                <section id="pp-deletion">
+                    <h2>7. Data Deletion</h2>
+                    <p>
+                        You have the right to request deletion of your personal data from the DataNurse platform.
+                        We provide a clear and straightforward process for all data deletion requests.
+                    </p>
+                    <p>
+                        Users can request the deletion of their account and all associated personal data. Upon a
+                        verified request, we will remove the user's account information from our active databases within
+                        30 days.
+                    </p>
+
+                    <div class="doc-highlight">
+                        <p><strong>How to request deletion of your data:</strong></p>
+                        <ul>
+                            <li>
+                                Send an email to <a href="mailto:privacy@datanurse.io">privacy@datanurse.io</a>
+                                with the subject line <strong>"Data Deletion Request"</strong>
+                            </li>
+                            <li>Include your full name, registered email address, and professional designation</li>
+                            <li>Specify whether you want your account closed, specific records corrected, or all
+                                personal data deleted
+                            </li>
+                        </ul>
+                        <p>
+                            We will acknowledge your request within <strong>5 business days</strong> and
+                            complete the deletion or provide a detailed response within <strong>30 days</strong>.
+                        </p>
+                    </div>
+
+
+                    <h3>What gets deleted</h3>
+                    <p>Upon a verified deletion request, the following data will be permanently removed or
+                        anonymized:</p>
+                    <ul>
+                        <li>Your user account credentials (email, password hash, profile details)</li>
+                        <li>Personal identifiers linked to your account activity</li>
+                        <li>Device and login session records associated with your account</li>
+                    </ul>
+
+                    <h3>What cannot be deleted immediately</h3>
+                    <p>
+                        Certain data may be retained even after a deletion request, where required by applicable law or
+                        institutional policy:
+                    </p>
+                    <ul>
+                        <li>
+                            <strong>Patient medical records</strong> - retained for the minimum period required
+                            by Pakistani healthcare regulations (typically 7 years) regardless of who entered them
+                        </li>
+                        <li>
+                            <strong>Audit logs</strong> - required for legal compliance and institutional accountability
+                        </li>
+                        <li>
+                            <strong>Data subject to an active legal hold</strong> - retained until the legal matter is
+                            resolved
+                        </li>
+                    </ul>
+                    <p>
+                        When deletion is not immediately possible due to the above, we will clearly communicate
+                        the reason and the expected timeline to you in writing.
+                    </p>
+
+                    <h3>Anonymous / De-identified data</h3>
+                    <p>
+                        Aggregated, de-identified, or anonymized research data that cannot be traced back
+                        to any individual is not subject to deletion requests, as it no longer constitutes
+                        personal data under applicable privacy frameworks.
                     </p>
                 </section>
 
                 <section id="pp-rights">
-                    <h2>7. Your Rights</h2>
-
-                    <p>
-                        As a user or data subject, you have the following rights regarding your personal data:
-                    </p>
-
+                    <h2>8. Your Rights</h2>
+                    <p>As a user or data subject, you have the following rights regarding your personal data:</p>
                     <ul>
+                        <li><strong>Access:</strong> Request a copy of personal data we hold about you</li>
+                        <li><strong>Correction:</strong> Request correction of inaccurate personal data</li>
                         <li>
-                            <strong>Access:</strong>
-                            Request a copy of personal data we hold about you
+                            <strong>Deletion:</strong>
+                            Request deletion of your personal data (see Section 7 for the full process and applicable
+                            exceptions)
                         </li>
-
-                        <li>
-                            <strong>Correction:</strong>
-                            Request correction of inaccurate personal data
+                        <li><strong>Restriction:</strong> Request restriction of processing in certain circumstances
                         </li>
-
-                        <li>
-                            <strong>Account Closure & Data Requests:</strong>
-                            Users may request account closure, restricted processing,
-                            or privacy-related assistance subject to applicable healthcare,
-                            legal, operational, and regulatory retention obligations.
-                        </li>
-
-                        <li>
-                            <strong>Restriction:</strong>
-                            Request restriction of processing in certain circumstances
-                        </li>
-
-                        <li>
-                            <strong>Objection:</strong>
-                            Object to processing of your personal data
+                        <li><strong>Objection:</strong> Object to processing of your personal data in certain
+                            circumstances
                         </li>
                     </ul>
-
                     <p>
-                        Users may request account closure, data correction, or privacy-related
-                        assistance by contacting us at
+                        To exercise any of the above rights, contact our Privacy Team at
                         <a href="mailto:privacy@datanurse.io">privacy@datanurse.io</a>.
-                        We review and respond to verified requests within 30 days,
-                        subject to applicable legal, medical, operational, and regulatory
-                        retention requirements.
-                    </p>
-
-                    <p>
-                        Certain medical, audit, security, and operational records may be retained
-                        where required by healthcare regulations, institutional policies,
-                        fraud prevention requirements, or applicable Pakistani law.
+                        We review and respond to all verified requests within <strong>30 days</strong>,
+                        subject to applicable legal, medical, and regulatory retention requirements.
                     </p>
                 </section>
 
                 <section id="pp-children">
-                    <h2>8. Children's Privacy</h2>
-
+                    <h2>9. Children's Privacy</h2>
                     <p>
-                        DataNurse is a healthcare professional platform and is not directed at
-                        or intended for use by individuals under the age of 18.
+                        DataNurse is a healthcare professional platform and is not directed at or intended
+                        for use by individuals under the age of 18. All platform users must be adults
+                        and verified healthcare professionals or administrators.
                     </p>
-
                     <p>
                         While our platform manages data about patients
                         (children requiring cardiac surgery), all users of the platform must be
                         adults and verified healthcare professionals.
                     </p>
-
                     <p>
                         Patient data is handled with the highest level of care and confidentiality,
                         with access strictly controlled to authorized medical personnel at the relevant institution.
@@ -289,49 +331,40 @@
                 </section>
 
                 <section id="pp-changes">
-                    <h2>9. Changes to This Policy</h2>
-
+                    <h2>10. Changes to This Policy</h2>
                     <p>
-                        We may update this Privacy Policy from time to time to reflect changes
-                        in our practices, technology, or legal requirements.
+                        We may update this Privacy Policy from time to time to reflect changes in our
+                        practices, technology, or legal requirements.
                     </p>
-
                     <p>
-                        When we make material changes, we will notify users via email
-                        and in-app notification at least 14 days before the changes take effect.
+                        When we make material changes, we will notify users via email and in-app notification
+                        at least <strong>14 days</strong> before the changes take effect.
                     </p>
-
                     <p>
-                        Your continued use of DataNurse after the effective date of any changes
-                        constitutes acceptance of the revised policy.
+                        Your continued use of DataNurse after the effective date of any changes constitutes
+                        acceptance of the revised policy.
                     </p>
                 </section>
 
                 <section id="pp-contact">
-                    <h2>10. Contact Us</h2>
-
+                    <h2>11. Contact Us</h2>
                     <p>
-                        For privacy-related questions, concerns, or to exercise your data rights,
-                        please contact our Privacy Team:
+                        For privacy-related questions, concerns, data deletion requests, or to exercise
+                        your data rights, please contact our Privacy Team:
                     </p>
-
                     <div class="doc-contact-box">
-
                         <div class="doc-contact-item">
-                            <strong>Email:</strong>
+                            <strong>Privacy & Deletion:</strong>
                             <a href="mailto:privacy@datanurse.io">privacy@datanurse.io</a>
                         </div>
-
                         <div class="doc-contact-item">
                             <strong>General Support:</strong>
                             <a href="mailto:info@datanurse.io">info@datanurse.io</a>
                         </div>
-
                         <div class="doc-contact-item">
                             <strong>Address:</strong>
                             <span>Infotech, Lahore, Punjab, Pakistan</span>
                         </div>
-
                     </div>
                 </section>
 

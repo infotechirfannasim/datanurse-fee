@@ -106,6 +106,12 @@
       background: rgba(6, 86, 197, 0.07);
       color: #0656C5;
     }
+
+    &.active {
+      background: rgba(6, 86, 197, 0.12);
+      color: #0656C5;
+      font-weight: 700;
+    }
   }
 }
 
@@ -189,6 +195,44 @@
     font-size: 15px;
     color: #1f2937;
     line-height: 1.75;
+    margin: 0;
+  }
+}
+
+.doc-highlight {
+  background: #ECFEFF;
+  border: 1px solid #14B8A6;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 16px 0 20px;
+
+  p {
+    color: #115E59;
+  }
+
+  ul {
+    margin-bottom: 14px;
+
+    li {
+      color: #115E59;
+    }
+  }
+
+  strong {
+    color: #134E4A;
+  }
+}
+
+.doc-warn {
+  background: #FFFBEB;
+  border: 1px solid #F59E0B;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 16px 0 0;
+
+  p {
+    color: #78350F;
+    font-size: 14px;
     margin: 0;
   }
 }
