@@ -248,12 +248,13 @@ export class DoctorsComponent implements OnInit {
             next: (resp: HttpResponse<any>) => {
                 if(resp.status == 200 && resp.body.data) {
                     const teams = Array.isArray(resp.body.data) ? resp.body.data : [resp.body.data];
-                    this.doctorTeams.set(teams);
+                    this.doctorTeams.set(teams.filter((t: any) => t.hasMembers));
                     this.teamsLoading.set(false);
                 }
             },
-            error: (err) => {
-                console.error('Failed to load teams', err);
+            error: (err: HttpErrorResponse) => {
+                const errMsg = err.error.message || err.message || 'Failed to fetch teams';
+                this.toastService.show(errMsg, 'error');
                 this.teamsLoading.set(false);
             }
         });
