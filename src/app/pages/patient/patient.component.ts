@@ -165,6 +165,7 @@ export class PatientComponent implements OnInit, OnDestroy {
                         const raw = res.body.data as RawPatientWithCases;
                         this._rawDetail.set(raw);
                         this.patientDto.set(mapToPatientDetailDto(raw, this._lovStore()));
+                        console.log(this.patientDto())
                         this._rawCase.set(null);
                         this.activeTab.set('overview');
                         this.showViewModal.set(true);

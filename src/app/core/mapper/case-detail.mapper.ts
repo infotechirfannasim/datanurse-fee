@@ -26,10 +26,13 @@ import {
     ListDiagnosisSummary,
     ListProcedureSummary,
     OperativeDataDto,
-    OrTimelineItem, PatientDetailDto,
-    PatientInfoDto, PatientListItemDto,
+    OrTimelineItem,
+    PatientDetailDto,
+    PatientInfoDto,
+    PatientListItemDto,
     PreOpFactorsDto,
-    ProceduresDto, ProSpecificFactorDto,
+    ProceduresDto,
+    ProSpecificFactorDto,
     StatusChip,
 } from './../models/case.model';
 
@@ -619,6 +622,7 @@ export function mapToCaseList(raws: RawCase[], lovs: LovStore = {}): CaseListIte
 function mapPatientCore(p: {
     _id: string;
     mrn?: string;
+    primaryMrn?: string,
     citizenNumber?: string;
     name?: string;
     gender?: string;
@@ -640,6 +644,7 @@ function mapPatientCore(p: {
     return {
         id:            p._id,
         mrn:           str(p.mrn),
+        primaryMrn:    str(p.primaryMrn),
         citizenNumber: str(p.citizenNumber),
         name:          str(p.name),
         gender:        lovName(lovs, 'gender', p.gender),

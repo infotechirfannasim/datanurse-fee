@@ -376,6 +376,7 @@ export interface PatientListItemDto {
   // ── identity ─────────────────────────────────────────────
   id: string;
   mrn: string;
+  primaryMrn: string;
   citizenNumber: string;
 
   // ── demographics ─────────────────────────────────────────
@@ -411,6 +412,7 @@ export interface PatientDetailDto {
   // ── all patient fields (same as list item, fully resolved) ─
   id: string;
   mrn: string;
+  primaryMrn: string;
   citizenNumber: string;
   name: string;
   gender: string;
