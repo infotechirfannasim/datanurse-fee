@@ -41,6 +41,16 @@ export interface DisplayProcedure {
   subsection: string;
 }
 
+export interface DisplayProSpecificFactor {
+  id: number;
+  code: string;
+  displayCode: string;
+  name: string;
+  isCompatible: boolean;
+  category: string;
+  subsection: string;
+}
+
 export interface DisplayBloodProductRow {
   label: string;
   during: number;
@@ -133,6 +143,12 @@ export interface DiagnosesDto {
 export interface ProceduresDto {
   filled: boolean;
   items: DisplayProcedure[];
+}
+
+export interface ProSpecificFactorDto {
+  filled: boolean;
+  items: DisplayProSpecificFactor[];
+  proSpecificFactorComments: string;
 }
 
 export interface OperativeDataDto {
@@ -256,6 +272,7 @@ export interface CaseDetailDto {
   preOpFactors: PreOpFactorsDto;
   diagnoses: DiagnosesDto;
   procedures: ProceduresDto;
+  proSpecificFactor: ProSpecificFactorDto;
   operativeData: OperativeDataDto;
   bloodProducts: BloodProductsDto;
   anesthesia: AnesthesiaDto;

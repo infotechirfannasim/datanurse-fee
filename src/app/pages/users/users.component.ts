@@ -7,11 +7,12 @@ import {
     ACTIVE_ROLES_API_URL,
     DELETE_USER_API_URL,
     GET_LOV_BULK_API_URL,
+    USER_TEAM_MEMBERSHIP_API_URL,
     USERS_API_URL
 } from "../../utils/api.url.constants";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {FilterParams, Role, User} from "../../core/models/user.model";
-import {AppConstants, ROLES} from "../../utils/app-constants";
+import {AppConstants, ROLES, STATUSES} from "../../utils/app-constants";
 import {MultiSelectModule} from "primeng/multiselect";
 import {SelectModule} from "primeng/select";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
@@ -37,6 +38,9 @@ export class UsersComponent implements OnInit {
     showConfirmClose = signal(false);
     selectedUser = signal<User | null>(null);
     selectedUserId = signal<number | null>(null);
+    showMembershipsModal = signal(false);
+    membershipsLoading = signal(false);
+    userMemberships = signal<any[]>([]);
     isEditMode: boolean = false;
     form!: FormGroup;
     imagePreview: string | null = null;
@@ -359,6 +363,24 @@ export class UsersComponent implements OnInit {
         });
     }
 
+    openMemberships(user: any): void {
+        this.selectedUser.set(user);
+        this.userMemberships.set([]);
+        this.showMembershipsModal.set(true);
+        this.membershipsLoading.set(true);
+
+        this.requestService
+            .getRequest(USER_TEAM_MEMBERSHIP_API_URL, {userId: user._id})
+            .subscribe({
+                next: (res: HttpResponse<any>) => {
+                    this.userMemberships.set(res.body?.data ?? []);
+                    this.membershipsLoading.set(false);
+                },
+                error: () => this.membershipsLoading.set(false),
+            });
+    }
+
+
     resetForm(): void {
         this.selectedUser.set(null);
         this.imagePreview = null;
@@ -408,8 +430,8 @@ export class UsersComponent implements OnInit {
         if (this.form.dirty) {
             this.showConfirmClose.set(true);
         } else {
-            this.showAddModal.set(false);
             this.resetForm();
+            this.showAddModal.set(false);
         }
     }
 
@@ -419,7 +441,13 @@ export class UsersComponent implements OnInit {
         this.closeModal();
     }
 
+    getRoleLabel(teamRole: string): string {
+        const match = this.roles.find((r: any) => r.name === teamRole);
+        return match?.label ?? teamRole;
+    }
+
     protected readonly getUserInitials = getUserInitials;
     protected readonly AppConstants = AppConstants;
     protected readonly ROLES = ROLES;
+    protected readonly STATUSES = STATUSES;
 }

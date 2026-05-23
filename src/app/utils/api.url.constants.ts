@@ -19,6 +19,7 @@ export const DOCTOR_TEAM_API_URL = 'users/{userId}/teams';
 export const ROLES_API_URL = 'roles';
 export const ACTIVE_ROLES_API_URL = 'roles/active';
 export const DELETE_ROLE_API_URL = 'roles/';
+export const USER_TEAM_MEMBERSHIP_API_URL = 'team/memberships';
 
 // LOVs
 export const LOV_API_URL = 'lovs';

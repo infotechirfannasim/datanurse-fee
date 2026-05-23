@@ -1,24 +1,28 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { SelectModule } from 'primeng/select';
+import {Component, computed, inject, OnDestroy, OnInit, signal} from '@angular/core';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {CommonModule} from '@angular/common';
+import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
+import {debounceTime, distinctUntilChanged, Subject, takeUntil} from 'rxjs';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {SelectModule} from 'primeng/select';
 
-import { ToastService } from '../../core/services/toast.service';
-import { RequestService } from '../../core/services/request.service';
-import { ADD_FOLLOW_UP_API_URL, CASES_API_URL, GET_LOV_BULK_API_URL } from '../../utils/api.url.constants';
-import { FilterParams } from '../../core/models/user.model';
-import { getError, getUserInitials } from '../../utils/global.utils';
-import { RegexConstants } from '../../utils/regex-constants';
+import {ToastService} from '../../core/services/toast.service';
+import {RequestService} from '../../core/services/request.service';
+import {
+    ADD_FOLLOW_UP_API_URL,
+    CASES_API_URL,
+    DOCTORS_API_URL,
+    GET_LOV_BULK_API_URL
+} from '../../utils/api.url.constants';
+import {FilterParams} from '../../core/models/user.model';
+import {getError, getUserInitials} from '../../utils/global.utils';
+import {RegexConstants} from '../../utils/regex-constants';
 import {AppConstants, CASE_STAUSES, PATIENT_STATUS} from '../../utils/app-constants';
 
-import { RawCase } from '../../core/models/case-raw-type.model';
-import { LovStore } from '../../core/models/lov.types.model';
-import { CaseDetailDto, CaseListItemDto, DisplayFollowup } from '../../core/models/case.model';
-import { mapToCaseDetailDto } from '../../core/mapper/case-detail.mapper';
-import { mapToCaseListItemDto } from '../../core/mapper/case-detail.mapper'; // same file
+import {RawCase} from '../../core/models/case-raw-type.model';
+import {LovStore} from '../../core/models/lov.types.model';
+import {CaseDetailDto, CaseListItemDto} from '../../core/models/case.model';
+import {mapToCaseDetailDto, mapToCaseListItemDto} from '../../core/mapper/case-detail.mapper'; // same file
 
 const LIST_LOV_TYPES  = ['gender', 'bloodGroup', 'status'];
 
@@ -45,6 +49,10 @@ export class CasesComponent implements OnInit, OnDestroy {
 
     showViewModal      = signal(false);
     showFollowupModal  = signal(false);
+    doctors = signal<any[]>([]);
+    selectedDoctorId = signal<string | null>(null);
+    doctorsLoading = signal(false);
+
 
     // ── LOV store — loaded once, shared across list + detail ────
     private readonly _lovStore = signal<LovStore>({});
@@ -90,6 +98,7 @@ export class CasesComponent implements OnInit, OnDestroy {
         this.initFollowupForm();
         this.setupSearchDebounce();
         this.loadCases();
+        this.loadDoctors();
     }
 
     ngOnDestroy(): void {
@@ -156,10 +165,12 @@ export class CasesComponent implements OnInit, OnDestroy {
         this.loading.set(true);
 
         const filters: FilterParams = {
-            search: this.searchQuery() || '',
             page:   this.pageQuery(),
             limit:  10,
         };
+
+        if (this.searchQuery()?.trim()) filters['search'] = this.searchQuery().trim();
+        if (this.selectedDoctorId()) filters['filterDoctorId'] = this.selectedDoctorId() as string;
 
         this.requestService.getRequest(CASES_API_URL, filters).subscribe({
             next: (response: HttpResponse<any>) => {
@@ -181,6 +192,24 @@ export class CasesComponent implements OnInit, OnDestroy {
                 this.cases.set([]);
                 this.pagination.set(null);
             },
+        });
+    }
+
+    loadDoctors(): void {
+        this.doctorsLoading.set(true);
+        this.requestService.getRequest(DOCTORS_API_URL).subscribe({
+            next: (res: HttpResponse<any>) => {
+                this.doctorsLoading.set(false);
+                if (res.status === 200 && res.body?.data) {
+                    this.doctors.set(
+                        (Array.isArray(res.body.data) ? res.body.data : []).map((d: any) => ({
+                            label: `Dr. ${d.firstName} ${d.lastName}`,
+                            value: d._id,
+                        }))
+                    );
+                }
+            },
+            error: () => this.doctorsLoading.set(false),
         });
     }
 
@@ -371,6 +400,12 @@ export class CasesComponent implements OnInit, OnDestroy {
 
     onSearchChange(): void {
         this.searchSubject.next(this.searchQuery());
+    }
+
+    onDoctorChange(doctorId: string | null): void {
+        this.selectedDoctorId.set(doctorId ?? null);
+        this.pageQuery.set(1);
+        this.loadCases();
     }
 
     goToPage(page: number): void {

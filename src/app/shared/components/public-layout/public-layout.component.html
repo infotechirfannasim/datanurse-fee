@@ -72,14 +72,17 @@
                             class="app-badge"
                             src="./assets/images/play-store.png"/>
                 </a>
-                <div aria-label="App Store — Coming Soon" class="app-badge-link"
-                     matTooltip="coming soon" matTooltipPosition="above">
+                <a
+                        aria-label="Download on the App Store"
+                        class="app-badge-link"
+                        href="https://apps.apple.com/pk/app/datanurse/id6768228831"
+                        rel="noopener noreferrer"
+                        target="_blank">
                     <img
                             alt="Download on the App Store"
                             class="app-badge"
                             src="./assets/images/app-store.png"/>
-                </div>
-
+                </a>
             </div>
         </div>
 
@@ -113,6 +116,8 @@
             <a routerLink="/terms">Terms</a>
             <span>·</span>
             <a routerLink="/account-deletion">Account Deletion</a>
+            <span>·</span>
+            <span class="pub-footer-version">v{{ appVersion }}</span>
         </div>
     </div>
 </footer>

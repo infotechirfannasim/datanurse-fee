@@ -36,6 +36,7 @@ export interface FilterParams {
     limit?: number;
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
+    filterDoctorId?: string;
 }
 
 export interface Role {

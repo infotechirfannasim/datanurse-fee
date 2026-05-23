@@ -120,7 +120,7 @@ export class LovComponent implements OnInit, OnDestroy {
         },
         sortOrder: {
             pattern: 'Only numbers are allowed',
-            min: 'Minimum value is 1',
+            min: 'Minimum value is 0',
             max: 'Maximum value is 9999'
         },
         description: {
@@ -302,11 +302,11 @@ export class LovComponent implements OnInit, OnDestroy {
         const group: any = {
             type: [this.currentLovType()],
             sortOrder: [
-                Number(lov?.sortOrder) ?? 1,
+                lov?.sortOrder ?? null,
                 [
+                    Validators.min(0),
+                    Validators.max(9999),
                     Validators.pattern(RegexConstants.NUMERIC_REGEX),
-                    Validators.min(1),
-                    Validators.max(9999)
                 ]
             ],
             code: [{
@@ -506,6 +506,7 @@ export class LovComponent implements OnInit, OnDestroy {
         return {
             ...formValue,
             description: formValue.description ?? '',
+            sortOrder: formValue.sortOrder || null,
             parents: this.buildParents(formValue)
         };
     }

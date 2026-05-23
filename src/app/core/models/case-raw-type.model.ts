@@ -86,6 +86,16 @@ export interface RawProcedure {
     subsection?: string;
 }
 
+export interface RawProSpecificFactor {
+    id: number;
+    name: string;
+    code: string;
+    displayCode: string;
+    isCompatible: boolean;
+    category?: string;
+    subsection?: string;
+}
+
 export interface RawStep5 {
     hospitalName?: string;
     admissionDate?: string;
@@ -281,7 +291,7 @@ export interface RawCase {
     step6PreOpMeds?: { selectedPreOpFactors?: string[] };
     step7Diagnosis?: { selectedDiagnoses?: RawDiagnosis[] };
     step8Procedures?: { selectedProcedures?: RawProcedure[] };
-    step9ProSpecificFactor?: { proSpecificFactor?: string | null };
+    step9ProSpecificFactor?: { proSpecificFactor?: RawProSpecificFactor[], proSpecificFactorComments?: string | null };
     step10OperativeData?: RawStep10;
     step11BloodProducts?: RawStep11;
     step13Anesthesia?: RawStep13;

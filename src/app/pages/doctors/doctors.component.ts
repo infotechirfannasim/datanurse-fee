@@ -66,10 +66,8 @@ export class DoctorsComponent implements OnInit {
     errorMessages = {
         phone: {required: 'Phone is required', pattern: 'Invalid Pakistani phone number'},
         pmdcNumber: {
-            required: 'PMDC number is required',
-            minLength: 'Min 1 characters',
             maxLength: 'Max 12 characters',
-            pattern: 'Only alphanumeric characters are allowed (no spaces allowed).'
+            pattern: 'Only letters, numbers, ., _, and - allowed. Cannot start or end with ., _, or -.'
         },
         email: {
             required: 'Email is required',
@@ -160,10 +158,8 @@ export class DoctorsComponent implements OnInit {
             ]],
             role: [this.roles.find((r: Role) => r.name === ROLES.DOCTOR)?._id, Validators.required],
             pmdcNumber: ['', [
-                Validators.required,
-                Validators.minLength(1),
                 Validators.maxLength(12),
-                Validators.pattern(RegexConstants.ALPHANUMERIC_WITHOUT_SPACES_REGEX)
+                Validators.pattern(RegexConstants.ALPHANUMERIC_WITH_SOME_SPECIAL_REGEX)
             ]],
             specialities: [null, [
                 Validators.required,

@@ -1091,6 +1091,10 @@ $font: 'DM Sans', sans-serif;
   }
 }
 
+.confirm-overlay {
+  z-index: 1300;
+}
+
 // ── Modal Box ──
 .modal {
   background: $white;
@@ -1440,6 +1444,31 @@ small.required {
     background: #FFFBEB;
     color: #92400E;
   }
+}
+
+.badge-blue {
+  background: rgba(6, 86, 197, 0.10); /* --blue */
+  color: var(--blue);
+}
+
+.badge-green {
+  background: rgba(16, 185, 129, 0.12); /* --green */
+  color: #065F46;
+}
+
+.badge-amber {
+  background: rgba(245, 158, 11, 0.12); /* --amber */
+  color: #B45309;
+}
+
+.badge-rose {
+  background: rgba(239, 68, 68, 0.12); /* --rose */
+  color: var(--rose);
+}
+
+.badge-gray {
+  background: rgba(107, 114, 128, 0.12); /* --muted */
+  color: var(--muted);
 }
 
 // Specialization Tags
@@ -2271,3 +2300,49 @@ button, input, select {
     padding: 4px 8px;
   }
 
+.teams-card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: var(--surface-muted, #f8f9fb);
+  border-radius: 10px;
+  border: 1px solid var(--border, #e5e7eb);
+  padding: 14px 16px;
+}
+
+.flex-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.flex-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.flex-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .teams-card{
+    gap: 10px;
+  }
+  .flex-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .text-ellipsis {
+    white-space: normal;
+    word-break: break-word;
+  }
+}

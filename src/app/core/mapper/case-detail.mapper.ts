@@ -29,7 +29,7 @@ import {
     OrTimelineItem, PatientDetailDto,
     PatientInfoDto, PatientListItemDto,
     PreOpFactorsDto,
-    ProceduresDto,
+    ProceduresDto, ProSpecificFactorDto,
     StatusChip,
 } from './../models/case.model';
 
@@ -228,6 +228,20 @@ function mapProcedures(raw: RawCase): ProceduresDto {
     return { filled: items.length > 0, items };
 }
 
+function mapProSpecificFactor(raw: RawCase): ProSpecificFactorDto {
+    const proSpecificFactorComments = raw.step9ProSpecificFactor?.proSpecificFactorComments ?? DASH;
+    const items = (raw.step9ProSpecificFactor?.proSpecificFactor ?? []).map((p) => ({
+        id:          p.id,
+        code:        p.code,
+        displayCode: p.displayCode,
+        name:        p.name,
+        isCompatible: bool(p.isCompatible),
+        category:    str(p.category),
+        subsection:  str(p.subsection),
+    }));
+    return { filled: items.length > 0, items, proSpecificFactorComments };
+}
+
 function mapOperativeData(raw: RawCase, lovs: LovStore): OperativeDataDto {
     const s = raw.step10OperativeData;
     if (!s) {
@@ -246,10 +260,10 @@ function mapOperativeData(raw: RawCase, lovs: LovStore): OperativeDataDto {
     }
 
     const timeline: OrTimelineItem[] = [];
-    if (s.orEntryTime)        timeline.push({ time: s.orEntryTime,        label: 'OR Entry',       isExit: false });
-    if (s.skinIncisionStart)  timeline.push({ time: s.skinIncisionStart,  label: 'Skin Incision',  isExit: false });
-    if (s.skinClosure)        timeline.push({ time: s.skinClosure,        label: 'Skin Closure',   isExit: false });
-    if (s.orExitTime)         timeline.push({ time: s.orExitTime,         label: 'OR Exit',        isExit: true  });
+    if (s.orEntryTime)        timeline.push({ time: formatTimelineTime(s.orEntryTime),        label: 'OR Entry',       isExit: false });
+    if (s.skinIncisionStart)  timeline.push({ time: formatTimelineTime(s.skinIncisionStart),  label: 'Skin Incision',  isExit: false });
+    if (s.skinClosure)        timeline.push({ time: formatTimelineTime(s.skinClosure),        label: 'Skin Closure',   isExit: false });
+    if (s.orExitTime)         timeline.push({ time: formatTimelineTime(s.orExitTime),         label: 'OR Exit',        isExit: true  });
 
     return {
         filled: true,
@@ -476,6 +490,7 @@ export function mapToCaseDetailDto(raw: RawCase, lovs: LovStore = {}): CaseDetai
         preOpFactors:      mapPreOpFactors(raw, lovs),
         diagnoses:         mapDiagnoses(raw),
         procedures:        mapProcedures(raw),
+        proSpecificFactor: mapProSpecificFactor(raw),
         operativeData:     mapOperativeData(raw, lovs),
         bloodProducts:     mapBloodProducts(raw),
         anesthesia:        mapAnesthesia(raw, lovs),
@@ -747,4 +762,25 @@ function doctorName_from(ref?: { firstName?: string; lastName?: string } | null)
     if (!ref) return DASH;
     const full = [ref.firstName, ref.lastName].filter(Boolean).join(' ').trim();
     return full || DASH;
+}
+
+function formatTimelineTime(timeStr: string): string {
+    if (!timeStr) return '';
+
+    if (/^\d{1,2}:\d{2}\s?(AM|PM)$/i.test(timeStr)) {
+        return timeStr;
+    }
+
+    try {
+        const date = new Date(timeStr);
+        if (isNaN(date.getTime())) return timeStr;
+
+        return date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+    } catch (e) {
+        return timeStr;
+    }
 }

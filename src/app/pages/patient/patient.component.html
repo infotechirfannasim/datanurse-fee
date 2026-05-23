@@ -467,6 +467,27 @@
                         </div>
 
                         <div class="cd-section">
+                            <div class="cd-section-label">Pro Specific Factors</div>
+                            @if (!caseDto()!.procedures.filled) {
+                                <div class="cd-empty-note">Pro Specific Factors not recorded</div>
+                            } @else {
+                                <div class="cd-tags">
+                                    @for (p of caseDto()!.proSpecificFactor.items; track p.id) {
+                                        <span class="cd-tag cd-tag--proc">
+                                        {{ p.name }}
+                                    </span>
+                                    }
+                                </div>
+                            }
+                            <div class="cd-grid">
+                                <div class="cd-cell">
+                                    <div class="cd-key">Comments</div>
+                                    <div class="cd-val">{{ caseDto()!.proSpecificFactor.proSpecificFactorComments }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cd-section">
                             <div class="cd-section-label">Operative Data</div>
                             @if (!caseDto()!.operativeData.filled) {
                                 <div class="cd-empty-note">Operative data not filled</div>

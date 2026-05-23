@@ -4,8 +4,17 @@ export const lovLabel = 'label';
 export const ROLES = {
   SUPER_ADMIN: 'superadmin',
   DOCTOR: 'doctor',
-  ASSISTANT_DOCTOR: 'assignmentdoctor',
+  ASSISTANT_DOCTOR: 'assistantdoctor',
   KPO: 'kpo',
+};
+
+export const STATUSES = {
+  ACTIVE:               'active',
+  INACTIVE:             'inactive',
+  SUSPENDED:            'suspended',
+  PENDING_VERIFICATION: 'pending_verification',
+  PENDING_PASSWORD:     'pending_password',
+  DELETED:              'deleted',
 };
 
 export const PATIENT_STATUS = {

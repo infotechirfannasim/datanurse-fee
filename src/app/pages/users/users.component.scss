@@ -142,4 +142,16 @@
   cursor: pointer;
 }
 
+.membership-card {
+  background: var(--surface-muted, #f8f9fb);
+  border-radius: 10px;
+  border: 1px solid var(--border, #e5e7eb);
+  padding: 12px 14px;
+  transition: opacity 0.2s;
+}
 
+.membership-card--removed {
+  opacity: 0.55;
+  background: var(--surface-danger-muted, #fff5f5);
+  border-color: var(--rose-lt, #fecaca);
+}

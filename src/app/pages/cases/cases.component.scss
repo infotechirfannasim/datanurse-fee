@@ -135,3 +135,51 @@
 }
 
 
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+// Override PrimeNG select to match .filter-search height + style
+::ng-deep p-select.doctor-filter-select {
+  .p-select {
+    height: 36px;                          // match filter-search height
+    min-width: 180px;
+    border-radius: 8px;                    // match your input border-radius
+    border: 1px solid var(--border);       // match your input border
+    background: var(--surface);            // match your input background
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      border-color: var(--border-hover, #60A5FA);
+    }
+
+    &.p-focus {
+      outline: none;
+      box-shadow: none;
+      border-color: var(--blue-lt, #60A5FA);
+    }
+  }
+
+  .p-select-label {
+    font-size: 13px;
+    color: var(--text);
+    padding: 0 10px;
+    line-height: 36px;
+  }
+
+  .p-select-dropdown {
+    width: 32px;
+    color: var(--muted);
+  }
+
+  // Placeholder color
+  .p-select-label.p-placeholder {
+    color: var(--muted);
+  }
+}
+
