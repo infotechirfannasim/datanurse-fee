@@ -330,7 +330,10 @@ export class CasesComponent implements OnInit, OnDestroy {
 
         // Must have a discharge date
         const dischargeDate = dto.discharge.dischargeDate; // string | null
+        const dischargeStatus = dto.discharge.dischargeStatus;
         if (!dischargeDate) return false;
+        if (!dischargeStatus) return false;
+        if (dischargeStatus && dischargeStatus === PATIENT_STATUS.DECEASED) return false;
 
         // Must be >= 30 days since discharge
         const discharge = new Date(dischargeDate);
