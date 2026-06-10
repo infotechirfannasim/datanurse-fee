@@ -540,17 +540,35 @@ export class LovComponent implements OnInit, OnDestroy {
         });
     }
 
-    goToPage(page: number): void {
-        const p = this.pagination();
-        if (!p || page < 1 || page > p.totalPages) return;
-
-        this.pageQuery.set(page);
+    goToPage(page: number | string): void {
+        if (page === '...') return;
+        const p   = this.pagination();
+        const num = +page;
+        if (!p || num < 1 || num > p.totalPages) return;
+        this.pageQuery.set(num);
         this.getLovValueOptions();
     }
 
-    getPages(): number[] {
-        const p = this.pagination();
-        return p ? Array.from({length: p.totalPages}, (_, i) => i + 1) : [];
+    getPages(): (number | '...')[] {
+        const p       = this.pagination();
+        const total   = p?.totalPages ?? 0;
+        const current = this.pageQuery();
+
+        if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+
+        const pages: (number | '...')[] = [1];
+
+        if (current > 3)         pages.push('...');
+
+        const start = Math.max(2, current - 1);
+        const end   = Math.min(total - 1, current + 1);
+        for (let i = start; i <= end; i++) pages.push(i);
+
+        if (current < total - 2) pages.push('...');
+
+        pages.push(total);
+
+        return pages;
     }
 
     getStatusClass(status: string): string {

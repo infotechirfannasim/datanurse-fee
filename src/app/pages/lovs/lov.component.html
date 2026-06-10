@@ -192,19 +192,47 @@
 
             @if (pagination() && pagination().totalPages > 1) {
                 <div class="pagination">
-                    <button class="page-btn" [disabled]="!pagination().hasPrevPage" (click)="goToPage(pageQuery() - 1)">
-                        ‹
+
+                    <!-- First -->
+                    <button class="page-btn" title="First page"
+                            [disabled]="!pagination()?.hasPrevPage"
+                            (click)="goToPage(1)">
+                        &#171;
+                    </button>
+
+                    <!-- Prev -->
+                    <button class="page-btn" title="Previous page"
+                            [disabled]="!pagination()?.hasPrevPage"
+                            (click)="goToPage(pageQuery() - 1)">
+                        &#8249;
                     </button>
 
                     @for (page of getPages(); track page) {
-                        <button class="page-btn" [class.active]="page === pageQuery()" (click)="goToPage(page)">
-                            {{ page }}
-                        </button>
+                        @if (page === '...') {
+                            <span class="page-ellipsis">…</span>
+                        } @else {
+                            <button class="page-btn"
+                                    [class.active]="page === pageQuery()"
+                                    (click)="goToPage(page)">
+                                {{ page }}
+                            </button>
+                        }
                     }
 
-                    <button class="page-btn" [disabled]="!pagination().hasNextPage" (click)="goToPage(pageQuery() + 1)">
-                        ›
+                    <!-- Next -->
+                    <button class="page-btn" title="Next page"
+                            [disabled]="!pagination()?.hasNextPage"
+                            (click)="goToPage(pageQuery() + 1)">
+                        &#8250;
                     </button>
+
+                    <!-- Last -->
+                    <button class="page-btn" title="Last page"
+                            [disabled]="!pagination()?.hasNextPage"
+                            (click)="goToPage(pagination()?.totalPages ?? 1)">
+                        &#187;
+                    </button>
+
                 </div>
             }
         </div>

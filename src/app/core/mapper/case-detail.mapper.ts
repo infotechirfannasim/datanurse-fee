@@ -581,6 +581,7 @@ export function mapToCaseListItemDto(raw: RawCase, lovs: LovStore = {}): CaseLis
         isSoloSubmission:     raw.isSoloSubmission === true,
         teamId:               raw.teamId ?? null,
         ownerDoctor:          doctorName(raw.ownerDoctorId),
+        updatedByUserId:      doctorName(raw.updatedByUserId),
         followups:            (raw.followups?.length ?? 0) > 0,
         surgeryDate:          str(hospitalAdmission?.surgeryDate),
         operationType:          lovName(lovs,'operationType', operativeData?.operationType),

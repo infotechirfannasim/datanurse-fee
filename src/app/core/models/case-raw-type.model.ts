@@ -263,6 +263,7 @@ export interface RawCase {
     _id: string;
     ownerDoctorId?: RawUserRef;
     createdByUserId?: RawUserRef;
+    updatedByUserId?: RawUserRef;
     hospitalId?: RawHospitalRef;
     hospitalCode?: string;
     status?: string;

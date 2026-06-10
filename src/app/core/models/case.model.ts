@@ -347,6 +347,7 @@ export interface CaseListItemDto {
 
   // ── people ───────────────────────────────────────────────────
   ownerDoctor: string;         // "Dr. Affan Qaiser"
+  updatedByUserId: string;
 
   // ── clinical summary ─────────────────────────────────────────
   diagnosis: ListDiagnosisSummary;
