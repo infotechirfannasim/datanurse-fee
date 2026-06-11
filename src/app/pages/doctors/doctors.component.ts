@@ -109,17 +109,6 @@ export class DoctorsComponent implements OnInit {
     constructor() {
     }
 
-    get filteredDoctors(): Doctor[] {
-        const q = this.searchQuery().toLowerCase();
-        if (!q) return this.doctors;
-        return this.doctors.filter(d =>
-            d.firstName.toLowerCase().includes(q) ||
-            d.lastName.toLowerCase().includes(q) ||
-            d.email.toLowerCase().includes(q) ||
-            d.specialities.some(s => s.toLowerCase().includes(q))
-        );
-    }
-
     get hospitals(): FormArray {
         return this.doctorForm.get('hospitals') as FormArray;
     }
@@ -183,6 +172,7 @@ export class DoctorsComponent implements OnInit {
     }
 
     onSearchChange() {
+        this.pageQuery.set(1);
         this.searchSubject.next(this.searchQuery().toLowerCase());
     }
 

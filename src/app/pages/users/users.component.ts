@@ -127,6 +127,7 @@ export class UsersComponent implements OnInit {
     }
 
     onSearchChange() {
+        this.pageQuery.set(1);
         this.searchSubject.next(this.searchQuery().toLowerCase());
     }
 

@@ -331,6 +331,9 @@ export class CasesComponent implements OnInit, OnDestroy {
         // Must have a discharge date
         const dischargeDate = dto.discharge.dischargeDate; // string | null
         const dischargeStatus = dto.discharge.dischargeStatus;
+        const status = dto.meta.status;
+        if(!status) return false;
+        if(status !== CASE_STAUSES.REVIEWED.value) return false;
         if (!dischargeDate) return false;
         if (!dischargeStatus) return false;
         if (dischargeStatus && dischargeStatus === PATIENT_STATUS.DECEASED) return false;
@@ -402,6 +405,7 @@ export class CasesComponent implements OnInit, OnDestroy {
     }
 
     onSearchChange(): void {
+        this.pageQuery.set(1);
         this.searchSubject.next(this.searchQuery());
     }
 

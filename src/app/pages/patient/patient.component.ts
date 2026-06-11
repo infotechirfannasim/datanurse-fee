@@ -115,6 +115,7 @@ export class PatientComponent implements OnInit, OnDestroy {
     }
 
     onSearchChange(): void {
+        this.pageQuery.set(1);
         this.searchSubject.next(this.searchQuery());
     }
 
