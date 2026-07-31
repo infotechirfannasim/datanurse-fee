@@ -322,9 +322,10 @@ export class PatientComponent implements OnInit, OnDestroy {
         if (followups) return 100;
         if (!status) return 0;
         const map: Record<string, number> = {
-            [CASE_STAUSES.OPT_DATA_SUBMITTED.value]: 25,
-            [CASE_STAUSES.POST_OPT_SUBMITTED.value]: 50,
-            [CASE_STAUSES.REVIEWED.value]: 75
+            [CASE_STAUSES.PRE_OPT_SUBMITTED.value]: 75,
+            [CASE_STAUSES.OPT_DATA_SUBMITTED.value]: 85,
+            [CASE_STAUSES.POST_OPT_SUBMITTED.value]: 90,
+            [CASE_STAUSES.REVIEWED.value]: 95
         };
         return map[status] ?? 0;
     }
