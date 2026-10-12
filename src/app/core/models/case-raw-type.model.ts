@@ -221,8 +221,16 @@ export interface RawComplicationDetail {
     notes?: string;
 }
 
+export interface Complication {
+    complicationGroup?: string
+    complication: string;
+    name: string;
+    date: string;
+    notes: string;
+}
+
 export interface RawStep14 {
-    selectedComplications?: string[];
+    selectedComplications?: Complication[];
     noComplications?: boolean;
     complicationDetails?: Record<string, RawComplicationDetail>;
 }

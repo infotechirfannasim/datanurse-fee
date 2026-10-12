@@ -415,16 +415,40 @@ function mapComplications(raw: RawCase, lovs: LovStore): ComplicationsDto {
     if (!s) return { filled: false, noComplications: false, items: [] };
     if (bool(s.noComplications)) return { filled: true, noComplications: true, items: [] };
 
-    const details = s.complicationDetails ?? {};
-    const items: DisplayComplication[] = Object.entries(details).map(([key, val]) => ({
-        key,
-        label: lovName(lovs, 'complication',key),
-        date:  date(val?.date),
-        notes: str(val?.notes),
-    }));
+    let items: DisplayComplication[] = [];
+
+    const selected = Array.isArray(s.selectedComplications) ? s.selectedComplications : [];
+
+    if (selected.length > 0) {
+        const details = s.complicationDetails ?? {};
+
+        items = selected
+            .filter((c) => c?.complication)
+            .map((c) => {
+                const key = String(c.complication);
+                const fallback = details[key];
+
+                return {
+                    key,
+                    label: lovName(lovs, 'complication', key) || str(c.name),
+                    date:  date(c.date ?? fallback?.date),
+                    notes: str(c.notes ?? fallback?.notes),
+                };
+            });
+    }
+    if (items.length === 0) {
+        const details = s.complicationDetails ?? {};
+
+        items = Object.entries(details).map(([key, val]) => ({
+            key,
+            label: lovName(lovs, 'complication', key),
+            date:  date(val?.date),
+            notes: str(val?.notes),
+        }));
+    }
 
     return {
-        filled: items.length > 0 || (s.selectedComplications?.length ?? 0) > 0,
+        filled: items.length > 0 || selected.length > 0,
         noComplications: false,
         items,
     };
