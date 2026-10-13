@@ -234,13 +234,9 @@ function mapProcedures(raw: RawCase): ProceduresDto {
 function mapProSpecificFactor(raw: RawCase): ProSpecificFactorDto {
     const proSpecificFactorComments = raw.step9ProSpecificFactor?.proSpecificFactorComments ?? DASH;
     const items = (raw.step9ProSpecificFactor?.proSpecificFactor ?? []).map((p) => ({
-        id:          p.id,
+        id:          p?.id,
         code:        p.code,
-        displayCode: p.displayCode,
         name:        p.name,
-        isCompatible: bool(p.isCompatible),
-        category:    str(p.category),
-        subsection:  str(p.subsection),
     }));
     return { filled: items.length > 0, items, proSpecificFactorComments };
 }

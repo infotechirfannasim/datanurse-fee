@@ -42,13 +42,9 @@ export interface DisplayProcedure {
 }
 
 export interface DisplayProSpecificFactor {
-  id: number;
+  id?: number;
   code: string;
-  displayCode: string;
   name: string;
-  isCompatible: boolean;
-  category: string;
-  subsection: string;
 }
 
 export interface DisplayBloodProductRow {

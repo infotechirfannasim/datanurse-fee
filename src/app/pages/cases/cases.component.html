@@ -400,7 +400,7 @@
                             <div class="cd-empty-note">Pro Specific Factors not recorded</div>
                         } @else {
                             <div class="cd-tags">
-                                @for (p of caseDto()!.proSpecificFactor.items; track p.id) {
+                                @for (p of caseDto()!.proSpecificFactor.items; track p.code) {
                                     <span class="cd-tag cd-tag--proc">
                                         {{ p.name }}
                                     </span>
