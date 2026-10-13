@@ -107,6 +107,10 @@ function mapPatient(raw: RawCase, lovs: LovStore): PatientInfoDto {
             citizenNumber: DASH, name: DASH, gender: DASH, dob: null,
             bloodGroup: DASH, phone: DASH, primaryPayor: DASH, secondaryPayor: DASH,
             country: DASH, province: DASH, city: DASH, location: DASH,
+            apgar1min:      DASH,
+            apgar5min:      DASH,
+            isPremature:    false,
+            apgarScoresKnown:    false,
         };
     }
 
@@ -133,6 +137,10 @@ function mapPatient(raw: RawCase, lovs: LovStore): PatientInfoDto {
         province:       provinceName,
         city:           cityName,
         location:       locationParts.length ? locationParts.join(', ') : DASH,
+        apgar1min:      str(p.apgar1min),
+        apgar5min:      str(p.apgar5min),
+        isPremature:    bool(p.isPremature),
+        apgarScoresKnown:    bool(p.apgarScoresKnown),
     };
 }
 
@@ -654,6 +662,10 @@ function mapPatientCore(p: {
     city?: string;
     createdAt?: string;
     lastModifiedAt?: string;
+    apgar1min?: string;
+    apgar5min?: string;
+    apgarScoresKnown?: boolean;
+    isPremature?: boolean;
 }, lovs: LovStore) {
     const countryName  = lovName(lovs, 'country',  p.country);
     const provinceName = lovName(lovs, 'province', p.province);
@@ -679,6 +691,10 @@ function mapPatientCore(p: {
         location:      locationParts.length ? locationParts.join(', ') : DASH,
         createdAt:     date(p.createdAt),
         lastModifiedAt: date(p.lastModifiedAt),
+        apgar1min:      str(p.apgar1min),
+        apgar5min:      str(p.apgar5min),
+        isPremature:    bool(p.isPremature),
+        apgarScoresKnown:    bool(p.apgarScoresKnown),
     };
 }
 
@@ -773,7 +789,7 @@ export function mapToPatientDetailDto(
     return {
         ...core,
         phone:          str((raw as any).phone),
-        weight:         (raw as any).weight ? `${(raw as any).weight} kg` : DASH,
+        weight:         (raw as any).weight ? `${(raw as any).weight}` : DASH,
         weightUnit:         (raw as any).weightUnit ? `${(raw as any).weightUnit}` : DASH,
         primaryPayor:   lovName(lovs, 'funding', (raw as any).primaryPayor),
         secondaryPayor: lovName(lovs, 'funding', (raw as any).secondaryPayor),

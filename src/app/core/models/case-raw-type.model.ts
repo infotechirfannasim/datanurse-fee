@@ -36,6 +36,10 @@ export interface RawPatient {
     city?: string;
     primaryPayor?: string;
     secondaryPayor?: string;
+    isPremature: boolean;
+    apgarScoresKnown: boolean;
+    apgar1min: string;
+    apgar5min: string;
     isBirthLocationKnown?: boolean;
     syncVersion?: number;
     lastModifiedAt?: string;

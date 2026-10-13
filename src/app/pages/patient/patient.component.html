@@ -206,12 +206,28 @@
                                     <div class="cd-val">{{ patientDto()!.secondaryPayor }}</div>
                                 </div>
                                 <div class="cd-cell">
-                                    <div class="cd-key">Location</div>
-                                    <div class="cd-val">{{ patientDto()!.location }}</div>
+                                    <div class="cd-key">Premature</div>
+                                    <div class="cd-val">{{ patientDto()!.isPremature ? 'Yes' : 'No' }}</div>
                                 </div>
+                                @if (patientDto()!.apgarScoresKnown) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">APGAR Score 1 Min</div>
+                                        <div class="cd-val">{{ patientDto()!.apgar1min }}</div>
+                                    </div>
+                                }
+                                @if (patientDto()!.apgarScoresKnown) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">APGAR Score 5 Min</div>
+                                        <div class="cd-val">{{ patientDto()!.apgar5min }}</div>
+                                    </div>
+                                }
                                 <div class="cd-cell">
                                     <div class="cd-key">Registered</div>
                                     <div class="cd-val">{{ patientDto()!.createdAt | date:'MMM d, y' }}</div>
+                                </div>
+                                <div class="cd-cell">
+                                    <div class="cd-key">Location</div>
+                                    <div class="cd-val">{{ patientDto()!.location }}</div>
                                 </div>
                             </div>
                         </div>

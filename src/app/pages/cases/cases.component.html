@@ -223,6 +223,22 @@
                                     </div>
                                 }
                                 <div class="cd-cell">
+                                    <div class="cd-key">Premature</div>
+                                    <div class="cd-val">{{ caseDto()!.patient.isPremature ? 'Yes' : 'No' }}</div>
+                                </div>
+                                @if (caseDto()!.patient.apgarScoresKnown) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">APGAR Score 1 Min</div>
+                                        <div class="cd-val">{{ caseDto()!.patient.apgar1min }}</div>
+                                    </div>
+                                }
+                                @if (caseDto()!.patient.apgarScoresKnown) {
+                                    <div class="cd-cell">
+                                        <div class="cd-key">APGAR Score 5 Min</div>
+                                        <div class="cd-val">{{ caseDto()!.patient.apgar5min }}</div>
+                                    </div>
+                                }
+                                <div class="cd-cell">
                                     <div class="cd-key">Location</div>
                                     <div class="cd-val">{{ caseDto()!.patient.location }}</div>
                                 </div>

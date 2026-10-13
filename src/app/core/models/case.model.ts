@@ -98,6 +98,11 @@ export interface PatientInfoDto {
   province: string;        // LOV-resolved
   city: string;            // LOV-resolved
   location: string;        // pre-built "City, Province, Country"
+
+  isPremature: boolean;
+  apgarScoresKnown: boolean;
+  apgar1min: string;
+  apgar5min: string;
 }
 
 export interface HospitalAdmissionDto {
@@ -426,6 +431,11 @@ export interface PatientDetailDto {
   province: string;
   city: string;
   location: string;
+
+  isPremature: boolean;
+  apgarScoresKnown: boolean;
+  apgar1min: string;
+  apgar5min: string;
 
   // ── assigned doctor ───────────────────────────────────────
   doctorName: string;
