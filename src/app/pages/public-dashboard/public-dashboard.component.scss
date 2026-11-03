@@ -212,6 +212,11 @@ button:focus-visible, a:focus-visible { outline: 2px solid rgba(6, 86, 197, .45)
 .rate-row { display: grid; grid-template-columns: 170px minmax(60px, 1fr) 52px; column-gap: 10px; align-items: center; font-size: 12.5px;
   small { grid-column: 1 / -1; font-size: 11px; color: var(--muted); margin-top: 2px; }
   .rate-val { text-align: right; font-weight: 700; color: var(--navy); } }
+.out-group { margin-top: 16px; }
+.out-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;
+  span { font-size: 11.5px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .06em; }
+  small { font-size: 11.5px; color: var(--muted); } }
+.out-group .mini-grid { margin-top: 0; }
 .mini-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 16px;
   @media (max-width: 640px) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .mini, .medians > div { background: #F7F8FB; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; }

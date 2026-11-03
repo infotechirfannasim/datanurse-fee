@@ -243,7 +243,7 @@
 
         <!-- ═════ DEMOGRAPHICS + FOLLOW-UP ═════ -->
         <div class="grid-2">
-            <section class="card fixed-lg">
+            <section class="card fixed-xl">
                 <div class="card-head">
                     <div>
                         <h2 class="card-title"><i class="pi pi-users"></i> Patient Demographics</h2>
@@ -296,7 +296,7 @@
                 </div>
             </section>
 
-            <section class="card fixed-lg">
+            <section class="card fixed-xl">
                 <div class="card-head">
                     <div>
                         <h2 class="card-title"><i class="pi pi-calendar-plus"></i> Follow-ups &amp; Outcomes</h2>
@@ -331,11 +331,33 @@
                             <small>{{ o?.readmitted ?? 0 | number }} / {{ o?.casesWithFollowup ?? 0 | number }} followed-up</small>
                         </div>
                     </div>
-                    <div class="mini-grid">
-                        <div class="mini"><span class="mini-v" style="color:#2251CC">{{ o?.casesWithFollowup ?? 0 | number }}</span><span class="mini-l">Followed up</span></div>
-                        <div class="mini"><span class="mini-v" style="color:#0EA5A0">{{ o?.latestStatus?.alive ?? 0 | number }}</span><span class="mini-l">Alive</span></div>
-                        <div class="mini"><span class="mini-v" style="color:#E8344A">{{ o?.latestStatus?.deceased ?? 0 | number }}</span><span class="mini-l">Deceased</span></div>
-                        <div class="mini"><span class="mini-v" style="color:#6B7280">{{ o?.latestStatus?.unknown ?? 0 | number }}</span><span class="mini-l">Status unknown</span></div>
+                    <div class="out-group">
+                        <div class="out-head">
+                            <span>At discharge</span>
+                            <small>{{ o?.discharge?.recorded ?? 0 | number }} cases with a discharge status
+                                @if ((o?.discharge?.alive ?? 0) + (o?.discharge?.deceased ?? 0)) { · {{ o?.discharge?.survival }}% discharged alive }</small>
+                        </div>
+                        <div class="mini-grid">
+                            <div class="mini"><span class="mini-v" style="color:#0EA5A0">{{ o?.discharge?.alive ?? 0 | number }}</span><span class="mini-l">Discharged alive</span></div>
+                            <div class="mini"><span class="mini-v" style="color:#6B7280">{{ o?.discharge?.unknown ?? 0 | number }}</span><span class="mini-l">Status unknown</span></div>
+                            <div class="mini"><span class="mini-v" style="color:#E8344A">{{ o?.discharge?.deceased ?? 0 | number }}</span><span class="mini-l">Died before discharge</span></div>
+                            <div class="mini"><span class="mini-v" style="color:#6B7280">{{ (o?.discharge?.cases ?? 0) - (o?.discharge?.recorded ?? 0) | number }}</span><span class="mini-l">Status not recorded</span></div>
+                            @if (o?.discharge?.otherStatus) {
+                                <div class="mini"><span class="mini-v" style="color:#6B7280">{{ o?.discharge?.otherStatus | number }}</span><span class="mini-l">Other status</span></div>
+                            }
+                        </div>
+                    </div>
+                    <div class="out-group">
+                        <div class="out-head">
+                            <span>At latest follow-up</span>
+                            <small>{{ o?.casesWithFollowup ?? 0 | number }} cases followed up after discharge</small>
+                        </div>
+                        <div class="mini-grid">
+                            <div class="mini"><span class="mini-v" style="color:#2251CC">{{ o?.casesWithFollowup ?? 0 | number }}</span><span class="mini-l">Followed up</span></div>
+                            <div class="mini"><span class="mini-v" style="color:#0EA5A0">{{ o?.latestStatus?.alive ?? 0 | number }}</span><span class="mini-l">Alive</span></div>
+                            <div class="mini"><span class="mini-v" style="color:#E8344A">{{ o?.latestStatus?.deceased ?? 0 | number }}</span><span class="mini-l">Deceased</span></div>
+                            <div class="mini"><span class="mini-v" style="color:#6B7280">{{ o?.latestStatus?.unknown ?? 0 | number }}</span><span class="mini-l">Status unknown</span></div>
+                        </div>
                     </div>
                     @if (o?.discharge?.lengthOfStayMedianDays !== null && o?.discharge?.lengthOfStayMedianDays !== undefined) {
                         <p class="summary">Median length of stay {{ o?.discharge?.lengthOfStayMedianDays }} days
@@ -443,7 +465,7 @@
                 <div class="card-head">
                     <div>
                         <h2 class="card-title"><i class="pi pi-building"></i> Hospitals</h2>
-                        <<!--p class="card-sub">Hospital → surgeons → cases</p>-->
+                        <!--<p class="card-sub">Hospital → surgeons → cases</p>-->
                     </div>
                 </div>
                 <ul class="ent-list">

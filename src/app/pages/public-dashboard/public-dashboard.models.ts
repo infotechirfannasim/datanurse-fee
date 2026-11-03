@@ -67,6 +67,7 @@ export interface PublicDashboardData {
         latestStatus: { alive: number; deceased: number; unknown: number };
         survivalAmongKnown: number; readmitted: number; readmissionRate: number;
         discharge: { cases: number; recorded: number; completeness: number;
+            alive: number; deceased: number; unknown: number; otherStatus: number; survival: number;
             statuses: { name: string; count: number; percentage: number }[];
             lengthOfStayMedianDays: number | null; lengthOfStayN: number };
     };
