@@ -204,24 +204,37 @@ button:focus-visible, a:focus-visible { outline: 2px solid rgba(6, 86, 197, .45)
 .gender-seg { border: 0; color: #fff; font-size: 11.5px; font-weight: 600; cursor: pointer; min-width: 6px; white-space: nowrap; overflow: hidden;
   &.active { box-shadow: inset 0 0 0 3px rgba(10, 0, 97, .55); } &:disabled { cursor: default; } }
 
-// ── follow-ups ───────────────────────────────────────────────────────────────
-.fu-hero { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; }
-.fu-pct { font-family: 'Crimson Pro', serif; font-size: 40px; font-weight: 700; color: var(--navy); line-height: 1; }
-.fu-lbl { font-size: 12.5px; color: var(--muted); small { display: block; font-size: 11.5px; } }
-.rate-list { display: flex; flex-direction: column; gap: 10px; }
-.rate-row { display: grid; grid-template-columns: 170px minmax(60px, 1fr) 52px; column-gap: 10px; align-items: center; font-size: 12.5px;
-  small { grid-column: 1 / -1; font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .rate-val { text-align: right; font-weight: 700; color: var(--navy); } }
-.out-group { margin-top: 16px; }
-.out-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;
-  span { font-size: 11.5px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .06em; }
-  small { font-size: 11.5px; color: var(--muted); } }
-.out-group .mini-grid { margin-top: 0; }
-.mini-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 16px;
-  @media (max-width: 640px) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.mini, .medians > div { background: #F7F8FB; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; }
+// ── follow-ups & outcomes ────────────────────────────────────────────────────
+.stages { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;
+  @media (max-width: 640px) { grid-template-columns: minmax(0, 1fr); } }
+.stage { border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; background: #FAFBFD; min-width: 0; }
+.stage-head { display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700; color: var(--navy);
+  text-transform: uppercase; letter-spacing: .06em; }
+.stage-no { width: 20px; height: 20px; border-radius: 50%; background: var(--navy); color: #fff; display: grid; place-items: center;
+  font-size: 11px; letter-spacing: 0; }
+.stage-hero { display: flex; align-items: baseline; gap: 8px; margin: 10px 0 10px;
+  b { font-family: 'Crimson Pro', serif; font-size: 36px; font-weight: 700; color: #0E9F6E; line-height: 1; }
+  span { font-size: 12.5px; color: var(--muted); } }
+.stack { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: #EEF1F6; gap: 2px;
+  span { display: block; min-width: 4px; } }
+.alive { background: #10B981; }
+.deceased { background: #E8344A; }
+.unknown { background: #94A3B8; }
+.stage-legend { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted);
+  li { display: inline-flex; align-items: center; gap: 6px; }
+  i { width: 8px; height: 8px; border-radius: 50%; }
+  b { color: var(--navy); font-variant-numeric: tabular-nums; } }
+.stage-base { margin: 10px 0 0; font-size: 11.5px; color: var(--muted); }
+.kpi-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px;
+  @media (max-width: 640px) { grid-template-columns: minmax(0, 1fr); } }
+.kpi-mini { border-top: 3px solid var(--blue); background: #F7F8FB; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; min-width: 0;
+  b { font-family: 'Crimson Pro', serif; font-size: 26px; font-weight: 700; color: var(--navy); line-height: 1.1;
+    em { font-style: normal; font-size: 15px; } }
+  span { font-size: 12px; font-weight: 600; color: var(--text); margin-top: 2px; }
+  small { font-size: 11px; color: var(--muted); margin-top: 2px; } }
 .mini-v { font-family: 'Crimson Pro', serif; font-size: 24px; font-weight: 700; line-height: 1.1; color: var(--navy); }
 .mini-l { font-size: 11.5px; color: var(--muted); small { display: block; font-size: 10.5px; } }
+.medians > div { background: #F7F8FB; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; }
 
 // ── activity ─────────────────────────────────────────────────────────────────
 .activity-card .card-body { overflow: visible; }

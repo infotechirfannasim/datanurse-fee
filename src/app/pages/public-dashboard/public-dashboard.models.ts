@@ -63,13 +63,16 @@ export interface PublicDashboardData {
             items: { code: string; name: string; n: number; min: number; q1: number; median: number; q3: number; max: number }[] };
     };
     outcomes?: {
-        eligible: number; followedUp: number; followupRate: number; casesWithFollowup: number;
-        latestStatus: { alive: number; deceased: number; unknown: number };
-        survivalAmongKnown: number; readmitted: number; readmissionRate: number;
-        discharge: { cases: number; recorded: number; completeness: number;
-            alive: number; deceased: number; unknown: number; otherStatus: number; survival: number;
-            statuses: { name: string; count: number; percentage: number }[];
-            lengthOfStayMedianDays: number | null; lengthOfStayN: number };
+        discharge: {
+            cases: number; recorded: number; notRecorded: number;
+            alive: number; deceased: number; other: number; aliveRate: number;
+            lengthOfStay: { medianDays: number | null; n: number };
+        };
+        followup: {
+            eligible: number; followedEligible: number; rate: number; cases: number;
+            alive: number; deceased: number; unknown: number; aliveRate: number;
+            readmitted: number; readmissionRate: number;
+        };
     };
 }
 
