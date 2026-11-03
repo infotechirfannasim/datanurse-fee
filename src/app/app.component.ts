@@ -24,18 +24,27 @@ export class AppComponent implements OnInit {
     sidebarState = inject(SidebarStateService);  // ← naya
 
     isLoggedIn = false;
+    /** Standalone public pages render without the admin shell, even for logged-in users. */
+    isStandalonePage = false;
+    private readonly STANDALONE_PREFIXES = ['/insights'];
+
+    private checkStandalone(url: string) {
+        this.isStandalonePage = this.STANDALONE_PREFIXES.some(p => url === p || url.startsWith(p + '?') || url.startsWith(p + '/'));
+    }
 
     ngOnInit(): void {
         this.router.events.pipe(
             filter(e => e instanceof NavigationEnd)
         ).subscribe((e: any) => {
             this.navService.setPage(e.urlAfterRedirects);
+            this.checkStandalone(e.urlAfterRedirects);
             if (this.sidebarState.isMobile) {
                 this.sidebarState.close();
             }
         });
 
         this.navService.setPage(this.router.url);
+        this.checkStandalone(location.pathname);
 
         this.authService.currentUser$.subscribe(user => {
             this.isLoggedIn = !!user;

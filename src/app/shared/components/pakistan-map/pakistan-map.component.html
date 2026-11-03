@@ -1,0 +1,193 @@
+@let a = asset();
+@let k = scale();
+@let explored = exploredFeature();
+<div class="map-stage" (click)="closePopover()">
+    <svg [attr.viewBox]="vbString()" class="pk-map" role="group"
+         aria-label="Political map of Pakistan showing recorded cases by province">
+        <defs>
+            <linearGradient id="pkSea" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0.55" stop-color="#EEF7FC"/>
+                <stop offset="1" stop-color="#A9D8F2"/>
+            </linearGradient>
+            <linearGradient id="pkIiojkFade" gradientUnits="userSpaceOnUse"
+                            [attr.x1]="a.disputed.fadeX0" [attr.x2]="a.disputed.fadeX1" y1="0" y2="0">
+                <stop offset="0" stop-color="#D8EED6"/>
+                <stop offset="1" stop-color="#D8EED6" stop-opacity="0"/>
+            </linearGradient>
+            <pattern id="pkHatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <rect width="6" height="6" fill="rgba(255,255,255,0.35)"/>
+                <line x1="0" y1="0" x2="0" y2="6" stroke="#9AA3B2" stroke-width="1.1"/>
+            </pattern>
+            <!--<pattern id="pkInsetHatch" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <rect width="4" height="4" fill="#CDE9CD"/>
+                <line x1="0" y1="0" x2="0" y2="4" stroke="#3F9A57" stroke-width="0.9"/>
+            </pattern>-->
+        </defs>
+
+        <!-- sea, neighbours, graticule -->
+        <rect x="-200" y="-200" [attr.width]="a.width + 400" [attr.height]="a.height + 400" fill="url(#pkSea)"/>
+        @for (n of a.neighbours; track n.code) {
+            <path [attr.d]="n.path" class="neighbour"/>
+        }
+        <path [attr.d]="a.graticule" class="graticule"/>
+
+        <!-- disputed territory (frontier undefined to the east: fill fades, no boundary line) -->
+        <path [attr.d]="a.disputed.path" fill="url(#pkIiojkFade)" class="disputed"/>
+
+        <!-- provinces & territories -->
+        @for (p of a.provinces; track p.id) {
+            @let s = provinceStates().get(p.id);
+            <path [attr.d]="p.path" [attr.fill]="p.fill" class="province"
+                  [class.faded]="explored && explored.id !== p.id"
+                  [class.selected]="selectedProvinceFeature() === p.id"
+                  [class.disabled]="!s?.count"
+                  tabindex="0" role="button"
+                  [attr.aria-label]="(s?.name || p.name) + ': ' + (s?.count ?? 0) + ' cases'"
+                  (mousemove)="onHover($event, 'province', p.id)" (mouseleave)="hover.set(null)"
+                  (click)="onClick($event, 'province', p.id)" (keydown)="onKey($event, 'province', p.id)"/>
+            @if (s && !s.count && !explored) {
+                <path [attr.d]="p.path" fill="url(#pkHatch)" class="no-events"/>
+            }
+        }
+
+        <!-- districts of the explored province -->
+        @for (x of visibleDistricts(); track x.d.id) {
+            <path [attr.d]="x.d.path" [attr.fill]="x.fill" class="district"
+                  [class.disabled]="!x.s.count"
+                  [class.selected]="selectedDistrictFeature() === x.d.id"
+                  tabindex="0" role="button"
+                  [attr.aria-label]="x.s.name + ': ' + (x.s.count ?? 0) + ' cases'"
+                  (mousemove)="onHover($event, 'district', x.d.id)" (mouseleave)="hover.set(null)"
+                  (click)="onClick($event, 'district', x.d.id)" (keydown)="onKey($event, 'district', x.d.id)"/>
+            @if (!x.s.count) {
+                <path [attr.d]="x.d.path" fill="url(#pkHatch)" class="no-events"/>
+            }
+        }
+
+        <!-- rivers and boundaries (screen-constant widths) -->
+        <path [attr.d]="a.rivers" class="river"/>
+        <path [attr.d]="a.lines.provincial" class="ln-provincial"/>
+        <path [attr.d]="a.lines.international" class="ln-intl-halo"/>
+        <path [attr.d]="a.lines.international" class="ln-intl"/>
+        <path [attr.d]="a.lines.working" class="ln-working"/>
+        <path [attr.d]="a.lines.iiojkIndia" class="ln-iiojk-india"/>
+        <path [attr.d]="a.lines.loc" class="ln-loc"/>
+
+        <!-- labels -->
+        <g class="no-events">
+            @for (l of a.labels; track l.text) {
+                <text [attr.x]="l.x" [attr.y]="l.y" [attr.transform]="'rotate(' + l.rot + ' ' + l.x + ' ' + l.y + ')'"
+                      [attr.font-size]="l.size * Math.max(k, 0.55)" class="lbl-country"
+                      [attr.letter-spacing]="6 * Math.max(k, 0.55)">{{ l.text }}</text>
+            }
+            @if (!explored) {
+                @for (p of a.provinces; track p.id) {
+                    @if (p.label) {
+                        <text [attr.x]="p.lx" [attr.y]="p.ly" [attr.transform]="'rotate(' + p.rot + ' ' + p.lx + ' ' + p.ly + ')'"
+                              [attr.font-size]="p.id === 'PK-JK' ? 9 : 13" [attr.letter-spacing]="p.id === 'PK-JK' ? 1.5 : 5"
+                              class="lbl-province">{{ p.label }}</text>
+                    }
+                }
+                <text class="lbl-disputed" [attr.x]="a.disputed.lx" [attr.y]="a.disputed.ly" font-size="8.2">
+                    <tspan [attr.x]="a.disputed.lx" dy="0">INDIAN ILLEGALLY OCCUPIED</tspan>
+                    <tspan [attr.x]="a.disputed.lx" dy="10">JAMMU &amp; KASHMIR</tspan>
+                    <tspan [attr.x]="a.disputed.lx" dy="11" class="lbl-disputed-note">(DISPUTED TERRITORY – FINAL STATUS TO BE</tspan>
+                    <tspan [attr.x]="a.disputed.lx" dy="8" class="lbl-disputed-note">DECIDED IN LINE WITH RELEVANT UNSC RESOLUTIONS)</tspan>
+                </text>
+                <text class="lbl-frontier" [attr.x]="a.disputed.frontierX" [attr.y]="a.disputed.frontierY"
+                      [attr.transform]="'rotate(72 ' + a.disputed.frontierX + ' ' + a.disputed.frontierY + ')'">FRONTIER UNDEFINED</text>
+            }
+            @for (c of a.cities; track c.name) {
+                @if (c.kind === 'capital') {
+                    <rect [attr.x]="c.x - 3.2 * k" [attr.y]="c.y - 3.2 * k" [attr.width]="6.4 * k" [attr.height]="6.4 * k"
+                          class="city-capital"/>
+                } @else {
+                    <circle [attr.cx]="c.x" [attr.cy]="c.y" [attr.r]="2.6 * k" class="city"/>
+                }
+                <text [attr.x]="c.x + 5 * k" [attr.y]="c.y - 4 * k" [attr.font-size]="8.5 * k" class="lbl-city">{{ c.name }}</text>
+            }
+        </g>
+
+        <!-- recorded-case markers -->
+        @for (b of bubbles(); track b.p.id) {
+            <g class="bubble" (mousemove)="onHover($event, 'province', b.p.id)" (mouseleave)="hover.set(null)"
+               (click)="onClick($event, 'province', b.p.id)" [class.selected]="selectedProvinceFeature() === b.p.id">
+                @if (b.leader) {
+                    <line [attr.x1]="b.leader[0]" [attr.y1]="b.leader[1]" [attr.x2]="b.cx" [attr.y2]="b.cy" class="leader"/>
+                }
+                <circle [attr.cx]="b.cx" [attr.cy]="b.cy" [attr.r]="b.r"/>
+                <text [attr.x]="b.cx" [attr.y]="b.cy + 4" [attr.font-size]="b.r > 16 ? 12 : 9.5">{{ b.s.count | number }}</text>
+            </g>
+        }
+        @for (x of visibleDistricts(); track x.d.id) {
+            @if (x.s.count) {
+                <text class="lbl-district-count no-events" [attr.x]="x.d.cx" [attr.y]="x.d.cy"
+                      [attr.font-size]="10 * k">{{ x.s.count }}</text>
+            }
+        }
+
+        <!-- insets, as on the official map -->
+        <!--@if (!explored) {
+            <g class="inset no-events" transform="translate(546 604)">
+                <rect [attr.width]="a.insets.sirCreek.w" [attr.height]="a.insets.sirCreek.h + 16" class="inset-frame"/>
+                <rect [attr.width]="a.insets.sirCreek.w" height="16" class="inset-title-bg"/>
+                <text x="95" y="11.5" class="inset-title">SIR CREEK</text>
+                <g transform="translate(0 16)">
+                    <rect [attr.width]="a.insets.sirCreek.w" [attr.height]="a.insets.sirCreek.h" fill="#CFE9F7"/>
+                    @for (l of a.insets.sirCreek.layers; track l.key) {
+                        <path [attr.d]="l.path" [class]="'inset-' + l.key"/>
+                    }
+                    <text [attr.x]="a.insets.sirCreek.creek[0] + 8" [attr.y]="a.insets.sirCreek.creek[1] + 22" class="inset-note">
+                        <tspan [attr.x]="a.insets.sirCreek.creek[0] - 52">International Boundary</tspan>
+                        <tspan [attr.x]="a.insets.sirCreek.creek[0] - 52" dy="8">along Eastern Bank</tspan>
+                        <tspan [attr.x]="a.insets.sirCreek.creek[0] - 52" dy="8">of Sir Creek</tspan>
+                    </text>
+                </g>
+            </g>
+            <g class="inset no-events" transform="translate(752 566) scale(0.92)">
+                <rect [attr.width]="a.insets.junagadh.w" [attr.height]="a.insets.junagadh.h + 18" class="inset-frame"/>
+                <rect [attr.width]="a.insets.junagadh.w" height="18" class="inset-title-bg"/>
+                <text [attr.x]="a.insets.junagadh.w / 2" y="13" class="inset-title">JUNAGADH &amp; MANAVADAR</text>
+                <g transform="translate(0 18)">
+                    <rect [attr.width]="a.insets.junagadh.w" [attr.height]="a.insets.junagadh.h" fill="#CFE9F7"/>
+                    @for (l of a.insets.junagadh.layers; track l.key) {
+                        <path [attr.d]="l.path" [class]="'inset-' + l.key"/>
+                    }
+                    <circle [attr.cx]="a.insets.junagadh.manavadar[0]" [attr.cy]="a.insets.junagadh.manavadar[1]" r="2" fill="#1F2937"/>
+                    <text [attr.x]="a.insets.junagadh.manavadar[0] - 4" [attr.y]="a.insets.junagadh.manavadar[1] - 5"
+                          class="inset-place" text-anchor="end">MANAVADAR</text>
+                    <text [attr.x]="a.insets.junagadh.label[0]" [attr.y]="a.insets.junagadh.label[1] + 4" class="inset-place">JUNAGADH</text>
+                    <text x="200" y="40" class="inset-country">I N D I A</text>
+                    <text x="70" y="182" class="inset-sea">A R A B I A N &#160; S E A</text>
+                </g>
+            </g>
+        }-->
+    </svg>
+
+    @if (popover(); as p) {
+        <div class="map-popover" [style.left.px]="p.x" [style.top.px]="p.y" (click)="$event.stopPropagation()" role="dialog">
+            <div class="pop-title">{{ p.state.name }}</div>
+            <div class="pop-count">
+                @if (p.state.count) { {{ p.state.count | number }} recorded cases } @else { No recorded cases }
+            </div>
+            <div class="pop-actions">
+                <button type="button" class="pop-btn primary" [disabled]="!p.state.count" (click)="doAction('select')">
+                    <i class="pi pi-filter"></i> Select
+                </button>
+                @if (p.level === 'province') {
+                    <button type="button" class="pop-btn" (click)="doAction('explore')">
+                        <i class="pi pi-search-plus"></i> Explore
+                    </button>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@if (hover(); as h) {
+    <div class="map-tooltip" [style.left.px]="h.x" [style.top.px]="h.y" [class.flip-x]="h.flipX" [class.flip-y]="h.flipY">
+        <strong>{{ h.title }}</strong>
+        @if (h.count !== null) { <span class="tt-count">{{ h.count | number }} cases</span> }
+        <span class="tt-sub">{{ h.sub }}</span>
+    </div>
+}

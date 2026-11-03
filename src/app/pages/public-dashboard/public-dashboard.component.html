@@ -1,0 +1,630 @@
+@if (state() === 'expired') {
+    <!-- ═════ EXPIRED ═════ -->
+    <section class="expired">
+        <div class="expired-card">
+            <img src="./assets/images/newLogo.svg" alt="DataNurse" class="expired-logo"/>
+            <div class="expired-icon"><i class="pi pi-clock"></i></div>
+            <h1>This Dashboard Is No Longer Available</h1>
+            <p>The DataNurse public analytics dashboard was available for a limited period and its access has now
+                expired. Please contact the DataNurse team for further information.</p>
+            <div class="expired-actions">
+                <a routerLink="/contact" class="btn-primary"><i class="pi pi-envelope"></i> Contact the DataNurse team</a>
+                <a routerLink="/" class="btn-ghost">Go to DataNurse</a>
+            </div>
+        </div>
+    </section>
+} @else {
+<div class="pd" (scroll)="hideTip()">
+    <!-- ═════ HEADER / GLOBAL FILTERS ═════ -->
+    <header class="pd-header">
+        <div class="pd-header-row">
+            <a routerLink="/" class="pd-brand" aria-label="DataNurse home">
+                <img src="./assets/images/newLogo.svg" alt="DataNurse"/>
+            </a>
+            <div class="pd-title">
+                <h1>Paediatric Cardiac Surgery - Public Analytics</h1>
+                <span>Live figures from the DataNurse registry across Pakistan</span>
+            </div>
+            <div class="pd-controls">
+                <div class="seg" role="tablist" aria-label="Time period">
+                    @for (p of periods; track p.value) {
+                        <button type="button" role="tab" class="seg-btn" [class.active]="filters().period === p.value"
+                                [attr.aria-selected]="filters().period === p.value" (click)="setPeriod(p.value)">
+                            {{ p.label }}
+                        </button>
+                    }
+                </div>
+                <button type="button" class="btn-reset" [disabled]="!activeFilters().length && filters().period === 'all'"
+                        (click)="resetAll()">
+                    <i class="pi pi-refresh"></i> Reset all
+                </button>
+            </div>
+        </div>
+        @if (activeFilters().length) {
+            <div class="pd-chips" aria-label="Active filters">
+                @for (c of activeFilters(); track c.key) {
+                    <span class="chip">
+                        <span class="chip-k">{{ FILTER_LABELS[c.key] }}</span>
+                        <span class="chip-v">{{ c.label }}</span>
+                        <button type="button" class="chip-x" [attr.aria-label]="'Remove ' + FILTER_LABELS[c.key] + ' filter'"
+                                (click)="removeFilter(c.key)"><i class="pi pi-times"></i></button>
+                    </span>
+                }
+            </div>
+        }
+        <div class="pd-progress" [class.on]="refreshing()"></div>
+    </header>
+
+    @if (state() === 'error') {
+        <div class="pd-error">
+            <i class="pi pi-exclamation-triangle"></i>
+            <span>The dashboard could not be loaded right now.</span>
+            <button type="button" class="btn-ghost" (click)="reload()">Try again</button>
+        </div>
+    }
+
+    @let d = data();
+    <main class="pd-main" [class.is-loading]="!d">
+
+        <!-- ═════ KPI CARDS ═════ -->
+        <section class="kpi-grid" aria-label="Key figures">
+            @for (k of kpiCards; track k.key) {
+                <div class="kpi" [style.--accent]="k.accent">
+                    <div class="kpi-accent"></div>
+                    <div class="kpi-ico" [style.background]="k.bg"><i [class]="k.icon" [style.color]="k.accent"></i></div>
+                    <div class="kpi-body">
+                        @if (d) {
+                            <span class="kpi-val">{{ kpiValue(k.key) | number }}</span>
+                        } @else {
+                            <span class="sk sk-val"></span>
+                        }
+                        <span class="kpi-lbl">{{ k.label }}</span>
+                    </div>
+                </div>
+            }
+        </section>
+
+        <!-- ═════ UNIFIED GEOGRAPHY CARD ═════ -->
+        <section class="card geo-card">
+            <div class="story">
+                <span class="story-eyebrow"><i class="pi pi-map"></i> Explore Case Distribution Across Pakistan</span>
+                @if (story(); as st) {
+                    <h2 class="story-head">
+                        <em>{{ st.cases }}</em> on <em>{{ st.patients }}</em>@if (st.scope) { {{ st.scope }}},
+                        recorded at <em>{{ st.hospitals }}</em>
+                    </h2>
+                    <p class="story-lead">{{ st.lead }}</p>
+                    <div class="story-stats">
+                        @for (s of st.stats; track s.label) {
+                            <div class="story-stat"><b>{{ s.value }}</b><span>{{ s.label }}</span></div>
+                        }
+                    </div>
+                    <p class="story-hint"><i class="pi pi-info-circle"></i>
+                        @if (exploreLevel() === 'country') {
+                            Click any province, bar or tile to explore it. Every card on the page follows your selection.
+                        } @else {
+                            Exploring {{ breadcrumb()[breadcrumb().length - 1].label }} - select a location to refine every card, or go back to the national view.
+                        }
+                    </p>
+                } @else {
+                    <span class="sk sk-story"></span>
+                }
+            </div>
+            <div class="geo-body">
+                <div class="geo-map">
+                    @if (mapAsset(); as asset) {
+                        <app-pakistan-map [asset]="asset"
+                                          [provinces]="d?.geography?.provinces ?? []"
+                                          [districts]="d?.geography?.districts ?? []"
+                                          [selectedProvince]="filters().province"
+                                          [selectedDistrict]="filters().district"
+                                          [exploreProvince]="exploreProvince()"
+                                          (action)="onMapAction($event)"/>
+                    } @else {
+                        <div class="sk sk-map"></div>
+                    }
+                    <div class="map-legend">
+                        <span><i class="lg lg-intl"></i>International boundary</span>
+                        <span><i class="lg lg-prov"></i>Provincial boundary</span>
+                        <span><i class="lg lg-loc"></i>Line of Control</span>
+                        <span><i class="lg lg-work"></i>Working boundary</span>
+                        <span><i class="lg lg-river"></i>River</span>
+                        <span><i class="lg lg-bubble"></i>Recorded cases</span>
+                        <span><i class="lg lg-hatch"></i>No recorded cases</span>
+                    </div>
+                    <!--<p class="map-notes">
+                        The red dotted line represents approximately the Line of Control in Jammu &amp; Kashmir. The state of
+                        Jammu &amp; Kashmir and its accession is yet to be decided through a plebiscite under the relevant
+                        UN Security Council Resolutions. Actual boundary in the area where the remark FRONTIER UNDEFINED
+                        appears would ultimately be decided by the sovereign authorities concerned after the final
+                        settlement of the Jammu &amp; Kashmir dispute. *AJK - Azad Jammu &amp; Kashmir.
+                    </p>-->
+                </div>
+
+                <div class="geo-explorer">
+                    <nav class="crumbs" aria-label="Geographic exploration">
+                        @for (b of breadcrumb(); track b.level; let last = $last) {
+                            @if (!last) {
+                                <button type="button" class="crumb" (click)="goTo(b.level)">{{ b.label }}</button>
+                                <i class="pi pi-angle-right crumb-sep"></i>
+                            } @else {
+                                <span class="crumb current">{{ b.label }}</span>
+                            }
+                        }
+                    </nav>
+                    <div class="seg seg-sm" role="tablist" aria-label="Geographic level">
+                        @for (t of geoTabs(); track t) {
+                            <button type="button" role="tab" class="seg-btn" [class.active]="activeGeoTab() === t"
+                                    (click)="geoTab.set(t)">{{ t === 'provinces' ? 'Provinces' : t === 'districts' ? 'Districts' : 'Cities' }}</button>
+                        }
+                    </div>
+                    <div class="geo-list-head">
+                        <span>{{ explorerRows().length }} {{ activeGeoTab() }}</span>
+                        <span>Cases</span>
+                    </div>
+                    <ul class="geo-list" role="list">
+                        @for (r of explorerRows(); track r.level + r.code) {
+                            <li class="geo-row" [class.zero]="!r.count" [class.selected]="isRowSelected(r)">
+                                <button type="button" class="geo-select" [disabled]="!r.count"
+                                        [attr.aria-pressed]="isRowSelected(r)"
+                                        (mouseenter)="!r.count && showTip($event, r.name, 'No recorded cases')"
+                                        (mouseleave)="hideTip()"
+                                        (click)="selectRow(r)">
+                                    <span class="geo-name">
+                                        <span class="nm">{{ r.name }}</span>
+                                        @if (r.context) { <span class="ctx">{{ r.context }}</span> }
+                                    </span>
+                                    <span class="geo-bar"><span [style.width.%]="(r.count / explorerMax()) * 100"></span></span>
+                                    <span class="geo-count">{{ r.count | number }}</span>
+                                </button>
+                                @if (r.explorable) {
+                                    <button type="button" class="geo-explore" [attr.aria-label]="'Explore ' + r.name"
+                                            (mouseenter)="showTip($event, 'Explore ' + r.name, 'Show its ' + (r.level === 'province' ? 'districts and cities' : 'cities'))"
+                                            (mouseleave)="hideTip()" (click)="hideTip(); explore(r)">
+                                        <i class="pi pi-angle-right"></i>
+                                    </button>
+                                } @else {
+                                    <span class="geo-explore-ph"></span>
+                                }
+                            </li>
+                        } @empty {
+                            <li class="empty">No {{ activeGeoTab() }} recorded in the registry for this area.</li>
+                        }
+                    </ul>
+                    @if (d && (d.geography.notRecorded || d.geography.unmatched)) {
+                        <p class="geo-foot">
+                            {{ d.geography.notRecorded + d.geography.unmatched | number }} cases have no recorded or
+                            recognised home province and are counted in the totals only.
+                        </p>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <!-- ═════ PROCEDURES + DIAGNOSES ═════ -->
+        <div class="grid-2">
+            <section class="card fixed-md">
+                <div class="card-head">
+                    <div>
+                        <h2 class="card-title"><i class="pi pi-heart"></i> Procedure Distribution</h2>
+                        <!--<p class="card-sub">Share of recorded procedures. A case can include more than one procedure.</p>-->
+                    </div>
+                </div>
+                <div class="card-body">
+                    <app-doughnut-chart [items]="procedureItems()" [centerValue]="d?.procedures?.total ?? 0"
+                                        centerLabel="Procedures" [selected]="filters().procedure"
+                                        (pick)="toggle('procedure', $event.key, $event.label)"
+                                        (hover)="onDoughnutHover($event, 'procedures')"/>
+                </div>
+                <div class="card-foot">
+                    {{ d?.procedures?.total ?? 0 | number }} procedures across {{ d?.procedures?.casesWithProcedure ?? 0 | number }}
+                    cases · {{ d?.procedures?.distinct ?? 0 }} distinct procedures
+                </div>
+            </section>
+            <section class="card fixed-md">
+                <div class="card-head">
+                    <div>
+                        <h2 class="card-title"><i class="pi pi-file-edit"></i> Diagnosis Distribution</h2>
+                        <!--<p class="card-sub">Primary diagnosis per case</p>-->
+                    </div>
+                </div>
+                <div class="card-body">
+                    <app-doughnut-chart [items]="diagnosisItems()" [centerValue]="d?.diagnoses?.total ?? 0"
+                                        centerLabel="Cases" [selected]="filters().diagnosis"
+                                        (pick)="toggle('diagnosis', $event.key, $event.label)"
+                                        (hover)="onDoughnutHover($event, 'cases')"/>
+                </div>
+                <div class="card-foot">
+                    {{ d?.diagnoses?.total ?? 0 | number }} cases with a recorded diagnosis ·
+                    {{ d?.diagnoses?.distinct ?? 0 }} distinct diagnoses
+                </div>
+            </section>
+        </div>
+
+        <!-- ═════ DEMOGRAPHICS + FOLLOW-UP ═════ -->
+        <div class="grid-2">
+            <section class="card fixed-lg">
+                <div class="card-head">
+                    <div>
+                        <h2 class="card-title"><i class="pi pi-users"></i> Patient Demographics</h2>
+                        <!--<p class="card-sub">Age at surgery and gender, by case</p>-->
+                    </div>
+                </div>
+                <div class="card-body">
+                    @let dm = d?.demographics;
+                    <div class="age-list">
+                        @for (ag of dm?.ageGroups ?? []; track ag.code) {
+                            <button type="button" class="age-row" [disabled]="!ag.count"
+                                    [class.active]="filters().ageGroup === ag.code"
+                                    (click)="toggle('ageGroup', ag.code, ag.label)"
+                                    (mouseenter)="showTip($event, ag.label, fmt(ag.count) + ' cases (' + ag.percentage + '%)')"
+                                    (mouseleave)="hideTip()">
+                                <span class="age-label">{{ ag.label }}</span>
+                                <span class="track"><span class="fill" [style.width.%]="ag.percentage" [style.background]="ag.color"></span></span>
+                                <span class="age-count">{{ ag.count | number }}</span>
+                                <span class="age-pct">{{ ag.percentage }}%</span>
+                                <span class="age-gender">
+                                    @for (g of ag.gender; track g.code) {
+                                        @if (g.count) { <span>{{ g.label[0] }} {{ g.count }}</span> }
+                                    }
+                                </span>
+                            </button>
+                        }
+                    </div>
+                    <div class="sub-head">Gender</div>
+                    <div class="gender-bar">
+                        @for (g of dm?.gender ?? []; track g.code; let i = $index) {
+                            @if (g.count) {
+                                <button type="button" class="gender-seg" [style.flex-grow]="g.count"
+                                        [class.active]="filters().gender === g.code"
+                                        [style.background]="['#2251CC', '#E8344A', '#5B4FCF', '#94A3B8'][i % 4]"
+                                        [disabled]="g.code === 'NOT_RECORDED'"
+                                        (click)="toggle('gender', g.code, g.label)"
+                                        (mouseenter)="showTip($event, g.label, fmt(g.count) + ' cases (' + g.percentage + '%)')"
+                                        (mouseleave)="hideTip()">
+                                    @if (g.percentage >= 12) { {{ g.label }} {{ g.percentage }}% }
+                                </button>
+                            }
+                        }
+                    </div>
+                    @if (dm) {
+                        <p class="summary">
+                            {{ dm.knownAge | number }} cases with a recorded age at surgery
+                            @if (dm.unknownAge) { · {{ dm.unknownAge | number }} without date of birth or surgery date }
+                        </p>
+                    }
+                </div>
+            </section>
+
+            <section class="card fixed-lg">
+                <div class="card-head">
+                    <div>
+                        <h2 class="card-title"><i class="pi pi-calendar-plus"></i> Follow-ups &amp; Outcomes</h2>
+                        <!--<p class="card-sub">Latest recorded follow-up per case; missing outcomes are not counted as negative</p>-->
+                    </div>
+                </div>
+                <div class="card-body">
+                    @let o = d?.outcomes;
+                    <div class="fu-hero">
+                        <span class="fu-pct">{{ o?.followupRate ?? 0 }}%</span>
+                        <span class="fu-lbl">of eligible cases have a recorded follow-up
+                            <small>({{ o?.followedUp ?? 0 | number }} of {{ o?.eligible ?? 0 | number }} reviewed or discharged cases)</small>
+                        </span>
+                    </div>
+                    <div class="rate-list">
+                        <div class="rate-row">
+                            <span>Discharge data recorded</span>
+                            <span class="track"><span class="fill" style="background:#0EA5A0" [style.width.%]="o?.discharge?.completeness ?? 0"></span></span>
+                            <span class="rate-val">{{ o?.discharge?.completeness ?? 0 }}%</span>
+                            <small>{{ o?.discharge?.recorded ?? 0 | number }} / {{ o?.discharge?.cases ?? 0 | number }}</small>
+                        </div>
+                        <div class="rate-row">
+                            <span>Alive at latest follow-up</span>
+                            <span class="track"><span class="fill" style="background:#5B4FCF" [style.width.%]="o?.survivalAmongKnown ?? 0"></span></span>
+                            <span class="rate-val">{{ o?.survivalAmongKnown ?? 0 }}%</span>
+                            <small>of {{ (o?.latestStatus?.alive ?? 0) + (o?.latestStatus?.deceased ?? 0) | number }} with known status</small>
+                        </div>
+                        <div class="rate-row">
+                            <span>Readmission requested</span>
+                            <span class="track"><span class="fill" style="background:#E8344A" [style.width.%]="o?.readmissionRate ?? 0"></span></span>
+                            <span class="rate-val">{{ o?.readmissionRate ?? 0 }}%</span>
+                            <small>{{ o?.readmitted ?? 0 | number }} / {{ o?.casesWithFollowup ?? 0 | number }} followed-up</small>
+                        </div>
+                    </div>
+                    <div class="mini-grid">
+                        <div class="mini"><span class="mini-v" style="color:#2251CC">{{ o?.casesWithFollowup ?? 0 | number }}</span><span class="mini-l">Followed up</span></div>
+                        <div class="mini"><span class="mini-v" style="color:#0EA5A0">{{ o?.latestStatus?.alive ?? 0 | number }}</span><span class="mini-l">Alive</span></div>
+                        <div class="mini"><span class="mini-v" style="color:#E8344A">{{ o?.latestStatus?.deceased ?? 0 | number }}</span><span class="mini-l">Deceased</span></div>
+                        <div class="mini"><span class="mini-v" style="color:#6B7280">{{ o?.latestStatus?.unknown ?? 0 | number }}</span><span class="mini-l">Status unknown</span></div>
+                    </div>
+                    @if (o?.discharge?.lengthOfStayMedianDays !== null && o?.discharge?.lengthOfStayMedianDays !== undefined) {
+                        <p class="summary">Median length of stay {{ o?.discharge?.lengthOfStayMedianDays }} days
+                            ({{ o?.discharge?.lengthOfStayN | number }} cases with admission and discharge dates)</p>
+                    }
+                </div>
+            </section>
+        </div>
+
+        <!-- ═════ SURGICAL ACTIVITY OVER TIME ═════ -->
+        <section class="card activity-card">
+            <div class="card-head">
+                <div>
+                    <h2 class="card-title"><i class="pi pi-chart-bar"></i> Surgical Activity Over Time</h2>
+                    <!--<p class="card-sub">{{ activitySubtitle() }}</p>-->
+                </div>
+                <div class="seg seg-sm">
+                    @for (p of periods; track p.value) {
+                        <button type="button" class="seg-btn" [class.active]="filters().period === p.value" (click)="setPeriod(p.value)">{{ p.label }}</button>
+                    }
+                </div>
+            </div>
+            <div class="card-body">
+                @let ab = activityBars();
+                @if (ab.bars.length) {
+                    <div class="act-chart">
+                        <div class="act-y">
+                            @for (t of ab.ticks; track t.v) {
+                                <span [style.top.%]="(t.y / ab.H) * 100">{{ t.v | number }}</span>
+                            }
+                        </div>
+                        <div class="act-plot">
+                            <svg [attr.viewBox]="'0 0 ' + ab.W + ' ' + ab.H" preserveAspectRatio="none" class="act-svg">
+                                @for (t of ab.ticks; track t.v) {
+                                    <line x1="0" [attr.x2]="ab.W" [attr.y1]="t.y" [attr.y2]="t.y" class="act-grid"/>
+                                }
+                                @for (b of ab.bars; track b.key) {
+                                    <rect [attr.x]="b.x" [attr.y]="b.y" [attr.width]="b.w" [attr.height]="b.h" class="act-bar"
+                                          rx="2"/>
+                                    <rect [attr.x]="b.x" y="0" [attr.width]="b.w" [attr.height]="ab.H" class="act-hit"
+                                          (mousemove)="showTip($event, b.range, fmt(b.count) + (b.count === 1 ? ' case' : ' cases'))"
+                                          (mouseleave)="hideTip()"/>
+                                }
+                            </svg>
+                            <div class="act-x">
+                                @for (b of ab.bars; track b.key) {
+                                    <span [class.minor]="b.minor" [style.left.%]="((b.x + b.w / 2) / ab.W) * 100">{{ b.showLabel ? b.label : '' }}</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                } @else {
+                    <div class="empty-state">No dated surgeries recorded for this period.</div>
+                }
+            </div>
+            <div class="card-foot">
+                {{ ab.total | number }} cases with a surgery date
+                @if (d?.activity?.undated) { · {{ d?.activity?.undated | number }} without a surgery date are not plotted }
+            </div>
+        </section>
+
+        <!-- ═════ SURGEONS + HOSPITALS ═════ -->
+        <div class="grid-2">
+            <section class="card fit-lg">
+                <div class="card-head">
+                    <div>
+                        <h2 class="card-title"><i class="pi pi-user"></i> Surgeons</h2>
+                        <!--<p class="card-sub">Surgeon → hospitals → cases. Surgeons are shown by registry code.</p>-->
+                    </div>
+                </div>
+                <ul class="ent-list">
+                    @for (s of d?.surgeons ?? []; track s.code) {
+                        <li class="ent" [class.open]="expandedSurgeon() === s.code" [class.selected]="filters().surgeon === s.code">
+                            <div class="ent-row">
+                                <button type="button" class="ent-main" (click)="toggle('surgeon', s.code, s.label)">
+                                    <span class="avatar"><i class="pi pi-user"></i></span>
+                                    <span class="ent-name">{{ s.label }}<small>{{ s.hospitals.length }} {{ s.hospitals.length === 1 ? 'hospital' : 'hospitals' }}</small></span>
+                                    <span class="ent-bar"><span [style.width.%]="(s.cases / (d?.surgeons?.[0]?.cases || 1)) * 100"></span></span>
+                                    <span class="ent-val">{{ s.cases | number }}</span>
+                                </button>
+                                <button type="button" class="ent-toggle" [attr.aria-expanded]="expandedSurgeon() === s.code"
+                                        [attr.aria-label]="'Show hospitals for ' + s.label" (click)="toggleSurgeon(s.code)">
+                                    <i class="pi" [class.pi-chevron-down]="expandedSurgeon() !== s.code" [class.pi-chevron-up]="expandedSurgeon() === s.code"></i>
+                                </button>
+                            </div>
+                            @if (expandedSurgeon() === s.code) {
+                                <ul class="ent-sub">
+                                    @for (h of s.hospitals; track h.code) {
+                                        <li>
+                                            <button type="button" [disabled]="!h.code" (click)="toggle('hospital', h.code, h.name)">
+                                                <i class="pi pi-building"></i><span>{{ h.name }}</span><b>{{ h.cases | number }}</b>
+                                            </button>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </li>
+                    } @empty {
+                        <li class="empty">No surgeons recorded for this selection.</li>
+                    }
+                </ul>
+            </section>
+
+            <section class="card fit-lg">
+                <div class="card-head">
+                    <div>
+                        <h2 class="card-title"><i class="pi pi-building"></i> Hospitals</h2>
+                        <<!--p class="card-sub">Hospital → surgeons → cases</p>-->
+                    </div>
+                </div>
+                <ul class="ent-list">
+                    @for (h of d?.hospitals ?? []; track h.code) {
+                        <li class="ent" [class.open]="expandedHospital() === h.code" [class.selected]="filters().hospital === h.code">
+                            <div class="ent-row">
+                                <button type="button" class="ent-main" (click)="toggle('hospital', h.code, h.name)">
+                                    <span class="avatar hosp"><i class="pi pi-building"></i></span>
+                                    <span class="ent-name" [attr.title]="h.name">{{ h.name }}<small>{{ h.surgeons.length }} {{ h.surgeons.length === 1 ? 'surgeon' : 'surgeons' }}</small></span>
+                                    <span class="ent-bar"><span [style.width.%]="(h.cases / (d?.hospitals?.[0]?.cases || 1)) * 100"></span></span>
+                                    <span class="ent-val">{{ h.cases | number }}</span>
+                                </button>
+                                <button type="button" class="ent-toggle" [attr.aria-expanded]="expandedHospital() === h.code"
+                                        [attr.aria-label]="'Show surgeons for ' + h.name" (click)="toggleHospital(h.code)">
+                                    <i class="pi" [class.pi-chevron-down]="expandedHospital() !== h.code" [class.pi-chevron-up]="expandedHospital() === h.code"></i>
+                                </button>
+                            </div>
+                            @if (expandedHospital() === h.code) {
+                                <ul class="ent-sub">
+                                    @for (s of h.surgeons; track s.code) {
+                                        <li>
+                                            <button type="button" (click)="toggle('surgeon', s.code, s.label)">
+                                                <i class="pi pi-user"></i><span>{{ s.label }}</span><b>{{ s.cases | number }}</b>
+                                            </button>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </li>
+                    } @empty {
+                        <li class="empty">No hospitals recorded for this selection.</li>
+                    }
+                </ul>
+            </section>
+        </div>
+
+        <!-- ═════ IN THEATRE + WHO PAYS ═════ -->
+        <section class="card">
+                <div class="card-head">
+                    <div>
+                        <h2 class="card-title"><i class="pi pi-sliders-h"></i> In Theatre</h2>
+                        <!--<p class="card-sub">Where and how operations take place; each figure uses only cases where it was recorded</p>-->
+                    </div>
+                </div>
+                @let th = theatreView();
+                <div class="card-body theatre">
+                    <div>
+                        <div class="sub-head">Procedure location</div>
+                        @for (l of th?.locations?.items ?? []; track l.code) {
+                            <button type="button" class="bar-row" [disabled]="!l.count" [class.active]="filters().theatre === l.code"
+                                    (click)="toggle('theatre', l.code, l.name)">
+                                <span class="bar-lbl">{{ l.name }}</span>
+                                <span class="track"><span class="fill" [style.width.%]="(l.count / maxOf(th?.locations?.items)) * 100"></span></span>
+                                <span class="bar-val">{{ l.count | number }}</span>
+                                <span class="bar-pct">{{ l.percentage }}%</span>
+                            </button>
+                        }
+                        <p class="note">{{ th?.locations?.notRecorded ?? 0 | number }} cases without a recorded location</p>
+
+                        <div class="sub-head">Operation type</div>
+                        @for (l of th?.operationTypes?.items ?? []; track l.code) {
+                            <div class="bar-row static">
+                                <span class="bar-lbl">{{ l.name }}</span>
+                                <span class="track"><span class="fill teal" [style.width.%]="(l.count / maxOf(th?.operationTypes?.items)) * 100"></span></span>
+                                <span class="bar-val">{{ l.count | number }}</span>
+                                <span class="bar-pct">{{ l.percentage }}%</span>
+                            </div>
+                        }
+                    </div>
+                    <div>
+                        <div class="sub-head">Theatre indicators</div>
+                        @for (i of th?.indicators ?? []; track i.key) {
+                            <div class="bar-row static" (mouseenter)="showTip($event, i.label, fmt(i.count) + ' of ' + fmt(i.denominator) + ' cases where recorded')"
+                                 (mouseleave)="hideTip()">
+                                <span class="bar-lbl">{{ i.label }}</span>
+                                <span class="track"><span class="fill purple" [style.width.%]="i.percentage"></span></span>
+                                <span class="bar-val">{{ i.percentage }}%</span>
+                                <span class="bar-pct">n={{ i.denominator | number }}</span>
+                            </div>
+                        }
+                        <div class="sub-head">Urgency of operation</div>
+                        @for (u of th?.urgency ?? []; track u.name) {
+                            <div class="bar-row static">
+                                <span class="bar-lbl">{{ u.name }}</span>
+                                <span class="track"><span class="fill amber" [style.width.%]="u.percentage"></span></span>
+                                <span class="bar-val">{{ u.count | number }}</span>
+                                <span class="bar-pct">{{ u.percentage }}%</span>
+                            </div>
+                        } @empty { <p class="note">No operation status recorded.</p> }
+                        <div class="medians">
+                            <div><span class="mini-v">{{ th?.cpbMinutes?.median ?? '–' }}</span><span class="mini-l">Median bypass time (min)<small>n={{ th?.cpbMinutes?.n ?? 0 }}</small></span></div>
+                            <div><span class="mini-v">{{ th?.crossClampMinutes?.median ?? '–' }}</span><span class="mini-l">Median cross-clamp (min)<small>n={{ th?.crossClampMinutes?.n ?? 0 }}</small></span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        <!-- ═════ BYPASS TIME + WHO PAYS ═════ -->
+        <div class="grid-3-1">
+            <section class="card fixed-xl">
+                <div class="card-head">
+                    <div>
+                        <h2 class="card-title"><i class="pi pi-stopwatch"></i> Cardiopulmonary Bypass Time</h2>
+                    </div>
+                </div>
+                @let cp = d?.theatre?.cpbByProcedure;
+                @let ax = cpbAxis();
+                <div class="card-body">
+                    @if (cp?.items?.length) {
+                        <div class="cpb-legend">
+                            <span><i class="cpb-key-box"></i>Middle 50% of cases</span>
+                            <span><i class="cpb-key-med"></i>Median</span>
+                            <span><i class="cpb-key-whisk"></i>Shortest to longest</span>
+                        </div>
+                        <div class="cpb">
+                            @for (r of cp!.items; track r.code) {
+                                <button type="button" class="cpb-row" [class.active]="filters().procedure === r.code"
+                                        (click)="toggle('procedure', r.code, r.name)"
+                                        (mousemove)="showTip($event, r.name, 'Median ' + r.median + ' min', 'Middle 50%: ' + r.q1 + '–' + r.q3 + ' min', 'Range: ' + r.min + '–' + r.max + ' min', r.n + (r.n === 1 ? ' case' : ' cases') + ' with bypass time')"
+                                        (mouseleave)="hideTip()">
+                                    <span class="cpb-lbl"><b>{{ r.name }}</b><small>n = {{ r.n | number }}</small></span>
+                                    <span class="cpb-plot">
+                                        @for (t of ax.ticks; track t) { <i class="cpb-grid" [style.left.%]="(t / ax.max) * 100"></i> }
+                                        <i class="cpb-whisk" [style.left.%]="(r.min / ax.max) * 100" [style.width.%]="((r.max - r.min) / ax.max) * 100"></i>
+                                        <i class="cpb-box" [style.left.%]="(r.q1 / ax.max) * 100" [style.width.%]="((r.q3 - r.q1) / ax.max) * 100"></i>
+                                        <i class="cpb-med" [style.left.%]="(r.median / ax.max) * 100"></i>
+                                    </span>
+                                </button>
+                            }
+                            <div class="cpb-axis">
+                                <span></span>
+                                <span class="cpb-ticks">
+                                    @for (t of ax.ticks; track t) { <span [style.left.%]="(t / ax.max) * 100">{{ t }}</span> }
+                                </span>
+                            </div>
+                        </div>
+                    } @else {
+                        <div class="empty-state">No bypass times recorded for this selection.</div>
+                    }
+                </div>
+                <div class="card-foot">
+                    Minutes on bypass, by primary procedure (the first procedure recorded on the case) ·
+                    {{ cp?.n ?? 0 | number }} cases with a recorded bypass time
+                    @if (cp && cp.distinct > cp.items.length) { · top {{ cp.items.length }} of {{ cp.distinct }} procedures }
+                </div>
+            </section>
+            <section class="card fixed-xl">
+                <div class="card-head">
+                    <div>
+                        <h2 class="card-title"><i class="pi pi-wallet"></i> Who Pays</h2>
+                        <!--<p class="card-sub">Primary payer for each admission</p>-->
+                    </div>
+                </div>
+                @let py = d?.payers;
+                <div class="card-body">
+                    @for (p of payerItems(); track p.code) {
+                        <button type="button" class="bar-row stacked" [disabled]="!p.count" [class.active]="filters().payer === p.code"
+                                (click)="toggle('payer', p.code, p.name)">
+                            <span class="bar-lbl">{{ p.name }}</span>
+                            <span class="bar-val">{{ p.count | number }} <small>{{ p.percentage }}%</small></span>
+                            <span class="track"><span class="fill" [style.width.%]="(p.count / maxOf(payerItems())) * 100"></span></span>
+                        </button>
+                    }
+                    @if (py?.notRecorded) {
+                        <button type="button" class="bar-row stacked muted" [class.active]="filters().payer === 'NOT_RECORDED'"
+                                (click)="toggle('payer', 'NOT_RECORDED', 'Not recorded')">
+                            <span class="bar-lbl">Not recorded</span>
+                            <span class="bar-val">{{ py?.notRecorded | number }}</span>
+                            <span class="track"><span class="fill grey" [style.width.%]="((py?.notRecorded ?? 0) / maxOf(payerItems())) * 100"></span></span>
+                        </button>
+                    }
+                </div>
+                <div class="card-foot">Percentages are of {{ py?.recorded ?? 0 | number }} admissions with a recorded payer</div>
+            </section>
+        </div>
+    </main>
+</div>
+}
+
+@if (tip(); as t) {
+    <div class="pd-tooltip" [style.left.px]="t.x" [style.top.px]="t.y" [class.flip-x]="t.flipX" [class.flip-y]="t.flipY" role="tooltip">
+        <strong>{{ t.title }}</strong>
+        @for (l of t.lines; track $index) { <span>{{ l }}</span> }
+    </div>
+}

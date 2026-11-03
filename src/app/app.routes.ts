@@ -44,6 +44,12 @@ export const routes: Routes = [
     ],
   },
   {
+    // Public analytics dashboard — no auth guard; access window enforced by the API
+    path: 'insights',
+    loadComponent: () =>
+        import('./pages/public-dashboard/public-dashboard.component').then(m => m.PublicDashboardComponent),
+  },
+  {
     path: 'auth',
     canActivate: [UnAuthGuard],
     loadChildren: () => import('./pages/auth/auth.routes').then((m) => m.AUTH_ROUTES),

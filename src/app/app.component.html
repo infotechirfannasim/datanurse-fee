@@ -3,7 +3,7 @@
         [height]="'5px'"
         color="#2563eb">
 </ngx-loading-bar>
-@if (isLoggedIn) {
+@if (isLoggedIn && !isStandalonePage) {
   <!-- Mobile overlay -->
   @if (sidebarState.isOpen() && sidebarState.isMobile) {
     <div class="sidebar-overlay" (click)="sidebarState.close()"></div>
