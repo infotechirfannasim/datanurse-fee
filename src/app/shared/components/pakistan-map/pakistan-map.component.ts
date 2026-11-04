@@ -1,5 +1,5 @@
 import {
-    ChangeDetectionStrategy, Component, ElementRef, computed, effect, inject, input, output, signal, untracked,
+    ChangeDetectionStrategy, Component, DestroyRef, ElementRef, afterNextRender, computed, effect, inject, input, output, signal, untracked,
 } from '@angular/core';
 import {DecimalPipe} from '@angular/common';
 import {
@@ -36,6 +36,7 @@ export interface MapAction {
 })
 export class PakistanMapComponent {
     private host = inject(ElementRef<HTMLElement>);
+    private destroyRef = inject(DestroyRef);
     protected readonly Math = Math;
 
     asset = input.required<PakistanMapAsset>();
@@ -45,6 +46,11 @@ export class PakistanMapComponent {
     selectedDistrict = input<string | undefined>();
     exploreProvince = input<string | null>(null);
     action = output<MapAction>();
+
+    /** Blue pastel choropleth: light for few cases, deeper blue for more; zero = pale grey-blue + hatch. */
+    static readonly LOW = '#E3ECFB';
+    static readonly HIGH = '#4F7BDB';
+    static readonly ZERO = '#F2F5FA';
 
     hover = signal<{ x: number; y: number; title: string; sub: string; count: number | null; flipX: boolean; flipY: boolean } | null>(null);
     popover = signal<{ x: number; y: number; level: 'province' | 'district'; state: FeatureState } | null>(null);
@@ -108,27 +114,49 @@ export class PakistanMapComponent {
         const states = this.districtStates();
         const ds = this.asset().districts.filter((d) => d.province === f.id);
         const max = Math.max(1, ...ds.map((d) => states.get(d.id)?.count ?? 0));
+        const {LOW, HIGH, ZERO} = PakistanMapComponent;
         return ds.map((d) => {
             const s = states.get(d.id)!;
-            return {d, s, fill: this.choropleth(s.count, max)};
+            return {d, s, fill: s.count ? this.mix(LOW, HIGH, Math.sqrt(s.count / max)) : ZERO};
         });
     });
+
+    /** Blue pastel fill, deepened in proportion to the province's share of cases. */
+    provinceFills = computed(() => {
+        const states = this.provinceStates();
+        const max = Math.max(1, ...[...states.values()].map((s) => s.count ?? 0));
+        const out = new Map<string, string>();
+        this.asset().provinces.forEach((p) => {
+            const c = states.get(p.id)?.count ?? 0;
+            const {LOW, HIGH, ZERO} = PakistanMapComponent;
+            out.set(p.id, c ? this.mix(LOW, HIGH, Math.sqrt(c / max)) : ZERO);
+        });
+        return out;
+    });
+
+    /** Country frame: Pakistan + disputed territory only (no surroundings). */
+    private frame = computed<[number, number, number, number]>(() => {
+        const a = this.asset();
+        const bx = a.provinces.map((p) => p.bbox);
+        const x0 = Math.min(...bx.map((b) => b[0]));
+        const y0 = Math.min(...bx.map((b) => b[1]));
+        const x1 = Math.max(a.disputed.fadeX1, ...bx.map((b) => b[2]));
+        const y1 = Math.max(...bx.map((b) => b[3]));
+        const pad = 10;
+        return [x0 - pad, y0 - pad, x1 - x0 + pad * 2, y1 - y0 + pad * 2];
+    });
+    aspect = computed(() => `${this.frame()[2]} / ${this.frame()[3]}`);
 
     bubbles = computed(() => {
         if (this.exploredFeature()) return [];
         const states = this.provinceStates();
-        const max = Math.max(1, ...[...states.values()].map((s) => s.count ?? 0));
         return this.asset().provinces
             .map((p) => ({p, s: states.get(p.id)!}))
             .filter((x) => (x.s.count ?? 0) > 0)
-            .map((x) => {
-                const small = x.p.id === 'PK-IS';
-                const r = (small ? 9 : 12) + (small ? 6 : 16) * Math.sqrt((x.s.count ?? 0) / max);
-                return {...x, r, cx: x.p.cx, cy: x.p.cy, leader: x.p.leader};
-            });
+            .map((x) => ({...x, w: 14 + 8 * String(x.s.count ?? 0).length, cx: x.p.cx, cy: x.p.cy, leader: x.p.leader}));
     });
 
-    scale = computed(() => this.vb()[2] / this.asset().width);
+    scale = computed(() => this.vb()[2] / this.frame()[2]);
     vbString = computed(() => this.vb().map((v) => v.toFixed(1)).join(' '));
 
     selectedProvinceFeature = computed(() => {
@@ -142,18 +170,37 @@ export class PakistanMapComponent {
         return null;
     });
 
+    /** Rendered width of the map, so count pills stay readable on small screens. */
+    private stageWidth = signal(800);
+    pillScale = computed(() => {
+        const unitsPerPx = this.vb()[2] / Math.max(1, this.stageWidth());
+        return Math.max(1, Math.min(2.4, unitsPerPx * 0.95));
+    });
+    pillTransform(cx: number, cy: number) {
+        const s = this.pillScale();
+        return `translate(${cx} ${cy}) scale(${s}) translate(${-cx} ${-cy})`;
+    }
+
     constructor() {
+        afterNextRender(() => {
+            const el = (this.host.nativeElement as HTMLElement).querySelector('.map-stage');
+            if (!el || typeof ResizeObserver === 'undefined') return;
+            const ro = new ResizeObserver((e) => this.stageWidth.set(e[0].contentRect.width));
+            ro.observe(el);
+            this.destroyRef.onDestroy(() => ro.disconnect());
+        });
         effect(() => {
             const a = this.asset();
             const f = this.exploredFeature();
             untracked(() => {
                 this.popover.set(null);
-                if (!f) return this.animateTo([0, 0, a.width, a.height]);
+                const fr = this.frame();
+                if (!f) return this.animateTo(fr);
                 const [x0, y0, x1, y1] = f.bbox;
                 const pad = Math.max(x1 - x0, y1 - y0) * 0.12 + 8;
                 let w = x1 - x0 + pad * 2;
                 let h = y1 - y0 + pad * 2;
-                const ratio = a.width / a.height;
+                const ratio = fr[2] / fr[3];
                 if (w / h > ratio) h = w / ratio; else w = h * ratio;
                 const cx = (x0 + x1) / 2;
                 const cy = (y0 + y1) / 2;
@@ -176,12 +223,11 @@ export class PakistanMapComponent {
         this.anim = requestAnimationFrame(step);
     }
 
-    private choropleth(count: number | null, max: number): string {
-        if (!count) return '#FFFFFF';
-        const t = Math.sqrt(count / max);
-        const a = [234, 241, 253];
-        const b = [6, 86, 197];
-        const c = a.map((v, i) => Math.round(v + (b[i] - v) * (0.15 + 0.85 * t)));
+    private mix(from: string, to: string, t: number): string {
+        const hex = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+        const a = hex(from);
+        const b = hex(to);
+        const c = a.map((v, i) => Math.round(v + (b[i] - v) * Math.max(0, Math.min(1, t))));
         return `rgb(${c[0]},${c[1]},${c[2]})`;
     }
 
@@ -199,6 +245,7 @@ export class PakistanMapComponent {
         if (s.count === null) sub = 'Not configured in the registry';
         else if (s.count === 0) sub = 'No recorded cases';
         else sub = level === 'province' && !this.exploredFeature() ? 'Click to select or explore' : 'Click to select';
+        // open the tooltip towards the side with room, so it never leaves the screen
         this.hover.set({x: p.clientX, y: p.clientY, title: s.name, sub, count: s.count,
             flipX: p.clientX > window.innerWidth - 270, flipY: p.clientY > window.innerHeight - 110});
     }

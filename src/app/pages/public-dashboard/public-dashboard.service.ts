@@ -13,7 +13,7 @@ export class PublicDashboardService {
 
     /** One call returns every card for the given global filters. */
     getDashboard(filters: PublicFilters): Observable<PublicDashboardData> {
-        let params = new HttpParams().set('period', filters.period || 'all');
+        let params = new HttpParams().set('scope', filters.scope || 'national');
         FILTER_KEYS.forEach((k) => {
             const v = filters[k];
             if (v) params = params.set(k, String(v));

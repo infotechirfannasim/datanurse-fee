@@ -1,8 +1,10 @@
 export type Period = 'all' | 'month' | 'year';
+export type Scope = 'national' | 'personal';
 
-/** Global, URL-synchronised filter state. Empty = complete Pakistan dataset. */
+/** Global, URL-synchronised filter state. Empty = complete national dataset. */
 export interface PublicFilters {
-    period: Period;
+    scope: Scope;
+    period?: Period;          // kept for the API; the page no longer offers month/year
     province?: string;
     district?: string;
     city?: string;
@@ -14,29 +16,39 @@ export interface PublicFilters {
     theatre?: string;
     procedure?: string;
     diagnosis?: string;
+    birthWeight?: string;
+    opWeight?: string;
+    complication?: string;
+    induction?: string;
+    anaesAgent?: string;
 }
 
 export const FILTER_KEYS: (keyof PublicFilters)[] = [
-    'province', 'district', 'city', 'hospital', 'surgeon', 'gender',
-    'ageGroup', 'payer', 'theatre', 'procedure', 'diagnosis',
+    'province', 'district', 'city', 'hospital', 'surgeon', 'gender', 'ageGroup', 'payer', 'theatre',
+    'procedure', 'diagnosis', 'birthWeight', 'opWeight', 'complication', 'induction', 'anaesAgent',
 ];
 
 export const FILTER_LABELS: Record<string, string> = {
     province: 'Province', district: 'District', city: 'City', hospital: 'Hospital', surgeon: 'Surgeon',
     gender: 'Gender', ageGroup: 'Age group', payer: 'Who pays', theatre: 'Theatre', procedure: 'Procedure',
-    diagnosis: 'Diagnosis',
+    diagnosis: 'Diagnosis', birthWeight: 'Birth weight', opWeight: 'Weight at operation',
+    complication: 'Complication', induction: 'Induction', anaesAgent: 'Anaesthetic agent',
 };
 
+/** Mean with its formula parts: mean = sum ÷ n. */
+export interface Mean { mean: number | null; sum: number; n: number; }
+
 export interface GeoRow { code: string; name: string; count: number; province?: string | null; district?: string | null; }
-export interface DistItem { code: string | null; name: string; count: number; percentage: number; isOther?: boolean; }
+export interface DistItem { code: string | null; name: string; count: number; percentage: number; isOther?: boolean; group?: string; }
 export interface LovDist { recorded: number; notRecorded: number; notRecordedLabel: string; items: DistItem[]; }
 
 export interface PublicDashboardData {
     generatedAt: string;
     period: Period;
+    scope: Scope;
     expiresAt: string | null;
     kpis: {
-        totalCases: number; totalPatients: number; totalSurgeons: number; totalHospitals: number;
+        totalCases: number; firstRecordedAt?: string | null; totalPatients: number; totalSurgeons: number; totalHospitals: number;
         assistantSurgeons: number; kpos: number;
     };
     geography: { provinces: GeoRow[]; districts: GeoRow[]; cities: GeoRow[]; notRecorded: number; unmatched: number; };
@@ -46,8 +58,8 @@ export interface PublicDashboardData {
         knownAge: number; unknownAge: number;
         gender: { code: string; label: string; count: number; percentage: number }[];
     };
-    procedures?: { total: number; distinct: number; casesWithProcedure: number; items: DistItem[] };
-    diagnoses?: { total: number; distinct: number; items: DistItem[] };
+    procedures?: { total: number; distinct: number; casesWithProcedure: number; items: DistItem[]; others: DistItem[] };
+    diagnoses?: { total: number; distinct: number; items: DistItem[]; others: DistItem[] };
     activity?: { granularity: 'day' | 'month' | 'year'; undated: number;
         points: { key: string; label: string; range: string; count: number }[] };
     surgeons?: { code: string; label: string; cases: number; hospitals: { code: string | null; name: string; cases: number }[] }[];
@@ -57,16 +69,18 @@ export interface PublicDashboardData {
         locations: LovDist; operationTypes: LovDist;
         urgency: { name: string; count: number; percentage: number }[];
         indicators: { key: string; label: string; count: number; denominator: number; percentage: number }[];
-        cpbMinutes: { n: number; median: number | null };
-        crossClampMinutes: { n: number; median: number | null };
-        cpbByProcedure: { n: number; distinct: number;
-            items: { code: string; name: string; n: number; min: number; q1: number; median: number; q3: number; max: number }[] };
+        times: {
+            cpb: Mean & { bands: TimeBand[] };
+            crossClamp: Mean & { bands: TimeBand[] };
+            clampShareOfBypass: number | null;
+        };
+        cpbByProcedure: { n: number; distinct: number; items: ProcedureTimes[]; others: ProcedureTimes[] };
     };
     outcomes?: {
         discharge: {
             cases: number; recorded: number; notRecorded: number;
             alive: number; deceased: number; other: number; aliveRate: number;
-            lengthOfStay: { medianDays: number | null; n: number };
+            lengthOfStay: Mean;
         };
         followup: {
             eligible: number; followedEligible: number; rate: number; cases: number;
@@ -74,7 +88,39 @@ export interface PublicDashboardData {
             readmitted: number; readmissionRate: number;
         };
     };
+    weights?: {
+        birth: Mean & { bands: WeightBand[] };
+        operation: Mean & { bands: WeightBand[] };
+    };
+    complications?: {
+        cases: number; recorded: number; withAny: number; rate: number; distinct: number;
+        groups: { name: string; count: number; percentage: number }[];
+        items: DistItem[]; others: DistItem[];
+        byProcedure: ProcedureComplications[]; byProcedureOthers: ProcedureComplications[];
+    };
+    anaesthesia?: {
+        recorded: number;
+        techniques: { code: string; name: string; count: number; percentage: number }[];
+        agents: DistItem[]; agentOthers: DistItem[];
+        monitoring: { key: string; label: string; count: number; denominator: number; percentage: number }[];
+        /** every % uses the same denominator: operations with anaesthesia recorded */
+        adverse: { cases: number; recorded: number; percentage: number; distinct: number; items: DistItem[]; others: DistItem[] };
+        disposition: { code: string; name: string; count: number; percentage: number }[];
+    };
 }
+
+export interface ProcedureComplications {
+    code: string; name: string;
+    assessed: number;   // cases (with this primary procedure) where complications were assessed
+    withAny: number;    // of those, cases with ≥1 complication
+    rate: number;
+    top: { code: string; name: string; count: number } | null;
+    complications: { code: string; name: string; count: number }[];
+}
+
+export interface TimeBand { label: string; min: number; max: number | null; count: number; }
+export interface WeightBand { code: string; label: string; short: string; count: number; percentage: number; mean: number | null; }
+export interface ProcedureTimes { code: string; name: string; cpb: Mean; crossClamp: Mean; }
 
 // ── Official map asset (assets/maps/pakistan-official-map.json) ──────────────
 export interface MapProvince {
