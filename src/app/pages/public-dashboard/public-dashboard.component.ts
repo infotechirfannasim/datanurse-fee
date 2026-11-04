@@ -1,5 +1,5 @@
 import {
-    AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, computed, inject, signal, viewChild,
+    AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, computed, effect, inject, signal, untracked, viewChild,
 } from '@angular/core';
 import {DecimalPipe} from '@angular/common';
 import {ActivatedRoute, ParamMap, Router, RouterLink} from '@angular/router';
@@ -99,6 +99,25 @@ export class PublicDashboardComponent implements AfterViewInit {
     private labels = new Map<string, string>();
 
     constructor() {
+        // An "Other" list stays open only while it has rows. After a filter (e.g. clicking a procedure
+        // inside "Other") the new data may have nothing left there: fall back to the top list.
+        effect(() => {
+            const d = this.data();
+            if (!d) return;
+            const len: Record<string, number> = {
+                cpb: d.theatre?.cpbByProcedure?.others?.length ?? 0,
+                complications: d.complications?.others?.length ?? 0,
+                procComp: d.complications?.byProcedureOthers?.length ?? 0,
+                agents: d.anaesthesia?.agentOthers?.length ?? 0,
+                adverse: d.anaesthesia?.adverse?.others?.length ?? 0,
+            };
+            untracked(() => {
+                const o = this.openOthers();
+                if (Object.keys(o).some((k) => o[k] && !len[k])) {
+                    this.openOthers.set(Object.fromEntries(Object.entries(o).map(([k, v]) => [k, v && !!len[k]])));
+                }
+            });
+        });
         this.route.queryParamMap.pipe(
             map((pm) => this.parse(pm)),
             distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
@@ -503,6 +522,13 @@ export class PublicDashboardComponent implements AfterViewInit {
     /** Bars in the "Other" lists keep the same scale as the top list (largest real item). */
     adverseMax = computed(() => this.maxOf([...(this.data()?.anaesthesia?.adverse?.items ?? []).filter((i) => !i.isOther), ...(this.data()?.anaesthesia?.adverse?.others ?? [])]));
     complicationMax = computed(() => this.maxOf([...(this.data()?.complications?.items ?? []).filter((i) => !i.isOther), ...(this.data()?.complications?.others ?? [])]));
+
+    /** Bypass / cross-clamp bar hover: plain words, no formula. */
+    timeTip(e: MouseEvent, procedure: string, kind: 'Bypass' | 'Cross-clamp', m: Mean) {
+        if (!m.n) { this.showTip(e, procedure, `${kind}: no time recorded`); return; }
+        this.showTip(e, procedure, `${kind}: ${m.mean} min on average`,
+            `from ${this.ops(m.n)} with a ${kind.toLowerCase()} time recorded`);
+    }
 
     ops(n: number) { return `${this.fmt(n)} ${n === 1 ? 'operation' : 'operations'}`; }
 

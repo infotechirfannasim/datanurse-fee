@@ -365,6 +365,9 @@
                     <div class="key-row">
                         <span><i class="key key-cpb"></i>Bypass</span>
                         <span><i class="key key-xc"></i>Cross-clamp</span>
+                        <button type="button" class="info-btn" aria-label="How these averages are calculated"
+                                (mouseenter)="showTip($event, 'How to read this', 'Each bar is the average minutes for operations where that procedure was the first one recorded.', 'Bypass and cross-clamp are averaged separately, each from the operations where that time was recorded, so their case counts can differ (e.g. an operation on bypass without an aortic cross-clamp).')"
+                                (mouseleave)="hideTip()"><i class="pi pi-info-circle"></i></button>
                     </div>
                 </div>
                 @let cp = d?.theatre?.cpbByProcedure;
@@ -380,16 +383,19 @@
                                 @for (r of cpbRows(); track r.code) {
                                     <button type="button" class="tp-row" [class.active]="filters().procedure === r.code"
                                             (click)="toggle('procedure', r.code, r.name)">
-                                        <span class="tp-lbl"><b [attr.title]="r.name">{{ r.name }}</b><small>n = {{ r.cpb.n | number }}</small></span>
+                                        <span class="tp-lbl"><b [attr.title]="r.name">{{ r.name }}</b>
+                                            <small>{{ r.cpb.n === r.crossClamp.n ? ops(r.cpb.n) : ops(r.cpb.n) + ' on bypass' }}</small></span>
                                         <span class="tp-bars">
                                             @for (t of cpbTicks; track t) { <i class="tp-grid" [style.left.%]="(t / CPB_AXIS_MAX) * 100"></i> }
                                             <span class="tp-bar cpb" [style.width.%]="cpbWidth(r.cpb.mean)" [class.over]="(r.cpb.mean ?? 0) > CPB_AXIS_MAX"
-                                                  (mouseenter)="meanTip($event, r.name + ' — bypass', r.cpb, 'min')" (mouseleave)="hideTip()">
-                                                <em>{{ r.cpb.mean ?? '–' }}</em>
+                                                  [class.inside]="cpbWidth(r.cpb.mean) > 62"
+                                                  (mouseenter)="timeTip($event, r.name, 'Bypass', r.cpb)" (mouseleave)="hideTip()">
+                                                <em>@if (r.cpb.n) { {{ r.cpb.mean }} min <small>· {{ r.cpb.n }} {{ r.cpb.n === 1 ? 'case' : 'cases' }}</small> } @else { not recorded }</em>
                                             </span>
                                             <span class="tp-bar xc" [style.width.%]="cpbWidth(r.crossClamp.mean)" [class.over]="(r.crossClamp.mean ?? 0) > CPB_AXIS_MAX"
-                                                  (mouseenter)="meanTip($event, r.name + ' — cross-clamp', r.crossClamp, 'min')" (mouseleave)="hideTip()">
-                                                <em>{{ r.crossClamp.mean ?? '–' }}</em>
+                                                  [class.inside]="cpbWidth(r.crossClamp.mean) > 62"
+                                                  (mouseenter)="timeTip($event, r.name, 'Cross-clamp', r.crossClamp)" (mouseleave)="hideTip()">
+                                                <em>@if (r.crossClamp.n) { {{ r.crossClamp.mean }} min <small>· {{ r.crossClamp.n }} {{ r.crossClamp.n === 1 ? 'case' : 'cases' }}</small> } @else { not recorded }</em>
                                             </span>
                                         </span>
                                     </button>
