@@ -36,7 +36,7 @@
                 <img src="./assets/images/newLogo.svg" alt="DataNurse"/>
             </a>
             <div class="pd-title">
-                <h1>Paediatric Cardiac Surgery - Analytics</h1>
+                <h1>Paediatric Cardiac Surgery — Public Analytics</h1>
                 <span>Live figures from the DataNurse registry</span>
             </div>
             <div class="pd-controls">
@@ -250,7 +250,7 @@
                 @let wm = weightMax();
                 <div class="card-body wt-panels">
                     @for (panel of [{key: 'birth', title: 'At birth', data: w?.birth, max: wm.birth, filter: 'birthWeight', color: '#0EA5A0'},
-                                    {key: 'op', title: 'At operation', data: w?.operation, max: wm.op, filter: 'opWeight', color: '#2251CC'}]; track panel.key) {
+                                    {key: 'op', title: 'At procedure', data: w?.operation, max: wm.op, filter: 'opWeight', color: '#2251CC'}]; track panel.key) {
                         <div class="wt-panel">
                             <div class="wt-head">
                                 <span class="wt-title">{{ panel.title }}</span>
@@ -265,7 +265,7 @@
                                     <button type="button" class="col" [disabled]="!b.count"
                                             [class.active]="$any(filters())[panel.filter] === b.code"
                                             (click)="toggle($any(panel.filter), b.code, b.label)"
-                                            (mouseenter)="showTip($event, b.label + (panel.key === 'op' ? ' at operation' : ''), fmt(b.count) + ' cases (' + b.percentage + '%)', b.mean !== null ? 'Average ' + b.mean + ' kg' : '')"
+                                            (mouseenter)="showTip($event, b.label + (panel.key === 'op' ? ' at procedure' : ''), fmt(b.count) + ' cases (' + b.percentage + '%)', b.mean !== null ? 'Average ' + b.mean + ' kg' : '')"
                                             (mouseleave)="hideTip()">
                                         <span class="col-val">{{ b.count | number }}</span>
                                         <span class="col-bar"><span [style.height.%]="(b.count / panel.max) * 100"></span></span>
@@ -308,7 +308,7 @@
         <!-- ═════ IN THEATRE ═════ -->
         <section class="card">
             <div class="card-head">
-                <h2 class="card-title"><i class="pi pi-sliders-h"></i> In Theatre</h2>
+                <h2 class="card-title"><i class="pi pi-sliders-h"></i> OT Parameters</h2>
             </div>
             @let th = theatreView();
             <div class="card-body theatre">
@@ -323,7 +323,7 @@
                             <span class="bar-pct">{{ l.percentage }}%</span>
                         </button>
                     }
-                    <div class="sub-head">Operation type</div>
+                    <div class="sub-head">Procedure type</div>
                     @for (l of th?.operationTypes?.items ?? []; track l.code) {
                         <div class="bar-row static">
                             <span class="bar-lbl">{{ l.name }}</span>
@@ -344,7 +344,7 @@
                             <span class="bar-pct">n={{ i.denominator | number }}</span>
                         </div>
                     }
-                    <div class="sub-head">Urgency of operation</div>
+                    <div class="sub-head">Urgency of procedure</div>
                     @for (u of th?.urgency ?? []; track u.name) {
                         <div class="bar-row static">
                             <span class="bar-lbl">{{ u.name }}</span>
@@ -352,7 +352,7 @@
                             <span class="bar-val">{{ u.count | number }}</span>
                             <span class="bar-pct">{{ u.percentage }}%</span>
                         </div>
-                    } @empty { <p class="note">No operation status recorded.</p> }
+                    } @empty { <p class="note">No procedure status recorded.</p> }
                 </div>
             </div>
         </section>
@@ -366,7 +366,7 @@
                         <span><i class="key key-cpb"></i>Bypass</span>
                         <span><i class="key key-xc"></i>Cross-clamp</span>
                         <button type="button" class="info-btn" aria-label="How these averages are calculated"
-                                (mouseenter)="showTip($event, 'How to read this', 'Each bar is the average minutes for operations where that procedure was the first one recorded.', 'Bypass and cross-clamp are averaged separately, each from the operations where that time was recorded, so their case counts can differ (e.g. an operation on bypass without an aortic cross-clamp).')"
+                                (mouseenter)="showTip($event, 'How to read this', 'Each bar is the average minutes for that procedure (the first procedure recorded on a case).', 'Bypass and cross-clamp are averaged separately, each from the procedures where that time was recorded, so their case counts can differ (e.g. a procedure on bypass without an aortic cross-clamp).')"
                                 (mouseleave)="hideTip()"><i class="pi pi-info-circle"></i></button>
                     </div>
                 </div>
@@ -477,23 +477,23 @@
                             <b class="focus-name">{{ sc.name }}</b>
                             @if (sc.group) { <span class="focus-sub">{{ sc.group }}</span> }
                             <div class="focus-stats">
-                                <div><b>{{ sc.count | number }}</b><span>operations</span></div>
-                                <div><b>{{ sc.percentage }}%</b><span>of operations with a complication</span></div>
+                                <div><b>{{ sc.count | number }}</b><span>procedures</span></div>
+                                <div><b>{{ sc.percentage }}%</b><span>of procedures with a complication</span></div>
                             </div>
-                            <p class="focus-note">Diagnosis, procedure, age and every other card now show these operations.</p>
+                            <p class="focus-note">Diagnosis, procedure, age and every other card now show these procedures.</p>
                         </div>
                     }
                     <div class="hero">
                         <b>{{ cx?.rate ?? 0 }}%</b>
-                        <span>of assessed operations had at least one complication
-                            <small>{{ cx?.withAny ?? 0 | number }} of {{ cx?.recorded ?? 0 | number }} operations with complications recorded</small>
+                        <span>of assessed procedures had at least one complication
+                            <small>{{ cx?.withAny ?? 0 | number }} of {{ cx?.recorded ?? 0 | number }} procedures with complications recorded</small>
                         </span>
                     </div>
                     @if (cx?.groups?.length) {
                         <div class="stack seg-stack">
                             @for (g of cx!.groups; track g.name; let i = $index) {
                                 <span [style.flex-grow]="g.count" [style.background]="GROUP_COLORS[i % GROUP_COLORS.length]"
-                                      (mouseenter)="showTip($event, g.name, fmt(g.count) + ' operations (' + g.percentage + '% of those with a complication)')"
+                                      (mouseenter)="showTip($event, g.name, fmt(g.count) + ' procedures (' + g.percentage + '% of those with a complication)')"
                                       (mouseleave)="hideTip()"></span>
                             }
                         </div>
@@ -518,7 +518,7 @@
                             } @else {
                                 <button type="button" class="bar-row" [class.active]="filters().complication === c.code"
                                         (click)="toggle('complication', c.code, c.name)"
-                                        (mouseenter)="showTip($event, c.name, (c.group ? c.group : ''), fmt(c.count) + ' operations', c.percentage + '% of operations with a complication')"
+                                        (mouseenter)="showTip($event, c.name, (c.group ? c.group : ''), fmt(c.count) + ' procedures', c.percentage + '% of procedures with a complication')"
                                         (mouseleave)="hideTip()">
                                     <span class="bar-lbl">{{ c.name }}</span>
                                     <span class="track"><span class="fill rose" [style.width.%]="(c.count / complicationMax()) * 100"></span></span>
@@ -535,7 +535,7 @@
                         <div class="sub-head first">
                             @if (selectedComplication(); as sc) { {{ sc.name }} by procedure } @else { Complications by procedure }
                         </div>
-                        <div class="pc-head"><span>Primary procedure</span><span>Operations with {{ selectedComplication() ? 'this complication' : 'a complication' }}</span></div>
+                        <div class="pc-head"><span>Primary procedure</span><span>Procedures with {{ selectedComplication() ? 'this complication' : 'a complication' }}</span></div>
                         <div class="swap" #pcSwap [style.height.px]="openOthers()['procComp'] ? swapH['procComp'] : null">
                             @if (openOthers()['procComp']) {
                                 <button type="button" class="swap-back" (click)="toggleOthers('procComp')">
@@ -545,7 +545,7 @@
                             @for (p of procCompRows(); track p.code) {
                                 <button type="button" class="pc-row" [class.active]="filters().procedure === p.code"
                                         (click)="toggle('procedure', p.code, p.name)"
-                                        (mouseenter)="showTip($event, p.name, fmt(p.hit) + ' of ' + fmt(p.assessed) + ' assessed operations (' + p.share + '%)', p.top && !selectedComplication() ? 'Most frequent: ' + p.top.name + ' (' + fmt(p.top.count) + ')' : '')"
+                                        (mouseenter)="showTip($event, p.name, fmt(p.hit) + ' of ' + fmt(p.assessed) + ' assessed procedures (' + p.share + '%)', p.top && !selectedComplication() ? 'Most frequent: ' + p.top.name + ' (' + fmt(p.top.count) + ')' : '')"
                                         (mouseleave)="hideTip()">
                                     <span class="pc-lbl">
                                         <b>{{ p.name }}</b>
@@ -584,24 +584,24 @@
                                 <b class="focus-name">{{ sa.name }}</b>
                                 <span class="focus-sub">Induction agent</span>
                                 <div class="focus-stats">
-                                    <div><b>{{ sa.count | number }}</b><span>operations</span></div>
-                                    <div><b>{{ sa.percentage }}%</b><span>of operations with anaesthesia recorded</span></div>
+                                    <div><b>{{ sa.count | number }}</b><span>procedures</span></div>
+                                    <div><b>{{ sa.percentage }}%</b><span>of procedures with anaesthesia recorded</span></div>
                                 </div>
                             } @else if (selectedTechnique(); as st) {
                                 <b class="focus-name">{{ st.name }} induction</b>
                                 <div class="focus-stats">
-                                    <div><b>{{ st.count | number }}</b><span>operations</span></div>
-                                    <div><b>{{ st.percentage }}%</b><span>of operations with anaesthesia recorded</span></div>
+                                    <div><b>{{ st.count | number }}</b><span>procedures</span></div>
+                                    <div><b>{{ st.percentage }}%</b><span>of procedures with anaesthesia recorded</span></div>
                                 </div>
                             }
-                            <p class="focus-note">Every card now shows only these operations.</p>
+                            <p class="focus-note">Every card now shows only these procedures.</p>
                         </div>
                     }
                     <div class="wide-cols cols-3">
                     <div class="wcol">
                     <div class="hero small">
                         <b>{{ an?.recorded ?? 0 | number }}</b>
-                        <span>operations with anaesthesia recorded</span>
+                        <span>procedures with anaesthesia recorded</span>
                     </div>
                     <div class="sub-head">Induction technique</div>
                     <div class="tiles">
@@ -610,14 +610,14 @@
                                     (click)="toggle('induction', t.code, t.name)">
                                 <b>{{ t.percentage }}%</b>
                                 <span>{{ t.name }}</span>
-                                <small>{{ t.count | number }} operations</small>
+                                <small>{{ t.count | number }} procedures</small>
                             </button>
                         }
                     </div>
                     <div class="sub-head">Monitoring &amp; techniques</div>
                     @for (m of an?.monitoring ?? []; track m.key) {
                         @if (m.denominator) {
-                            <div class="bar-row static" (mouseenter)="showTip($event, m.label, fmt(m.count) + ' of ' + fmt(m.denominator) + ' operations where recorded')"
+                            <div class="bar-row static" (mouseenter)="showTip($event, m.label, fmt(m.count) + ' of ' + fmt(m.denominator) + ' procedures where recorded')"
                                  (mouseleave)="hideTip()">
                                 <span class="bar-lbl">{{ m.label }}</span>
                                 <span class="track"><span class="fill teal" [style.width.%]="m.percentage"></span></span>
@@ -653,7 +653,7 @@
                     </div>
                     <div class="sub-head">After recovery (PACU)</div>
                             @for (p of an?.disposition ?? []; track p.code) {
-                                <div class="bar-row static stacked" (mouseenter)="showTip($event, p.name, ops(p.count), p.percentage + '% of ' + fmt(an?.recorded ?? 0) + ' operations with anaesthesia recorded')"
+                                <div class="bar-row static stacked" (mouseenter)="showTip($event, p.name, ops(p.count), p.percentage + '% of ' + fmt(an?.recorded ?? 0) + ' procedures with anaesthesia recorded')"
                                      (mouseleave)="hideTip()">
                                     <span class="bar-lbl">{{ p.name }}</span>
                                     <span class="bar-val">{{ p.count | number }}<small>{{ p.percentage }}%</small></span>
@@ -663,11 +663,11 @@
                     </div>
                     <div class="wcol">
                             <div class="sub-head first">Anaesthesia adverse events</div>
-                            <div class="hero small" (mouseenter)="showTip($event, 'Adverse event rate', fmt(an?.adverse?.cases ?? 0) + ' operations with ≥1 adverse event ÷ ' + fmt(an?.recorded ?? 0) + ' with anaesthesia recorded')"
+                            <div class="hero small" (mouseenter)="showTip($event, 'Adverse event rate', fmt(an?.adverse?.cases ?? 0) + ' procedures with ≥1 adverse event ÷ ' + fmt(an?.recorded ?? 0) + ' with anaesthesia recorded')"
                                  (mouseleave)="hideTip()">
                                 <b>{{ an?.adverse?.percentage ?? 0 }}%</b>
                                 <span>had at least one adverse event
-                                    <small>{{ an?.adverse?.cases ?? 0 | number }} of {{ an?.recorded ?? 0 | number }} operations with anaesthesia recorded</small>
+                                    <small>{{ an?.adverse?.cases ?? 0 | number }} of {{ an?.recorded ?? 0 | number }} procedures with anaesthesia recorded</small>
                                 </span>
                             </div>
                             <div class="swap" #advSwap [style.height.px]="openOthers()['adverse'] ? swapH['adverse'] : null">
@@ -682,7 +682,7 @@
                                             <i class="pi pi-plus"></i> {{ e.name }} · {{ e.count | number }}
                                         </button>
                                     } @else {
-                                        <div class="bar-row static stacked" (mouseenter)="showTip($event, e.name, ops(e.count), e.percentage + '% of ' + fmt(an?.recorded ?? 0) + ' operations with anaesthesia recorded')"
+                                        <div class="bar-row static stacked" (mouseenter)="showTip($event, e.name, ops(e.count), e.percentage + '% of ' + fmt(an?.recorded ?? 0) + ' procedures with anaesthesia recorded')"
                                              (mouseleave)="hideTip()">
                                             <span class="bar-lbl">{{ e.name }}</span>
                                             <span class="bar-val">{{ e.count | number }}<small>{{ e.percentage }}%</small></span>
@@ -722,7 +722,7 @@
                                 <li><i class="deceased"></i>Deceased <b>{{ o?.discharge?.deceased ?? 0 | number }}</b></li>
                                 @if (o?.discharge?.other) { <li><i class="unknown"></i>Other <b>{{ o?.discharge?.other | number }}</b></li> }
                             </ul>
-                            <p class="stage-base">{{ o?.discharge?.recorded ?? 0 | number }} of {{ o?.discharge?.cases ?? 0 | number }} operations have a discharge status</p>
+                            <p class="stage-base">{{ o?.discharge?.recorded ?? 0 | number }} of {{ o?.discharge?.cases ?? 0 | number }} procedures have a discharge status</p>
                         </div>
                         <div class="stage">
                             <div class="stage-head"><span class="stage-no">2</span> At latest follow-up</div>
@@ -740,7 +740,7 @@
                                 <li><i class="deceased"></i>Deceased <b>{{ o?.followup?.deceased ?? 0 | number }}</b></li>
                                 <li><i class="unknown"></i>Unknown <b>{{ o?.followup?.unknown ?? 0 | number }}</b></li>
                             </ul>
-                            <p class="stage-base">{{ o?.followup?.cases ?? 0 | number }} operations followed up after discharge</p>
+                            <p class="stage-base">{{ o?.followup?.cases ?? 0 | number }} procedures followed up after discharge</p>
                         </div>
                     </div>
                     <div class="kpi-row">

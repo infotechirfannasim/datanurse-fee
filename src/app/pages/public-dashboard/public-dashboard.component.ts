@@ -308,9 +308,9 @@ export class PublicDashboardComponent implements AfterViewInit {
         }
         return personal
             ? {ops, rest: 'in your personal registry', span,
-                lead: 'Every operation you led, assisted, reviewed or recorded on DataNurse, in one place.'}
+                lead: 'Every procedure you led, assisted, reviewed or recorded on DataNurse, in one place.'}
             : {ops, rest: 'recorded across Pakistan', span,
-                lead: `Congenital heart surgery teams record every operation on DataNurse. Pakistan’s national registry already reaches ${reach}, and it grows every week.`};
+                lead: `Congenital heart surgery teams record every procedure on DataNurse. Pakistan’s national registry already reaches ${reach}, and it grows every week.`};
     });
 
     // ── geography explorer: Pakistan › Province › District (separate from filters) ──
@@ -530,7 +530,7 @@ export class PublicDashboardComponent implements AfterViewInit {
             `from ${this.ops(m.n)} with a ${kind.toLowerCase()} time recorded`);
     }
 
-    ops(n: number) { return `${this.fmt(n)} ${n === 1 ? 'operation' : 'operations'}`; }
+    ops(n: number) { return `${this.fmt(n)} ${n === 1 ? 'procedure' : 'procedures'}`; }
 
     selectedAgent = computed(() => {
         const code = this.filters().anaesAgent;
