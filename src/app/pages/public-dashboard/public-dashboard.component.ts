@@ -1,7 +1,7 @@
 import {
     AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, computed, effect, inject, signal, untracked, viewChild,
 } from '@angular/core';
-import {DecimalPipe} from '@angular/common';
+import {DecimalPipe, NgTemplateOutlet} from '@angular/common';
 import {ActivatedRoute, ParamMap, Router, RouterLink} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
@@ -12,6 +12,7 @@ import {
 } from './public-dashboard.models';
 import {MapAction, PakistanMapComponent} from '../../shared/components/pakistan-map/pakistan-map.component';
 import {DoughnutChartComponent, DoughnutItem} from '../../shared/components/doughnut-chart/doughnut-chart.component';
+import {HierarchyChartComponent, HierGroup, HierPick} from '../../shared/components/hierarchy-chart/hierarchy-chart.component';
 
 type GeoTab = 'provinces' | 'districts' | 'cities';
 interface ExplorerRow {
@@ -19,7 +20,7 @@ interface ExplorerRow {
     code: string; name: string; context: string; count: number; explorable: boolean;
 }
 
-const SAFE_VALUE = /^[\w .\-/&()+,]{1,120}$/;
+const SAFE_VALUE = /^[\w .\-/&()+,:]{1,130}$/;
 const ENUMS: Partial<Record<keyof PublicFilters, string[]>> = {
     ageGroup: ['NEONATE', 'INFANT', 'TODDLER', 'CHILD', 'ADOLESCENT'],
     birthWeight: ['VLBW', 'LBW', 'NBW', 'HBW'],
@@ -34,8 +35,9 @@ const MOVE_MS = 1100;
 @Component({
     selector: 'app-public-dashboard',
     standalone: true,
-    imports: [DecimalPipe, RouterLink, PakistanMapComponent, DoughnutChartComponent],
+    imports: [DecimalPipe, NgTemplateOutlet, RouterLink, PakistanMapComponent, DoughnutChartComponent, HierarchyChartComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    host: {'(document:keydown.escape)': 'closeSpot()'},
     templateUrl: './public-dashboard.component.html',
     styleUrl: './public-dashboard.component.scss',
 })
@@ -54,6 +56,8 @@ export class PublicDashboardComponent implements AfterViewInit {
         surgeonsHospitals: false,  // Surgeons + Hospitals cards
         activity: false,           // Surgical Activity Over Time
         geoTabs: false,            // Provinces / Districts / Cities tabs (breadcrumb navigation is used instead)
+        bypassVsClamp: false,      // Bypass vs Cross-clamp comparison card (removed on client request)
+        doughnuts: false,          // flat diagnosis / procedure doughnuts (replaced by the hierarchy charts)
     };
 
     readonly FILTER_LABELS = FILTER_LABELS;
@@ -99,6 +103,7 @@ export class PublicDashboardComponent implements AfterViewInit {
     private labels = new Map<string, string>();
 
     constructor() {
+        this.destroyRef.onDestroy(() => { document.body.style.overflow = ''; });
         // An "Other" list stays open only while it has rows. After a filter (e.g. clicking a procedure
         // inside "Other") the new data may have nothing left there: fall back to the top list.
         effect(() => {
@@ -110,6 +115,9 @@ export class PublicDashboardComponent implements AfterViewInit {
                 procComp: d.complications?.byProcedureOthers?.length ?? 0,
                 agents: d.anaesthesia?.agentOthers?.length ?? 0,
                 adverse: d.anaesthesia?.adverse?.others?.length ?? 0,
+                preMed: d.anaesthesia?.preop?.medications?.others?.length ?? 0,
+                intraop: d.anaesthesia?.intraop?.others?.length ?? 0,
+                pacuMed: d.anaesthesia?.pacu?.medications?.others?.length ?? 0,
             };
             untracked(() => {
                 const o = this.openOthers();
@@ -294,23 +302,25 @@ export class PublicDashboardComponent implements AfterViewInit {
         const otherFilters = FILTER_KEYS.some((k) => f[k] && !['province', 'district', 'city'].includes(k));
         const personal = f.scope === 'personal';
         const ops = `${n.toLocaleString()} ${n === 1 ? 'operation' : 'operations'}`;
+        const p = d.kpis.totalPatients ?? 0;   // shown first: "555 patients and 583 operations …"
+        const pts = `${p.toLocaleString()} ${p === 1 ? 'patient' : 'patients'}`;
         const span = REGISTRY_MONTHS === 1 ? 'in one month' : `in ${REGISTRY_MONTHS} months`;
         const regions = g.provinces.filter((p) => p.count > 0).length;
         const reach = `${regions} ${regions === 1 ? 'province or territory' : 'provinces & territories'}`;
 
         if (!n) {
-            return {ops: 'No operations', rest: place ? `from ${place}` : 'match this selection', span: '',
+            return {ops: 'No operations', pts: '', rest: place ? `from ${place}` : 'match this selection', span: '',
                 lead: 'Broaden the selection or reset the filters to see the full picture.'};
         }
         if (otherFilters || place) {
-            return {ops, rest: place ? `from ${place}${otherFilters ? ' match your selection' : ''}` : 'match your selection', span: '',
+            return {ops, pts, rest: place ? `from ${place}${otherFilters ? ' match your selection' : ''}` : 'match your selection', span: '',
                 lead: `Every card below now describes these ${ops}.`};
         }
         return personal
-            ? {ops, rest: 'in your personal registry', span,
-                lead: 'Every procedure you led, assisted, reviewed or recorded on DataNurse, in one place.'}
-            : {ops, rest: 'recorded across Pakistan', span,
-                lead: `Congenital heart surgery teams record every procedure on DataNurse. Pakistan’s national registry already reaches ${reach}, and it grows every week.`};
+            ? {ops, pts, rest: 'in your personal registry', span,
+                lead: 'Every operation you led, assisted, reviewed or recorded on DataNurse, in one place.'}
+            : {ops, pts, rest: 'recorded across Pakistan', span,
+                lead: `Congenital heart surgery teams record every operation on DataNurse. Pakistan’s national registry already reaches ${reach}, and it grows every week.`};
     });
 
     // ── geography explorer: Pakistan › Province › District (separate from filters) ──
@@ -436,7 +446,7 @@ export class PublicDashboardComponent implements AfterViewInit {
     diagnosisItems = computed(() => (this.data()?.diagnoses?.items ?? []).map(this.asDoughnut));
     diagnosisOthers = computed(() => (this.data()?.diagnoses?.others ?? []).map(this.asDoughnut));
 
-    /** In Theatre / Who Pays: only categories with at least one case. */
+    /** In Theatre / Funding: only categories with at least one case. */
     theatreView = computed(() => {
         const t = this.data()?.theatre;
         if (!t) return null;
@@ -530,7 +540,87 @@ export class PublicDashboardComponent implements AfterViewInit {
             `from ${this.ops(m.n)} with a ${kind.toLowerCase()} time recorded`);
     }
 
-    ops(n: number) { return `${this.fmt(n)} ${n === 1 ? 'procedure' : 'procedures'}`; }
+    /**
+     * One filter per hierarchy (procedure / diagnosis / monitoring): picking a level replaces any
+     * other level of the same hierarchy; picking the selected one again clears it.
+     */
+    private readonly HIER: Record<'proc' | 'dx' | 'line', { group: keyof PublicFilters; sub: keyof PublicFilters; item?: keyof PublicFilters }> = {
+        proc: {group: 'procGroup', sub: 'procSub', item: 'procedure'},
+        dx: {group: 'dxGroup', sub: 'dxSub', item: 'diagnosis'},
+        line: {group: 'anLine', sub: 'anLineSite'},
+    };
+    pickHier(kind: 'proc' | 'dx' | 'line', p: HierPick) {
+        const keys = this.HIER[kind];
+        const key = p.level === 'group' ? keys.group : p.level === 'sub' ? keys.sub : keys.item!;
+        const code = kind === 'line' && p.level === 'sub' ? `${p.groupKey}:${p.code}` : p.code;
+        const f: PublicFilters = {...this.filters()};
+        const same = f[key] === code;
+        [keys.group, keys.sub, keys.item].forEach((k) => { if (k) delete (f as any)[k]; });
+        if (!same) { (f as any)[key] = code; this.labels.set(`${key}:${code}`, p.name); }
+        this.navigate(f);
+    }
+
+    // ── Spotlight: a diagnosis / procedure card opened large in the middle of the screen ──
+    spot = signal<'dx' | 'proc' | null>(null);
+    openSpot(k: 'dx' | 'proc') { this.hideTip(); this.spot.set(k); document.body.style.overflow = 'hidden'; }
+    closeSpot() { this.spot.set(null); document.body.style.overflow = ''; }
+    spotData = computed(() => {
+        const k = this.spot(); const d = this.data();
+        if (!k || !d) return null;
+        const t = k === 'dx' ? d.diagnoses?.tree : d.procedures?.tree;
+        const f = this.filters();
+        const groups = t?.groups ?? [];
+        const subs = groups.flatMap((g) => g.children.map((s) => ({...s, group: g.name})));
+        const items = subs.flatMap((s) => s.children.map((i) => ({...i, sub: s.name})));
+        const top = <T extends { count: number }>(a: T[]) => a.reduce<T | null>((m, x) => (!m || x.count > m.count ? x : m), null);
+        const sel = k === 'dx' ? (f.dxGroup || f.dxSub || f.diagnosis) : (f.procGroup || f.procSub || f.procedure);
+        const selKey = k === 'dx' ? (f.dxGroup ? 'dxGroup' : f.dxSub ? 'dxSub' : 'diagnosis') : (f.procGroup ? 'procGroup' : f.procSub ? 'procSub' : 'procedure');
+        return {
+            kind: k, title: k === 'dx' ? 'Diagnosis Distribution' : 'Procedure Distribution',
+            unit: k === 'dx' ? 'cases' : 'procedures', total: t?.total ?? 0, groups,
+            topGroup: top(groups), topSub: top(subs), topItem: top(items),
+            counts: {groups: groups.length, subs: subs.length, items: items.length},
+            selection: sel ? {key: selKey as keyof PublicFilters, label: this.labelFor(selKey as keyof PublicFilters, sel)} : null,
+        };
+    });
+    private labelFor(key: keyof PublicFilters, code: string) { return this.labels.get(`${key}:${code}`) ?? code; }
+
+    // ── Anaesthesia: expandable parent rows (closed by default) ──
+    anOpen = signal<Set<string>>(new Set());
+    anToggle(key: string) { const n = new Set(this.anOpen()); n.has(key) ? n.delete(key) : n.add(key); this.anOpen.set(n); }
+    /** induction technique -> agents, in the same shape as the other expandable rows */
+    techNodes = computed(() => (this.data()?.anaesthesia?.techniques ?? []).map((t) => ({
+        key: t.code, label: t.name, count: t.count, percentage: t.percentage, children: t.agents})));
+    /** ranked anaesthesia lists show 6 rows; the rest go under "Other" */
+    trim<T>(t: { items: T[]; others: T[] } | undefined, n = 6): { items: T[]; others: T[] } | undefined {
+        return t ? {items: t.items.slice(0, n), others: [...t.items.slice(n), ...t.others]} : undefined;
+    }
+
+    /** Monitoring & lines in the hierarchy-chart shape (line -> site). */
+    lineGroups = computed<HierGroup[]>(() => (this.data()?.anaesthesia?.lines ?? []).map((n) => ({
+        key: n.key, name: n.label, count: n.count, percentage: n.percentage, share: n.percentage,
+        children: n.children.map((c) => ({key: c.code, name: c.name, count: c.count, percentage: c.percentage, share: c.percentage, children: []})),
+    })));
+    selectedLineSite = computed(() => this.filters().anLineSite?.split(':').slice(1).join(':'));
+
+    /** Adverse events as a ranked list (without the collective "Other" row the API adds). */
+    adverseTop = computed(() => {
+        const a = this.data()?.anaesthesia?.adverse;
+        return {items: (a?.items ?? []).filter((i) => !i.isOther), others: a?.others ?? []};
+    });
+
+    /** A ranked anaesthesia list: top items, or the rest when its "Other" is opened (swaps in place). */
+    swapRows<T extends { code: string | null; name: string; count: number; percentage: number }>(
+        key: string, t: { items: T[]; others: T[] } | undefined): T[] {
+        if (!t) return [];
+        return this.openOthers()[key] ? t.others : t.items;
+    }
+    swapMax(t: { items: { count: number }[]; others: { count: number }[] } | undefined) {
+        return this.maxOf([...(t?.items ?? []), ...(t?.others ?? [])]);
+    }
+    sumOf(list: { count: number }[] | undefined) { return (list ?? []).reduce((s, x) => s + x.count, 0); }
+
+    ops(n: number) { return `${this.fmt(n)} ${n === 1 ? 'operation' : 'operations'}`; }
 
     selectedAgent = computed(() => {
         const code = this.filters().anaesAgent;

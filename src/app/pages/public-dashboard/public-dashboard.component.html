@@ -36,7 +36,7 @@
                 <img src="./assets/images/newLogo.svg" alt="DataNurse"/>
             </a>
             <div class="pd-title">
-                <h1>Paediatric Cardiac Surgery — Public Analytics</h1>
+                <h1>Paediatric Cardiac Surgery - Analytics</h1>
                 <span>Live figures from the DataNurse registry</span>
             </div>
             <div class="pd-controls">
@@ -103,7 +103,7 @@
             <div class="story">
                 <span class="story-eyebrow"><i class="pi pi-map"></i> Explore Case Distribution Across Pakistan</span>
                 @if (story(); as st) {
-                    <h2 class="story-head"><em>{{ st.ops }}</em> {{ st.rest }}{{ st.span ? ' ' : '' }}@if (st.span) {<span class="story-span">{{ st.span }}</span>}</h2>
+                    <h2 class="story-head">@if (st.pts) {<em>{{ st.pts }}</em>{{ ' and ' }} }<em>{{ st.ops }}</em>{{ ' ' + st.rest }}{{ st.span ? ' ' : '' }}@if (st.span) {<span class="story-span">{{ st.span }}</span>}</h2>
                     <p class="story-lead">{{ st.lead }}</p>
                 } @else {
                     <span class="sk sk-story"></span>
@@ -250,14 +250,14 @@
                 @let wm = weightMax();
                 <div class="card-body wt-panels">
                     @for (panel of [{key: 'birth', title: 'At birth', data: w?.birth, max: wm.birth, filter: 'birthWeight', color: '#0EA5A0'},
-                                    {key: 'op', title: 'At procedure', data: w?.operation, max: wm.op, filter: 'opWeight', color: '#2251CC'}]; track panel.key) {
+                                    {key: 'op', title: 'At operation', data: w?.operation, max: wm.op, filter: 'opWeight', color: '#2251CC'}]; track panel.key) {
                         <div class="wt-panel">
                             <div class="wt-head">
                                 <span class="wt-title">{{ panel.title }}</span>
                                 <span class="wt-mean" (mouseenter)="meanTip($event, 'Average weight ' + panel.title.toLowerCase(), panel.data, 'kg')"
                                       (mouseleave)="hideTip()">
                                     <b>{{ panel.data?.mean ?? '–' }}</b>@if (panel.data?.mean !== null) {<em> kg</em>}
-                                    <small>average · {{ panel.data?.n ?? 0 | number }} cases</small>
+                                    <small>average</small>
                                 </span>
                             </div>
                             <div class="cols" [style.--c]="panel.color">
@@ -265,7 +265,7 @@
                                     <button type="button" class="col" [disabled]="!b.count"
                                             [class.active]="$any(filters())[panel.filter] === b.code"
                                             (click)="toggle($any(panel.filter), b.code, b.label)"
-                                            (mouseenter)="showTip($event, b.label + (panel.key === 'op' ? ' at procedure' : ''), fmt(b.count) + ' cases (' + b.percentage + '%)', b.mean !== null ? 'Average ' + b.mean + ' kg' : '')"
+                                            (mouseenter)="showTip($event, b.label + (panel.key === 'op' ? ' at operation' : ''), fmt(b.count) + ' cases (' + b.percentage + '%)', b.mean !== null ? 'Average ' + b.mean + ' kg' : '')"
                                             (mouseleave)="hideTip()">
                                         <span class="col-val">{{ b.count | number }}</span>
                                         <span class="col-bar"><span [style.height.%]="(b.count / panel.max) * 100"></span></span>
@@ -279,28 +279,48 @@
             </section>
         </div>
 
-        <!-- ═════ DIAGNOSES + PROCEDURES ═════ -->
-        <div class="grid-2">
-            <section class="card fixed-md">
+        <!-- ═════ DIAGNOSES + PROCEDURES: group > sub-group > item, every level filters ═════ -->
+        <div class="grid-2 hier-row">
+            <section class="card hier-card">
                 <div class="card-head">
                     <h2 class="card-title"><i class="pi pi-file-edit"></i> Diagnosis Distribution</h2>
+                    <button type="button" class="spot-btn" (click)="openSpot('dx')" aria-label="Open diagnoses in full view">
+                        <i class="pi pi-window-maximize"></i> Full view
+                    </button>
                 </div>
                 <div class="card-body">
-                    <app-doughnut-chart [items]="diagnosisItems()" [others]="diagnosisOthers()" [centerValue]="d?.diagnoses?.total ?? 0"
-                                        centerLabel="Cases" [selected]="filters().diagnosis"
-                                        (pick)="toggle('diagnosis', $event.key, $event.label)"
-                                        (hover)="onDoughnutHover($event, 'cases')"/>
+                    @if (show.doughnuts) {
+                        <app-doughnut-chart [items]="diagnosisItems()" [others]="diagnosisOthers()" [centerValue]="d?.diagnoses?.total ?? 0"
+                                            centerLabel="Cases" [selected]="filters().diagnosis"
+                                            (pick)="toggle('diagnosis', $event.key, $event.label)"
+                                            (hover)="onDoughnutHover($event, 'cases')"/>
+                    } @else {
+                        <app-hierarchy-chart [groups]="d?.diagnoses?.tree?.groups ?? []" [total]="d?.diagnoses?.tree?.total ?? 0"
+                                             centerLabel="Diagnoses" unit="cases" groupNoun="diagnosis groups"
+                                             [selectedGroup]="filters().dxGroup" [selectedSub]="filters().dxSub" [selected]="filters().diagnosis"
+                                             (pick)="pickHier('dx', $event)"/>
+                    }
                 </div>
             </section>
-            <section class="card fixed-md">
+            <section class="card hier-card">
                 <div class="card-head">
                     <h2 class="card-title"><i class="pi pi-heart"></i> Procedure Distribution</h2>
+                    <button type="button" class="spot-btn" (click)="openSpot('proc')" aria-label="Open procedures in full view">
+                        <i class="pi pi-window-maximize"></i> Full view
+                    </button>
                 </div>
                 <div class="card-body">
-                    <app-doughnut-chart [items]="procedureItems()" [others]="procedureOthers()" [centerValue]="d?.procedures?.total ?? 0"
-                                        centerLabel="Procedures" [selected]="filters().procedure"
-                                        (pick)="toggle('procedure', $event.key, $event.label)"
-                                        (hover)="onDoughnutHover($event, 'procedures')"/>
+                    @if (show.doughnuts) {
+                        <app-doughnut-chart [items]="procedureItems()" [others]="procedureOthers()" [centerValue]="d?.procedures?.total ?? 0"
+                                            centerLabel="Procedures" [selected]="filters().procedure"
+                                            (pick)="toggle('procedure', $event.key, $event.label)"
+                                            (hover)="onDoughnutHover($event, 'procedures')"/>
+                    } @else {
+                        <app-hierarchy-chart [groups]="d?.procedures?.tree?.groups ?? []" [total]="d?.procedures?.tree?.total ?? 0"
+                                             centerLabel="Procedures" unit="procedures" groupNoun="procedure groups"
+                                             [selectedGroup]="filters().procGroup" [selectedSub]="filters().procSub" [selected]="filters().procedure"
+                                             (pick)="pickHier('proc', $event)"/>
+                    }
                 </div>
             </section>
         </div>
@@ -323,7 +343,7 @@
                             <span class="bar-pct">{{ l.percentage }}%</span>
                         </button>
                     }
-                    <div class="sub-head">Procedure type</div>
+                    <div class="sub-head">Operation type</div>
                     @for (l of th?.operationTypes?.items ?? []; track l.code) {
                         <div class="bar-row static">
                             <span class="bar-lbl">{{ l.name }}</span>
@@ -344,7 +364,7 @@
                             <span class="bar-pct">n={{ i.denominator | number }}</span>
                         </div>
                     }
-                    <div class="sub-head">Urgency of procedure</div>
+                    <div class="sub-head">Urgency of operation</div>
                     @for (u of th?.urgency ?? []; track u.name) {
                         <div class="bar-row static">
                             <span class="bar-lbl">{{ u.name }}</span>
@@ -352,13 +372,13 @@
                             <span class="bar-val">{{ u.count | number }}</span>
                             <span class="bar-pct">{{ u.percentage }}%</span>
                         </div>
-                    } @empty { <p class="note">No procedure status recorded.</p> }
+                    } @empty { <p class="note">No operation status recorded.</p> }
                 </div>
             </div>
         </section>
 
-        <!-- ═════ BYPASS & CROSS-CLAMP BY PROCEDURE + COMPARISON ═════ -->
-        <div class="grid-3-1">
+        <!-- ═════ BYPASS & CROSS-CLAMP BY PROCEDURE (+ comparison card, hidden: show.bypassVsClamp) ═════ -->
+        <div [class.grid-3-1]="show.bypassVsClamp">
             <section class="card">
                 <div class="card-head">
                     <h2 class="card-title"><i class="pi pi-stopwatch"></i> Cardiopulmonary Bypass &amp; Cross-clamp Time</h2>
@@ -366,7 +386,7 @@
                         <span><i class="key key-cpb"></i>Bypass</span>
                         <span><i class="key key-xc"></i>Cross-clamp</span>
                         <button type="button" class="info-btn" aria-label="How these averages are calculated"
-                                (mouseenter)="showTip($event, 'How to read this', 'Each bar is the average minutes for that procedure (the first procedure recorded on a case).', 'Bypass and cross-clamp are averaged separately, each from the procedures where that time was recorded, so their case counts can differ (e.g. a procedure on bypass without an aortic cross-clamp).')"
+                                (mouseenter)="showTip($event, 'How to read this', 'Each bar is the average minutes for operations where that procedure was the first one recorded.', 'Bypass and cross-clamp are averaged separately, each from the operations where that time was recorded, so their case counts can differ (e.g. an operation on bypass without an aortic cross-clamp).')"
                                 (mouseleave)="hideTip()"><i class="pi pi-info-circle"></i></button>
                     </div>
                 </div>
@@ -419,6 +439,7 @@
                 </div>
             </section>
 
+            @if (show.bypassVsClamp) {
             <section class="card">
                 <div class="card-head">
                     <h2 class="card-title"><i class="pi pi-clock"></i> Bypass vs Cross-clamp</h2>
@@ -458,6 +479,7 @@
                     </div>
                 </div>
             </section>
+            }
         </div>
 
         <!-- ═════ COMPLICATIONS (full width) ═════ -->
@@ -477,23 +499,23 @@
                             <b class="focus-name">{{ sc.name }}</b>
                             @if (sc.group) { <span class="focus-sub">{{ sc.group }}</span> }
                             <div class="focus-stats">
-                                <div><b>{{ sc.count | number }}</b><span>procedures</span></div>
-                                <div><b>{{ sc.percentage }}%</b><span>of procedures with a complication</span></div>
+                                <div><b>{{ sc.count | number }}</b><span>operations</span></div>
+                                <div><b>{{ sc.percentage }}%</b><span>of operations with a complication</span></div>
                             </div>
-                            <p class="focus-note">Diagnosis, procedure, age and every other card now show these procedures.</p>
+                            <p class="focus-note">Diagnosis, procedure, age and every other card now show these operations.</p>
                         </div>
                     }
                     <div class="hero">
                         <b>{{ cx?.rate ?? 0 }}%</b>
-                        <span>of assessed procedures had at least one complication
-                            <small>{{ cx?.withAny ?? 0 | number }} of {{ cx?.recorded ?? 0 | number }} procedures with complications recorded</small>
+                        <span>of assessed operations had at least one complication
+                            <small>{{ cx?.withAny ?? 0 | number }} of {{ cx?.recorded ?? 0 | number }} operations with complications recorded</small>
                         </span>
                     </div>
                     @if (cx?.groups?.length) {
                         <div class="stack seg-stack">
                             @for (g of cx!.groups; track g.name; let i = $index) {
                                 <span [style.flex-grow]="g.count" [style.background]="GROUP_COLORS[i % GROUP_COLORS.length]"
-                                      (mouseenter)="showTip($event, g.name, fmt(g.count) + ' procedures (' + g.percentage + '% of those with a complication)')"
+                                      (mouseenter)="showTip($event, g.name, fmt(g.count) + ' operations (' + g.percentage + '% of those with a complication)')"
                                       (mouseleave)="hideTip()"></span>
                             }
                         </div>
@@ -518,7 +540,7 @@
                             } @else {
                                 <button type="button" class="bar-row" [class.active]="filters().complication === c.code"
                                         (click)="toggle('complication', c.code, c.name)"
-                                        (mouseenter)="showTip($event, c.name, (c.group ? c.group : ''), fmt(c.count) + ' procedures', c.percentage + '% of procedures with a complication')"
+                                        (mouseenter)="showTip($event, c.name, (c.group ? c.group : ''), fmt(c.count) + ' operations', c.percentage + '% of operations with a complication')"
                                         (mouseleave)="hideTip()">
                                     <span class="bar-lbl">{{ c.name }}</span>
                                     <span class="track"><span class="fill rose" [style.width.%]="(c.count / complicationMax()) * 100"></span></span>
@@ -533,9 +555,9 @@
                     <!-- complications by primary procedure -->
                     <div class="wcol">
                         <div class="sub-head first">
-                            @if (selectedComplication(); as sc) { {{ sc.name }} by procedure } @else { Complications by procedure }
+                            @if (selectedComplication(); as sc) { {{ sc.name }}: rate by procedure } @else { Complication rate by procedure }
                         </div>
-                        <div class="pc-head"><span>Primary procedure</span><span>Procedures with {{ selectedComplication() ? 'this complication' : 'a complication' }}</span></div>
+                        <div class="pc-head"><span>Primary procedure</span><span>Operations with {{ selectedComplication() ? 'this complication' : 'a complication' }}</span></div>
                         <div class="swap" #pcSwap [style.height.px]="openOthers()['procComp'] ? swapH['procComp'] : null">
                             @if (openOthers()['procComp']) {
                                 <button type="button" class="swap-back" (click)="toggleOthers('procComp')">
@@ -545,7 +567,7 @@
                             @for (p of procCompRows(); track p.code) {
                                 <button type="button" class="pc-row" [class.active]="filters().procedure === p.code"
                                         (click)="toggle('procedure', p.code, p.name)"
-                                        (mouseenter)="showTip($event, p.name, fmt(p.hit) + ' of ' + fmt(p.assessed) + ' assessed procedures (' + p.share + '%)', p.top && !selectedComplication() ? 'Most frequent: ' + p.top.name + ' (' + fmt(p.top.count) + ')' : '')"
+                                        (mouseenter)="showTip($event, p.name, fmt(p.hit) + ' of ' + fmt(p.assessed) + ' assessed operations (' + p.share + '%)', p.top && !selectedComplication() ? 'Most frequent: ' + p.top.name + ' (' + fmt(p.top.count) + ')' : '')"
                                         (mouseleave)="hideTip()">
                                     <span class="pc-lbl">
                                         <b>{{ p.name }}</b>
@@ -566,12 +588,13 @@
             </section>
 
 
-        <!-- ═════ ANAESTHESIA (full width) ═════ -->
+        <!-- ═════ ANAESTHESIA (full width, follows the mobile form) ═════ -->
             <section class="card wide-card">
                 <div class="card-head">
                     <h2 class="card-title"><i class="pi pi-shield"></i> Anaesthesia</h2>
                 </div>
                 @let an = d?.anaesthesia;
+                @let rec = an?.recorded ?? 0;
                 <div class="card-body">
                     @if (selectedAgent() || selectedTechnique()) {
                         <div class="focus">
@@ -584,120 +607,181 @@
                                 <b class="focus-name">{{ sa.name }}</b>
                                 <span class="focus-sub">Induction agent</span>
                                 <div class="focus-stats">
-                                    <div><b>{{ sa.count | number }}</b><span>procedures</span></div>
-                                    <div><b>{{ sa.percentage }}%</b><span>of procedures with anaesthesia recorded</span></div>
+                                    <div><b>{{ sa.count | number }}</b><span>operations</span></div>
+                                    <div><b>{{ sa.percentage }}%</b><span>of operations with anaesthesia recorded</span></div>
                                 </div>
                             } @else if (selectedTechnique(); as st) {
                                 <b class="focus-name">{{ st.name }} induction</b>
                                 <div class="focus-stats">
-                                    <div><b>{{ st.count | number }}</b><span>procedures</span></div>
-                                    <div><b>{{ st.percentage }}%</b><span>of procedures with anaesthesia recorded</span></div>
+                                    <div><b>{{ st.count | number }}</b><span>operations</span></div>
+                                    <div><b>{{ st.percentage }}%</b><span>of operations with anaesthesia recorded</span></div>
                                 </div>
                             }
-                            <p class="focus-note">Every card now shows only these procedures.</p>
+                            <p class="focus-note">Every card now shows only these operations.</p>
                         </div>
                     }
-                    <div class="wide-cols cols-3">
-                    <div class="wcol">
-                    <div class="hero small">
-                        <b>{{ an?.recorded ?? 0 | number }}</b>
-                        <span>procedures with anaesthesia recorded</span>
-                    </div>
-                    <div class="sub-head">Induction technique</div>
-                    <div class="tiles">
-                        @for (t of an?.techniques ?? []; track t.code) {
-                            <button type="button" class="tile" [disabled]="!t.count" [class.active]="filters().induction === t.code"
-                                    (click)="toggle('induction', t.code, t.name)">
-                                <b>{{ t.percentage }}%</b>
-                                <span>{{ t.name }}</span>
-                                <small>{{ t.count | number }} procedures</small>
-                            </button>
-                        }
-                    </div>
-                    <div class="sub-head">Monitoring &amp; techniques</div>
-                    @for (m of an?.monitoring ?? []; track m.key) {
-                        @if (m.denominator) {
-                            <div class="bar-row static" (mouseenter)="showTip($event, m.label, fmt(m.count) + ' of ' + fmt(m.denominator) + ' procedures where recorded')"
-                                 (mouseleave)="hideTip()">
-                                <span class="bar-lbl">{{ m.label }}</span>
-                                <span class="track"><span class="fill teal" [style.width.%]="m.percentage"></span></span>
-                                <span class="bar-val">{{ m.percentage }}%</span>
-                                <span class="bar-pct">n={{ m.denominator | number }}</span>
+
+                    <div class="an-grid">
+                        <div class="an-col">
+                            <!-- 1. monitoring & lines: line > site (expandable, both levels filter) -->
+                            <div class="an-panel">
+                                <div class="an-title"><i class="pi pi-wave-pulse"></i> Monitoring &amp; lines</div>
+                                @for (n of an?.lines ?? []; track n.key) {
+                                    <ng-container *ngTemplateOutlet="expTpl; context: {$implicit: n, kind: 'line', color: 'teal'}"/>
+                                } @empty { <p class="note">Not recorded.</p> }
                             </div>
-                        }
-                    }
-                    </div>
-                    <div class="wcol">
-                    <div class="sub-head first">Induction agents</div>
-                    <div class="swap" #agSwap [style.height.px]="openOthers()['agents'] ? swapH['agents'] : null">
-                        @if (openOthers()['agents']) {
-                            <button type="button" class="swap-back" (click)="toggleOthers('agents')">
-                                <i class="pi pi-arrow-left"></i> Other agents <b>{{ an?.agentOthers?.length }}</b>
-                            </button>
-                        }
-                        @for (a of agentRows(); track a.name) {
-                            @if (a.isOther) {
-                                <button type="button" class="other-toggle" (click)="toggleOthers('agents', agSwap)">
-                                    <i class="pi pi-plus"></i> {{ a.name }} · {{ a.count | number }}
-                                </button>
-                            } @else {
-                                <button type="button" class="bar-row" [class.active]="filters().anaesAgent === a.code"
-                                        (click)="toggle('anaesAgent', a.code, a.name)">
-                                    <span class="bar-lbl">{{ a.name }}</span>
-                                    <span class="track"><span class="fill purple" [style.width.%]="a.percentage"></span></span>
-                                    <span class="bar-val">{{ a.count | number }}</span>
-                                    <span class="bar-pct">{{ a.percentage }}%</span>
-                                </button>
-                            }
-                        } @empty { <p class="note">No induction agents recorded.</p> }
-                    </div>
-                    <div class="sub-head">After recovery (PACU)</div>
-                            @for (p of an?.disposition ?? []; track p.code) {
-                                <div class="bar-row static stacked" (mouseenter)="showTip($event, p.name, ops(p.count), p.percentage + '% of ' + fmt(an?.recorded ?? 0) + ' procedures with anaesthesia recorded')"
-                                     (mouseleave)="hideTip()">
-                                    <span class="bar-lbl">{{ p.name }}</span>
-                                    <span class="bar-val">{{ p.count | number }}<small>{{ p.percentage }}%</small></span>
-                                    <span class="track"><span class="fill" [style.width.%]="p.percentage"></span></span>
-                                </div>
-                            } @empty { <p class="note">Not recorded.</p> }
-                    </div>
-                    <div class="wcol">
-                            <div class="sub-head first">Anaesthesia adverse events</div>
-                            <div class="hero small" (mouseenter)="showTip($event, 'Adverse event rate', fmt(an?.adverse?.cases ?? 0) + ' procedures with ≥1 adverse event ÷ ' + fmt(an?.recorded ?? 0) + ' with anaesthesia recorded')"
-                                 (mouseleave)="hideTip()">
-                                <b>{{ an?.adverse?.percentage ?? 0 }}%</b>
-                                <span>had at least one adverse event
-                                    <small>{{ an?.adverse?.cases ?? 0 | number }} of {{ an?.recorded ?? 0 | number }} procedures with anaesthesia recorded</small>
-                                </span>
+                            <!-- 4. intra-operative medications -->
+                            <div class="an-panel">
+                                <div class="an-title"><i class="pi pi-sliders-v"></i> Intra-operative medications</div>
+                                <ng-container *ngTemplateOutlet="rankTpl; context: {key: 'intraop', t: trim(an?.intraop), color: '', label: 'Other medications'}"/>
                             </div>
-                            <div class="swap" #advSwap [style.height.px]="openOthers()['adverse'] ? swapH['adverse'] : null">
-                                @if (openOthers()['adverse']) {
-                                    <button type="button" class="swap-back" (click)="toggleOthers('adverse')">
-                                        <i class="pi pi-arrow-left"></i> Other adverse events <b>{{ an?.adverse?.others?.length }}</b>
-                                    </button>
+                        </div>
+                        <div class="an-col">
+                            <!-- 2. induction: technique > agents (expandable, both levels filter) -->
+                            <div class="an-panel">
+                                <div class="an-title"><i class="pi pi-bolt"></i> Induction</div>
+                                @for (n of techNodes(); track n.key) {
+                                    <ng-container *ngTemplateOutlet="expTpl; context: {$implicit: n, kind: 'tech', color: 'purple'}"/>
+                                } @empty { <p class="note">No induction recorded.</p> }
+                            </div>
+                            <!-- 5. recovery (PACU) -->
+                            <div class="an-panel">
+                                <div class="an-title"><i class="pi pi-heart"></i> Recovery (PACU)</div>
+                                @for (n of an?.pacu?.support ?? []; track n.key) {
+                                    <ng-container *ngTemplateOutlet="expTpl; context: {$implicit: n, kind: 'plain', color: 'rose'}"/>
                                 }
-                                @for (e of adverseRows(); track e.name) {
-                                    @if (e.isOther) {
-                                        <button type="button" class="other-toggle" (click)="toggleOthers('adverse', advSwap)">
-                                            <i class="pi pi-plus"></i> {{ e.name }} · {{ e.count | number }}
+                                <div class="an-sub">Infusions on arrival</div>
+                                <ng-container *ngTemplateOutlet="rankTpl; context: {key: 'pacuMed', t: trim(an?.pacu?.medications), color: 'rose', label: 'Other infusions'}"/>
+                            </div>
+                        </div>
+                        <div class="an-col">
+                            <!-- 3. pre-operative: medication + sedation > route / drug -->
+                            <div class="an-panel">
+                                <div class="an-title"><i class="pi pi-clock"></i> Pre-operative</div>
+                                <div class="an-stat" (mouseenter)="showTip($event, 'Pre-operative medication', ops(an?.preop?.medicationCases ?? 0) + ' on at least one medication', 'of ' + fmt(rec) + ' operations with anaesthesia recorded')" (mouseleave)="hideTip()">
+                                    <b>{{ an?.preop?.medicationPercentage ?? 0 }}%</b> <span>were on pre-operative medication</span>
+                                </div>
+                                <ng-container *ngTemplateOutlet="rankTpl; context: {key: 'preMed', t: trim(an?.preop?.medications), color: 'amber', label: 'Other medications'}"/>
+                                @if (an?.preop?.sedation?.count) {
+                                    <div class="an-sub">Sedation</div>
+                                    <ng-container *ngTemplateOutlet="expTpl; context: {$implicit: an!.preop.sedation, kind: 'plain', color: 'amber'}"/>
+                                }
+                            </div>
+                            <!-- 6. disposition + adverse events -->
+                            <div class="an-panel">
+                                <div class="an-title"><i class="pi pi-sign-out"></i> After anaesthesia</div>
+                                @for (x of an?.disposition ?? []; track x.code) {
+                                    <div class="bar-row static" (mouseenter)="showTip($event, x.name, ops(x.count), x.percentage + '% of operations with anaesthesia recorded')" (mouseleave)="hideTip()">
+                                        <span class="bar-lbl">{{ x.name }}</span>
+                                        <span class="track"><span class="fill" [style.width.%]="x.percentage"></span></span>
+                                        <span class="bar-val">{{ x.count | number }}</span>
+                                        <span class="bar-pct">{{ x.percentage }}%</span>
+                                    </div>
+                                } @empty { <p class="note">Disposition not recorded.</p> }
+                                <div class="an-sub">Adverse events</div>
+                                <ng-container *ngTemplateOutlet="rankTpl; context: {key: 'adverse', t: trim(adverseTop()), color: 'amber', label: 'Other adverse events'}"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- expandable parent row: chevron opens the details; the row itself filters where supported -->
+                    <ng-template #expTpl let-n let-kind="kind" let-color="color">
+                        @let open = anOpen().has(kind + ':' + n.key);
+                        @let pActive = (kind === 'line' && filters().anLine === n.key) || (kind === 'tech' && filters().induction === n.key);
+                        <div class="ex" [class.open]="open">
+                            <div class="ex-row" [class.active]="pActive">
+                                @if (n.children.length) {
+                                    <button type="button" class="ex-chev" (click)="anToggle(kind + ':' + n.key)" [attr.aria-expanded]="open"
+                                            [attr.aria-label]="(open ? 'Hide' : 'Show') + ' details of ' + n.label">
+                                        <i class="pi" [class.pi-chevron-right]="!open" [class.pi-chevron-down]="open"></i>
+                                    </button>
+                                } @else { <span class="ex-chev"></span> }
+                                <button type="button" class="ex-main" [class.static]="kind === 'plain'"
+                                        (click)="kind === 'line' ? pickHier('line', {level: 'group', groupKey: n.key, code: n.key, name: n.label})
+                                                : kind === 'tech' ? toggle('induction', n.key, n.label)
+                                                : (n.children.length ? anToggle(kind + ':' + n.key) : null)"
+                                        (mouseenter)="showTip($event, n.label, ops(n.count), n.percentage + '% of operations with anaesthesia recorded', kind === 'plain' ? '' : 'Click to filter the dashboard')"
+                                        (mouseleave)="hideTip()">
+                                    <span class="ex-lbl">
+                                        <b>{{ n.label }}</b>
+                                        @if (!open && n.children.length) { <small>Mostly {{ n.children[0].name }} · {{ n.children[0].percentage }}%</small> }
+                                    </span>
+                                    <span class="ex-bar"><span [class]="color" [style.width.%]="n.percentage"></span></span>
+                                    <span class="ex-val">{{ n.count | number }}</span>
+                                    <span class="ex-pct">{{ n.percentage }}%</span>
+                                </button>
+                            </div>
+                            @if (open) {
+                                <div class="ex-kids">
+                                    @for (c of n.children; track (c.kind || '') + c.code) {
+                                        @let cActive = (kind === 'line' && filters().anLineSite === n.key + ':' + c.code) || (kind === 'tech' && filters().anaesAgent === c.code);
+                                        <button type="button" class="an-kid" [class.active]="cActive" [class.static]="kind === 'plain'"
+                                                (click)="kind === 'line' ? pickHier('line', {level: 'sub', groupKey: n.key, code: c.code, name: c.name})
+                                                        : kind === 'tech' ? toggle('anaesAgent', c.code, c.name) : null"
+                                                (mouseenter)="showTip($event, c.name, ops(c.count), c.percentage + '% of ' + n.label.toLowerCase(), kind === 'plain' ? '' : 'Click to filter the dashboard')"
+                                                (mouseleave)="hideTip()">
+                                            <span class="k-lbl">@if (c.kind) {<em>{{ c.kind }}</em>}{{ c.name }}</span>
+                                            <span class="k-bar"><span [class]="color" [style.width.%]="c.percentage"></span></span>
+                                            <span class="k-val">{{ c.count | number }}</span>
+                                            <span class="k-pct">{{ c.percentage }}%</span>
                                         </button>
-                                    } @else {
-                                        <div class="bar-row static stacked" (mouseenter)="showTip($event, e.name, ops(e.count), e.percentage + '% of ' + fmt(an?.recorded ?? 0) + ' procedures with anaesthesia recorded')"
-                                             (mouseleave)="hideTip()">
-                                            <span class="bar-lbl">{{ e.name }}</span>
-                                            <span class="bar-val">{{ e.count | number }}<small>{{ e.percentage }}%</small></span>
-                                            <span class="track"><span class="fill amber" [style.width.%]="(e.count / adverseMax()) * 100"></span></span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </ng-template>
+
+                    <!-- yes/no item with its detail options (child % = share of the parent) -->
+                    <ng-template #nodeTpl let-n let-color="color" let-rec="rec">
+                        <div class="an-node">
+                            <div class="bar-row static" (mouseenter)="showTip($event, n.label, ops(n.count), n.percentage + '% of ' + fmt(rec) + ' operations with anaesthesia recorded')" (mouseleave)="hideTip()">
+                                <span class="bar-lbl">{{ n.label }}</span>
+                                <span class="track"><span class="fill" [class]="'fill ' + color" [style.width.%]="n.percentage"></span></span>
+                                <span class="bar-val">{{ n.count | number }}</span>
+                                <span class="bar-pct">{{ n.percentage }}%</span>
+                            </div>
+                            @if (n.children.length) {
+                                <div class="an-kids">
+                                    @for (c of n.children; track (c.kind || '') + c.code) {
+                                        <div class="an-kid" (mouseenter)="showTip($event, c.name, ops(c.count), c.percentage + '% of ' + n.label.toLowerCase())" (mouseleave)="hideTip()">
+                                            <span class="k-lbl">@if (c.kind) {<em>{{ c.kind }}</em>}{{ c.name }}</span>
+                                            <span class="k-bar"><span [class]="color" [style.width.%]="c.percentage"></span></span>
+                                            <span class="k-val">{{ c.count | number }}</span>
+                                            <span class="k-pct">{{ c.percentage }}%</span>
                                         </div>
                                     }
-                                } @empty { <p class="note">No adverse events recorded.</p> }
-                            </div>
-
+                                </div>
+                            }
                         </div>
-                    </div>
+                    </ng-template>
+
+                    <!-- ranked list: top 8, "Other" swaps the list in place (no height change) -->
+                    <ng-template #rankTpl let-key="key" let-t="t" let-color="color" let-label="label">
+                        <div class="swap" #sw [style.height.px]="openOthers()[key] ? swapH[key] : null">
+                            @if (openOthers()[key]) {
+                                <button type="button" class="swap-back" (click)="toggleOthers(key)">
+                                    <i class="pi pi-arrow-left"></i> {{ label }} <b>{{ t?.others?.length }}</b>
+                                </button>
+                            }
+                            @for (r of swapRows(key, t); track r.code) {
+                                <div class="bar-row static" (mouseenter)="showTip($event, r.name, ops(r.count), r.percentage + '% of ' + fmt(rec) + ' operations with anaesthesia recorded')" (mouseleave)="hideTip()">
+                                    <span class="bar-lbl">{{ r.name }}</span>
+                                    <span class="track"><span [class]="'fill ' + color" [style.width.%]="(r.count / swapMax(t)) * 100"></span></span>
+                                    <span class="bar-val">{{ r.count | number }}</span>
+                                    <span class="bar-pct">{{ r.percentage }}%</span>
+                                </div>
+                            } @empty { <p class="note">None recorded.</p> }
+                            @if (t?.others?.length && !openOthers()[key]) {
+                                <button type="button" class="other-toggle" (click)="toggleOthers(key, sw)">
+                                    <i class="pi pi-plus"></i> {{ label }} ({{ t.others.length }}) · {{ sumOf(t.others) | number }}
+                                </button>
+                            }
+                        </div>
+                    </ng-template>
                 </div>
             </section>
 
-        <!-- ═════ FOLLOW-UPS + WHO PAYS ═════ -->
+        <!-- ═════ FOLLOW-UPS + FUNDING ═════ -->
         <div class="grid-3-1">
             <section class="card">
                 <div class="card-head">
@@ -722,7 +806,7 @@
                                 <li><i class="deceased"></i>Deceased <b>{{ o?.discharge?.deceased ?? 0 | number }}</b></li>
                                 @if (o?.discharge?.other) { <li><i class="unknown"></i>Other <b>{{ o?.discharge?.other | number }}</b></li> }
                             </ul>
-                            <p class="stage-base">{{ o?.discharge?.recorded ?? 0 | number }} of {{ o?.discharge?.cases ?? 0 | number }} procedures have a discharge status</p>
+                            <p class="stage-base">{{ o?.discharge?.recorded ?? 0 | number }} of {{ o?.discharge?.cases ?? 0 | number }} operations have a discharge status</p>
                         </div>
                         <div class="stage">
                             <div class="stage-head"><span class="stage-no">2</span> At latest follow-up</div>
@@ -740,7 +824,7 @@
                                 <li><i class="deceased"></i>Deceased <b>{{ o?.followup?.deceased ?? 0 | number }}</b></li>
                                 <li><i class="unknown"></i>Unknown <b>{{ o?.followup?.unknown ?? 0 | number }}</b></li>
                             </ul>
-                            <p class="stage-base">{{ o?.followup?.cases ?? 0 | number }} procedures followed up after discharge</p>
+                            <p class="stage-base">{{ o?.followup?.cases ?? 0 | number }} operations followed up after discharge</p>
                         </div>
                     </div>
                     <div class="kpi-row">
@@ -765,7 +849,7 @@
 
             <section class="card">
                 <div class="card-head">
-                    <h2 class="card-title"><i class="pi pi-wallet"></i> Who Pays</h2>
+                    <h2 class="card-title"><i class="pi pi-wallet"></i> Funding</h2>
                 </div>
                 @let py = d?.payers;
                 <div class="card-body">
@@ -894,6 +978,51 @@
         }
     </main>
 </div>
+}
+
+<!-- ═════ FULL VIEW: diagnosis / procedure card, large and centred ═════ -->
+@if (spotData(); as sp) {
+    <div class="spot-backdrop" (click)="closeSpot()">
+        <div class="spot" role="dialog" aria-modal="true" [attr.aria-label]="sp.title" (click)="$event.stopPropagation()">
+            <div class="spot-head">
+                <div>
+                    <span class="spot-eyebrow"><i class="pi pi-window-maximize"></i> Full view</span>
+                    <h2>{{ sp.title }}</h2>
+                    <p>{{ sp.total | number }} {{ sp.unit }} · {{ sp.counts.groups }} groups · {{ sp.counts.subs }} sub-groups · {{ sp.counts.items }} {{ sp.kind === 'dx' ? 'diagnoses' : 'procedures' }}</p>
+                </div>
+                <button type="button" class="spot-x" (click)="closeSpot()" aria-label="Close full view"><i class="pi pi-times"></i></button>
+            </div>
+            <div class="spot-high">
+                @if (sp.topGroup; as g) {
+                    <div class="hi"><span>Most common group</span><b>{{ g.name }}</b><small>{{ g.count | number }} · {{ g.share }}% of all</small></div>
+                }
+                @if (sp.topSub; as s) {
+                    <div class="hi"><span>Most common sub-group</span><b>{{ s.name }}</b><small>{{ s.count | number }} · {{ s.share }}% of all</small></div>
+                }
+                @if (sp.topItem; as i) {
+                    <div class="hi"><span>Most common {{ sp.kind === 'dx' ? 'diagnosis' : 'procedure' }}</span><b>{{ i.name }}</b><small>{{ i.count | number }} · {{ i.share }}% of all</small></div>
+                }
+                @if (sp.selection; as sel) {
+                    <div class="hi sel"><span>Filter applied to the dashboard</span><b>{{ sel.label }}</b>
+                        <button type="button" (click)="removeFilter(sel.key)"><i class="pi pi-times"></i> Clear</button></div>
+                }
+            </div>
+            <div class="spot-body">
+                @if (sp.kind === 'dx') {
+                    <app-hierarchy-chart layout="side" size="large" [groups]="sp.groups" [total]="sp.total"
+                                         centerLabel="Diagnoses" unit="cases" groupNoun="diagnosis groups"
+                                         [selectedGroup]="filters().dxGroup" [selectedSub]="filters().dxSub" [selected]="filters().diagnosis"
+                                         (pick)="pickHier('dx', $event)"/>
+                } @else {
+                    <app-hierarchy-chart layout="side" size="large" [groups]="sp.groups" [total]="sp.total"
+                                         centerLabel="Procedures" unit="procedures" groupNoun="procedure groups"
+                                         [selectedGroup]="filters().procGroup" [selectedSub]="filters().procSub" [selected]="filters().procedure"
+                                         (pick)="pickHier('proc', $event)"/>
+                }
+            </div>
+            <p class="spot-foot"><i class="pi pi-filter"></i> Click any ring or row to filter the whole dashboard · Esc to close</p>
+        </div>
+    </div>
 }
 
 @if (tip(); as t) {

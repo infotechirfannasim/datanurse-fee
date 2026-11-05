@@ -1,0 +1,119 @@
+<div class="hc">
+    <!-- sunburst: inner ring = groups (with %), outer ring = sub-groups -->
+    <div class="hc-chart">
+        <svg viewBox="0 0 300 300" role="img" [attr.aria-label]="centerLabel()">
+            <defs>
+                @for (g of gradients(); track g.id) {
+                    <radialGradient [attr.id]="g.id" cx="150" cy="150" r="108" gradientUnits="userSpaceOnUse">
+                        <stop offset="0.6" [attr.stop-color]="g.from"/>
+                        <stop offset="1" [attr.stop-color]="g.to"/>
+                    </radialGradient>
+                }
+                <filter [attr.id]="uid + '-sh'" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0A0061" flood-opacity=".16"/>
+                </filter>
+            </defs>
+            <circle cx="150" cy="150" r="148" class="hc-halo"/>
+            <circle cx="150" cy="150" r="61" class="hc-hub"/>
+            <g [attr.filter]="'url(#' + uid + '-sh)'">
+                @for (s of segments(); track s.key) {
+                    <path [attr.d]="s.d" [attr.fill]="s.level === 'group' ? s.grad : s.color" class="hc-seg" [class.sub]="s.level === 'sub'"
+                          [class.dim]="(hovered() && hovered()!.groupKey !== s.groupKey) || !segOn(s)"
+                          [class.hot]="hovered()?.key === s.key"
+                          [style.animation-delay.ms]="s.delay"
+                          (mouseenter)="hovered.set(s)" (mouseleave)="hovered.set(null)" (click)="chooseSeg(s)">
+                        <title>{{ s.name }}: {{ s.count }} {{ unit() }} — click to filter</title>
+                    </path>
+                }
+            </g>
+            @for (s of segments(); track s.key) {
+                @if (s.label) {
+                    <text class="hc-pct" [attr.x]="s.lx" [attr.y]="s.ly + 4" [style.animation-delay.ms]="s.delay + 400">{{ s.label }}</text>
+                }
+            }
+        </svg>
+        <div class="hc-center" aria-live="polite">
+            @if (hovered(); as h) {
+                <b>{{ h.count | number }}</b>
+                <span class="hc-c-name">{{ h.name }}</span>
+                <small>@if (h.level === 'sub') { {{ h.parentPct }}% of {{ h.parentName }} } @else { {{ h.parentPct }}% }</small>
+            } @else if (selectedNode(); as sn) {
+                <span class="hc-c-tag">Selected</span>
+                <b>{{ sn.count | number }}</b>
+                <span class="hc-c-name">{{ sn.name }}</span>
+                <small>{{ sn.note }}</small>
+            } @else {
+                <b>{{ total() | number }}</b>
+                <span class="hc-c-label">{{ centerLabel() }}</span>
+                <small class="hc-c-hint">tap a ring to filter</small>
+            }
+        </div>
+    </div>
+
+    <!-- group > sub-group > item: row = filter, chevron = open / close -->
+    <div class="hc-list">
+        <div class="hc-head"><span>{{ groups().length }} {{ groupNoun() }}</span><span class="hb"></span><span>Count</span>
+            <span [title]="pctHint()">%</span></div>
+        <ul class="hc-rows" role="tree">
+            @for (g of groups(); track g.key) {
+                <li role="treeitem" [attr.aria-expanded]="isOpen(g.key)">
+                    <div class="hc-row g" [id]="uid + '-' + domId(g.key)" [class.active]="isSel('group', g.key)">
+                        <button type="button" class="chev" [attr.aria-label]="(isOpen(g.key) ? 'Close ' : 'Open ') + g.name" (click)="toggle(g.key, $event)">
+                            <i class="pi" [class.pi-chevron-right]="!isOpen(g.key)" [class.pi-chevron-down]="isOpen(g.key)"></i>
+                        </button>
+                        <button type="button" class="pick" (click)="choose('group', g)" [attr.aria-pressed]="isSel('group', g.key)"
+                                [title]="g.name + ': ' + g.count + ' ' + unit() + ' (' + g.percentage + '%). Click to filter the dashboard.'">
+                            <span class="sw" [style.background]="colorOf().get(g.key)"></span>
+                            <span class="nm">{{ g.name }}</span>
+                            <span class="bar"><span [style.width.%]="g.percentage" [style.background]="colorOf().get(g.key)"></span></span>
+                            <span class="ct">{{ g.count | number }}</span>
+                            <span class="pc">{{ g.percentage }}%</span>
+                        </button>
+                    </div>
+                    @if (isOpen(g.key)) {
+                        <ul role="group">
+                            @for (s of g.children; track s.key) {
+                                <li role="treeitem" [attr.aria-expanded]="s.children.length ? isOpen(g.key + '|' + s.key) : null">
+                                    <div class="hc-row s" [id]="uid + '-' + domId(g.key + '|' + s.key)" [class.active]="isSel('sub', s.key)">
+                                        @if (s.children.length) {
+                                            <button type="button" class="chev" [attr.aria-label]="(isOpen(g.key + '|' + s.key) ? 'Close ' : 'Open ') + s.name" (click)="toggle(g.key + '|' + s.key, $event)">
+                                                <i class="pi" [class.pi-chevron-right]="!isOpen(g.key + '|' + s.key)" [class.pi-chevron-down]="isOpen(g.key + '|' + s.key)"></i>
+                                            </button>
+                                        } @else { <span class="chev"><i class="dot" [style.background]="colorOf().get(g.key)"></i></span> }
+                                        <button type="button" class="pick" (click)="choose('sub', g, s)" [attr.aria-pressed]="isSel('sub', s.key)"
+                                                [title]="s.name + ': ' + s.count + ' ' + unit() + ' — ' + s.percentage + '% of ' + g.name + '. Click to filter the dashboard.'">
+                                            <span class="nm">{{ s.name }}</span>
+                                            <span class="bar"><span [style.width.%]="s.percentage" [style.background]="colorOf().get(g.key)"></span></span>
+                                            <span class="ct">{{ s.count | number }}</span>
+                                            <span class="pc">{{ s.percentage }}%</span>
+                                        </button>
+                                    </div>
+                                    @if (s.children.length && isOpen(g.key + '|' + s.key)) {
+                                        <ul role="group">
+                                            @for (i of s.children; track i.key) {
+                                                <li role="treeitem">
+                                                    <div class="hc-row i" [class.active]="isSel('item', i.code)">
+                                                        <span class="chev"><i class="dot" [style.background]="colorOf().get(g.key)"></i></span>
+                                                        <button type="button" class="pick" (click)="choose('item', g, s, i)" [attr.aria-pressed]="isSel('item', i.code)"
+                                                                [title]="i.name + ': ' + i.count + ' ' + unit() + ' — ' + i.percentage + '% of ' + s.name + ', ' + i.share + '% of all. Click to filter the dashboard.'">
+                                                            <span class="nm">{{ i.name }}</span>
+                                                            <span class="bar"><span [style.width.%]="i.percentage" [style.background]="colorOf().get(g.key)"></span></span>
+                                                            <span class="ct">{{ i.count | number }}</span>
+                                                            <span class="pc">{{ i.percentage }}%</span>
+                                                        </button>
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    }
+                </li>
+            } @empty {
+                <li class="hc-empty">Nothing recorded for this selection.</li>
+            }
+        </ul>
+    </div>
+</div>

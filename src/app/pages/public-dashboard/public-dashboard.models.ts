@@ -1,3 +1,5 @@
+import {HierGroup} from '../../shared/components/hierarchy-chart/hierarchy-chart.component';
+
 export type Period = 'all' | 'month' | 'year';
 export type Scope = 'national' | 'personal';
 
@@ -15,6 +17,12 @@ export interface PublicFilters {
     payer?: string;
     theatre?: string;
     procedure?: string;
+    procGroup?: string;
+    procSub?: string;
+    dxGroup?: string;
+    dxSub?: string;
+    anLine?: string;
+    anLineSite?: string;
     diagnosis?: string;
     birthWeight?: string;
     opWeight?: string;
@@ -26,13 +34,16 @@ export interface PublicFilters {
 export const FILTER_KEYS: (keyof PublicFilters)[] = [
     'province', 'district', 'city', 'hospital', 'surgeon', 'gender', 'ageGroup', 'payer', 'theatre',
     'procedure', 'diagnosis', 'birthWeight', 'opWeight', 'complication', 'induction', 'anaesAgent',
+    'procGroup', 'procSub', 'dxGroup', 'dxSub', 'anLine', 'anLineSite',
 ];
 
 export const FILTER_LABELS: Record<string, string> = {
     province: 'Province', district: 'District', city: 'City', hospital: 'Hospital', surgeon: 'Surgeon',
-    gender: 'Gender', ageGroup: 'Age group', payer: 'Who pays', theatre: 'Theatre', procedure: 'Procedure',
+    gender: 'Gender', ageGroup: 'Age group', payer: 'Funding', theatre: 'Theatre', procedure: 'Procedure',
     diagnosis: 'Diagnosis', birthWeight: 'Birth weight', opWeight: 'Weight at operation',
     complication: 'Complication', induction: 'Induction', anaesAgent: 'Anaesthetic agent',
+    procGroup: 'Procedure group', procSub: 'Procedure sub-group', dxGroup: 'Diagnosis group', dxSub: 'Diagnosis sub-group',
+    anLine: 'Monitoring', anLineSite: 'Line / probe site',
 };
 
 /** Mean with its formula parts: mean = sum ÷ n. */
@@ -58,8 +69,8 @@ export interface PublicDashboardData {
         knownAge: number; unknownAge: number;
         gender: { code: string; label: string; count: number; percentage: number }[];
     };
-    procedures?: { total: number; distinct: number; casesWithProcedure: number; items: DistItem[]; others: DistItem[] };
-    diagnoses?: { total: number; distinct: number; items: DistItem[]; others: DistItem[] };
+    procedures?: { total: number; distinct: number; casesWithProcedure: number; items: DistItem[]; others: DistItem[]; tree: HierTree };
+    diagnoses?: { total: number; distinct: number; items: DistItem[]; others: DistItem[]; tree: HierTree };
     activity?: { granularity: 'day' | 'month' | 'year'; undated: number;
         points: { key: string; label: string; range: string; count: number }[] };
     surgeons?: { code: string; label: string; cases: number; hospitals: { code: string | null; name: string; cases: number }[] }[];
@@ -99,13 +110,17 @@ export interface PublicDashboardData {
         byProcedure: ProcedureComplications[]; byProcedureOthers: ProcedureComplications[];
     };
     anaesthesia?: {
-        recorded: number;
-        techniques: { code: string; name: string; count: number; percentage: number }[];
+        recorded: number;                       // operations with anaesthesia recorded (base for every %)
+        team: AnNode[];
+        techniques: { code: string; name: string; count: number; percentage: number; agents: AnLeaf[] }[];
         agents: DistItem[]; agentOthers: DistItem[];
-        monitoring: { key: string; label: string; count: number; denominator: number; percentage: number }[];
-        /** every % uses the same denominator: operations with anaesthesia recorded */
+        preop: { medicationCases: number; medicationPercentage: number; medications: AnTop; sedation: AnNode };
+        lines: AnNode[];
+        temperature: AnLeaf[];
+        intraop: AnTop;
+        pacu: { medications: AnTop; support: AnNode[] };
         adverse: { cases: number; recorded: number; percentage: number; distinct: number; items: DistItem[]; others: DistItem[] };
-        disposition: { code: string; name: string; count: number; percentage: number }[];
+        disposition: AnLeaf[];
     };
 }
 
@@ -117,6 +132,13 @@ export interface ProcedureComplications {
     top: { code: string; name: string; count: number } | null;
     complications: { code: string; name: string; count: number }[];
 }
+
+/** Anaesthesia: leaf = one option; node = a yes/no item with its detail options (child % = share of the parent). */
+export interface AnLeaf { code: string; name: string; count: number; percentage: number; kind?: string; }
+export interface AnNode { key: string; label: string; count: number; percentage: number; children: AnLeaf[]; }
+export interface AnTop { items: AnLeaf[]; others: AnLeaf[]; distinct: number; otherLabel: string; }
+
+export interface HierTree { total: number; groups: HierGroup[]; }
 
 export interface TimeBand { label: string; min: number; max: number | null; count: number; }
 export interface WeightBand { code: string; label: string; short: string; count: number; percentage: number; mean: number | null; }
