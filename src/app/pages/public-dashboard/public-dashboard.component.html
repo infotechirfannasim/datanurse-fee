@@ -36,7 +36,7 @@
                 <img src="./assets/images/newLogo.svg" alt="DataNurse"/>
             </a>
             <div class="pd-title">
-                <h1>Paediatric Cardiac Surgery - Analytics</h1>
+                <h1>Paediatric Cardiac Surgery — Public Analytics</h1>
                 <span>Live figures from the DataNurse registry</span>
             </div>
             <div class="pd-controls">
@@ -296,7 +296,7 @@
                                             (hover)="onDoughnutHover($event, 'cases')"/>
                     } @else {
                         <app-hierarchy-chart [groups]="d?.diagnoses?.tree?.groups ?? []" [total]="d?.diagnoses?.tree?.total ?? 0"
-                                             centerLabel="Diagnoses" unit="cases" groupNoun="diagnosis groups"
+                                             centerLabel="Diagnoses" unit="diagnoses" groupNoun="diagnosis groups"
                                              [selectedGroup]="filters().dxGroup" [selectedSub]="filters().dxSub" [selected]="filters().diagnosis"
                                              (pick)="pickHier('dx', $event)"/>
                     }
@@ -1010,7 +1010,7 @@
             <div class="spot-body">
                 @if (sp.kind === 'dx') {
                     <app-hierarchy-chart layout="side" size="large" [groups]="sp.groups" [total]="sp.total"
-                                         centerLabel="Diagnoses" unit="cases" groupNoun="diagnosis groups"
+                                         centerLabel="Diagnoses" unit="diagnoses" groupNoun="diagnosis groups"
                                          [selectedGroup]="filters().dxGroup" [selectedSub]="filters().dxSub" [selected]="filters().diagnosis"
                                          (pick)="pickHier('dx', $event)"/>
                 } @else {

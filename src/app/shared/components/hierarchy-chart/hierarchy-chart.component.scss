@@ -16,7 +16,8 @@
   svg { width: 100%; height: 100%; display: block; overflow: visible; } }
 .hc-halo { pointer-events: none; fill: none; stroke: #EEF2FB; stroke-width: 6; }
 .hc-hub { pointer-events: none; fill: #fff; stroke: #E4EBFA; stroke-width: 1.5; }
-.hc-seg { cursor: pointer; transform-origin: 150px 150px; stroke: #fff; stroke-width: 1;
+.hc-hit { fill: transparent; pointer-events: all; cursor: pointer; }
+.hc-seg { pointer-events: none; transform-origin: 150px 150px; stroke: #fff; stroke-width: 1;
   transition: opacity .25s, transform .25s cubic-bezier(.2, .8, .2, 1), filter .2s;
   animation: hc-in .7s cubic-bezier(.2, .8, .2, 1) backwards;
   &.dim { opacity: .22; }

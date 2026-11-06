@@ -8,13 +8,14 @@ export type HierLevel = 'group' | 'sub' | 'item';
 export interface HierPick { level: HierLevel; groupKey: string; subKey?: string; code: string; name: string; }
 
 interface Seg { key: string; groupKey: string; subKey?: string; level: 'group' | 'sub'; name: string; count: number; share: number;
-    parentPct: number; parentName: string; color: string; grad: string; d: string; delay: number;
+    parentPct: number; parentName: string; color: string; grad: string; d: string; hit: string; delay: number;
     label: string | null; lx: number; ly: number; }
 
 /** Bright, distinct group colours; sub-groups use lighter tints of their group's colour. */
 const PALETTE = ['#2251CC', '#E8344A', '#0EA5A0', '#F59E0B', '#7C3AED', '#10B981', '#EC4899', '#0EA5E9', '#F97316', '#64748B',
     '#A16207', '#14B8A6', '#9333EA', '#DC2626', '#0891B2'];
 const CX = 150; const R0 = 66; const R1 = 108; const R2 = 112; const R3 = 144; const GAP = 0.012; // radians
+const RM = (R1 + R2) / 2; // hit areas of the two rings meet here, so there is no dead gap between them
 const MIN_LABEL = 0.32; // radians: segments narrower than this get no % label
 
 /**
@@ -47,6 +48,14 @@ export class HierarchyChartComponent {
     pick = output<HierPick>();
 
     hovered = signal<Seg | null>(null);
+    private leaveTimer: ReturnType<typeof setTimeout> | undefined;
+    /**
+     * Hover runs on fixed, invisible hit areas (no gaps, never scaled), so the growing
+     * segment can't slide out from under the pointer. Leaving is delayed a moment so
+     * crossing from one segment to the next doesn't flash the whole chart.
+     */
+    enter(s: Seg) { clearTimeout(this.leaveTimer); if (this.hovered()?.key !== s.key) this.hovered.set(s); }
+    leave() { clearTimeout(this.leaveTimer); this.leaveTimer = setTimeout(() => this.hovered.set(null), 90); }
     open = signal<Set<string>>(new Set());
     readonly uid = 'hc' + Math.random().toString(36).slice(2, 8);
 
@@ -96,7 +105,7 @@ export class HierarchyChartComponent {
             const color = this.colorOf().get(g.key)!;
             const mid = a + span / 2; const rl = (R0 + R1) / 2;
             out.push({key: g.key, groupKey: g.key, level: 'group', name: g.name, count: g.count, share: g.share, parentPct: g.percentage,
-                parentName: '', color, grad: `url(#${this.uid}-g${gi++})`, d: this.arc(a, a + span, R0, R1), delay: n * 45,
+                parentName: '', color, grad: `url(#${this.uid}-g${gi++})`, d: this.arc(a, a + span, R0, R1), hit: this.arc(a, a + span, R0 - 2, RM, 0), delay: n * 45,
                 label: span >= MIN_LABEL ? `${Math.round(g.percentage)}%` : null, lx: CX + rl * Math.cos(mid), ly: CX + rl * Math.sin(mid)});
             n++;
             let b = a;
@@ -105,7 +114,7 @@ export class HierarchyChartComponent {
                 const sm = b + sp / 2; const rs = (R2 + R3) / 2;
                 out.push({key: g.key + '|' + s.key, groupKey: g.key, subKey: s.key, level: 'sub', name: s.name, count: s.count, share: s.share,
                     parentPct: s.percentage, parentName: g.name, color: this.tint(color, 0.2 + (j % 4) * 0.15), grad: '',
-                    d: this.arc(b, b + sp, R2, R3), delay: 260 + n * 22,
+                    d: this.arc(b, b + sp, R2, R3), hit: this.arc(b, b + sp, RM, R3 + 8, 0), delay: 260 + n * 22,
                     label: null, lx: CX + rs * Math.cos(sm), ly: CX + rs * Math.sin(sm)});
                 b += sp; n++;
             });
@@ -156,8 +165,8 @@ export class HierarchyChartComponent {
 
     domId(k: string) { return k.replace(/[^\w-]/g, '_'); }
 
-    private arc(a0: number, a1: number, r0: number, r1: number): string {
-        if (a1 - a0 > GAP * 2) { a0 += GAP; a1 -= GAP; }
+    private arc(a0: number, a1: number, r0: number, r1: number, gap = GAP): string {
+        if (gap && a1 - a0 > gap * 2) { a0 += gap; a1 -= gap; }
         if (a1 - a0 >= Math.PI * 2 - 1e-6) a1 = a0 + Math.PI * 2 - 1e-4;
         const p = (r: number, t: number) => `${(CX + r * Math.cos(t)).toFixed(2)} ${(CX + r * Math.sin(t)).toFixed(2)}`;
         const large = a1 - a0 > Math.PI ? 1 : 0;

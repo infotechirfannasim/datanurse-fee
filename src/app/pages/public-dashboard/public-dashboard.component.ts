@@ -577,7 +577,7 @@ export class PublicDashboardComponent implements AfterViewInit {
         const selKey = k === 'dx' ? (f.dxGroup ? 'dxGroup' : f.dxSub ? 'dxSub' : 'diagnosis') : (f.procGroup ? 'procGroup' : f.procSub ? 'procSub' : 'procedure');
         return {
             kind: k, title: k === 'dx' ? 'Diagnosis Distribution' : 'Procedure Distribution',
-            unit: k === 'dx' ? 'cases' : 'procedures', total: t?.total ?? 0, groups,
+            unit: k === 'dx' ? 'diagnoses' : 'procedures', total: t?.total ?? 0, groups,
             topGroup: top(groups), topSub: top(subs), topItem: top(items),
             counts: {groups: groups.length, subs: subs.length, items: items.length},
             selection: sel ? {key: selKey as keyof PublicFilters, label: this.labelFor(selKey as keyof PublicFilters, sel)} : null,

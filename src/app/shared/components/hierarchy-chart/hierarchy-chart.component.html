@@ -20,10 +20,7 @@
                     <path [attr.d]="s.d" [attr.fill]="s.level === 'group' ? s.grad : s.color" class="hc-seg" [class.sub]="s.level === 'sub'"
                           [class.dim]="(hovered() && hovered()!.groupKey !== s.groupKey) || !segOn(s)"
                           [class.hot]="hovered()?.key === s.key"
-                          [style.animation-delay.ms]="s.delay"
-                          (mouseenter)="hovered.set(s)" (mouseleave)="hovered.set(null)" (click)="chooseSeg(s)">
-                        <title>{{ s.name }}: {{ s.count }} {{ unit() }} — click to filter</title>
-                    </path>
+                          [style.animation-delay.ms]="s.delay"/>
                 }
             </g>
             @for (s of segments(); track s.key) {
@@ -31,6 +28,14 @@
                     <text class="hc-pct" [attr.x]="s.lx" [attr.y]="s.ly + 4" [style.animation-delay.ms]="s.delay + 400">{{ s.label }}</text>
                 }
             }
+            <!-- fixed hit areas on top: hover and click live here, so the scaled segment never flickers -->
+            <g (mouseleave)="leave()">
+                @for (s of segments(); track s.key) {
+                    <path [attr.d]="s.hit" class="hc-hit" (mouseenter)="enter(s)" (click)="chooseSeg(s)">
+                        <title>{{ s.name }}: {{ s.count }} {{ unit() }} — click to filter</title>
+                    </path>
+                }
+            </g>
         </svg>
         <div class="hc-center" aria-live="polite">
             @if (hovered(); as h) {

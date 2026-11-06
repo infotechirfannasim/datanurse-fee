@@ -70,7 +70,7 @@ export interface PublicDashboardData {
         gender: { code: string; label: string; count: number; percentage: number }[];
     };
     procedures?: { total: number; distinct: number; casesWithProcedure: number; items: DistItem[]; others: DistItem[]; tree: HierTree };
-    diagnoses?: { total: number; distinct: number; items: DistItem[]; others: DistItem[]; tree: HierTree };
+    diagnoses?: { total: number; distinct: number; casesWithDiagnosis: number; items: DistItem[]; others: DistItem[]; tree: HierTree };
     activity?: { granularity: 'day' | 'month' | 'year'; undated: number;
         points: { key: string; label: string; range: string; count: number }[] };
     surgeons?: { code: string; label: string; cases: number; hospitals: { code: string | null; name: string; cases: number }[] }[];
