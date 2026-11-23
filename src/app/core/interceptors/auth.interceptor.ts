@@ -2,7 +2,7 @@ import {HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn, HttpRequest} from '
 import {inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {throwError} from 'rxjs';
-import {catchError, switchMap} from 'rxjs/operators';
+import {catchError} from 'rxjs/operators';
 import {AuthService} from '../services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
@@ -20,24 +20,10 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
 
     return next(authReq).pipe(
         catchError((error: HttpErrorResponse) => {
-            if (error.status === 401) {
-                if (token) {
-                    return authService.refreshToken().pipe(
-                        switchMap(({token}) => {
-                            const newReq = req.clone({
-                                setHeaders: {
-                                    Authorization: `Bearer ${token}`
-                                }
-                            });
-                            return next(newReq);
-                        }),
-                        catchError((refreshError) => {
-                            authService.logout();
-                            router.navigate(['/auth/login']);
-                            return throwError(() => refreshError);
-                        })
-                    );
-                }
+            // Session ended or expired: there is no refresh token any more, so the user logs in again.
+            if (error.status === 401 && token && !req.url.includes('auth/logout')) {
+                authService.clearAuth();
+                router.navigate(['/auth/login']);
             }
             return throwError(() => error);
         })

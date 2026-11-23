@@ -17,6 +17,10 @@ export interface RawHospitalRef {
 }
 
 export interface RawPatient {
+    fatherName?: string;
+    fatherCitizenNumber?: string;
+    motherName?: string;
+    motherCitizenNumber?: string;
     _id: string;
     mrn: string;
     primaryMrn: string;

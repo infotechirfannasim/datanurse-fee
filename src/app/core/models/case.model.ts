@@ -84,6 +84,10 @@ export interface OrTimelineItem {
 // ── Section DTOs ──────────────────────────────────────────────
 
 export interface PatientInfoDto {
+  fatherName: string;
+  fatherCitizenNumber: string;
+  motherName: string;
+  motherCitizenNumber: string;
   filled: boolean;
   mrn: string;
   citizenNumber: string;
@@ -411,6 +415,10 @@ export interface PatientListItemDto {
 }
 
 export interface PatientDetailDto {
+  fatherName: string;
+  fatherCitizenNumber: string;
+  motherName: string;
+  motherCitizenNumber: string;
   // ── all patient fields (same as list item, fully resolved) ─
   id: string;
   mrn: string;

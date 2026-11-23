@@ -111,6 +111,7 @@ function mapPatient(raw: RawCase, lovs: LovStore): PatientInfoDto {
             filled: false,
             mrn: str(raw.patientMrn),
             citizenNumber: DASH, name: DASH, gender: DASH, dob: null,
+            fatherName: DASH, fatherCitizenNumber: DASH, motherName: DASH, motherCitizenNumber: DASH,
             bloodGroup: DASH, phone: DASH, primaryPayor: DASH, secondaryPayor: DASH,
             country: DASH, province: DASH, city: DASH, location: DASH,
             apgar1min:      DASH,
@@ -132,6 +133,10 @@ function mapPatient(raw: RawCase, lovs: LovStore): PatientInfoDto {
         filled: true,
         mrn:            str(raw.patientMrn),
         citizenNumber:  str(p.citizenNumber),
+        fatherName:     str(p.fatherName),
+        fatherCitizenNumber: str(p.fatherCitizenNumber),
+        motherName:     str(p.motherName),
+        motherCitizenNumber: str(p.motherCitizenNumber),
         name:           str(p.name),
         gender:         lovName(lovs, 'gender', p.gender),
         dob:            date(p.dob),
@@ -668,6 +673,10 @@ export function mapToCaseList(raws: RawCase[], lovs: LovStore = {}): CaseListIte
  * Used by both list and detail mappers to avoid duplication.
  */
 function mapPatientCore(p: {
+    fatherName?: string;
+    fatherCitizenNumber?: string;
+    motherName?: string;
+    motherCitizenNumber?: string;
     _id: string;
     mrn?: string;
     primaryMrn?: string,
@@ -698,6 +707,10 @@ function mapPatientCore(p: {
         mrn:           str(p.mrn),
         primaryMrn:    str(p.primaryMrn),
         citizenNumber: str(p.citizenNumber),
+        fatherName:    str(p.fatherName),
+        fatherCitizenNumber: str(p.fatherCitizenNumber),
+        motherName:    str(p.motherName),
+        motherCitizenNumber: str(p.motherCitizenNumber),
         name:          str(p.name),
         gender:        lovName(lovs, 'gender', p.gender),
         genderCode:    str(p.gender),

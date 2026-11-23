@@ -119,6 +119,8 @@ export class AuthService {
     }
 
     logout(): void {
+        // end this device's session on the server (other devices stay logged in); errors are ignored
+        if (this.getToken()) this.http.post(`${this.apiUrl}auth/logout`, {}).subscribe({error: () => {}});
         this.clearAuth();
         this.router.navigate(['/']);
     }
@@ -128,21 +130,7 @@ export class AuthService {
         this.currentUserSubject.next(null);
     }
 
-    refreshToken(): Observable<{ token: string }> {
-        const refreshToken = localStorage.getItem('refreshToken');
-        return this.http
-            .post<ApiResponse<{ token: string }>>(`${this.apiUrl}/refresh-token`, {refreshToken})
-            .pipe(
-                map((response) => {
-                    if (response.success) {
-                        localStorage.setItem('token', response.data.token);
-                        return response.data;
-                    }
-                    throw new Error('Failed to refresh token');
-                }),
-                catchError(this.handleError),
-            );
-    }
+    // refreshToken() removed: no refresh tokens any more
 
     getToken(): string | null {
         return localStorage.getItem(window.btoa(AppConstants.AUTH_ACCESS_TOKEN));
@@ -203,10 +191,7 @@ export class AuthService {
             window.btoa(AppConstants.AUTH_ACCESS_TOKEN),
             response.tokens.accessToken,
         );
-        localStorage.setItem(
-            window.btoa(AppConstants.AUTH_REFRESH_TOKEN),
-            response.tokens.refreshToken,
-        );
+        // no refresh token: sessions slide for 30 days on the server
         localStorage.setItem(window.btoa(AppConstants.USER_INFO), JSON.stringify(response.user));
         this.currentUserSubject.next(response.user);
     }

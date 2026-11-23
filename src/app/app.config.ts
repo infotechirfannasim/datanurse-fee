@@ -9,6 +9,7 @@ import {
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { providePrimeNG } from 'primeng/config';
+import { OVERLAY_OPTIONS, OVERLAY_Z_INDEX } from './core/config/overlay.config';
 import Aura from '@primeuix/themes/aura';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideNgxMask } from 'ngx-mask';
@@ -23,6 +24,9 @@ export const appConfig: ApplicationConfig = {
         provideRouter(routes),
         provideAnimations(),
         providePrimeNG({
+            overlayAppendTo: 'body',          // dropdown lists are never cut off by a modal
+            overlayOptions: OVERLAY_OPTIONS,  // and follow their field when a modal scrolls
+            zIndex: OVERLAY_Z_INDEX,          // above our modals
             theme: {
                 preset: Aura,
                 options: {

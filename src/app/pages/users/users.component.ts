@@ -18,11 +18,12 @@ import {SelectModule} from "primeng/select";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
 import {getError, getUserInitials, markAllTouched, passwordMatchValidator} from "../../utils/global.utils";
 import {RegexConstants} from "../../utils/regex-constants";
+import {NgxMaskDirective} from "ngx-mask";
 
 @Component({
     selector: 'app-doctors',
     standalone: true,
-    imports: [FormsModule, NgClass, ReactiveFormsModule, CommonModule, MultiSelectModule, SelectModule],
+    imports: [FormsModule, NgClass, ReactiveFormsModule, CommonModule, MultiSelectModule, SelectModule, NgxMaskDirective],
     templateUrl: './users.component.html',
     styleUrl: './users.component.scss'
 })
@@ -63,6 +64,7 @@ export class UsersComponent implements OnInit {
             pattern: "Only alphanumeric characters are allowed.",
             maxLength: 'Max 50 characters'
         },
+        phone: {required: 'Phone is required', pattern: 'Invalid Pakistani phone number'},
         role: {required: 'Role is required'},
         email: {
             required: 'Email is required',
@@ -105,6 +107,10 @@ export class UsersComponent implements OnInit {
                 Validators.maxLength(50),
                 Validators.pattern(RegexConstants.ALPHANUMERIC_REGEX)]],
             email: ['', [Validators.required, Validators.pattern(RegexConstants.VALID_EMAIL_REGEX), Validators.maxLength(32), Validators.email]],
+            phone: ['', [
+                Validators.required,
+                Validators.pattern(RegexConstants.PHONE_REGEX)
+            ]],
             role: ['', Validators.required],
             password: [''],
             confirmPassword: [''],
@@ -257,6 +263,7 @@ export class UsersComponent implements OnInit {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
+            phone: user.phone,
             role: user?.role?._id,
             status: user.status,
         };
@@ -339,6 +346,7 @@ export class UsersComponent implements OnInit {
 
         formData.append('firstName', this.form.value.firstName);
         formData.append('lastName', this.form.value.lastName);
+        formData.append('phone', this.form.value.phone || '');
         formData.append('email', this.form.value.email);
         formData.append('role', this.roles.find((role: Role) => role.name === ROLES.SUPER_ADMIN)?._id);
         formData.append('status', this.form.value.status);
