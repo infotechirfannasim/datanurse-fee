@@ -55,6 +55,12 @@ function date(v: string | null | undefined): DisplayDate {
     return v ?? null;
 }
 
+/** Moved field: value from its new step, else the old step13Anesthesia copy */
+function moved<T>(newValue: T | null | undefined, oldValue: T | null | undefined): T | undefined {
+    const blank = newValue === null || newValue === undefined || (typeof newValue === 'string' && newValue.trim() === '');
+    return (blank ? oldValue : newValue) ?? undefined;
+}
+
 /** Boolean with safe fallback */
 function bool(v: boolean | undefined | null): boolean {
     return v === true;
@@ -350,19 +356,32 @@ function mapBloodProducts(raw: RawCase): BloodProductsDto {
 
 function mapAnesthesia(raw: RawCase, lovs: LovStore): AnesthesiaDto {
     const s = raw.step13Anesthesia;
+    // induction timing now lives in step 10, ICU/PACU care in step 14 (old cases: step 13 copy)
+    const op = raw.step10OperativeData;
+    const cx = raw.step14Complications;
+    const inductionDt = moved(op?.inductionDt, s?.inductionDt);
+    const pLocTransDt = moved(op?.pLocTransDt, s?.pLocTransDt);
+    const pacuArrivalDt = moved(cx?.pacuArrivalDt, s?.pacuArrivalDt);
+    const pacuFiO2 = moved(cx?.pacuFiO2, s?.pacuFiO2);
+    const pacuMechSupport = moved(cx?.pacuMechSupport, s?.pacuMechSupport);
+    const pacuPulseOx = moved(cx?.pacuPulseOx, s?.pacuPulseOx);
+    const pacuTempSite = moved(cx?.pacuTempSite, s?.pacuTempSite);
+    const pacuPacemaker = moved(cx?.pacuPacemaker, s?.pacuPacemaker);
+    const pacuPacemakerSite = moved(cx?.pacuPacemakerSite, s?.pacuPacemakerSite);
+    const pacuPacemakerType = moved(cx?.pacuPacemakerType, s?.pacuPacemakerType);
     if (!s) {
         return {
             filled: false,
             primaryAnesthesiologist: DASH, preopMedCategories: DASH,
-            preopSedation: false, inductionDateTime: null, patientLocationTransfer: null,
+            preopSedation: false, inductionDateTime: date(inductionDt), patientLocationTransfer: date(pLocTransDt),
             artLine: false, centralPressureLine: false, ultrasoundGuidance: DASH,
             neuroMonitor: false, tee: false, cutdown: false, cvpPlaced: false,
             icuTypeVent: false, lowIntraopTemp: DASH,
             airwaySite: DASH, airwaySizeLma: DASH, airwaySizeIntub: DASH, cuffed: false,
             intraopPharm: [], pacuPharm: [], adverseEvents: [],
-            pacuArrivalDateTime: null, pacuFiO2: DASH, pacuMechSupport: DASH,
-            pacuPulseOx: DASH, pacuTempSite: DASH,
-            pacuPacemaker: false, pacuPacemakerSite: DASH, pacuPacemakerType: DASH,
+            pacuArrivalDateTime: date(pacuArrivalDt), pacuFiO2: pacuFiO2?.trim() ? `${pacuFiO2}%` : DASH,
+            pacuMechSupport: str(pacuMechSupport), pacuPulseOx: str(pacuPulseOx), pacuTempSite: str(pacuTempSite),
+            pacuPacemaker: bool(pacuPacemaker), pacuPacemakerSite: str(pacuPacemakerSite), pacuPacemakerType: str(pacuPacemakerType),
             pacuDemise: false,
             crna: false, felRes: false,
             felResName: DASH, crnaName: DASH
@@ -380,8 +399,8 @@ function mapAnesthesia(raw: RawCase, lovs: LovStore): AnesthesiaDto {
         primaryAnesthesiologist: s.primAnesName?.trim() || DASH,
         preopMedCategories,
         preopSedation:           bool(s.preopSed),
-        inductionDateTime:       date(s.inductionDt),
-        patientLocationTransfer: date(s.pLocTransDt),
+        inductionDateTime:       date(inductionDt),
+        patientLocationTransfer: date(pLocTransDt),
         artLine:                 bool(s.artLine),
         centralPressureLine:     bool(s.percCentPress),
         ultrasoundGuidance:      s.ultraGuide ? lovName(lovs,'ultrasoundGuidance',s.ultraGuide) : DASH,
@@ -398,14 +417,14 @@ function mapAnesthesia(raw: RawCase, lovs: LovStore): AnesthesiaDto {
         intraopPharm,
         pacuPharm,
         adverseEvents,
-        pacuArrivalDateTime:  date(s.pacuArrivalDt),
-        pacuFiO2:             s.pacuFiO2?.trim() ? `${s.pacuFiO2}%` : DASH,
-        pacuMechSupport:      str(s.pacuMechSupport),
-        pacuPulseOx:          str(s.pacuPulseOx),
-        pacuTempSite:         str(s.pacuTempSite),
-        pacuPacemaker:        bool(s.pacuPacemaker),
-        pacuPacemakerSite:    str(s.pacuPacemakerSite),
-        pacuPacemakerType:    str(s.pacuPacemakerType),
+        pacuArrivalDateTime:  date(pacuArrivalDt),
+        pacuFiO2:             pacuFiO2?.trim() ? `${pacuFiO2}%` : DASH,
+        pacuMechSupport:      str(pacuMechSupport),
+        pacuPulseOx:          str(pacuPulseOx),
+        pacuTempSite:         str(pacuTempSite),
+        pacuPacemaker:        bool(pacuPacemaker),
+        pacuPacemakerSite:    str(pacuPacemakerSite),
+        pacuPacemakerType:    str(pacuPacemakerType),
         pacuDemise:           bool(s.pacuDemise),
         felRes:             bool(s.felRes),
         felResName:        str(s.felResName),

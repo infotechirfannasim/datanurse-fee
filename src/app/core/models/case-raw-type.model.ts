@@ -114,6 +114,9 @@ export interface RawStep5 {
 }
 
 export interface RawStep10 {
+    /** moved from step13Anesthesia (Nov 2026); old cases also keep the step13 copy */
+    pLocTransDt?: string;
+    inductionDt?: string;
     procedureLocation?: string;
     operationStatus?: string;
     operationType?: string;
@@ -234,6 +237,16 @@ export interface Complication {
 }
 
 export interface RawStep14 {
+    /** moved from step13Anesthesia (Nov 2026); old cases also keep the step13 copy */
+    pacuArrivalDt?: string;
+    pacuFiO2?: string;
+    pacuMechSupport?: string;
+    pacuPulseOx?: string;
+    pacuLabs?: Record<string, string>;
+    pacuTempSite?: string;
+    pacuPacemaker?: boolean;
+    pacuPacemakerSite?: string;
+    pacuPacemakerType?: string;
     selectedComplications?: Complication[];
     noComplications?: boolean;
     complicationDetails?: Record<string, RawComplicationDetail>;
